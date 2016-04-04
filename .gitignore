@@ -1,0 +1,11 @@
+/apps/moderator/migrations
+/apps/ticket/migrations
+/apps/landing/migrations
+/apps/incoming/migrations
+/apps/manager/migrations
+/apps/city/migrations
+.idea/
+*.pyc
+core/migrations/
+/apps/adjuster/migrations
+/apps/client/migrations

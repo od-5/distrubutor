@@ -1,0 +1,36 @@
+.sign {
+  display: table;
+  height: 100%;
+  width: 100%;
+  margin: 0 auto;
+  label.error {
+    display: none !important;
+  }
+  &-error {
+    position: absolute;
+    width: 100%;
+  }
+  &-wrapper {
+    display: table-cell;
+    vertical-align: middle;
+    &-container {
+      background-color: #fff;
+      margin: 0 auto;
+      width: 400px;
+      padding: 20px;
+      border-radius: 10px;
+      border: 10px solid #aeaeae;
+      &_text {
+        font-weight: bold;
+      }
+      &_title {
+        font-weight: bold;
+        font-size: 1.8em;
+      }
+      &_slogan {
+        font-style: italic;
+        color: #d9534f;
+      }
+    }
+  }
+}

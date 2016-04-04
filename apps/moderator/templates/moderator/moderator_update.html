@@ -1,0 +1,192 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+    <ol class="breadcrumb">
+        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+        <li><a href="{% url 'moderator:list' %}">Список модераторов</a></li>
+        <li class="active">Редактирование модератора</li>
+      </ol>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead text-center remove-bottom">Редактирование модератора {{ object.email }}</p>
+        </div>
+        <div class="panel-body">
+          <div class="col-lg-12">
+              {% if error %}
+                <div class="alert alert-danger">
+                  {{ error }}
+                </div>
+              {%  endif %}
+              {% if success %}
+                <div class="alert alert-success">
+                  {{ success }}
+                </div>
+              {% endif %}
+          </div>
+          <div class="col-lg-12">
+            <ul class="nav nav-tabs">
+              <li class="active"><a data-toggle="tab" href="#user">Информация о пользователе</a></li>
+              <li><a data-toggle="tab" href="#moderator">Информация об организации</a></li>
+              <li><a data-toggle="tab" href="#license">Информация о лицензии</a></li>
+            </ul>
+            <div class="tab-content">
+              <div id="user" class="tab-pane fade in active">
+                <div class="col-lg-6">
+                  <form action="" role="form" id="js-form-user-update" method="post">
+                  {% csrf_token %}
+                    <div class="form-group">
+                      <p class="text-info lead">Информация о пользователе</p>
+                      <div class="col-lg-5">
+                        {{ user_form.email.label_tag }}
+                      </div>
+                      <div class="col-lg-7">
+                        {{ user_form.email }}
+                      </div>
+                      <div class="clearfix"></div>
+                        {{ user_form.email.errors }}
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">
+                        {{ user_form.last_name.label_tag }}
+                      </div>
+                      <div class="col-lg-7">
+                        {{ user_form.last_name }}
+                      </div>
+                      <div class="clearfix"></div>
+                        {{ user_form.last_name.errors }}
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">
+                        {{ user_form.first_name.label_tag }}
+                      </div>
+                      <div class="col-lg-7">
+                        {{ user_form.first_name }}
+                      </div>
+                      <div class="clearfix"></div>
+                        {{ user_form.first_name.errors }}
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">
+                        {{ user_form.patronymic.label_tag }}
+                      </div>
+                      <div class="col-lg-7">
+                        {{ user_form.patronymic }}
+                      </div>
+                      <div class="clearfix"></div>
+                        {{ user_form.patronymic.errors }}
+                    </div>
+                    <div class="form-group add-bottom">
+                      <div class="col-lg-5">
+                        {{ user_form.phone.label_tag }}
+                      </div>
+                      <div class="col-lg-7">
+                        {{ user_form.phone }}
+                      </div>
+                      <div class="clearfix"></div>
+                        {{ user_form.phone.errors }}
+                    </div>
+
+                    <div class="clearfix"></div>
+                    <button type="submit" class="btn btn-default">Сохранить изменения</button>
+                  </form>
+                </div>
+                <div class="col-lg-6">
+                  <p class="text-info lead">Смена пароля</p>
+                  {% include 'core/__includes/user_password_change_form.html' with user_id=object.id %}
+                </div>
+              </div>
+              <div id="moderator" class="tab-pane fade">
+                <div class="col-lg-6">
+                  <form action="{% url 'moderator:company' %}" role="form" id="js-form-moderator-update" method="post">
+                  {% csrf_token %}
+                    <div class="form-group">
+                      <p class="text-info lead">Информация об организации</p>
+                        {{ moderator_form.moderator }}
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">
+                        {{ moderator_form.city.label_tag }}
+                      </div>
+                      <div class="col-lg-7">
+                        {{ moderator_form.city }}
+                      </div>
+                      <div class="clearfix"></div>
+                        {{ moderator_form.city.errors }}
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">
+                        {{ moderator_form.company.label_tag }}
+                      </div>
+                      <div class="col-lg-7">
+                        {{ moderator_form.company }}
+                      </div>
+                      <div class="clearfix"></div>
+                        {{ moderator_form.company.errors }}
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">
+                        {{ moderator_form.leader.label_tag }}
+                      </div>
+                      <div class="col-lg-7">
+                        {{ moderator_form.leader }}
+                      </div>
+                      <div class="clearfix"></div>
+                        {{ moderator_form.leader.errors }}
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">
+                        {{ moderator_form.leader_function.label_tag }}
+                      </div>
+                      <div class="col-lg-7">
+                        {{ moderator_form.leader_function }}
+                      </div>
+                      <div class="clearfix"></div>
+                        {{ moderator_form.leader_function.errors }}
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">
+                        {{ moderator_form.work_basis.label_tag }}
+                      </div>
+                      <div class="col-lg-7">
+                        {{ moderator_form.work_basis }}
+                      </div>
+                      <div class="clearfix"></div>
+                        {{ moderator_form.work_basis.errors }}
+                    </div>
+                    <div class="clearfix"></div>
+                    <button type="submit" class="btn btn-default">Сохранить изменения</button>
+                  </form>
+                </div>
+              </div>
+              <div id="license" class="tab-pane fade">
+{#                <form action="{% url 'moderator:moderatorinfo' %}" role="form" id="js-form-moderatorinfo-update" method="post">#}
+{#                  {% csrf_token %}#}
+{#                  <div class="col-lg-6">#}
+{#                    <div class="form-group">#}
+{#                      <p class="text-info lead">Информация о лицензии</p>#}
+{#                      <p class="lead">Информационно-программный комплекс «Контроль рекламных поверхностей»</p>#}
+{#                    </div>#}
+{#                  {% for field in info_form %}#}
+{#                    <div class="form-group {% if field.name == 'moderator' %}hide{% endif %}">#}
+{#                      <div class="col-lg-5">#}
+{#                        {{ field.label_tag }}#}
+{#                      </div>#}
+{#                      <div class="col-lg-7">#}
+{#                        {{ field }}#}
+{#                      </div>#}
+{#                      <div class="clearfix"></div>#}
+{#                      {{ field.errors }}#}
+{#                    </div>#}
+{#                  {% endfor %}#}
+{#                    <button type="submit" class="btn btn-default">Сохранить изменения</button>#}
+{#                  </div>#}
+{#                </form>#}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

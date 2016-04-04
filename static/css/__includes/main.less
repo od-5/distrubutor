@@ -1,0 +1,169 @@
+html, body {
+  height: 100%;
+  width: 100%;
+}
+a, h2 {
+  -webkit-transition: color 0.5s ease;
+  -moz-transition: color 0.5s ease;
+  -ms-transition: color 0.5s ease;
+  -o-transition: color 0.5s ease;
+  transition: color 0.5s ease;
+}
+img {
+  -webkit-transition: opacity 0.5s ease;
+  -moz-transition: opacity 0.5s ease;
+  -ms-transition: opacity 0.5s ease;
+  -o-transition: opacity 0.5s ease;
+  transition: opacity 0.5s ease;
+}
+td {
+  &.incomingtask {
+    &-comment {
+      word-break: break-all;
+    }
+    &-contact {
+      word-break: break-all;
+    }
+  }
+}
+.btn, p, h2 {
+  -webkit-transition: background-color 0.5s ease;
+  -moz-transition: background-color 0.5s ease;
+  -ms-transition: background-color 0.5s ease;
+  -o-transition: background-color 0.5s ease;
+  transition: background-color 0.5s ease;
+}
+.remove-bottom {
+  margin-bottom: 0;
+}
+.content {
+  padding-bottom: 100px;
+  background-color: #fff;
+}
+
+#scrollup {
+  position: fixed;
+  opacity: 0.8;
+  padding: 15px 10px 10px;
+  background: #aaa;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  right: 10px;
+  bottom: 10px;
+  display: none;
+  cursor: pointer;
+}
+
+.pagination {
+  margin-bottom: 40px;
+}
+.bold {
+  font-weight: bold;
+}
+.add {
+  &-bottom {
+    margin-bottom: 20px;
+  }
+}
+//.search {
+//  &-form {
+//    display: none;
+//  }
+//}
+.client, .city {
+  &-search {
+    &-form {
+      margin: 20px 0;
+      select, input[type=text] {
+        width: 200px;
+        display: inline;
+      }
+      input {
+        display: inline;
+      }
+    }
+  }
+}
+.js {
+  &-show {
+    &-map {
+      cursor: pointer;
+    }
+  }
+  &-map {
+    display: none;
+  }
+}
+.signer {
+  &-input {
+    display: inline;
+    width: 42%;
+    margin-bottom: 10px;
+  }
+}
+img {
+  max-width: 100%;
+}
+
+.calendar {
+  th {
+    text-align: center;
+  }
+  td {
+    padding: 7px;
+    border: 1px solid #eee;
+    text-align: center;
+    &.filled {
+      background-color: blanchedalmond;
+    }
+  }
+}
+.js {
+  &-map {
+    &-task {
+      &-heading {
+        cursor: pointer;
+      }
+      &-body {
+        display: none;
+      }
+    }
+  }
+  &-calendar {
+    &-heading {
+      cursor: pointer;
+    }
+    &-body {
+      display: none;
+    }
+  }
+}
+.scroll {
+  thead {
+    position: relative;
+    display: block;
+    width: 100%;
+  }
+  tbody {
+    width: 100%;
+    display: block;
+    overflow-y: scroll;
+    max-height: 255px;
+  }
+  td:nth-child(1), th:nth-child(1) { width: 170px; }
+  td:nth-child(2), th:nth-child(2) { width: 200px }
+  td:nth-child(3), th:nth-child(3) { width: 200px; }
+  td:nth-child(4), th:nth-child(4) { width: 300px; }
+  td:nth-child(5), th:nth-child(5) { width: 200px; }
+  //td:nth-child(6), th:nth-child(6) { width: 120px; }
+}
+a.lead {
+  display: inline-block;
+}
+
+.remove {
+  &-padding {
+    padding: 0;
+  }
+}

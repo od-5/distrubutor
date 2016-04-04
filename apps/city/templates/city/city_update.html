@@ -1,0 +1,55 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      {% include 'city/__include/city_menu.html' %}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead text-center remove-bottom">
+            Редактирование {{ object }}
+          </p>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-lg-6">
+              <p class="text-info lead">Город</p>
+              <form action="" role="form" class="form-profile" id="js-city-form" method="post">
+                {% csrf_token %}
+                {% load widget_tweaks %}
+                <div class="form-group">
+                  <div class="col-lg-5">{{ form.name.label_tag }}</div>
+                  <div class="col-lg-7">{{ form.name }}</div>
+                  {{ form.name.errors }}
+                  <div class="clearfix"></div>
+                </div>
+                <button type="submit" class="btn btn-default">Сохранить</button>
+              </form>
+            </div>
+            <div class="col-lg-6">
+              <p class="text-info lead">Модераторы</p>
+              {% for moderator in object.moderator_set.all %}
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>e-mail</th>
+                      <th>Название организации</th>
+                      <th>Руководитель</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{ moderator.moderator.email }}</td>
+                      <td>{{ moderator.company }}</td>
+                      <td>{{ moderator.leader }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              {% endfor %}
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

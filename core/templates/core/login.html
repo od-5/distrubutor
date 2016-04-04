@@ -1,0 +1,37 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block header %}
+{% endblock %}
+{% block content %}
+{% if error %}
+  <div class="text-center sign-error">
+    <p class="alert alert-warning">{{ error }}</p>
+  </div>
+  {% endif %}
+{% if user.is_authenticated %}
+  <div class="text-center">
+    <p class="alert alert-success">Вы уже авторизовались</p>
+    <a href="{% url 'logout' %}?next=/" class="btn btn-success">Выход</a>
+  </div>
+{% else %}
+  <div class="sign text-center">
+    <div class="sign-wrapper">
+      <div class="sign-wrapper-container">
+        <p class="sign-wrapper-container_text">Добро пожаловать в информационно программный комплекс</p>
+        <p class="sign-wrapper-container_title">"Листовки и плакаты "</p>
+        <p class="sign-wrapper-container_slogan">"Прозрачная схема взаимодействия - наше главное преимущество!"</p>
+        <form action="" role="form" method="post" id="js-sign-form" class="sign-form">{% csrf_token %}
+          <div class="form-group">
+            <label for="id_username">Введите ваш email</label>
+            <input type="email" name="username" id="id_username" class="form-control">
+          </div>
+          <div class="form-group add-bottom">
+            <label for="id_password">Введите пароль</label>
+            <input type="password" name="password" id="id_password" class="form-control">
+          </div>
+          <input type="submit" value="Войти" class="btn btn-danger">
+        </form>
+      </div>
+    </div>
+  </div>
+{% endif %}
+{% endblock %}

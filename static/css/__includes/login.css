@@ -1,0 +1,36 @@
+.sign {
+  display: table;
+  height: 100%;
+  width: 100%;
+  margin: 0 auto;
+}
+.sign label.error {
+  display: none !important;
+}
+.sign-error {
+  position: absolute;
+  width: 100%;
+}
+.sign-wrapper {
+  display: table-cell;
+  vertical-align: middle;
+}
+.sign-wrapper-container {
+  background-color: #fff;
+  margin: 0 auto;
+  width: 400px;
+  padding: 20px;
+  border-radius: 10px;
+  border: 10px solid #aeaeae;
+}
+.sign-wrapper-container_text {
+  font-weight: bold;
+}
+.sign-wrapper-container_title {
+  font-weight: bold;
+  font-size: 1.8em;
+}
+.sign-wrapper-container_slogan {
+  font-style: italic;
+  color: #d9534f;
+}
