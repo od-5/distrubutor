@@ -10,6 +10,7 @@
   <p>Вы вошли в систему как: {{ user.get_full_name|default:'' }} {{ user.email }}
     <a href="{% url 'logout' %}?next={% url 'landing:index' %}">Выход</a>
   </p>
+  <a href="{% url 'dashboard:index' %}">Рабочий стол</a>
 {% else %}
   <p>Для доступа к рабочему столу выполните вход в систему:
     <a href="{% url 'login' %}">Вход</a>

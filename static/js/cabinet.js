@@ -84,6 +84,12 @@ $(function() {
       email: {
         required: true
       }
+    },
+    messages: {
+      email: {
+        required: "Вы не указали e-mail. Значение этого поля будет использоваться для входа в систему",
+        email: "email должен иметь формат name@domain.com"
+      }
     }
   });
 
@@ -120,6 +126,14 @@ $(function() {
       password2: {
         required: true
       }
+    },
+    messages: {
+      last_name: "Пожалуйста укажите фамилию",
+      first_name: "Пожалуйста укажите имя",
+      email: {
+        required: "Вы не указали e-mail. Значение этого поля будет использоваться для входа в систему",
+        email: "email должен иметь формат name@domain.com"
+      }
     }
   });
   // валидация формы изменения пользователя
@@ -133,6 +147,14 @@ $(function() {
       },
       first_name: {
         required: true
+      }
+    },
+    messages: {
+      last_name: "Пожалуйста укажите фамилию",
+      first_name: "Пожалуйста укажите имя",
+      email: {
+        required: "Вы не указали e-mail. Значение этого поля будет использоваться для входа в систему",
+        email: "email должен иметь формат name@domain.com"
       }
     }
   });
@@ -169,6 +191,128 @@ $(function() {
     }
   });
 
+  // Валидация формы дбавления менеджера
+  $('#js-form-manager-add').validate({
+    rules: {
+      moderator: {
+        required: true
+      },
+      email: {
+        required: true
+      },
+      last_name: {
+        required: true
+      },
+      first_name: {
+        required: true
+      },
+      password1: {
+        required: true
+      },
+      password2: {
+        required: true
+      }
+    },
+    messages: {
+      last_name: "Пожалуйста укажите фамилию",
+      first_name: "Пожалуйста укажите имя",
+      email: {
+        required: "Вы не указали e-mail. Значение этого поля будет использоваться для входа в систему",
+        email: "email должен иметь формат name@domain.com"
+      }
+    }
+  });
+  // Валидация формы редактирования менеджера
+  $('#js-form-manager-update').validate({
+    rules: {
+      moderator: {
+        required: true
+      },
+      email: {
+        required: true,
+        email: true
+      },
+      last_name: {
+        required: true
+      },
+      first_name: {
+        required: true
+      }
+    },
+    messages: {
+      last_name: "Пожалуйста укажите фамилию",
+      first_name: "Пожалуйста укажите имя",
+      email: {
+        required: "Вы не указали e-mail. Значение этого поля будет использоваться для входа в систему",
+        email: "email должен иметь формат name@domain.com"
+      }
+    }
+  });
+
+  // Валидация формы добавления продажи
+  $('#js-form-sale-add').validate({
+    rules: {
+      moderator: {
+        required: true
+      },
+      email: {
+        required: true,
+        email: true
+      },
+      last_name: {
+        required: true
+      },
+      first_name: {
+        required: true
+      },
+      password1: {
+        required: true
+      },
+      password2: {
+        required: true
+      },
+      legal_name: {
+        required: true
+      },
+      city: {
+        required: true
+      }
+    },
+    messages: {
+      last_name: "Пожалуйста укажите фамилию",
+      first_name: "Пожалуйста укажите имя",
+      email: {
+        required: "Вы не указали e-mail. Значение этого поля будет использоваться для входа в систему",
+        email: "email должен иметь формат name@domain.com"
+      }
+    }
+  });
+
+  // Валидация формы редактирования продажи
+  $('#js-form-sale-update').validate({
+    rules: {
+      legal_name: {
+        required: true
+      },
+      city: {
+        required: true
+      },
+      manager: {
+        required: true
+      }
+    },
+    submitHandler: function(e) {
+      $('#js-form-sale-update').ajaxSubmit({
+          success: function(data){
+            if (data.success) {
+              $.notify('Изменения успешно сохранены', 'success');
+            } else {
+              $.notify('Произошла ошибка! Проверьте правильность введённых данных', 'error');
+            }
+          }
+      });
+    }
+  });
 
 
 
@@ -177,15 +321,6 @@ $(function() {
 
 
   // ДАЛЕЕ ИДЁТ СТАРЫЙ КОД!
-
-
-
-
-
-
-
-
-
   if ($('.js-area-list')) {
     $('.js-area-list').on('click', '.js-remove-item-btn', function(){
       console.log($(this).data('id'));
@@ -956,46 +1091,7 @@ $(function() {
     }
   });
 
-  // Валидация формы дбавления менеджера
-  $('#js-form-manager-add').validate({
-    rules: {
-      moderator: {
-        required: true
-      },
-      email: {
-        required: true
-      },
-      last_name: {
-        required: true
-      },
-      first_name: {
-        required: true
-      },
-      password1: {
-        required: true
-      },
-      password2: {
-        required: true
-      }
-    }
-  });
-  // Валидация формы редактирования менеджера
-  $('#js-form-manager-update').validate({
-    rules: {
-      moderator: {
-        required: true
-      },
-      email: {
-        required: true
-      },
-      last_name: {
-        required: true
-      },
-      first_name: {
-        required: true
-      }
-    }
-  });
+
 
 //  модальное окно переназначения менеджера в crm
   var reassign_manager_form = $('#js-reassign-manager-form');

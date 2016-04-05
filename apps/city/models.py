@@ -28,7 +28,7 @@ class City(models.Model):
         self.coord_y = float(pos[1])
         super(City, self).save()
 
-    name = models.CharField(max_length=100, verbose_name=u'Город')
+    name = models.CharField(max_length=100, verbose_name=u'Название')
     coord_x = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
     coord_y = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
 

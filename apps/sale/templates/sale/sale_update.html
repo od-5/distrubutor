@@ -1,0 +1,208 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <ol class="breadcrumb">
+        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+        <li><a href="{% url 'sale:list' %}">Список продаж</a></li>
+        <li class="active">Редактирование продажи</li>
+      </ol>
+{#      {% include 'sale/__include/sale_menu.html' %}#}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead text-center remove-bottom">
+            Редактирование {{ object }}
+          </p>
+        </div>
+        <div class="panel-body">
+          <div class="col-lg-12">
+            <ul class="nav nav-tabs">
+              <li class="active"><a data-toggle="tab" href="#user">Информация о пользователе</a></li>
+              <li><a data-toggle="tab" href="#sale">Информация об организации</a></li>
+            </ul>
+
+            <div class="tab-content">
+              <div id="user" class="tab-pane fade in active">
+                {% if error %}
+                  <div class="alert alert-danger">
+                    {{ error }}
+                  </div>
+                {%  endif %}
+                {% if success %}
+                  <div class="alert alert-success">
+                    {{ success }}
+                  </div>
+                {% endif %}
+                <div class="col-lg-6">
+                  <form action="" role="form" id="js-form-user-update" method="post">
+                    {% csrf_token %}
+                    <p class="lead text-center">ФИО представителя</p>
+                    {{ user_form.errors }}
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ user_form.email.label_tag }}</div>
+                      <div class="col-lg-7">{{ user_form.email }}</div>
+                      {{ user_form.email.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ user_form.last_name.label_tag }}</div>
+                      <div class="col-lg-7">{{ user_form.last_name }}</div>
+                      {{ user_form.last_name.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ user_form.first_name.label_tag }}</div>
+                      <div class="col-lg-7">{{ user_form.first_name }}</div>
+                      {{ user_form.first_name.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ user_form.patronymic.label_tag }}</div>
+                      <div class="col-lg-7">{{ user_form.patronymic }}</div>
+                      {{ user_form.patronymic.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ user_form.phone.label_tag }}</div>
+                      <div class="col-lg-7">{{ user_form.phone }}</div>
+                      {{ user_form.phone.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <button type="submit" class="btn btn-default">Сохранить</button>
+                  </form>
+                </div>
+                <div class="col-lg-6">
+                  <p class="text-info lead">Смена пароля</p>
+                  {% include 'core/__includes/user_password_change_form.html' with user_id=object.id %}
+                </div>
+              </div>
+              <div id="sale" class="tab-pane fade">
+                <div class="col-lg-6">
+                  <form action="{% url 'sale:sale_update' %}" id="js-form-sale-update" method="post" role="form">
+                    {% csrf_token %}
+                    <p class="lead text-center">Реквизиты организации</p>
+                    {{ sale_form.user }}
+                    {% if user.type == 1 %}
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ sale_form.moderator.label_tag }}</div>
+                      <div class="col-lg-7">{{ sale_form.moderator }}</div>
+                      {{ sale_form.moderator.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    {% else %}
+                      {{ sale_form.moderator }}
+                      {{ sale_form.moderator.errors }}
+                    {% endif %}
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ sale_form.city.label_tag }}</div>
+                      <div class="col-lg-7">{{ sale_form.city }}</div>
+                      {{ sale_form.city.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ sale_form.manager.label_tag }}</div>
+                      <div class="col-lg-7">{{ sale_form.manager }}</div>
+                      {{ sale_form.manager.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ sale_form.legal_name.label_tag }}</div>
+                      <div class="col-lg-7">{{ sale_form.legal_name }}</div>
+                      {{ sale_form.legal_name.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ sale_form.actual_name.label_tag }}</div>
+                      <div class="col-lg-7">{{ sale_form.actual_name }}</div>
+                      {{ sale_form.actual_name.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ sale_form.legal_address.label_tag }}</div>
+                      <div class="col-lg-7">{{ sale_form.legal_address }}</div>
+                      {{ sale_form.legal_address.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ sale_form.inn.label_tag }}</div>
+                      <div class="col-lg-7">{{ sale_form.inn }}</div>
+                      {{ sale_form.inn.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ sale_form.kpp.label_tag }}</div>
+                      <div class="col-lg-7">{{ sale_form.kpp }}</div>
+                      {{ sale_form.kpp.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ sale_form.ogrn.label_tag }}</div>
+                      <div class="col-lg-7">{{ sale_form.ogrn }}</div>
+                      {{ sale_form.ogrn.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ sale_form.bank.label_tag }}</div>
+                      <div class="col-lg-7">{{ sale_form.bank }}</div>
+                      {{ sale_form.bank.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ sale_form.bik.label_tag }}</div>
+                      <div class="col-lg-7">{{ sale_form.bik }}</div>
+                      {{ sale_form.bik.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ sale_form.account.label_tag }}</div>
+                      <div class="col-lg-7">{{ sale_form.account }}</div>
+                      {{ sale_form.account.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ sale_form.account_cor.label_tag }}</div>
+                      <div class="col-lg-7">{{ sale_form.account_cor }}</div>
+                      {{ sale_form.account_cor.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ sale_form.leader.label_tag }}</div>
+                      <div class="col-lg-7">{{ sale_form.leader }}</div>
+                      {{ sale_form.leader.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ sale_form.leader_function.label_tag }}</div>
+                      <div class="col-lg-7">{{ sale_form.leader_function }}</div>
+                      {{ sale_form.leader_function.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-5">{{ sale_form.work_basis.label_tag }}</div>
+                      <div class="col-lg-7">{{ sale_form.work_basis }}</div>
+                      {{ sale_form.work_basis.errors }}
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                      {% load widget_tweaks %}
+                      <h4>Преамбула к договору</h4>
+                      <p>
+                        "Название компании", именуемое в дальнейшем "Заказчик",<br>
+                        в лице
+                        {{ sale_form.signer_post_dec|attr:'placeholder:должность подписанта'|add_class:'signer-input' }}
+                        {{ sale_form.signer_name_dec|attr:'placeholder:имя подписанта'|add_class:'signer-input' }},
+                         действующего на основании
+                        {{ sale_form.signer_doc_dec|attr:'placeholder:действует на основании'|add_class:'signer-input' }}
+                      </p>
+                    </div>
+                    <button type="submit" class="btn btn-default">Сохранить</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
