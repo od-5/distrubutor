@@ -1,0 +1,103 @@
+{% extends 'cabinet_index.html' %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead remove-bottom text-center">Задачи по клиентам</p>
+        </div>
+        <div class="panel-body">
+          {% if error %}
+          <p class="alert alert-danger">
+            Продажа не может быть создана: клиент с таким email уже зарегистрирован в системе.
+          </p>
+          {% endif %}
+          <a href="{% url 'incoming:task-add' %}" class="btn btn-success add-bottom">
+            <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую задачу по клиенту
+          </a>
+          <form action="" method="GET" role="form" id="js-incomingtask-search-form" class="form-inline add-bottom">
+            <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
+            <input type="text" name="date_s" id="id_date_s" value="{{ r_date_s|default:'' }}" class="form-control input-sm" placeholder="Дата от">
+            <input type="text" name="date_e" id="id_date_e" value="{{ r_date_e|default:'' }}" class="form-control input-sm" placeholder="Дата до">
+            <select name="type"  class="form-control input-sm">
+              <option value="">Тип задачи</option>
+              <option value="0" {% if r_type == 0 %}selected="selected"{% endif %}>Назначена встреча</option>
+              <option value="1" {% if r_type == 1 %}selected="selected"{% endif %}>Назначен звонок</option>
+              <option value="2" {% if r_type == 2 %}selected="selected"{% endif %}>Продажа</option>
+              <option value="3" {% if r_type == 3 %}selected="selected"{% endif %}>Отказ</option>
+            </select>
+            <select name="status"  class="form-control input-sm">
+              <option value="">Статус</option>
+              <option value="0" {% if r_status == 0 %}selected="selected"{% endif %}>План</option>
+              <option value="1" {% if r_status == 1 %}selected="selected"{% endif %}>Сделано</option>
+            </select>
+            <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
+            {% if show_all %}
+              <a href="?all=0" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-calendar"></span> Показать задачи на сегодня</a>
+            {% else %}
+              <a href="?all=1" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-list-alt"></span> Показать все задачи</a>
+            {% endif %}
+          </form>
+          <table class="table table-hover" style="font-size: 12px;">
+            <thead>
+              <tr>
+                <th>Дата</th>
+                <th>Менеджер</th>
+                <th>Название клиента</th>
+                <th>Вид деятельности</th>
+                <th>Контактное лица</th>
+                <th>Тип задачи</th>
+                <th>Комментарий</th>
+                <th>Статус</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody class="js-list">
+            {% for object in object_list %}
+              <tr data-id="{{ object.id }}" data-name="{{ object.get_type_display }}" data-model="IncomingTask" id="id_IncomingTask_{{ object.id }}">
+{#                <td><a href="{% url 'incoming:task_update' object.id %}"> {{ object.name|default:'' }}</a></td>#}
+                <td>{{ object.date|default:'Не указано' }}</td>
+                <td>{{ object.manager|default:'Не указано' }}</td>
+                <td>{{ object.incomingclient.name|default:'Не указано' }}</td>
+                <td>{{ object.incomingclient.kind_of_activity|default:'Не указано' }}</td>
+                <td class="incomingtask-contact">
+                  {{ object.incomingclientcontact.name|default:'Не указано' }}<br>
+                  {{ object.incomingclientcontact.phone }}<br>
+                  {{ object.incomingclientcontact.email }}
+                </td>
+                <td><a href="{% url 'incoming:task-update' object.id %}"> {{ object.get_type_display|default:'' }}</a></td>
+                <td class="incomingtask-comment">{{ object.comment|linebreaksbr|default:'Не указано' }}</td>
+                <td>{{ object.get_status_display|default:'Не указано' }}</td>
+                <td>
+                  <a href="#js-change-incomingtask-modal" id="change-incomingtask-btn-{{ object.id }}" data-url="{% url 'incoming:get_incomingtask_info' %}" class="btn btn-info btn-sm js-change-incomingtask-btn">
+                    <span class="glyphicon glyphicon-edit"></span> назначить новую задачу
+                  </a>
+                </td>
+                <td>
+                  {% if user.type != 5 %}
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-IncomingTask-{{ object.id }}" class="btn btn-danger btn-sm js-ajax-remove-btn">
+                    <span class="glyphicon glyphicon-remove"></span> Удалить
+                  </a>
+                  {% endif %}
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="12">
+                  <p class="alert alert-info">Задач по клиентам не найдено</p>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          {% include '__includes/pagination.html' with page_obj=object_list%}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% include '__modal/js_ajax_remove_form.html' %}
+  {% include 'incoming/__modal/change_incomingtask_form.html' %}
+
+
+{% endblock %}

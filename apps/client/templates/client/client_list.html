@@ -1,0 +1,198 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <ol class="breadcrumb">
+        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+        <li class="active">Журнал клиентов</li>
+      </ol>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead remove-bottom text-center">Журнал клиентов</p>
+        </div>
+        <div class="panel-body">
+{#          <div>#}
+{#            <p><strong>Количество клиентов: {{ manager_client_count|default:'0' }}</strong></p>#}
+{#            <p><strong>Количество задач: {{ manager_task_count|default:'0' }}</strong></p>#}
+{#          </div>#}
+          <a href="{% url 'client:add' %}" class="btn btn-success add-bottom">
+            <span class="glyphicon glyphicon-plus-sign"></span> Добавить нового клиента
+          </a>
+          <form action="" method="GET" role="form" class="form-inline add-bottom">
+            <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
+            <input type="text" name="phone" value="{{ r_phone|default:'' }}" class="form-control input-sm" placeholder="телефон контактного лица">
+            <input type="text" name="contact" value="{{ r_contact|default:'' }}" class="form-control input-sm" placeholder="фамилия контактного лица">
+            <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
+          </form>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Название</th>
+                <th>Деятельность</th>
+                <th>Модератор</th>
+                <th>Менеджер</th>
+                <th>Город</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody class="js-list">
+            {% for object in object_list %}
+              <tr data-id="{{ object.id }}" data-name="{{ object.name }}" data-model="Client" id="id_Client_{{ object.id }}">
+                <td>
+                  <a href="{% url 'client:update' object.id %}"> {{ object.name|default:'' }}</a>
+                  <br>
+                  {% if user.type != 5 %}
+                  <a href="#js-new-incomingtask-modal" data-url="{# {% url 'incoming:get_incomingclient_info' %} #}" id="add-incomingtask-btn-{{ object.id }}" class="btn btn-success btn-sm js-new-incomingtask-btn">
+                    <span class="glyphicon glyphicon-plus-sign"></span> Назначить задачу
+                  </a>
+                  {% endif %}
+                </td>
+                <td>{{ object.kind_of_activity|default:'Не указано' }}</td>
+                <td>{{ object.moderator|default:'Не указано' }}</td>
+                <td data-manager-id="{{ object.manager.id }}" data-manager-name="{{ object.manager }}" data-url="{% url 'client:get_available_manager_list' %}">
+                  <span class="js-manager-name">{{ object.manager|default:'Не указано' }}</span>
+                {% if user.type == 5 %}
+                  {% if user.manager_user.leader %}
+                  <br>
+                  <a href="#reassign-manager" id="js-reassign-manager-{{ object.id }}" class="js-reassign-manager btn btn-warning btn-sm">
+                    <span class="glyphicon glyphicon-refresh"></span> переназначить
+                  </a>
+                  {% endif %}
+                {% endif %}
+                </td>
+                <td>{{ object.city|default:'Не указано' }}</td>
+                <td>
+                  {% if user.type != 5 %}
+                  <br>
+                  {% endif %}
+                  <a href="#client-contact" data-url="{% url 'client:get_contact_list' %}" data-client="{{ object.id }}" id="js-client-{{ object.id }}-button" class="btn btn-info btn-sm js-show-client-contact">
+                    <span class="glyphicon glyphicon-search"></span> Контактные лица
+                  </a>
+                </td>
+                <td>
+                  {% if user.type == 5 %}
+                  <a href="#js-new-incomingtask-modal" data-url="{# {% url 'incoming:get_incomingclient_info' %} #}" id="add-incomingtask-btn-{{ object.id }}" class="btn btn-success btn-sm js-new-incomingtask-btn">
+                    <span class="glyphicon glyphicon-plus-sign"></span> Назначить задачу
+                  </a>
+                  {% else %}
+                  <br>
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Client-{{ object.id }}" class="btn btn-danger btn-sm js-ajax-remove-btn">
+                    <span class="glyphicon glyphicon-remove"></span> Удалить
+                  </a>
+                  {% endif %}
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="7">
+                  <p class="alert alert-info">Клиентов не найдено</p>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          {% include '__includes/pagination.html' %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% include '__modal/js_ajax_remove_form.html' %}
+  {% include 'client/__modal/reassign_manager_form.html' %}
+{% endblock %}
+{% block footer %}
+  <div class="bottom-block" id="client-contact">
+    <p class="lead text-center remove-bottom">Контактные лица</p>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ФИО</th>
+          <th>Должность</th>
+          <th>Телефон</th>
+          <th>e-mail</th>
+        </tr>
+      </thead>
+      <tbody id="js-client-contact-list">
+      </tbody>
+    </table>
+  </div>
+  <div id="js-new-incomingtask-modal" class="incomingtask-modal">
+    <p class="lead text-center remove-bottom">Создание задачи</p>
+    <form action="{# {% url 'incoming:ajax-task-add' %} #}" method="get" id="js-incomingtask-modal-add-form" class="incomingtask-modal-add-form form-horizontal">
+      <input type="hidden" name="incomingclient" id="id_incomingclient_id" class="form-control">
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label class="control-label">Тип клиента</label>
+        </div>
+        <div class="col-lg-8">
+          <p class="form-control-static" id="id_incomingclient_type"></p>
+        </div>
+      </div>
+      {% if current_manager %}
+        <input type="hidden" name="manager" value="{{ current_manager.id|default:'' }}">
+      {% else %}
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label for="id_manager" class="control-label">Менеджер</label>
+        </div>
+        <div class="col-lg-8">
+          <select name="manager" id="id_manager" class="form-control">
+            <option value="">--------</option>
+            {% for manager in manager_list %}
+            <option value="{{ manager.id }}">{{ manager.user.get_full_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      {% endif %}
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label class="control-label">Название</label>
+        </div>
+        <div class="col-lg-8">
+          <p class="form-control-static" id="id_incomingclient_name"></p>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label for="id_incomingclient_contact" class="control-label">Контактное лицо</label>
+        </div>
+        <div class="col-lg-8">
+          <select name="incomingclient_contact" id="id_incomingclient_contact" class="form-control">
+            <option value="">----------</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label for="id_type" class="control-label">Тип задачи</label>
+        </div>
+        <div class="col-lg-8">
+          <select name="type" id="id_type" class="form-control">
+            <option value="0">Назначена встреча</option>
+            <option value="1">Назначен звонок</option>
+            <option value="2">Продажа</option>
+            <option value="3">Отказ</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label for="id_comment" class="control-label">Комментарий</label>
+        </div>
+        <div class="col-lg-8">
+          <textarea name="comment" id="id_comment" class="form-control"></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label for="id_date" class="control-label">Дата</label>
+        </div>
+        <div class="col-lg-8">
+          <input type="text" name="date" id="id_date" class="form-control">
+        </div>
+      </div>
+      <input type="submit" value="Создать" class="btn btn-default">
+    </form>
+  </div>
+{% endblock %}

@@ -24,12 +24,12 @@ INSTALLED_APPS = (
     'apps.manager',
     'apps.city',
     'apps.sale',
-    # 'apps.adjuster',
+    'apps.distributor',
+    'apps.client',
     # 'apps.adjustertask',
     # 'apps.surface',
     # 'apps.journal',
 
-    # 'apps.incoming',
     # 'apps.sign',
     'django_cleanup',
 )

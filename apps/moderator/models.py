@@ -13,12 +13,16 @@ class Moderator(models.Model):
         app_label = 'moderator'
 
     def __unicode__(self):
-        return self.company
+        if self.company:
+            return self.company
+        else:
+            return self.user.get_full_name()
 
-    moderator = models.OneToOneField(
+    user = models.OneToOneField(
         to=User,
         limit_choices_to={'type': 2},
-        verbose_name=u'Модератор'
+        verbose_name=u'Модератор',
+        related_name='moderator_user'
     )
     city = models.ManyToManyField(
         to=City,

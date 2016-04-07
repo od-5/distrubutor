@@ -1,0 +1,111 @@
+<div id="js-change-incomingtask-modal" class="incomingtask-modal">
+    <p class="lead text-center add-bottom incomingtask-modal-text">Редактирование задачи</p>
+    <p class="lead text-center add-bottom client-modal-add-text">Создание продажи</p>
+    <form action="{% url 'incoming:ajax-task-update' %}" method="get" id="js-incomingtask-modal-update-form" class="incomingtask-modal-update-form form-horizontal">
+      <input type="hidden" name="incomingclient" id="id_incomingclient" class="form-control">
+      <input type="hidden" name="manager" id="id_manager" class="form-control">
+      <input type="hidden" name="incomingtask" id="id_incomingtask" class="form-control">
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label class="control-label">Тип клиента</label>
+        </div>
+        <div class="col-lg-8">
+          <p class="form-control-static" id="id_incomingclient_type"></p>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label class="control-label">Название</label>
+        </div>
+        <div class="col-lg-8">
+          <p class="form-control-static" id="id_incomingclient_name"></p>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label for="id_incomingclient_contact" class="control-label">Контактное лицо</label>
+        </div>
+        <div class="col-lg-8">
+          <select name="incomingclient_contact" id="id_incomingclient_contact" class="form-control">
+            <option value="">----------</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label for="id_type" class="control-label">Тип задачи</label>
+        </div>
+        <div class="col-lg-8">
+          <select name="type" id="id_type" class="form-control">
+            <option value="0">Назначена встреча</option>
+            <option value="1">Назначен звонок</option>
+            <option value="2">Продажа</option>
+            <option value="3">Отказ</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label for="id_comment" class="control-label">Комментарий</label>
+        </div>
+        <div class="col-lg-8">
+          <textarea name="comment" id="id_comment" class="form-control"></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label for="id_date" class="control-label">Дата</label>
+        </div>
+        <div class="col-lg-8">
+          <input type="text" name="date" id="id_date" class="form-control">
+        </div>
+      </div>
+      <input type="submit" value="Создать" class="btn btn-default">
+      <button type="button" id="js-ajax-sale-add" class="btn btn-info">Продажа</button>
+    </form>
+
+    <form action="{% url 'incoming:ajax-client-add' %}" method="post" role="form" class="form-horizontal client-modal-add-form" id="js-ajax-client-add">
+      {% csrf_token %}
+      <input type="hidden" name="incomingclient" id="id_incomingclient" class="form-control">
+      <input type="hidden" name="manager" id="id_manager" class="form-control">
+      <input type="hidden" name="incomingtask" id="id_incomingtask" class="form-control">
+      <input type="hidden" name="incomingcontact" id="id_incomingcontact" class="form-control">
+      <input type="hidden" name="date" id="id_date" class="form-control">
+      <input type="hidden" name="comment" id="id_comment" class="form-control">
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label class="control-label">Тип клиента</label>
+        </div>
+        <div class="col-lg-8">
+          <p class="form-control-static" id="id_client_type">Здесь будет указан тип клиента</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label class="control-label">Наименование клиента</label>
+        </div>
+        <div class="col-lg-8">
+          <p class="form-control-static" id="id_client_name">Здесь будет указано наименование фирмы</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label for="id_email" class="control-label">e-mail</label>
+        </div>
+        <div class="col-lg-8">
+          <input type="text" name="email" id="id_email" class="form-control">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-4">
+          <label for="id_password" class="control-label">Введите пароль</label>
+        </div>
+        <div class="col-lg-8">
+          <input type="password" name="password" id="id_password" class="form-control">
+        </div>
+      </div>
+      <input type="submit" value="Создать продажу" class="btn btn-default">
+      <button type="button" id="js-back-to-incomingtask-modal-update-form" class="btn btn-info">Вернуться к задаче</button>
+    </form>
+
+  </div>

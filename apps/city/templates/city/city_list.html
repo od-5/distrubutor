@@ -37,7 +37,7 @@
               {% endfor %}
             </select>
             {% if user.type == 1 %}
-            <input type="text" name="moderator" value="{{ r_moderator|default:'' }}" class="form-control  input-sm" placeholder="модератор">
+            <input type="text" name="moderator" class="form-control input-sm" value="{{ r_moderator|default:'' }}" placeholder="e-mail">
             {% endif %}
             <button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span> Искать</button>
           </form>
@@ -47,6 +47,7 @@
               <thead>
                 <tr>
                   <th>Название</th>
+                  <th>{% if user.type == 1 %}Модераторы{% endif %}</th>
                   <th>&nbsp;</th>
                 </tr>
               </thead>
@@ -54,6 +55,13 @@
               {% for object in object_list %}
                 <tr data-id="{{ object.id }}" data-name="{{ object.name }}" data-model="City" id="id_City_{{ object.id }}">
                   <td><a href="{% url 'city:update' object.pk %}">{{ object.name|default:'' }}</a></td>
+                  <td>
+                  {% if user.type == 1 %}
+                    {% for moderator in object.moderator_set.all %}
+                      {{ moderator }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                  {% endif %}
+                  </td>
                   <td class="text-right">
                   {% if user.type == 1 %}
                     <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">

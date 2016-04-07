@@ -13,11 +13,11 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
 from apps.city.models import City
-from apps.sale.forms import SaleAddForm, SaleUpdateForm
+from .forms import SaleAddForm, SaleUpdateForm, SaleOrderForm, SaleMaketForm
 from apps.manager.models import Manager
 from apps.moderator.models import Moderator
 from core.forms import UserAddForm, UserUpdateForm
-from .models import Sale
+from .models import Sale, SaleOrder, SaleMaket
 
 __author__ = 'alexy'
 
@@ -29,7 +29,6 @@ def sale_add(request):
         user_form = UserAddForm(request.POST)
         sale_form = SaleAddForm(request.POST, user=user)
         if user_form.is_valid() and sale_form.is_valid():
-            print 'valid'
             new_user = user_form.save(commit=False)
             new_user.type = 3
             new_user.save()
@@ -38,7 +37,6 @@ def sale_add(request):
             sale.save()
             return HttpResponseRedirect(reverse('sale:update', args=(sale.id, )))
         else:
-            print 'invalid'
             context.update({
                 'error': u'Проверьте правильность ввода полей'
             })
@@ -62,12 +60,10 @@ def sale_view(request, pk):
         # sale_form = SaleAddForm(request.POST, user=user, instance=sale)
         # if user_form.is_valid() and sale_form.is_valid():
         if user_form.is_valid():
-            print 'valid'
             context.update({
                 'success': u'Изменения успешно сохранены'
             })
         else:
-            print 'invalid'
             context.update({
                 'error': u'Проверьте правильность ввода полей'
             })
@@ -100,124 +96,40 @@ def sale_update(request):
                 'success': True
             }
         else:
-            print form
             return {
                 'error': True
             }
     return {
         'error': True
     }
-# def client_update(request, pk):
-#     context = {}
-#     client = Client.objects.get(pk=int(pk))
-#     user = client.user
-#     success_msg = u''
-#     error_msg = u''
-#     if request.method == 'POST':
-#         password1 = request.POST.get('password1')
-#         password2 = request.POST.get('password2')
-#         if password1 and password2:
-#             if password1 == password2:
-#                 user.set_password(password1)
-#                 success_msg = u'Пароль успешно изменён!'
-#             else:
-#                 error_msg = u'Пароль и подтверждение пароля не совпадают!'
-#         user_form = UserUpdateForm(request.POST, instance=user)
-#         client_form = ClientUpdateForm(request.POST, request=request, instance=client)
-#         if user_form.is_valid() and client_form.is_valid():
-#             user_form.save()
-#             client_form.save()
-#             success_msg += u' Изменения успешно сохранены'
-#         else:
-#             error_msg = u'Проверьте правильность ввода полей!'
-#     else:
-#         user_form = UserUpdateForm(instance=user)
-#         client_form = ClientUpdateForm(request=request, instance=client)
-#     context.update({
-#         'success': success_msg,
-#         'error': error_msg,
-#         'user_form': user_form,
-#         'client_form': client_form,
-#         'object': client,
-#         'client': client,
-#     })
-#     return render(request, 'client/client_update.html', context)
-# def client_add(request):
-#     context = {}
-#     user = request.user
-#     if request.method == "POST":
-#         user_form = UserAddForm(request.POST)
-#         client_form = ClientAddForm(request.POST, request=request)
-#         if user_form.is_valid() and client_form.is_valid():
-#             user = user_form.save(commit=False)
-#             user.type = 3
-#             user.save()
-#             client = client_form.save(commit=False)
-#             client.user = user
-#             client.save()
-#             try:
-#                 subject = u'Создана учётная запись nadomofone.ru'
-#                 message = u'Для вас создана учётная запись на сайте http://nadomofone.ru\n email: %s, \n пароль: %s' % (request.POST.get('email'), request.POST.get('password1'))
-#                 email = request.POST.get('email')
-#                 send_mail(
-#                     subject,
-#                     message,
-#                     settings.DEFAULT_FROM_EMAIL,
-#                     [email, ]
-#                 )
-#             except:
-#                 pass
-#             return HttpResponseRedirect(reverse('client:change', args=(client.id,)))
-#         else:
-#             context.update({
-#                 'error': u'Проверьте правильность ввода полей'
-#             })
-#     else:
-#         legal_name = ''
-#         if request.GET.get('id'):
-#             legal_name = IncomingClient.objects.get(id=int(request.GET.get('id'))).name
-#         user_form = UserAddForm()
-#         client_form = ClientAddForm(request=request, initial={'legal_name': legal_name})
-#     if user.type == 2:
-#         client_form.fields['manager'].queryset = Manager.objects.filter(moderator=user)
-#     elif user.type == 5 and user.is_leader_manager():
-#         manager = Manager.objects.get(user=user)
-#         client_form.fields['manager'].queryset = Manager.objects.filter(moderator=manager.moderator)
-#     context.update({
-#         'user_form': user_form,
-#         'client_form': client_form
-#     })
-#     return render(request, 'client/client_add.html', context)
 
 
-class ClientListView(ListView):
+class SaleListView(ListView):
     model = Sale
     paginate_by = 25
-    #
-    # def get_queryset(self):
-    #     # todo: менеджер(user.type=5) должен видеть список только своих клиентов
-    #     user = self.request.user
-    #     if user.type == 1:
-    #         qs = Client.objects.all()
-    #     elif user.type == 2:
-    #         qs = Client.objects.filter(city__moderator=user)
-    #     elif user.type == 5:
-    #         manager = Manager.objects.get(user=user)
-    #         if user.is_leader_manager():
-    #             qs = Client.objects.filter(city__moderator=manager.moderator)
-    #         else:
-    #             qs = Client.objects.filter(manager=manager)
-    #     else:
-    #         qs = None
-    #     if self.request.GET.get('email'):
-    #         qs = qs.filter(user__email=self.request.GET.get('email'))
-    #     if self.request.GET.get('legal_name'):
-    #         qs = qs.filter(legal_name=self.request.GET.get('legal_name'))
-    #     if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
-    #         qs = qs.filter(city__id=int(self.request.GET.get('city')))
-    #     if self.request.GET.get('manager'):
-    #         qs = qs.filter(manager__id=int(self.request.GET.get('manager')))
-    #     return qs
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.type == 1:
+            qs = Sale.objects.all()
+        elif user.type == 2:
+            qs = Sale.objects.filter(moderator=user.moderator_user)
+        elif user.type == 5:
+            if user.manager_user.leader:
+                qs = Sale.objects.filter(moderator=user.manager_user.moderator.moderator_user)
+            else:
+                qs = Sale.objects.filter(manager=user.manager_user)
+        else:
+            qs = None
+        # if self.request.GET.get('email'):
+        #     qs = qs.filter(user__email=self.request.GET.get('email'))
+        # if self.request.GET.get('legal_name'):
+        #     qs = qs.filter(legal_name=self.request.GET.get('legal_name'))
+        # if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
+        #     qs = qs.filter(city__id=int(self.request.GET.get('city')))
+        # if self.request.GET.get('manager'):
+        #     qs = qs.filter(manager__id=int(self.request.GET.get('manager')))
+        return qs
     #
     # def get_context_data(self, **kwargs):
     #     context = super(ClientListView, self).get_context_data(**kwargs)
@@ -258,92 +170,132 @@ class ClientListView(ListView):
     #     return context
 
 
-# def client_maket(request, pk):
-#     context = {}
-#     client = Client.objects.get(pk=int(pk))
-#     success_msg = u''
-#     error_msg = u''
-#     client_maket_form = ClientMaketForm(
-#         initial={
-#             'client': client
-#         }
-#     )
-#     maket_list_qs = client.clientmaket_set.all()
-#     paginator = Paginator(maket_list_qs, 25)
-#     page = request.GET.get('page')
-#     try:
-#         maket_list = paginator.page(page)
-#     except PageNotAnInteger:
-#         maket_list = paginator.page(1)
-#     except EmptyPage:
-#         maket_list = paginator.page(paginator.num_pages)
-#     context.update({
-#         'success': success_msg,
-#         'error': error_msg,
-#         'client_maket_form': client_maket_form,
-#         'object': client,
-#         'client': client,
-#         'maket_list': maket_list
-#     })
-#     return render(request, 'client/client_maket.html', context)
-#
-#
-# def client_maket_update(request, pk):
-#     context = {}
-#     maket = ClientMaket.objects.get(pk=int(pk))
-#     success_msg = u''
-#     error_msg = u''
-#     if request.method == 'POST':
-#         form = ClientMaketForm(request.POST, request.FILES, instance=maket)
-#         if form.is_valid():
-#             form.save()
-#             return HttpResponseRedirect(reverse('client:maket', args=(maket.client.id,)))
-#     else:
-#         form = ClientMaketForm(instance=maket, initial={
-#             'file': maket.file
-#         })
-#     context.update({
-#         'success': success_msg,
-#         'error': error_msg,
-#         'client_maket_form': form,
-#         'object': maket,
-#         'client': maket.client
-#     })
-#     return render(request, 'client/client_maket_update.html', context)
-#
-#
-# def client_order(request, pk):
-#     context = {}
-#     client = Client.objects.get(pk=int(pk))
-#     success_msg = u''
-#     error_msg = u''
-#     order_list_qs = client.clientorder_set.all()
-#     paginator = Paginator(order_list_qs, 25)
-#     page = request.GET.get('page')
-#     try:
-#         order_list = paginator.page(page)
-#     except PageNotAnInteger:
-#         order_list = paginator.page(1)
-#     except EmptyPage:
-#         order_list = paginator.page(paginator.num_pages)
-#     if request.method == 'POST':
-#         form = ClientOrderForm(request.POST)
-#         if form.is_valid():
-#             order = form.save()
-#             return HttpResponseRedirect(reverse('client:order-update', args=(order.id,)))
-#     else:
-#         form = ClientOrderForm(initial={
-#             'client': client
-#         })
-#     context.update({
-#         'success': success_msg,
-#         'error': error_msg,
-#         'client_order_form': form,
-#         'object': client,
-#         'client': client,
-#         'order_list': order_list
-#     })
-#     return render(request, 'client/client_order.html', context)
+def sale_order(request, pk):
+    context = {}
+    error = u''
+    sale = Sale.objects.get(pk=int(pk))
+    order_list_qs = sale.saleorder_set.all()
+    page = request.GET.get('page')
+    paginator = Paginator(order_list_qs, 25)
+    page = request.GET.get('page')
+    try:
+        order_list = paginator.page(page)
+    except PageNotAnInteger:
+        order_list = paginator.page(1)
+    except EmptyPage:
+        order_list = paginator.page(paginator.num_pages)
+    if request.method == 'POST':
+        form = SaleOrderForm(request.POST)
+        if form.is_valid():
+            order = form.save()
+            return HttpResponseRedirect(reverse('sale:order-update', args=(order.id,)))
+        else:
+            context.update({
+                'error': u'Проверьте правильность ввода полей'
+            })
+    else:
+        form = SaleOrderForm(initial={
+            'sale': sale
+        })
+    context.update({
+        'error': error,
+        'form': form,
+        'object': sale,
+        'order_list': order_list
+    })
+    return render(request, 'sale/sale_order.html', context)
+
+
+def sale_order_update(request, pk):
+    context = {}
+    order = SaleOrder.objects.get(pk=int(pk))
+    sale = order.sale
+    if request.method == 'POST':
+        form = SaleOrderForm(request.POST, instance=order)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('sale:order', args=(sale.id, )))
+        else:
+            print form
+            context.update({
+                'error': u'Проверьте правильность ввода полей'
+            })
+    else:
+        form = SaleOrderForm(instance=order)
+    context.update({
+        'form': form,
+        'object': order,
+    })
+    return render(request, 'sale/sale_order_update.html', context)
+
+
+def sale_maket(request, pk):
+    context = {}
+    sale = Sale.objects.get(pk=int(pk))
+    success = u''
+    error = u''
+    if request.method == 'POST':
+        form = SaleMaketForm(request.POST, request.FILES)
+        if form.is_valid():
+            print 'valid'
+            form.save()
+            context.update({
+                'success': u'Макет клиента успешно добавлен'
+            })
+            form = SaleMaketForm(initial={'sale': sale})
+        else:
+            print 'invalid'
+            print form
+            context.update({
+                'error': u'Проверьте правильность ввода полей'
+            })
+    else:
+        form = SaleMaketForm(
+            initial={
+                'sale': sale
+            }
+        )
+    maket_list_qs = sale.salemaket_set.all()
+    paginator = Paginator(maket_list_qs, 25)
+    page = request.GET.get('page')
+    try:
+        maket_list = paginator.page(page)
+    except PageNotAnInteger:
+        maket_list = paginator.page(1)
+    except EmptyPage:
+        maket_list = paginator.page(paginator.num_pages)
+    context.update({
+        'success': success,
+        'error': error,
+        'form': form,
+        'object': sale,
+        'maket_list': maket_list
+    })
+    return render(request, 'sale/sale_maket.html', context)
+
+
+def sale_maket_update(request, pk):
+    context = {}
+    maket = SaleMaket.objects.get(pk=int(pk))
+    success_msg = u''
+    error_msg = u''
+    if request.method == 'POST':
+        form = SaleMaketForm(request.POST, request.FILES, instance=maket)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('sale:maket', args=(maket.sale.id,)))
+    else:
+        form = SaleMaketForm(instance=maket, initial={
+            'file': maket.file
+        })
+    context.update({
+        'success': success_msg,
+        'error': error_msg,
+        'form': form,
+        'object': maket,
+    })
+    return render(request, 'sale/sale_maket_update.html', context)
+
 #
 #
 # def client_order_update(request, pk):

@@ -1,23 +1,24 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
 from .models import Sale
-from .views import ClientListView
+from .views import SaleListView
 
 __author__ = 'alexy'
 
 urlpatterns = patterns(
     'apps.sale.views',
-    url(r'^$', ClientListView.as_view(), name='list'),
+    url(r'^$', SaleListView.as_view(), name='list'),
     url(r'^add/$', 'sale_add', name='add'),
     url(r'^(?P<pk>\d+)/$', 'sale_view', name='update'),
     url(r'^update/$', 'sale_update', name='sale_update'),
+
     #
-    # url(r'^(?P<pk>\d+)/maket/$', 'client_maket', name='maket'),
+    url(r'^(?P<pk>\d+)/maket/$', 'sale_maket', name='maket'),
     # url(r'^maket/add/$', 'client_maket_add', name='maket-add'),
-    # url(r'^maket/(?P<pk>\d+)/$', 'client_maket_update', name='maket-update'),
+    url(r'^maket/(?P<pk>\d+)/$', 'sale_maket_update', name='maket-update'),
     #
-    # url(r'^(?P<pk>\d+)/order/$', 'client_order', name='order'),
-    # url(r'^order/(?P<pk>\d+)/$', 'client_order_update', name='order-update'),
+    url(r'^(?P<pk>\d+)/order/$', 'sale_order', name='order'),
+    url(r'^order/(?P<pk>\d+)/$', 'sale_order_update', name='order-update'),
     # url(r'^order/(?P<pk>\d+)/export/$', 'client_order_export', name='order-export'),
     #
     # url(r'^(?P<pk>\d+)/journal/$', 'client_journal', name='journal'),

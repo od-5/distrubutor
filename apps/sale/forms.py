@@ -1,9 +1,6 @@
 # coding=utf-8
 from django import forms
-from apps.city.models import City
-from .models import Sale
-from apps.manager.models import Manager
-from core.models import User
+from .models import Sale, SaleOrder, SaleMaket
 
 __author__ = 'alexy'
 
@@ -39,22 +36,16 @@ class SaleAddForm(forms.ModelForm):
         user = kwargs.pop("user")
         super(SaleAddForm, self).__init__(*args, **kwargs)
         if user.type == 2:
-            self.fields['city'].queryset = user.moderator.city.all()
+            self.fields['city'].queryset = user.moderator_user.city.all()
             self.fields['manager'].queryset = user.manager_set.all()
-            self.fields['moderator'].initial = user.moderator
+            self.fields['moderator'].initial = user.moderator_user
             self.fields['moderator'].widget = forms.HiddenInput()
         elif user.type == 5:
-            self.fields['city'].queryset = user.manager_user.moderator.moderator.city.all()
+            self.fields['city'].queryset = user.manager_user.moderator.moderator_user.city.all()
             self.fields['manager'].queryset = user.manager_user.moderator.manager_set.all()
-            self.fields['moderator'].initial = user.manager_user.moderator.moderator
+            self.fields['manager'].initial = user.manager_user
+            self.fields['moderator'].initial = user.manager_user.moderator.moderator_user
             self.fields['moderator'].widget = forms.HiddenInput()
-
-        # if self.request.user:
-        #     if self.request.user.type == 2:
-        #         self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
-        #     elif self.request.user.type == 5 and self.request.user.is_leader_manager():
-        #         manager = Manager.objects.get(user=self.request.user)
-        #         self.fields['city'].queryset = City.objects.filter(moderator=manager.moderator)
 
 
 class SaleUpdateForm(forms.ModelForm):
@@ -88,61 +79,37 @@ class SaleUpdateForm(forms.ModelForm):
         user = kwargs.pop("user")
         super(SaleUpdateForm, self).__init__(*args, **kwargs)
         if user.type == 2:
-            self.fields['city'].queryset = user.moderator.city.all()
+            self.fields['city'].queryset = user.moderator_user.city.all()
             self.fields['manager'].queryset = user.manager_set.all()
             self.fields['moderator'].widget = forms.HiddenInput()
         elif user.type == 5:
-            self.fields['city'].queryset = user.manager_user.moderator.moderator.city.all()
+            self.fields['city'].queryset = user.manager_user.moderator.moderator_user.city.all()
             self.fields['manager'].queryset = user.manager_user.moderator.manager_set.all()
             self.fields['moderator'].widget = forms.HiddenInput()
-    # def __init__(self, *args, **kwargs):
-    #     self.request = kwargs.pop("request")
-    #     super(SaleUpdateForm, self).__init__(*args, **kwargs)
-    #     if self.request.user:
-    #         if self.request.user.type == 2:
-    #             self.fields['city'].queryset = City.objects.filter(moderator=self.request.user)
-    #             self.fields['manager'].queryset = Manager.objects.filter(moderator=self.request.user)
-    #         elif self.request.user.type == 5 and self.request.user.is_leader_manager():
-    #             manager = Manager.objects.get(user=self.request.user)
-    #             self.fields['city'].queryset = City.objects.filter(moderator=manager.moderator)
-    #             self.fields['manager'].queryset = Manager.objects.filter(moderator=manager.moderator)
 
 
+class SaleOrderForm(forms.ModelForm):
+    class Meta:
+        model = SaleOrder
+        fields = '__all__'
+        widgets = {
+            'sale': forms.HiddenInput(attrs={'class': 'form-control'}),
+            'date_start': forms.DateInput(attrs={'class': 'form-control'}),
+            'date_end': forms.DateInput(attrs={'class': 'form-control'}),
+            'count': forms.NumberInput(attrs={'class': 'form-control'}),
+            'cost': forms.NumberInput(attrs={'class': 'form-control'}),
+            'add_cost': forms.NumberInput(attrs={'class': 'form-control'}),
+            'discount': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
 
-#
-#
-# class ClientMaketForm(forms.ModelForm):
-#     class Meta:
-#         model = ClientMaket
-#         fields = ('client', 'name', 'file', 'date')
-#         widgets = {
-#             'client': forms.HiddenInput(attrs={'class': 'form-control'}),
-#             'name': forms.TextInput(attrs={'class': 'form-control'}),
-#             'file': forms.ClearableFileInput(attrs={'class': 'form-control'}),
-#             'date': forms.DateInput(attrs={'class': 'form-control'}),
-#         }
-#
-#
-# class ClientOrderForm(forms.ModelForm):
-#     class Meta:
-#         model = ClientOrder
-#         fields = ('client', 'date_start', 'date_end')
-#         widgets = {
-#             'client': forms.HiddenInput(attrs={'class': 'form-control'}),
-#             'date_start': forms.DateInput(attrs={'class': 'form-control'}),
-#             'date_end': forms.DateInput(attrs={'class': 'form-control'}),
-#         }
-#
-#
-# class ClientJournalForm(forms.ModelForm):
-#     class Meta:
-#         model = ClientJournal
-#         fields = ('client', 'clientorder', 'cost', 'add_cost', 'discount')
-#         widgets = {
-#             'client': forms.HiddenInput(attrs={'class': 'form-control'}),
-#             'clientorder': forms.CheckboxSelectMultiple(),
-#             'cost': forms.TextInput(attrs={'class': 'form-control'}),
-#             'add_cost': forms.TextInput(attrs={'class': 'form-control'}),
-#             'discount': forms.TextInput(attrs={'class': 'form-control'}),
-#         }
-#
+
+class SaleMaketForm(forms.ModelForm):
+    class Meta:
+        model = SaleMaket
+        fields = ('sale', 'name', 'file', 'date')
+        widgets = {
+            'sale': forms.HiddenInput(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'file': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'date': forms.DateInput(attrs={'class': 'form-control'}),
+        }

@@ -1,0 +1,127 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      {% include 'sale/__include/sale_menu.html' %}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead text-center remove-bottom">
+            Добавить новый заказ для "{{ object.legal_name }}"
+          </p>
+        </div>
+        <div class="panel-body">
+          <form action="" id="js-form-sale-order" method="post" role="form" class="add-bottom">
+            {% csrf_token %}
+            <div class="form-group">
+            </div>
+            <div class="col-lg-6">
+              {{ form.sale }}
+              {{ form.sale.errors }}
+
+              <div class="form-group">
+                <div class="col-lg-5">{{ form.date_start.label_tag }}</div>
+                <div class="col-lg-7">{{ form.date_start }}</div>
+                {{ form.date_start.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">{{ form.date_end.label_tag }}</div>
+                <div class="col-lg-7">{{ form.date_end }}</div>
+                {{ form.date_end.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">{{ form.count.label_tag }}</div>
+                <div class="col-lg-7">{{ form.count }}</div>
+                {{ form.count.errors }}
+                <div class="clearfix"></div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+
+              <div class="form-group">
+                <div class="col-lg-5">{{ form.cost.label_tag }}</div>
+                <div class="col-lg-7">{{ form.cost }}</div>
+                {{ form.cost.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">{{ form.add_cost.label_tag }}</div>
+                <div class="col-lg-7">{{ form.add_cost }}</div>
+                {{ form.add_cost.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">{{ form.discount.label_tag }}</div>
+                <div class="col-lg-7">{{ form.discount }}</div>
+                {{ form.discount.errors }}
+                <div class="clearfix"></div>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="text-center">
+              <input type="submit" value="Создать заказ" class="btn btn-success">
+            </div>
+            <div class="clearfix"></div>
+          </form>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead text-center remove-bottom">
+            Заказы клиента "{{ object.legal_name }}"
+          </p>
+        </div>
+        <div class="panel-body">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Название</th>
+                <th>Дата начала</th>
+                <th>Дата окончания</th>
+                <th>Кол-во материалов</th>
+                <th>Стоимость 1 шт, руб</th>
+                <th>Наценка, %</th>
+                <th>Скидка, %</th>
+                <th>Итоговая стоимость, руб</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody class="js-list">
+            {% for order in order_list %}
+              <tr data-id="{{ order.id }}" data-name="{{ order }}" data-model="SaleOrder" id="id_SaleOrder_{{ order.id }}">
+                <td><a href="{% url 'sale:order-update' order.id %}">{{ order|default:'Не указано' }}</a></td>
+                <td>{{ order.date_start|default:'Не указано' }}</td>
+                <td>{{ order.date_end|default:'Не указано' }}</td>
+                <td>{{ order.count|default:'0' }}</td>
+                <td>{{ order.cost|default:'0' }}</td>
+                <td>{{ order.add_cost|default:'0' }}</td>
+                <td>{{ order.discount|default:'0' }}</td>
+                <td>{{ order.total_sum|default:'0' }}</td>
+{#                <td>#}
+{#                  <a href="{% url 'client:order-export' order.id %}" class="btn btn-success">#}
+{#                    <span class="glyphicon glyphicon-download-alt"></span> Скачать в EXCEL#}
+{#                  </a>#}
+{#                </td>#}
+                <td>
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-SaleOrder-{{ order.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
+                    <span class="glyphicon glyphicon-remove"></span> Удалить
+                  </a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+              <td colspan="9">
+                <p class="alert alert-info">Заказов не найдено</p>
+              </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          {% include '__includes/pagination.html' with page_obj=order_list %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% include '__modal/js_ajax_remove_form.html' %}
+{% endblock %}

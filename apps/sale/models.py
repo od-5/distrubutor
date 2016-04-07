@@ -1,4 +1,5 @@
 # coding=utf-8
+import datetime
 from django.db import models
 from apps.city.models import City
 from apps.moderator.models import Moderator
@@ -19,7 +20,6 @@ class Sale(models.Model):
         return self.legal_name
 
     user = models.OneToOneField(to=User, limit_choices_to={'type': 3}, verbose_name=u'Пользователь', related_name='sale_user')
-    #  todo: moderator - FK to user lomit_choices_to={'type':2}
     moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор', related_name='sale_moderator')
     city = models.ForeignKey(to=City, verbose_name=u'Город', related_name='sale_city')
     manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер', blank=True, null=True, related_name='sale_city')
@@ -40,124 +40,44 @@ class Sale(models.Model):
     leader_function = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Должность руководителя')
     work_basis = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Основание для работы')
 
-#
-# class ClientOrder(models.Model):
-#     class Meta:
-#         verbose_name = u'Заказ'
-#         verbose_name_plural = u'Заказы'
-#         app_label = 'client'
-#         ordering = ['-date_start', ]
-#
-#     def __unicode__(self):
-#         if self.date_end:
-#             return u'Заказ %s - %s ' % (self.date_start, self.date_end)
-#         else:
-#             return u'Заказ  %s - <дата окончания не указана> ' % self.date_start
-#
-#     def delete(self, *args, **kwargs):
-#         """
-#         При удалении заказа, для всех заказанных поверхностей автоматически устанавливется флаг "Поверхность свободна",
-#         т.е. доступна для заказа
-#         """
-#         release_date = datetime.datetime.utcnow().replace(tzinfo=utc) - datetime.timedelta(days=1)
-#         if self.clientordersurface_set.all():
-#             for c_surface in self.clientordersurface_set.all():
-#                 surface = Surface.objects.get(pk=c_surface.surface.id)
-#                 surface.free = True
-#                 surface.release_date = release_date.date()
-#                 surface.save()
-#         super(ClientOrder, self).delete()
-#
-#     def stand_count(self):
-#         if self.clientordersurface_set.all():
-#             total = 0
-#             for i in self.clientordersurface_set.all():
-#                 total += i.porch_count()
-#             return total
-#         else:
-#             return 0
-#
-#     client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
-#     date_start = models.DateField(verbose_name=u'Дата начала размещения')
-#     date_end = models.DateField(verbose_name=u'Дата окончания размещения')
-#     is_closed = models.BooleanField(verbose_name=u'Заказ закрыт', default=False)
-# #     todo: продумать флаг "Заказ закрыт"
-#
-#
-# class ClientOrderSurface(models.Model):
-#     class Meta:
-#         verbose_name = u'Пункт заказа'
-#         verbose_name_plural = u'Пункты заказа'
-#         app_label = 'client'
-#
-#     def __unicode__(self):
-#         return u'%s %s ' % (self.surface.street.name, self.surface.house_number)
-#
-#     def porch_count(self):
-#         if self.surface.porch_set.all():
-#             return self.surface.porch_set.all().count()
-#         else:
-#             return 0
-#
-#     def delete(self, *args, **kwargs):
-#         release_date = datetime.datetime.utcnow().replace(tzinfo=utc) - datetime.timedelta(days=1)
-#         surface = Surface.objects.get(pk=self.surface.id)
-#         surface.free = True
-#         surface.release_date = release_date.date()
-#         surface.save()
-#         super(ClientOrderSurface, self).delete()
-#
-#     clientorder = models.ForeignKey(to=ClientOrder, verbose_name=u'Заказ')
-#     surface = models.ForeignKey(to=Surface, verbose_name=u'Рекламная поверхность')
-#
-#
-# class ClientJournal(models.Model):
-#     class Meta:
-#         verbose_name = u'Покупка'
-#         verbose_name_plural = u'Покупки'
-#         app_label = 'client'
-#
-#     def __unicode__(self):
-#         return u'Покупка на дату %s' % self.created
-#
-#     def stand_count(self):
-#         stand_count = 0
-#         for clientorder in self.clientorder.all():
-#             stand_count += clientorder.stand_count()
-#         return stand_count
-#
-#     def total_cost(self):
-#         cost = self.cost
-#         if self.add_cost:
-#             add_cost = self.add_cost
-#         else:
-#             add_cost = 0
-#         if self.discount:
-#             discount = self.discount
-#         else:
-#             discount = 0
-#         sum = ((cost*(1+add_cost*0.01))*(1-discount*0.01)) * self.stand_count()
-#         return round(sum, 2)
-#
-#     client = models.ForeignKey(to=Client, verbose_name=u'клиент')
-#     clientorder = models.ManyToManyField(to=ClientOrder, verbose_name=u'заказ клиента')
-#     cost = models.PositiveIntegerField(verbose_name=u'Цена за стенд, руб')
-#     add_cost = models.PositiveIntegerField(verbose_name=u'Наценка, %', blank=True, null=True)
-#     discount = models.PositiveIntegerField(verbose_name=u'Скидка, %', blank=True, null=True)
-#     created = models.DateField(auto_now_add=True, verbose_name=u'Дата создания')
-#
-#
-# class ClientMaket(models.Model):
-#     class Meta:
-#         verbose_name = u'Макет'
-#         verbose_name_plural = u'Макеты'
-#         app_label = 'client'
-#         ordering = ['-date']
-#
-#     def __unicode__(self):
-#         return self.name
-#
-#     client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
-#     name = models.CharField(max_length=256, verbose_name=u'Название')
-#     file = models.FileField(verbose_name=u'Файл макета', upload_to=upload_to)
-#     date = models.DateField(verbose_name=u'Дата размещения макета')
+
+class SaleOrder(models.Model):
+    class Meta:
+        verbose_name = u'Заказ'
+        verbose_name_plural = u'Заказы'
+        app_label = 'sale'
+        ordering = ['-date_start', ]
+
+    def __unicode__(self):
+        if self.date_end:
+            return u'Заказ %s - %s ' % (self.date_start, self.date_end)
+        else:
+            return u'Заказ  %s - <дата окончания не указана> ' % self.date_start
+
+    def total_sum(self):
+        total = ((self.cost*(1+self.add_cost*0.01))*(1-self.discount*0.01)) * self.count
+        return round(total, 2)
+
+    sale = models.ForeignKey(to=Sale, verbose_name=u'Продажа')
+    date_start = models.DateField(verbose_name=u'Дата начала', default=datetime.date.today())
+    date_end = models.DateField(verbose_name=u'Дата окончания', blank=True, null=True)
+    count = models.PositiveIntegerField(verbose_name=u'Количество материала, шт')
+    cost = models.PositiveIntegerField(verbose_name=u'Стоимость за 1шт., руб')
+    add_cost = models.PositiveIntegerField(verbose_name=u'Наценка, %', default=0)
+    discount = models.PositiveIntegerField(verbose_name=u'Скидка, %', default=0)
+
+
+class SaleMaket(models.Model):
+    class Meta:
+        verbose_name = u'Макет'
+        verbose_name_plural = u'Макеты'
+        app_label = 'sale'
+        ordering = ['-date']
+
+    def __unicode__(self):
+        return self.name
+
+    sale = models.ForeignKey(to=Sale, verbose_name=u'Продажа')
+    name = models.CharField(max_length=256, verbose_name=u'Название')
+    file = models.FileField(verbose_name=u'Файл макета', upload_to=upload_to)
+    date = models.DateField(verbose_name=u'Дата размещения макета')

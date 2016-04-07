@@ -78,9 +78,9 @@ def moderator_view(request, pk):
     success_msg = u''
     error_msg = u''
     try:
-        moderator = Moderator.objects.get(moderator=user)
+        moderator = Moderator.objects.get(user=user)
     except:
-        moderator = Moderator(moderator=user)
+        moderator = Moderator(user=user)
         moderator.save()
     if request.method == 'POST':
         user_form = UserUpdateForm(request.POST, instance=user)
@@ -96,7 +96,8 @@ def moderator_view(request, pk):
         'user_form': user_form,
         'moderator_form': moderator_form,
         'success': success_msg,
-        'error': error_msg
+        'error': error_msg,
+        'object': moderator
     })
     return render(request, 'moderator/moderator_update.html', context)
 

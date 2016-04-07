@@ -13,21 +13,21 @@
         </div>
         <div class="panel-body">
           <div class="col-lg-12">
-              {% if error %}
-                <div class="alert alert-danger">
-                  {{ error }}
-                </div>
-              {%  endif %}
-              {% if success %}
-                <div class="alert alert-success">
-                  {{ success }}
-                </div>
-              {% endif %}
+            {% if error %}
+            <div class="alert alert-danger">
+              {{ error }}
+            </div>
+            {%  elif success %}
+              <div class="alert alert-success">
+                {{ success }}
+              </div>
+            {% endif %}
           </div>
           <div class="col-lg-6">
             <form action="" role="form" id="js-form-manager-update" method="post">
               {% csrf_token %}
-              <div class="form-group {% if user.type == 2 or user.type == 5  %}hide{% endif %}">
+              {{ u_form.user }}
+              <div class="form-group">
                 <div class="col-lg-5">
                   {{ m_form.moderator.label_tag }}
                 </div>
@@ -103,7 +103,7 @@
           </div>
           <div class="col-lg-6">
             <p class="text-info lead">Смена пароля</p>
-            {% include 'core/__includes/user_password_change_form.html' with user_id=object.id %}
+            {% include 'core/__includes/user_password_change_form.html' with user_id=object.user.id %}
           </div>
         </div>
       </div>

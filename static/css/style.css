@@ -6240,6 +6240,7 @@ a.lead {
 }
 body {
   background-color: #f1f1f1;
+  overflow-y: scroll;
 }
 .form-horizontal .control-label {
   text-align: left;

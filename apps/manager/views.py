@@ -99,14 +99,6 @@ def manager_update(request, pk):
     success_msg = u''
     error_msg = u''
     if request.method == 'POST':
-        password1 = request.POST.get('password1')
-        password2 = request.POST.get('password2')
-        if password1 and password2:
-            if password1 == password2:
-                user.set_password(password1)
-                success_msg = u'Пароль успешно изменён!'
-            else:
-                error_msg = u'Пароль и подтверждение пароля не совпадают!'
         u_form = UserUpdateForm(request.POST, instance=user)
         m_form = ManagerForm(request.POST, instance=manager)
         if u_form.is_valid() and m_form.is_valid():
