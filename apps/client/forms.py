@@ -101,5 +101,17 @@ class TaskForm(forms.ModelForm):
             'type': forms.Select(attrs={'class': 'form-control'}),
             'date': forms.DateInput(attrs={'class': 'form-control'}),
             'comment': forms.Textarea(attrs={'class': 'form-control', 'placeholder': u'Текст комментария к задаче'}),
-            'status': forms.Select(attrs={'class': 'form-control'})
+            'status': forms.HiddenInput(attrs={'class': 'form-control'})
         }
+
+    def __init__(self, *args, **kwargs):
+        # self.request = kwargs.pop("request")
+        user = kwargs.pop("user")
+        super(TaskForm, self).__init__(*args, **kwargs)
+        if user.type == 2:
+            self.fields['manager'].queryset = user.manager_set.all()
+            self.fields['client'].queryset = user.moderator_user.client_set.all()
+        elif user.type == 5:
+            self.fields['client'].queryset = user.manager_user.moderator.moderator_user.client_set.all()
+            self.fields['manager'].queryset = user.manager_user.moderator.manager_set.all()
+            self.fields['manager'].initial = user.manager_user

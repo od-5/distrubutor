@@ -92,19 +92,19 @@
           </a>
         </div>
         <div class="col-lg-2">
-          <a href="#" class="dashboard__link">
+          <a href="{% url 'client:add' %}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/incoming_add.png" alt="Добавить нового клиента" class="dashboard__link_icon">
             <span class="dashboard__link_text">Добавить нового клиента</span>
           </a>
         </div>
         <div class="col-lg-2">
-          <a href="#" class="dashboard__link">
+          <a href="{% url 'client:task-list' %}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/incoming_task_list.png" alt="Журнал задач по клиентам" class="dashboard__link_icon">
             <span class="dashboard__link_text">Журнал задач по клиентам</span>
           </a>
         </div>
         <div class="col-lg-2">
-          <a href="#" class="dashboard__link">
+          <a href="{% url 'client:task-add' %}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/incoming_task_add.png" alt="Добавить новую задачу по клиенту" class="dashboard__link_icon">
             <span class="dashboard__link_text">Добавить новую задачу по клиенту</span>
           </a>
@@ -120,13 +120,13 @@
       </div>
       <div class="panel-body">
         <div class="col-lg-4">
-          <a href="#" class="dashboard__link">
+          <a href="{% url 'sale:list' %}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/client_list.png" alt="Список продаж" class="dashboard__link_icon">
             <span class="dashboard__link_text">Список продаж</span>
           </a>
         </div>
         <div class="col-lg-4">
-          <a href="#" class="dashboard__link">
+          <a href="{% url 'sale:add' %}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/client_add.png" alt="Добавить новую продажу" class="dashboard__link_icon">
             <span class="dashboard__link_text">Добавить новую продажу</span>
           </a>
@@ -142,13 +142,13 @@
       </div>
       <div class="panel-body">
         <div class="col-lg-4">
-          <a href="#" class="dashboard__link">
+          <a href="{% url 'distributor:list' %}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/adjustertask_list.png" alt="Список задач" class="dashboard__link_icon">
             <span class="dashboard__link_text">Список задач</span>
           </a>
         </div>
         <div class="col-lg-4">
-          <a href="#" class="dashboard__link">
+          <a href="{% url 'distributor:add' %}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/adjustertask_add.png" alt="Добавить новую задачу" class="dashboard__link_icon">
             <span class="dashboard__link_text">Добавить <br> новую задачу</span>
           </a>

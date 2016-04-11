@@ -3,54 +3,114 @@
   <div class="container">
     <div class="col-lg-12">
       {% include 'city/__include/city_menu.html' %}
+      {% if user.type == 1 %}
       <div class="panel panel-default">
         <div class="panel-heading">
           <p class="lead text-center remove-bottom">
-            Редактирование {{ object }}
+            Город {{ object }}
           </p>
         </div>
         <div class="panel-body">
           <div class="row">
-            <div class="col-lg-6 add-bottom">
-              <p class="text-info lead">Город</p>
+            <div class="add-bottom">
               <form action="" role="form" class="form-profile" id="js-city-form" method="post">
                 {% csrf_token %}
                 {% load widget_tweaks %}
                 <div class="form-group">
-                  <div class="col-lg-5">{{ form.name.label_tag }}</div>
-                  <div class="col-lg-7">{{ form.name }}</div>
+                  <div class="col-lg-2">{{ form.name.label_tag }}</div>
+                  <div class="col-lg-3">{{ form.name }}</div>
                   {{ form.name.errors }}
+                  <div class="col-lg-7">
+                    <button type="submit" class="btn btn-success add-bottom">Сохранить</button>
+                  </div>
                   <div class="clearfix"></div>
                 </div>
-                <button type="submit" class="btn btn-default add-bottom">Сохранить</button>
               </form>
-            </div>
-            <div class="clearfix"></div>
-            <div class="col-lg-12">
-              <p class="text-info lead">Модераторы</p>
-              {% for moderator in object.moderator_set.all %}
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>e-mail</th>
-                      <th>Название организации</th>
-                      <th>Руководитель</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{{ moderator.moderator.email|default:'Не указано' }}</td>
-                      <td>{{ moderator.company|default:'Не указано' }}</td>
-                      <td>{{ moderator.leader|default:'Не указан' }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              {% endfor %}
             </div>
             <div class="clearfix"></div>
           </div>
         </div>
       </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead text-center remove-bottom">
+            Модераторы
+          </p>
+        </div>
+        <div class="panel-body">
+          {% for moderator in object.moderator_set.all %}
+          <table class="table">
+            <thead>
+              <tr>
+                <th>e-mail</th>
+                <th>Название организации</th>
+                <th>Руководитель</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <a href="{% url 'moderator:update' moderator.user.id %}"> {{ moderator.user.email|default:'' }}</a>
+                </td>
+                <td>{{ moderator.company|default:'Не указано' }}</td>
+                <td>{{ moderator.leader|default:'Не указан' }}</td>
+              </tr>
+            </tbody>
+          </table>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      {% if user.type == 2 %}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead text-center remove-bottom">Город {{ object.name|default:'Не указано' }}</p>
+        </div>
+        <div class="panel-body">
+          <p class="lead text-info text-center">Районы</p>
+          <form action="{% url 'moderator:area-add' %}" method="post" role="form" class="add-bottom">
+            {% csrf_token %}
+            {{ areaform.moderator }}
+            {{ areaform.city }}
+            <div class="col-lg-2">{{ areaform.name.label_tag }}</div>
+            <div class="col-lg-3">{{ areaform.name }}</div>
+            {{ areaform.name.errors }}
+            <div class="col-lg-7">
+              <button type="submit" class="btn btn-success add-bottom">Добавить район</button>
+            </div>
+            <div class="clearfix"></div>
+          </form>
+          <table class="table">
+            <tbody class="js-list">
+            {% for area in area_list %}
+              <tr data-id="{{ area.id }}" data-name="{{ area.name }}" data-model="ModeratorArea" id="id_ModeratorArea_{{ area.id }}">
+                <td>
+                  <a href="{% url 'moderator:area-update' area.id %}"> {{ area.name|default:'Не указано' }}</a>
+                </td>
+                <td class="text-right">
+                {% if user.type == 2 %}
+                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ area.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
+                    <span class="glyphicon glyphicon-remove"></span> Удалить
+                  </a>
+                {% endif %}
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="2">
+                  <p class="alert alert-info">
+                    Ещё не добавлено ни одного района
+                  </p>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% include '__modal/js_ajax_remove_form.html' %}
+      {% endif %}
     </div>
   </div>
 {% endblock %}

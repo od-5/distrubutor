@@ -1,7 +1,12 @@
-{% extends 'cabinet_index.html' %}
+{% extends 'cabinet/cabinet_base.html' %}
 {% block content %}
   <div class="container">
     <div class="col-lg-12">
+      <ol class="breadcrumb">
+        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+        <li><a href="{% url 'client:task-list' %}">Журнал задач по клиентам</a></li>
+        <li class="active">Редактирование задачи по клиенту</li>
+      </ol>
       <div class="panel panel-default">
         <div class="panel-heading">
           <p class="lead text-center remove-bottom">
@@ -9,26 +14,22 @@
           </p>
         </div>
         <div class="panel-body">
+          {% if success %}
+            <p class="alert alert-success">{{ success }}</p>
+          {% elif error %}
+            <p class="alert alert-danger">{{ error }}</p>
+          {% endif %}
           <div class="col-lg-6">
-            <form action="" role="form" id="js-form-incomingtask-update" method="post">
+            <form action="" role="form" id="js-form-task-update" method="post">
               {% csrf_token %}
             {% load  widget_tweaks %}
+              {{ form.errors }}
+              {{ form.client }}
+              {{ form.manager|add_class:'hide' }}
               <div class="form-group">
-                <div class="col-lg-5"> {{ form.incomingclient.label_tag }} </div>
-                <div class="col-lg-7"> {{ form.incomingclient|attr:'disabled:disabled' }} </div>
-                {{ form.incomingclient.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group {% if not user.is_leader_manager %}hide{% endif %}">
-                <div class="col-lg-5"> {{ form.manager.label_tag }} </div>
-                <div class="col-lg-7"> {{ form.manager|attr:'disabled:disabled' }} </div>
-                {{ form.manager.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5"> {{ form.incomingclientcontact.label_tag }} </div>
-                <div class="col-lg-7"> {{ form.incomingclientcontact }} </div>
-                {{ form.incomingclientcontact.errors }}
+                <div class="col-lg-5"> {{ form.clientcontact.label_tag }} </div>
+                <div class="col-lg-7"> {{ form.clientcontact }} </div>
+                {{ form.clientcontact.errors }}
                 <div class="clearfix"></div>
               </div>
 
@@ -50,14 +51,9 @@
                 {{ form.comment.errors }}
                 <div class="clearfix"></div>
               </div>
-              <div class="form-group">
-                <div class="col-lg-5"> {{ form.status.label_tag }} </div>
-                <div class="col-lg-7"> {{ form.status }} </div>
-                {{ form.status.errors }}
-                <div class="clearfix"></div>
-              </div>
+              {{ form.status }}
               <div class="text-center">
-                <button type="submit" class="btn btn-default">Сохранить</button>
+                <button type="submit" class="btn btn-success">Сохранить</button>
               </div>
             </form>
           </div>

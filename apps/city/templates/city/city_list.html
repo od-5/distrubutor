@@ -1,8 +1,5 @@
 {% extends 'cabinet/cabinet_base.html' %}
-{% block extra_js %}
-  <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
-  {% include 'city/__include/map.html' %}
-{% endblock %}
+
 {% block content %}
   <div class="container">
     <div class="col-lg-12">
@@ -32,7 +29,7 @@
           <form action="" method="GET" role="form" class="form-inline">
             <select name="city" id="city_filter" class="form-control input-sm">
               <option value="0">Город</option>
-              {% for city in city_list %}
+              {% for city in object_list %}
                 <option value="{{ city.id }}" {% if city.id == r_city %}selected="selected"{% endif %}>{{ city }}</option>
               {% endfor %}
             </select>
@@ -87,4 +84,8 @@
     </div>
   </div>
 {% include '__modal/js_ajax_remove_form.html' %}
+{% endblock %}
+{% block bottom_js %}
+<script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+{% include 'city/__include/map.html' %}
 {% endblock %}

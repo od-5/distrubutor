@@ -1,6 +1,7 @@
 # coding=utf-8
 import datetime
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django import forms
 import xlwt
 from datetime import date, datetime
 from annoying.decorators import ajax_request
@@ -83,9 +84,10 @@ class ClientListView(ListView):
         if user.type == 1:
             manager_qs = Manager.objects.all()
         elif user.type == 2:
-            manager_qs = Manager.objects.filter(moderator=user.moderator_user)
+            manager_qs = Manager.objects.filter(moderator=user)
         elif user.type == 5:
-            current_manager = Manager.objects.get(user=user)
+            current_manager = user.manager_user
+            print 'manager %s' % current_manager
             context.update({
                 'current_manager': current_manager
             })
@@ -225,168 +227,131 @@ def clientcontact_update(request, pk):
     }
     return render(request, 'client/clientcontact_update.html', context)
 
-#
-# def incomingtask_list(request):
-#     context = {}
-#     if request.GET.get('error') and int(request.GET.get('error')) == 1:
-#         context.update({
-#             'error': True
-#         })
-#
-#     user = request.user
-#     if user.type == 1:
-#         qs = IncomingTask.objects.all()
-#     elif user.type == 2:
-#         qs = IncomingTask.objects.filter(manager__moderator=user)
-#     elif user.type == 5:
-#         if user.is_leader_manager():
-#             manager = Manager.objects.get(user=user)
-#             qs = IncomingTask.objects.filter(manager__moderator=manager.moderator)
-#         else:
-#             qs = IncomingTask.objects.filter(manager__user=user)
-#     else:
-#         qs = None
-#
-#     r_name = request.GET.get('name')
-#     r_date_s = request.GET.get('date_s')
-#     r_date_e = request.GET.get('date_e')
-#     r_all = request.GET.get('all')
-#     r_type = request.GET.get('type')
-#     r_status = request.GET.get('status')
-#     if r_all and int(r_all) == 1:
-#         request.session['show_all_incomingtask'] = True
-#     elif r_all and int(r_all) == 0:
-#         request.session['show_all_incomingtask'] = False
-#     try:
-#         show_all = request.session['show_all_incomingtask']
-#     except:
-#         show_all = False
-#
-#     if not r_name and not r_date_s and not r_date_e and not show_all:
-#         qs = qs.filter(date=timezone.localtime(timezone.now()))
-#     else:
-#         if r_name:
-#             qs = qs.filter(incomingclient__name__icontains=r_name)
-#         if r_date_s:
-#             qs = qs.filter(date__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
-#         if r_date_e:
-#             qs = qs.filter(date__lte=datetime.strptime(r_date_e, '%d.%m.%Y'))
-#
-#     if r_type:
-#         qs = qs.filter(type=int(r_type))
-#         context.update({
-#             'r_type': True
-#         })
-#     if r_status:
-#         qs = qs.filter(status=int(r_status))
-#         context.update({
-#             'r_status': int(r_status)
-#         })
-#     if r_name:
-#         context.update({
-#             'r_name': r_name
-#         })
-#
-#     if r_date_s:
-#         context.update({
-#             'r_date_s': r_date_s
-#         })
-#     if r_date_e:
-#         context.update({
-#             'r_date_e': r_date_e
-#         })
-#     if show_all:
-#         context.update({
-#             'show_all': True
-#         })
-#     paginator = Paginator(qs, 25)
-#     page = request.GET.get('page')
-#     try:
-#         object_list = paginator.page(page)
-#     except PageNotAnInteger:
-#         object_list = paginator.page(1)
-#     except EmptyPage:
-#         object_list = paginator.page(paginator.num_pages)
-#     context.update({
-#         'object_list': object_list
-#     })
-#     return render(request, 'incoming/incomingtask_list.html', context)
-#
-# def incomingtask_add(request):
-#     context = {}
-#     initial = {}
-#     user = request.user
-#     if user.type == 1:
-#         manager_qs = Manager.objects.all()
-#         incomingclient_qs = IncomingClient.objects.all()
-#     elif user.type == 2:
-#         manager_qs = Manager.objects.filter(moderator=user)
-#         incomingclient_qs = IncomingClient.objects.filter(manager__moderator=user)
-#     elif user.type == 5:
-#         manager = Manager.objects.get(user=user)
-#         manager_qs = Manager.objects.filter(moderator=manager.moderator)
-#         if user.is_leader_manager():
-#             incomingclient_qs = IncomingClient.objects.filter(manager__moderator=manager.moderator)
-#         else:
-#             incomingclient_qs = IncomingClient.objects.filter(manager=manager)
-#             initial = {
-#                 'manager': manager
-#             }
-#     else:
-#         manager_qs = None
-#         incomingclient_qs = None
-#     if request.method == "POST":
-#         form = IncomingTaskForm(request.POST, initial=initial)
-#         if form.is_valid():
-#             instance = form.save(commit=False)
-#             instance.save()
-#             return HttpResponseRedirect(reverse('incoming:task-update', args=(instance.id,)))
-#         else:
-#             context.update({
-#                 'error': u'Проверьте правильность ввода полей'
-#             })
-#     else:
-#         form = IncomingTaskForm(initial=initial)
-#     form.fields['manager'].queryset = manager_qs
-#     form.fields['incomingclient'].queryset = incomingclient_qs
-#     context.update({
-#         'form': form,
-#     })
-#     return render(request, 'incoming/incomingtask_add.html', context)
-#
-#
-# def incomingtask_update(request, pk):
-#     context = {}
-#     object = IncomingTask.objects.get(pk=int(pk))
-#     success_msg = u''
-#     error_msg = u''
-#     user = request.user
-#     if user.type == 1:
-#         manager_qs = Manager.objects.all()
-#     elif user.type == 2:
-#         manager_qs = Manager.objects.filter(moderator=user)
-#     elif user.type == 5:
-#         manager = Manager.objects.get(user=user)
-#         manager_qs = Manager.objects.filter(moderator=manager.moderator)
-#     else:
-#         manager_qs = None
-#     if request.method == 'POST':
-#         form = IncomingTaskForm(request.POST, instance=object)
-#         if form.is_valid():
-#             form.save()
-#             success_msg = u' Изменения успешно сохранены'
-#         else:
-#             error_msg = u'Проверьте правильность ввода полей!'
-#     else:
-#         form = IncomingTaskForm(instance=object)
-#
-#     form.fields['manager'].queryset = manager_qs
-#     form.fields['incomingclientcontact'].queryset = object.incomingclient.incomingclientcontact_set.all()
-#
-#     context.update({
-#         'success': success_msg,
-#         'error': error_msg,
-#         'form': form,
-#         'object': object,
-#     })
-#     return render(request, 'incoming/incomingtask_update.html', context)
+
+def task_list(request):
+    context = {}
+    if request.GET.get('error') and int(request.GET.get('error')) == 1:
+        context.update({
+            'error': True
+        })
+    user = request.user
+    if user.type == 1:
+        qs = Task.objects.all()
+    elif user.type == 2:
+        qs = Task.objects.filter(manager__moderator=user)
+    elif user.type == 5:
+        if user.manager_user.leader:
+            qs = Task.objects.filter(manager__moderator=user.manager_user.moderator)
+        else:
+            qs = Task.objects.filter(manager=user.manager_user)
+    else:
+        qs = None
+    r_name = request.GET.get('name')
+    r_date_s = request.GET.get('date_s')
+    r_date_e = request.GET.get('date_e')
+    r_all = request.GET.get('all')
+    r_type = request.GET.get('type')
+    r_status = request.GET.get('status')
+    if r_all and int(r_all) == 1:
+        request.session['show_all_task'] = True
+    elif r_all and int(r_all) == 0:
+        request.session['show_all_task'] = False
+    try:
+        show_all = request.session['show_all_task']
+    except:
+        show_all = False
+
+    if not r_name and not r_date_s and not r_date_e and not show_all:
+        qs = qs.filter(date=timezone.localtime(timezone.now()))
+    else:
+        if r_name:
+            qs = qs.filter(client__name__icontains=r_name)
+        if r_date_s:
+            qs = qs.filter(date__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
+        if r_date_e:
+            qs = qs.filter(date__lte=datetime.strptime(r_date_e, '%d.%m.%Y'))
+
+    if r_type:
+        qs = qs.filter(type=int(r_type))
+        context.update({
+            'r_type': int(r_type)
+        })
+    if r_status:
+        qs = qs.filter(status=int(r_status))
+        context.update({
+            'r_status': int(r_status)
+        })
+    if r_name:
+        context.update({
+            'r_name': r_name
+        })
+    if r_date_s:
+        context.update({
+            'r_date_s': r_date_s
+        })
+    if r_date_e:
+        context.update({
+            'r_date_e': r_date_e
+        })
+    if show_all:
+        context.update({
+            'show_all': True
+        })
+    paginator = Paginator(qs, 25)
+    page = request.GET.get('page')
+    try:
+        object_list = paginator.page(page)
+    except PageNotAnInteger:
+        object_list = paginator.page(1)
+    except EmptyPage:
+        object_list = paginator.page(paginator.num_pages)
+    context.update({
+        'object_list': object_list
+    })
+    return render(request, 'client/task_list.html', context)
+
+
+def task_add(request):
+    context = {}
+    user = request.user
+    if request.method == "POST":
+        form = TaskForm(request.POST, user=user)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.save()
+            return HttpResponseRedirect(reverse('client:task-update', args=(instance.id,)))
+        else:
+            context.update({
+                'error': u'Проверьте правильность ввода полей'
+            })
+    else:
+        form = TaskForm(user=user)
+    context.update({
+        'form': form,
+    })
+    return render(request, 'client/task_add.html', context)
+
+
+def task_update(request, pk):
+    context = {}
+    object = Task.objects.get(pk=int(pk))
+    success_msg = u''
+    error_msg = u''
+    user = request.user
+    if request.method == 'POST':
+        form = TaskForm(request.POST, user=user, instance=object)
+        if form.is_valid():
+            form.save()
+            success_msg = u'Изменения успешно сохранены'
+        else:
+            error_msg = u'Проверьте правильность ввода полей!'
+    else:
+        form = TaskForm(user=user, instance=object)
+    form.fields['client'].widget = forms.HiddenInput()
+    context.update({
+        'success': success_msg,
+        'error': error_msg,
+        'form': form,
+        'object': object,
+    })
+    return render(request, 'client/task_update.html', context)

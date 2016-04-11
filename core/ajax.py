@@ -3,9 +3,11 @@ from annoying.decorators import ajax_request
 from django.shortcuts import get_object_or_404
 from core.models import User
 from apps.manager.models import Manager
-from apps.moderator.models import Moderator
+from apps.moderator.models import Moderator, ModeratorArea
+from apps.distributor.models import Distributor
 from apps.sale.models import Sale, SaleOrder, SaleMaket
 from apps.city.models import City
+from apps.client.models import Client, ClientContact, Task
 
 
 __author__ = 'alexy'
@@ -70,6 +72,10 @@ def ajax_remove_item(request):
             # client = Client.objects.get(id=int(request.GET.get('item_id')))
             # user = User.objects.get(pk=client.user.id)
             item = get_object_or_404(eval(model), pk=int(item_id))
+            if model == 'City':
+                if item.moderatorarea_set.all():
+                    for area in item.moderatorarea_set.all():
+                        area.delete()
             if model == 'Sale':
                 if item.saleorder_set.all():
                     for order in item.saleorder_set.all():
@@ -85,6 +91,14 @@ def ajax_remove_item(request):
             if model == 'Manager':
                 user = User.objects.get(pk=item.user.id)
                 user.delete()
+            if model == 'Distributor':
+                user = User.objects.get(pk=item.user.id)
+                user.delete()
+            if model == 'Client':
+                for contact in item.clientcontact_set.all():
+                    contact.delete()
+                for task in item.task_set.all():
+                    task.delete()
             # if model == 'Adjuster':
             #     user = User.objects.get(pk=item.user.id)
             #     user.delete()

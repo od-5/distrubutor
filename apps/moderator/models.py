@@ -53,3 +53,16 @@ class Moderator(models.Model):
         null=True
     )
 
+
+class ModeratorArea(models.Model):
+    class Meta:
+        verbose_name = u'Район'
+        verbose_name_plural = u'Районы'
+        app_label = 'moderator'
+
+    def __unicode__(self):
+        return self.name
+
+    city = models.ForeignKey(to=City, verbose_name=u'Город')
+    moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор')
+    name = models.CharField(max_length=100, verbose_name=u'Название')

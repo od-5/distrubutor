@@ -13,4 +13,7 @@ urlpatterns = patterns(
     url(r'^(?P<pk>\d+)/$', 'moderator_view', name='update'),
 
     url(r'^company/$', 'moderator_update', name='company'),
+
+    url(r'^area-add/$', 'area_add', name='area-add'),
+    url(r'^area/(?P<pk>\d+)/$', 'area_update', name='area-update'),
 )

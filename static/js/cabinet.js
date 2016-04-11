@@ -530,9 +530,250 @@ $(function() {
       }
     });
 
+  // CRM Валидация формы добавления задачи клиенту
+  $('#js-form-task-add').validate({
+    rules: {
+      manager: {
+        required: true
+      },
+      client: {
+        required: true
+      },
+      type: {
+        required: true
+      },
+      date: {
+        required: true
+      }
+    }
+  });
+  // CRM Валидация формы редактирования задачи по клиенту
+  $('#js-form-task-update').validate({
+    rules: {
+      manager: {
+        required: true
+      },
+      client: {
+        required: true
+      },
+      type: {
+        required: true
+      },
+      date: {
+        required: true
+      }
+    }
+  });
+
+  // CRM  модальное окно формы создания задачи по клиенту
+  $('.js-new-task-btn').fancybox({
+    beforeLoad: function () {
+      var item_id = '#' + this.element[0].id;
+      var item = $(item_id);
+      console.log(item.parents('tr').data('id'));
+      $.ajax({
+        type: "GET",
+        url: item.data('url'),
+        data: {
+          client: item.parents('tr').data('id')
+        }
+      }).done(function (data) {
+        console.log(data.id);
+        console.log(data.type);
+        console.log(data.name);
+        var form = $('#js-task-modal-add-form');
+        form.find('#id_client_type').text(data.type);
+        form.find('#id_client_name').text(data.name);
+        form.find('#id_client_id').val(data.id);
+        var contact_list = data.contact_list;
+        var contact_list_selector = form.find('#id_client_contact');
+        contact_list_selector.find('option').remove();
+        contact_list_selector.append($("<option value selected='selected'>---------</option>"));
+        for (var i = 0; i < contact_list.length; i++) {
+          contact_list_selector.append($("<option/>", {
+            value: contact_list[i]['id'],
+            text: contact_list[i]['name']
+          }));
+        }
+      });
+    }
+  });
+  $('#js-task-modal-add-form').ajaxForm({
+    success: function(data){
+      if (data.success) {
+        $.notify('Задача по клиенту добавлена', 'success');
+        $.fancybox.close();
+      }
+    }
+  });
+  // CRM  валидация модальной формы создания задачи
+  $('#js-task-modal-add-form').validate({
+    rules: {
+      manager: {
+        required: true
+      },
+      client: {
+        required: true
+      },
+      client_contact: {
+        required: true
+      },
+      type: {
+        required: true
+      },
+      date: {
+        required: true
+      }
+    }
+  });
+
+  // CRM валидация модальной формы редактирования задачи в журнале задач
+  var validator = $('#js-task-modal-update-form').validate({
+    rules: {
+      client_contact: {
+        required: true
+      },
+      type: {
+        required: true
+      },
+      date: {
+        required: true
+      }
+    }
+  });
+  // валидация формы редактирования задачи
+  var sale_modal_validator = $('#js-ajax-sale-add').validate({
+    rules: {
+      email: {
+        required: true
+      },
+      password: {
+        required: true
+      }
+    }
+  });
+
+  // CRM модальное окно формы редактирования задачи по клиенту
+  $('.js-change-task-btn').fancybox({
+    afterClose: function () {
+      validator.resetForm();
+      sale_modal_validator.resetForm();
+    },
+    beforeLoad: function () {
+      var item_id = '#' + this.element[0].id;
+      var item = $(item_id);
+      console.log(item);
+      console.log(item.parents('tr').data('id'));
+      $.ajax({
+        type: "GET",
+        url: item.data('url'),
+        data: {
+          task: item.parents('tr').data('id')
+        }
+      }).done(function (data) {
+        console.log('id задачи' + data.task_id);
+        console.log('id клиента' + data.client_id);
+        console.log('название клиента' + data.client_name);
+        console.log('тип клиента' + data.client_type);
+        console.log('id менеджера' + data.manager_id);
+        console.log('список контактных лиц' + data.contact_list);
+        var form = $('#js-task-modal-update-form');
+        form.find('#id_client_type').text(data.client_type);
+        form.find('#id_client_name').text(data.client_name);
+        form.find('#id_client').val(data.client_id);
+        form.find('#id_task').val(data.task_id);
+        form.find('#id_manager').val(data.manager_id);
+        var contact_list = data.contact_list;
+          var contact_list_selector = form.find('#id_client_contact');
+          contact_list_selector.find('option').remove();
+          contact_list_selector.append($("<option value>---------</option>"));
+          for (var i = 0; i < contact_list.length; i++) {
+            contact_list_selector.append($("<option/>", {
+              value: contact_list[i]['id'],
+              text: contact_list[i]['name']
+            }));
+          }
+      });
+    }
+  });
+  // ajax форма редактирования задачи
+  $('#js-task-modal-update-form').ajaxForm({
+    success: function(data){
+      if (data.success) {
+        $.notify('Задача по клиенту обновлена', 'success');
+        $.fancybox.close();
+        location.reload();
+      } else {
+        $.notify('Произошла ошибка', 'error');
+      }
+    }
+  });
+
+  // модальная форма создания продажи из задачи
+  $('#js-ajax-sale-btn').on('click', function(){
+    console.log('ПРОДАЖА!');
+    var form = $('#js-task-modal-update-form');
+    var manager = form.find('#id_manager').val();
+    console.log('manager: '+ manager);
+    var client = form.find('#id_client').val();
+    console.log('client: ' + client);
+    var comment = form.find('#id_comment').val();
+    console.log('comment: ' + comment);
+    var date = form.find('#id_date').val();
+    console.log('date: ' + date);
+    var contact = form.find('#id_client_contact').val();
+    console.log('contact: ' + contact);
+    var task = form.find('#id_task').val();
+    console.log('task: ' + task);
+    var client_type = form.find('#id_client_type').text();
+    console.log('client_type: ' + client_type);
+    var client_name = form.find('#id_client_name').text();
+    console.log('client_name: ' + client_name);
+
+    var c_form = $('#js-ajax-sale-add');
+    console.log(c_form);
+    c_form.find('#id_client').val(client);
+    c_form.find('#id_manager').val(manager);
+    c_form.find('#id_task').val(task);
+    c_form.find('#id_comment').val(comment);
+    c_form.find('#id_date').val(date);
+    c_form.find('#id_contact').val(contact);
+    c_form.find('#id_sale_name').text(client_name);
+    c_form.find('#id_client_type').text(client_type);
 
 
+    $('.sale-modal-add-form').toggle();
+    $('.task-modal-update-form').toggle();
+    $('.task-modal-text').toggle();
+    $('.sale-modal-add-text').toggle();
 
+  });
+  $('#js-back-to-task-modal-update-form').on('click', function(){
+    $('.sale-modal-add-form').toggle();
+    $('.task-modal-update-form').toggle();
+    $('.task-modal-text').toggle();
+    $('.sale-modal-add-text').toggle();
+  });
+
+  // Развернуть карту на странице со списком городов
+  $('.js-show-map').click(function(){
+    $('.js-map').slideToggle();
+  });
+
+  // валидация формы района города модератора
+  $('#js-form-moderatorarea').validate({
+    rules: {
+      city: {
+        required: true
+      },
+      moderator: {
+        required: true
+      },
+      name: {
+        required: true
+      }
+    }
+  });
 
 
 
@@ -548,296 +789,6 @@ $(function() {
 
 
   // ДАЛЕЕ ИДЁТ СТАРЫЙ КОД!
-  if ($('.js-area-list')) {
-    $('.js-area-list').on('click', '.js-remove-item-btn', function(){
-      console.log($(this).data('id'));
-      $('#js-modal-item-remove-id').val($(this).data('id'));
-      $('#js-modal-item-remove-name').text($(this).data('email'));
-    });
-  } else {
-    $('.js-remove-item-btn').click(function(){
-      console.log($(this).data('id'));
-      $('#js-modal-item-remove-id').val($(this).data('id'));
-      $('#js-modal-item-remove-name').text($(this).data('email'));
-    });
-  }
-
-  $('.js-remove-item-btn').fancybox({
-    afterClose: function () {
-      $('.js-modal-remove-item-form').resetForm();
-    }
-  });
-  $('.js-modal-remove-item-form input[type="reset"]').click(function(){
-    $.fancybox.close();
-  });
-  $('.js-modal-remove-item-form input[type="submit"]').click(function(){
-    $.fancybox.close();
-  });
-  $('.js-modal-remove-item-form').ajaxForm({
-    success: function(data){
-      if (data.success) {
-        $.notify('Объект был удалён', 'success');
-        console.log(data.success);
-        $('tr[data-id='+data.success+']').remove();
-      } else {
-        $.notify('Произошла ошибка. Объект не удалён', 'error');
-      }
-      $('.js-modal-remove-item-form').resetForm();
-    }
-  });
-
-
-
-
-  // валидация формы добавления клиента
-  $( '.js-form-client-add' ).validate({
-    rules: {
-      city: {
-        required: true
-      },
-      email: {
-        required: true
-      },
-      password1: {
-        required: true
-      },
-      password2: {
-        required: true
-      }
-    }
-  });
-  // валидация формы добавления монтажника
-  $( '.js-form-adjuster-add' ).validate({
-    rules: {
-      city: {
-        required: true
-      },
-      email: {
-        required: true
-      },
-      password1: {
-        required: true
-      },
-      password2: {
-        required: true
-      }
-    }
-  });
-  // валидация формы редактирования монтажника
-  $( '.js-form-adjuster-update' ).validate({
-    rules: {
-      city: {
-        required: true
-      },
-      email: {
-        required: true
-      }
-    }
-  });
-
-  $(".js-gallery").fancybox();
-
-//  фильтрация по городам на странице поверхностей
-  var get_url = '/'+location.href.split('/');
-  //$('header ul li a').each(function () {
-  //  if($(this).attr('href') == current_url) $(this).parent('li').addClass('active');
-  //});
-
-  //$('#client_city_filter').change(function(){
-  //  $('.client-search-form__city').val($(this).val());
-  //  $('.client-search-form').submit();
-  //});
-
-
-
-  //$('#house_number_filter').change(function(){
-  //  $('.search-form__house_number').val($(this).val())
-  //  console.log($(this).val());
-  //});
-
-
-  // валидация формы добвления поверхности
-  $( '#js-surface-add-form' ).validate({
-    rules: {
-      city: {
-        required: true
-      },
-      street: {
-        required: true
-      },
-      house_number: {
-        required: true
-      }
-    }
-  });
-
-  var surface_add_form = $('#js-surface-add-form');
-  var surface_city = surface_add_form.find('select#id_city');
-  var surface_street = surface_add_form.find('select#id_street');
-  surface_city.change(function(){
-    if($(this).val() == ''){
-      var city = 0
-    } else {
-      var city = $(this).val();
-    }
-
-    $.ajax({
-      type: "GET",
-      url: surface_add_form.data('ajax-url'),
-      data: {
-        city: city
-      }
-    }).done(function( msg ) {
-      var street_list = msg.street_list;
-      surface_street.find('option').remove();
-      surface_street.append($("<option value selected='selected'>---------</option>"));
-      for (var i = 0; i < street_list.length; i++) {
-        surface_street.append($("<option/>", {
-            value: street_list[i]['id'],
-            text: street_list[i]['name']
-        }));
-      }
-    });
-  });
-
-  $('.js-show-map').click(function(){
-    $('.js-map').slideToggle();
-  });
-  $('.js-calendar-heading').click(function(){
-    $('.js-calendar-body').slideToggle();
-  });
-  $('.js-map-task-heading').click(function(){
-    $('.js-map-task-body').slideToggle();
-  });
-
-
-    // валидация формы добвления фотографии поверхности
-  $('#js-surface-photo-add-form').validate({
-    rules: {
-      porch: {
-        required: true
-      },
-      date: {
-        required: true
-      },
-      image: {
-        required: true
-      }
-    }
-  });
-
-    // валидация формы изменения фотографии поверхности
-  $('#js-surface-photo-update-form').validate({
-    rules: {
-      porch: {
-        required: true
-      },
-      date: {
-        required: true
-      }
-    }
-  });
-
-
-  $('#cas_area').change(function(){
-    if ($(this).val() != 0){
-      $.ajax({
-        type: "GET",
-        url: $(this).data('ajax-url'),
-        data: {
-          area: $(this).val(),
-          client: $('#hidden_client').val()
-        }
-      }).done(function( data ) {
-        if (data.surface_list) {
-          var surface_list = data.surface_list;
-          $('.js-surface-list tr.result').remove();
-          var surface_table = $('.js-surface-list thead');
-          for (var i = 0; i < surface_list.length; i++){
-            surface_table.append(
-              '<tr class="result">'+
-              '<td><input type="checkbox" name="chk_group[]" value="' +surface_list[i]['id'] +'"></td>'+
-              '<td>'+surface_list[i]['street']+'</td>'+
-              '<td>'+surface_list[i]['number']+'</td>'+
-              '</tr>'
-            )
-          }
-        }
-        //var street_list = msg.surfa;
-        //surface_street.find('option').remove();
-        //surface_street.append($("<option value selected='selected'>---------</option>"));
-        //for (var i = 0; i < street_list.length; i++) {
-        //  surface_street.append($("<option/>", {
-        //      value: street_list[i]['id'],
-        //      text: street_list[i]['name']
-        //  }));
-        //}
-      });
-    }
-
-  });
-  //удаление поверхности клиента
-  function removeClientSurface(){
-    $('.js-remove-client-surface').submit(function() {
-      $(this).ajaxSubmit({
-        success: function (data) {
-          if (data.success) {
-            $.notify('Поверхность удалена', 'success');
-          } else {
-            $.notify('Произошла ошибка!', 'error');
-          }
-        }
-      });
-      $(this).parents('tr').remove();
-      return false;
-    });
-  }
-  removeClientSurface();
- //валидация формы добвления поверхности к клиенту
-
-  $('#js-order-surface-add-form').validate({
-    rules: {
-      cos_client: {
-        required: true
-      },
-      cos_area: {
-        required: true
-      }
-    }
-  });
-
-  $('#id_cos_area').change(function(){
-    if ($(this).val() != 0){
-      $.ajax({
-        type: "GET",
-        url: $(this).data('ajax-url'),
-        data: {
-          order: $(this).data('client-order'),
-          area: $(this).val()
-        }
-      }).done(function( data ) {
-        if (data.surface_list) {
-          var surface_list = data.surface_list;
-          $('.js-surface-list tr.result').remove();
-          var surface_table = $('.js-surface-list thead');
-          for (var i = 0; i < surface_list.length; i++){
-            surface_table.append(
-              '<tr class="result">'+
-              '<td><input type="checkbox" name="chk_group[]" value="' +surface_list[i]['id'] +'"></td>'+
-              '<td>'+surface_list[i]['street']+'</td>'+
-              '<td>'+surface_list[i]['number']+'</td>'+
-              '</tr>'
-            )
-          }
-          $('#js-select-all').prop('checked', false);
-          $('#js-select-all').on('click', function(){
-            $('.js-surface-list tr.result input').prop('checked', $(this).prop('checked'));
-          })
-        }
-      });
-    }
-
-  });
 
 
 
@@ -845,670 +796,7 @@ $(function() {
 
 
 
-  $('#js-client-add-surface-form').validate({
-    rules: {
-      area: {
-        required: true
-      },
-      date_start: {
-        required: true
-      }
-    },
-    submitHandler: function(e) {
-      $('#js-client-add-surface-form').ajaxSubmit({
-          success: function(data){
-            if (data.success) {
-              $.notify(data.success, 'success');
-              $('#cas_area').val(0);
-              $('.js-surface-list tr.result').remove();
-              //$('#js-client-add-surface-form').trigger('reset');
-              if (data.surface_list){
-                //$.notify(data.surface_list, 'success');
-                $('tr.empty').remove();
-                var surface_list = data.surface_list;
-                for (var i = 0; i < surface_list.length; i++) {
-                  $('.js-surface-list-tbody').prepend(
-                    '<tr>' +
-                    '<td>' + surface_list[i]['id'] + '</td>' +
-                    '<td>' + surface_list[i]['area'] + '</td>' +
-                    '<td><a href="/city/surface/' + surface_list[i]['surface_id'] + '">' + surface_list[i]['surface'] + '</a></td>' +
-                    '<td>' + surface_list[i]['date_start'] + '</td>' +
-                    '<td>' + surface_list[i]['date_end'] + '</td>' +
-                    '<td>' +
-                      '<form action="/client/surface-remove/" method="post" class="js-remove-client-surface" role="form">' +
-                      '<input type="hidden" name="client_surface_id" value="' + surface_list[i]['id'] + '">' +
-                      '<button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-remove"></span> Удалить</button>' +
-                      '</form>' +
-                    '</td>' +
-                    '</tr>'
-                  );
-                }
-                //hz
-                removeClientSurface();
-              //  hz
 
-              }
-            } else {
-              $.notify(data.error, 'error');
-            }
-
-          }
-      });
-    }
-  });
-
-
-    // валидация формы добвления клиента к поверхности
-  $( '#js-surface-add-client-form' ).validate({
-    rules: {
-      client: {
-        required: true
-      },
-      date_start: {
-        required: true
-      }
-    }
-  });
-
-  // валидация формы добвления макета клиента
-  $('#js-client-add-maket-form').validate({
-    rules: {
-      name: {
-        required: true
-      },
-      file: {
-        required: true
-      },
-      date: {
-        required: true
-      }
-    }
-  });
-    // валидация формы изменения макета клиента
-  $('#js-client-update-maket-form').validate({
-    rules: {
-      name: {
-        required: true
-      },
-      date: {
-        required: true
-      }
-    }
-  });
-  // валидация формы добавления заказа клиента
-  $('#js-client-add-order-form').validate({
-    rules: {
-      client: {
-        required: true
-      },
-      date_start: {
-        required: true
-      },
-      date_end: {
-        required: true
-      }
-    }
-  });
-   // валидация формы изменения заказа клиента
-  $('#js-client-update-order-form').validate({
-    rules: {
-      client: {
-        required: true
-      },
-      date_start: {
-        required: true
-      }
-    }
-  });
-  // валидация формы формирования покупки клиента
-  $('#js-client-journal-add-form').validate({
-    rules: {
-      client: {
-        required: true
-      },
-      clientorder: {
-        required: true
-      },
-      cost: {
-        required: true
-      }
-    }
-  });
-  $('#js-client-journal-add-form').find('input[type=checkbox]').removeClass('form-control');
-  // логика работы формы добавления задачи по клиенту
-  var act_form = $('#js-adjuster-client_task-add-form');
-  // валидация формы добавления задачи по клиенту
-  act_form.validate({
-    rules: {
-      adjuster: {
-        required: true
-      },
-      type: {
-        required: true
-      },
-      date: {
-        required: true
-      },
-      client: {
-        required: true
-      },
-      clientorder: {
-        required: true
-      }
-    }
-  });
-  act_form.find('#id_client').change(function(){
-    if ($(this).val().length){
-      act_form.find('#clientorder_group').removeClass('hide');
-      $.ajax({
-        type: "GET",
-        url: $(this).parent('#client_group').data('url'),
-        data: {
-          client: $(this).val()
-        }
-      }).done(function( data ) {
-        if (data.success) {
-          var order_list = data.order_list;
-          console.log(order_list);
-          act_form.find('#id_clientorder').find('option').remove();
-          act_form.find('#id_clientorder').append($("<option/>", {
-              value: '',
-              text: '---------'
-          }));
-          for (var i = 0; i < order_list.length; i++) {
-            act_form.find('#id_clientorder').append($("<option/>", {
-                value: order_list[i]['id'],
-                text: order_list[i]['name']
-            }));
-          }
-        }
-      });
-    } else {
-      act_form.find('#clientorder_group').addClass('hide');
-      act_form.find('#id_clientorder').find('option').remove();
-    //  TODO: очистить список заказов
-
-    }
-  });
-
-  act_form.find('#id_clientorder').change(function(){
-    $('.js-task-surface-list tr.result').remove();
-    console.log($(this).val());
-    $.ajax({
-      type: "GET",
-      url: $(this).parents('#clientorder_group').data('url'),
-      data: {
-        clientorder: $(this).val()
-      }
-    }).done(function( data ) {
-      if (data.surface_list) {
-        var surface_list = data.surface_list;
-        console.log(surface_list);
-
-        var surface_table = $('.js-task-surface-list');
-        console.log(surface_table);
-        for (var i = 0; i < surface_list.length; i++){
-          surface_table.append(
-            '<tr class="result">'+
-            '<td><input type="checkbox" name="chk_group[]" value="' +surface_list[i]['id'] +'"></td>'+
-            '<td>'+surface_list[i]['city']+'</td>'+
-            '<td>'+surface_list[i]['area']+'</td>'+
-            '<td>'+surface_list[i]['street']+'</td>'+
-            '<td>'+surface_list[i]['number']+'</td>'+
-            '<td>'+surface_list[i]['porch']+'</td>'+
-            '</tr>'
-          )
-        }
-        $('#js-select-all').prop('checked', false);
-        $('#js-select-all').on('click', function(){
-            act_form.find('tr.result input').prop('checked', $(this).prop('checked'));
-        })
-      }
-    });
-  });
-  // валидация формы редактирования задачи по клиенту
-  $('#js-adjuster-client_task-update-form').validate({
-    rules: {
-      adjuster: {
-        required: true
-      },
-      type: {
-        required: true
-      },
-      date: {
-        required: true
-      }
-    }
-  });
-
-  // валидация формы добавления района
-  $( '#js-area-add-form' ).validate({
-    rules: {
-      city: {
-        required: true
-      },
-      name: {
-        required: true
-      }
-    }
-  });
-
-//  модальная форма редактирования района
-    $('.js-area-list').on('click', '.js-update-item-btn', function(){
-      $('#js-modal-item-update-id').val($(this).parents('tr').data('id'));
-      $('#js-modal-item-update-name').val($(this).parents('tr').data('name'));
-      console.log($(this));
-    });
-
-  $('.js-update-item-btn').fancybox({
-    afterClose: function () {
-      $('.js-modal-update-item-form').resetForm();
-    }
-  });
-  $('.js-modal-update-item-form input[type="reset"]').click(function(){
-    $.fancybox.close();
-  });
-  $('.js-modal-update-item-form input[type="submit"]').click(function(){
-    $.fancybox.close();
-  });
-  $('.js-modal-update-item-form').ajaxForm({
-    success: function(data){
-      if (data.success) {
-        $.notify('Объект был сохранён', 'success');
-        console.log(data.name);
-        $('td[data-id='+data.id+']').text(data.name);
-        $('tr[data-id='+data.id+']').attr('data-name', data.name);
-      } else {
-        $.notify('Название района не может быть пустым', 'error');
-      }
-      $('.js-modal-update-item-form').resetForm();
-    }
-  });
-  // Валидация формы добавления улицы
-  $( '#js-street-add-form' ).validate({
-    rules: {
-      city: {
-        required: true
-      },
-      area: {
-        required: true,
-      },
-      name: {
-        required: true
-      }
-    }
-  });
-
-  //  модальная форма редактирования улицы
-  $('.js-street-list').on('click', '.js-update-street-btn', function(){
-    $('#js-modal-street-update-id').val($(this).parents('tr').data('id'));
-    $('#js-modal-street-update-name').val($(this).parents('tr').data('name'));
-    console.log($(this).parents('tr').data('id'));
-    console.log($(this).parents('tr').data('name'));
-  });
-  $('.js-update-street-btn').fancybox({
-    afterClose: function () {
-      $('.js-modal-update-street-form').resetForm();
-    }
-  });
-  $('.js-modal-update-street-form input[type="reset"]').click(function(){
-    $.fancybox.close();
-  });
-  $('.js-modal-update-street-form input[type="submit"]').click(function(){
-    $.fancybox.close();
-  });
-  $('.js-modal-update-street-form').ajaxForm({
-    success: function(data){
-      if (data.success) {
-        $.notify('Название улицы было изменено', 'success');
-        console.log(data.name);
-        $('td[data-id='+data.id+']').text(data.name);
-        $('tr[data-id='+data.id+']').attr('data-name', data.name);
-      } else {
-        $.notify('Название улицы не может быть пустым', 'error');
-      }
-      $('.js-modal-update-street-form').resetForm();
-    }
-  });
-
-  // Валидация формы добавления подъезда
-  $('#js-porch-add-form').validate({
-    rules: {
-      surface: {
-        required: true
-      },
-      number: {
-        required: true
-      }
-    }
-  });
-
-//  форма поиска фотографий поверхностей на странице "Города"
-  var aff = $('#js-address-filter-form');
-  // получение списка районов по выбранному городу
-  aff.find('#id_a_city').change(function(){
-    if ($(this).val().length){
-      console.log($(this).val());
-      $.ajax({
-        type: "GET",
-        url: $(this).data('ajax-url'),
-        data: {
-          city: $(this).val()
-        }
-      }).done(function(data) {
-        if (data.area_list) {
-          var area_list = data.area_list;
-          console.log(area_list);
-          aff.find('#id_a_area').find('option').remove();
-          aff.find('#id_a_area').append($("<option/>", {
-                value: '',
-                text: 'Район'
-            }));
-          aff.find('#id_a_street').find('option').remove();
-          aff.find('#id_a_street').append($("<option/>", {
-              value: '',
-              text: 'Улица'
-          }));
-          for (var i = 0; i < area_list.length; i++) {
-            aff.find('#id_a_area').append($("<option/>", {
-                value: area_list[i]['id'],
-                text: area_list[i]['name']
-            }));
-          }
-        }
-      });
-    } else {
-      console.log('empty');
-      aff.find('#id_a_area').find('option').remove();
-      aff.find('#id_a_area').append($("<option/>", {
-          value: '',
-          text: 'Район'
-      }));
-      aff.find('#id_a_street').find('option').remove();
-      aff.find('#id_a_street').append($("<option/>", {
-          value: '',
-          text: 'Улица'
-      }));
-    }
-  });
-  // получение списка улиц по выбранному району
-  aff.find('#id_a_area').change(function(){
-    if ($(this).val().length){
-      console.log($(this).val());
-      $.ajax({
-        type: "GET",
-        url: $(this).data('ajax-url'),
-        data: {
-          area: $(this).val()
-        }
-      }).done(function(data) {
-        if (data.street_list) {
-          var street_list = data.street_list;
-          console.log(street_list);
-          aff.find('#id_a_street').find('option').remove();
-          aff.find('#id_a_street').append($("<option/>", {
-                value: '',
-                text: 'Улица'
-            }));
-          for (var i = 0; i < street_list.length; i++) {
-            aff.find('#id_a_street').append($("<option/>", {
-                value: street_list[i]['id'],
-                text: street_list[i]['name']
-            }));
-          }
-        }
-      });
-    } else {
-      console.log('empty');
-      aff.find('#id_a_street').find('option').remove();
-      aff.find('#id_a_street').append($("<option/>", {
-          value: '',
-          text: 'Улица'
-      }));
-    }
-  });
-  $('#js-photo-map-button').click(function(){
-    $('#js-photo-map-wrapper').slideToggle()
-  });
-
-   // Валидация формы добавления подъезда
-  $('#js-management-company-form').validate({
-    rules: {
-      city: {
-        required: true
-      },
-      name: {
-        required: true
-      }
-    }
-  });
-
-  // Валидация формы добавления задачи по входящему клиенту
-  $('#js-form-incomingtask-add').validate({
-    rules: {
-      manager: {
-        required: true
-      },
-      incomingclient: {
-        required: true
-      },
-      type: {
-        required: true
-      },
-      date: {
-        required: true
-      }
-    }
-  });
-  // Валидация формы редактирования задачи по входящему клиенту
-  $('#js-form-incomingtask-update').validate({
-    rules: {
-      manager: {
-        required: true
-      },
-      incomingclient: {
-        required: true
-      },
-      type: {
-        required: true
-      },
-      date: {
-        required: true
-      }
-    }
-  });
-
-
-
-
-
-
-//  модальное окно формы создания задачи по клиенту
-  $('.js-new-incomingtask-btn').fancybox({
-    beforeLoad: function () {
-      var item_id = '#' + this.element[0].id;
-      var item = $(item_id);
-      console.log(item.parents('tr').data('id'));
-      $.ajax({
-        type: "GET",
-        url: item.data('url'),
-        data: {
-          incomingclient: item.parents('tr').data('id')
-        }
-      }).done(function (data) {
-        console.log(data.id);
-        console.log(data.type);
-        console.log(data.name);
-        var form = $('#js-incomingtask-modal-add-form');
-        form.find('#id_incomingclient_type').text(data.type);
-        form.find('#id_incomingclient_name').text(data.name);
-        form.find('#id_incomingclient_id').val(data.id);
-        var contact_list = data.contact_list;
-        var contact_list_selector = form.find('#id_incomingclient_contact');
-        contact_list_selector.find('option').remove();
-        contact_list_selector.append($("<option value selected='selected'>---------</option>"));
-        for (var i = 0; i < contact_list.length; i++) {
-          contact_list_selector.append($("<option/>", {
-            value: contact_list[i]['id'],
-            text: contact_list[i]['name']
-          }));
-        }
-      });
-    }
-  });
-  $('#js-incomingtask-modal-add-form').ajaxForm({
-    success: function(data){
-      if (data.success) {
-        $.notify('Задача по клиенту добавлена', 'success');
-        $.fancybox.close();
-      }
-    }
-  });
-//  валидация модальной формы создания задачи
-  $('#js-incomingtask-modal-add-form').validate({
-    rules: {
-      manager: {
-        required: true
-      },
-      incomingclient: {
-        required: true
-      },
-      incomingclient_contact: {
-        required: true
-      },
-      type: {
-        required: true
-      },
-      date: {
-        required: true
-      }
-    }
-  });
-
-  // валидация формы редактирования задачи
-  var validator = $('#js-incomingtask-modal-update-form').validate({
-    rules: {
-      incomingclient_contact: {
-        required: true
-      },
-      type: {
-        required: true
-      },
-      date: {
-        required: true
-      }
-    }
-  });
-  // валидация формы редактирования задачи
-  var client_modal_validator = $('#js-ajax-client-add').validate({
-    rules: {
-      email: {
-        required: true
-      },
-      password: {
-        required: true
-      }
-    }
-  });
-  //  модальное окно формы редактирования задачи по клиенту
-  $('.js-change-incomingtask-btn').fancybox({
-    afterClose: function () {
-      validator.resetForm();
-      client_modal_validator.resetForm();
-    },
-    beforeLoad: function () {
-      var item_id = '#' + this.element[0].id;
-      var item = $(item_id);
-      console.log(item);
-      console.log(item.parents('tr').data('id'));
-      $.ajax({
-        type: "GET",
-        url: item.data('url'),
-        data: {
-          incomingtask: item.parents('tr').data('id')
-        }
-      }).done(function (data) {
-        console.log('id задачи' + data.incomingtask_id);
-        console.log('id клиента' + data.incomingclient_id);
-        console.log('название клиента' + data.incomingclient_name);
-        console.log('тип клиента' + data.incomingclient_type);
-        console.log('id менеджера' + data.manager_id);
-        console.log('список контактных лиц' + data.contact_list);
-        var form = $('#js-incomingtask-modal-update-form');
-        form.find('#id_incomingclient_type').text(data.incomingclient_type);
-        form.find('#id_incomingclient_name').text(data.incomingclient_name);
-        form.find('#id_incomingclient').val(data.incomingclient_id);
-        form.find('#id_incomingtask').val(data.incomingtask_id);
-        form.find('#id_manager').val(data.manager_id);
-        var contact_list = data.contact_list;
-          var contact_list_selector = form.find('#id_incomingclient_contact');
-          contact_list_selector.find('option').remove();
-          contact_list_selector.append($("<option value>---------</option>"));
-          for (var i = 0; i < contact_list.length; i++) {
-            contact_list_selector.append($("<option/>", {
-              value: contact_list[i]['id'],
-              text: contact_list[i]['name']
-            }));
-          }
-      });
-    }
-  });
-  // ajax форма редактирования задачи
-  $('#js-incomingtask-modal-update-form').ajaxForm({
-    success: function(data){
-      if (data.success) {
-        $.notify('Задача по клиенту обновлена', 'success');
-        $.fancybox.close();
-        location.reload();
-      } else {
-        $.notify('Произошла ошибка', 'error');
-      }
-    }
-  });
-
-  $('#js-ajax-sale-add').on('click', function(){
-    console.log('ПРОДАЖА!');
-    var form = $('#js-incomingtask-modal-update-form');
-    var manager = form.find('#id_manager').val();
-    console.log(manager);
-    var incomingclient = form.find('#id_incomingclient').val();
-    console.log(incomingclient);
-    var comment = form.find('#id_comment').val();
-    console.log(comment);
-    var date = form.find('#id_date').val();
-    console.log(date);
-    var incomingcontact = form.find('#id_incomingclient_contact').val();
-    console.log(incomingcontact);
-    var incomingtask = form.find('#id_incomingtask').val();
-    console.log(incomingtask);
-    var incomingclient_type = form.find('#id_incomingclient_type').text();
-    console.log(incomingclient_type);
-    var incomingclient_name = form.find('#id_incomingclient_name').text();
-    console.log(incomingclient_name);
-
-    var c_form = $('#js-ajax-client-add');
-    c_form.find('#id_incomingclient').val(incomingclient);
-    c_form.find('#id_manager').val(manager);
-    c_form.find('#id_incomingtask').val(incomingtask);
-    c_form.find('#id_comment').val(comment);
-    c_form.find('#id_date').val(date);
-    c_form.find('#id_incomingcontact').val(incomingcontact);
-    c_form.find('#id_client_name').text(incomingclient_name);
-    c_form.find('#id_client_type').text(incomingclient_type);
-
-
-    $('.client-modal-add-form').toggle();
-    $('.incomingtask-modal-update-form').toggle();
-    $('.incomingtask-modal-text').toggle();
-    $('.client-modal-add-text').toggle();
-
-  });
-  $('#js-back-to-incomingtask-modal-update-form').on('click', function(){
-    $('.client-modal-add-form').toggle();
-    $('.incomingtask-modal-update-form').toggle();
-    $('.incomingtask-modal-text').toggle();
-    $('.client-modal-add-text').toggle();
-  });
   // ajax форма редактирования задачи
   //$('#js-ajax-client-add').ajaxForm({
   //  success: function (data) {

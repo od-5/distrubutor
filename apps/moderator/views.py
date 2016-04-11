@@ -8,8 +8,8 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView
-from .forms import ModeratorForm
-from .models import Moderator
+from .forms import ModeratorForm, ModeratorAreaForm
+from .models import Moderator, ModeratorArea
 from core.forms import UserAddForm, UserUpdateForm
 from core.models import User
 
@@ -102,7 +102,6 @@ def moderator_view(request, pk):
     return render(request, 'moderator/moderator_update.html', context)
 
 
-
 @ajax_request
 def moderator_update(request):
     if request.method == 'POST':
@@ -126,3 +125,40 @@ def moderator_update(request):
     return {
         'error': True
     }
+
+
+def area_add(request):
+    if request.method == 'POST':
+        form = ModeratorAreaForm(request.POST)
+        if form.is_valid():
+            area = form.save()
+            return HttpResponseRedirect(reverse('city:update', args=(area.city.id, )))
+        else:
+            return HttpResponseRedirect(reverse('city:list'))
+    else:
+        return HttpResponseRedirect(reverse('city:list'))
+
+
+def area_update(request, pk):
+    context = {}
+    area = ModeratorArea.objects.get(pk=int(pk))
+    if request.method == 'POST':
+        print 'POST'
+        form = ModeratorAreaForm(request.POST, instance=area)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('city:update', args=(area.city.id, )))
+        else:
+            context.update({
+                'error': u'Проверьте правильность заполнения формы'
+            })
+            print 'INVALID'
+    else:
+        print 'NOT POST'
+        form = ModeratorAreaForm(instance=area)
+    context.update({
+        'form': form,
+        'object': area
+    })
+
+    return render(request, 'moderator/moderatorarea_update.html', context)

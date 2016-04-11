@@ -21,8 +21,8 @@
           <li><a href="{% url 'client:list' %}"><span class="glyphicon glyphicon-list-alt text-success"></span> Журнал клиентов</a></li>
           <li><a href="{% url 'client:add' %}"><span class="glyphicon glyphicon-plus-sign text-success"></span> Добавить нового клиента</a></li>
           <li class="divider"></li>
-          <li><a href=""><span class="glyphicon glyphicon-list-alt text-success"></span> Журнал задач по клиентам</a></li>
-          <li><a href=""><span class="glyphicon glyphicon-plus-sign text-success"></span> Добавить новую задачу по клиенту</a></li>
+          <li><a href="{% url 'client:task-list' %}"><span class="glyphicon glyphicon-list-alt text-success"></span> Журнал задач по клиентам</a></li>
+          <li><a href="{% url 'client:task-add' %}"><span class="glyphicon glyphicon-plus-sign text-success"></span> Добавить новую задачу по клиенту</a></li>
         </ul>
       </li>
       <li class="dropdown">

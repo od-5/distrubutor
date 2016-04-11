@@ -1,7 +1,12 @@
-{% extends 'cabinet_index.html' %}
+{% extends 'cabinet/cabinet_base.html' %}
 {% block content %}
   <div class="container">
     <div class="col-lg-12">
+      <ol class="breadcrumb">
+        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+        <li><a href="{% url 'client:task-list' %}">Журнал задач по клиентам</a></li>
+        <li class="active">Добавление новой задачи по клиенту</li>
+      </ol>
       <div class="panel panel-default">
         <div class="panel-heading">
           <p class="lead text-center remove-bottom">
@@ -10,24 +15,24 @@
         </div>
         <div class="panel-body">
           <div class="col-lg-6">
-            <form action="" role="form" id="js-form-incomingtask-add" method="post">
+            <form action="" role="form" id="js-form-task-add" method="post">
               {% csrf_token %}
-              <div class="form-group" data-url="{% url 'incoming:get_contact_list' %}">
-                <div class="col-lg-5"> {{ form.incomingclient.label_tag }} </div>
-                <div class="col-lg-7"> {{ form.incomingclient }} </div>
-                {{ form.incomingclient.errors }}
+              <div class="form-group" data-url="{% url 'client:get_contact_list' %}">
+                <div class="col-lg-5"> {{ form.client.label_tag }} </div>
+                <div class="col-lg-7"> {{ form.client }} </div>
+                {{ form.client.errors }}
                 <div class="clearfix"></div>
               </div>
-              <div class="form-group {% if not user.is_leader_manager %}hide{% endif %}">
+              <div class="form-group">
                 <div class="col-lg-5"> {{ form.manager.label_tag }} </div>
                 <div class="col-lg-7"> {{ form.manager }} </div>
                 {{ form.manager.errors }}
                 <div class="clearfix"></div>
               </div>
               <div class="form-group hide">
-                <div class="col-lg-5"> {{ form.incomingclientcontact.label_tag }} </div>
-                <div class="col-lg-7"> {{ form.incomingclientcontact }} </div>
-                {{ form.incomingclientcontact.errors }}
+                <div class="col-lg-5"> {{ form.clientcontact.label_tag }} </div>
+                <div class="col-lg-7"> {{ form.clientcontact }} </div>
+                {{ form.clientcontact.errors }}
                 <div class="clearfix"></div>
               </div>
               <div class="form-group">
@@ -48,14 +53,9 @@
                 {{ form.comment.errors }}
                 <div class="clearfix"></div>
               </div>
-              <div class="form-group hide">
-                <div class="col-lg-5"> {{ form.status.label_tag }} </div>
-                <div class="col-lg-7"> {{ form.status }} </div>
-                {{ form.status.errors }}
-                <div class="clearfix"></div>
-              </div>
+              {{ form.status }}
               <div class="text-center">
-                <button type="submit" class="btn btn-default">Сохранить</button>
+                <button type="submit" class="btn btn-success">Сохранить</button>
               </div>
             </form>
           </div>

@@ -43,7 +43,7 @@
                   <a href="{% url 'client:update' object.id %}"> {{ object.name|default:'' }}</a>
                   <br>
                   {% if user.type != 5 %}
-                  <a href="#js-new-incomingtask-modal" data-url="{# {% url 'incoming:get_incomingclient_info' %} #}" id="add-incomingtask-btn-{{ object.id }}" class="btn btn-success btn-sm js-new-incomingtask-btn">
+                  <a href="#js-new-task-modal" data-url="{% url 'client:get_client_info' %}" id="add-task-btn-{{ object.id }}" class="btn btn-success btn-sm js-new-task-btn">
                     <span class="glyphicon glyphicon-plus-sign"></span> Назначить задачу
                   </a>
                   {% endif %}
@@ -52,14 +52,10 @@
                 <td>{{ object.moderator|default:'Не указано' }}</td>
                 <td data-manager-id="{{ object.manager.id }}" data-manager-name="{{ object.manager }}" data-url="{% url 'client:get_available_manager_list' %}">
                   <span class="js-manager-name">{{ object.manager|default:'Не указано' }}</span>
-                {% if user.type == 5 %}
-                  {% if user.manager_user.leader %}
                   <br>
                   <a href="#reassign-manager" id="js-reassign-manager-{{ object.id }}" class="js-reassign-manager btn btn-warning btn-sm">
                     <span class="glyphicon glyphicon-refresh"></span> переназначить
                   </a>
-                  {% endif %}
-                {% endif %}
                 </td>
                 <td>{{ object.city|default:'Не указано' }}</td>
                 <td>
@@ -72,7 +68,7 @@
                 </td>
                 <td>
                   {% if user.type == 5 %}
-                  <a href="#js-new-incomingtask-modal" data-url="{# {% url 'incoming:get_incomingclient_info' %} #}" id="add-incomingtask-btn-{{ object.id }}" class="btn btn-success btn-sm js-new-incomingtask-btn">
+                  <a href="#js-new-task-modal" data-url="{% url 'client:get_client_info' %}" id="add-task-btn-{{ object.id }}" class="btn btn-success btn-sm js-new-task-btn">
                     <span class="glyphicon glyphicon-plus-sign"></span> Назначить задачу
                   </a>
                   {% else %}
@@ -116,16 +112,17 @@
       </tbody>
     </table>
   </div>
-  <div id="js-new-incomingtask-modal" class="incomingtask-modal">
+
+  <div id="js-new-task-modal" class="task-modal">
     <p class="lead text-center remove-bottom">Создание задачи</p>
-    <form action="{# {% url 'incoming:ajax-task-add' %} #}" method="get" id="js-incomingtask-modal-add-form" class="incomingtask-modal-add-form form-horizontal">
-      <input type="hidden" name="incomingclient" id="id_incomingclient_id" class="form-control">
+    <form action="{% url 'client:ajax-task-add' %}" method="get" id="js-task-modal-add-form" class="task-modal-add-form form-horizontal">
+      <input type="hidden" name="client" id="id_client_id" class="form-control">
       <div class="form-group">
         <div class="col-lg-4">
           <label class="control-label">Тип клиента</label>
         </div>
         <div class="col-lg-8">
-          <p class="form-control-static" id="id_incomingclient_type"></p>
+          <p class="form-control-static" id="id_client_type"></p>
         </div>
       </div>
       {% if current_manager %}
@@ -150,15 +147,15 @@
           <label class="control-label">Название</label>
         </div>
         <div class="col-lg-8">
-          <p class="form-control-static" id="id_incomingclient_name"></p>
+          <p class="form-control-static" id="id_client_name"></p>
         </div>
       </div>
       <div class="form-group">
         <div class="col-lg-4">
-          <label for="id_incomingclient_contact" class="control-label">Контактное лицо</label>
+          <label for="id_client_contact" class="control-label">Контактное лицо</label>
         </div>
         <div class="col-lg-8">
-          <select name="incomingclient_contact" id="id_incomingclient_contact" class="form-control">
+          <select name="client_contact" id="id_client_contact" class="form-control">
             <option value="">----------</option>
           </select>
         </div>

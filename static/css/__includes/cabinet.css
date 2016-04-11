@@ -36,24 +36,24 @@ body {
 .bottom-block {
   display: none;
 }
-.incomingtask-modal {
+.task-modal {
   display: none;
   width: 500px;
 }
-.incomingtask-modal-add-form {
+.task-modal-add-form {
   width: 480px;
 }
-.incomingtask-modal-update-form {
+.task-modal-update-form {
   width: 480px;
 }
-.client-modal-add-text {
+.sale-modal-add-text {
   display: none;
 }
-.client-modal-add-form {
+.sale-modal-add-form {
   width: 480px;
   display: none;
 }
-#incomingclient-contact {
+#client-contact {
   width: 500px;
   height: auto;
   max-height: 300px;

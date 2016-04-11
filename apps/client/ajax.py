@@ -4,6 +4,7 @@ from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 from apps.client.models import Client
+from apps.sale.models import Sale
 from core.models import User
 from .models import Client, Task, ClientContact
 from apps.manager.models import Manager
@@ -81,38 +82,41 @@ def get_contact_list(request):
 
 
 @ajax_request
-def get_incomingclient_info(request):
-    incomingclient = Client.objects.get(pk=int(request.GET.get('incomingclient')))
+def get_task_info(request):
+    task = Task.objects.get(pk=int(request.GET.get('task')))
     contact_list = []
-    for i in incomingclient.incomingclientcontact_set.all():
+    for i in task.client.clientcontact_set.all():
         contact_list.append({
             'id': i.id,
             'name': i.name
         })
     return {
-        'id': incomingclient.id,
-        'name': incomingclient.name,
-        'manager': incomingclient.manager.id,
-        'type': incomingclient.get_type_display(),
+        'task_id': task.id,
+        'client_id': task.client.id,
+        'client_name': task.client.name,
+        'manager_id': task.manager.id,
+        'client_type': task.client.get_type_display(),
         'contact_list': contact_list
     }
 
 
+
+# ПОКА НЕ ПРОВЕРЕНО
+
 @ajax_request
-def get_incomingtask_info(request):
-    incomingtask = Task.objects.get(pk=int(request.GET.get('incomingtask')))
+def get_client_info(request):
+    client = Client.objects.get(pk=int(request.GET.get('client')))
     contact_list = []
-    for i in incomingtask.incomingclient.incomingclientcontact_set.all():
+    for i in client.clientcontact_set.all():
         contact_list.append({
             'id': i.id,
             'name': i.name
         })
     return {
-        'incomingtask_id': incomingtask.id,
-        'incomingclient_id': incomingtask.incomingclient.id,
-        'incomingclient_name': incomingtask.incomingclient.name,
-        'manager_id': incomingtask.manager.id,
-        'incomingclient_type': incomingtask.incomingclient.get_type_display(),
+        'id': client.id,
+        'name': client.name,
+        'manager': client.manager.id,
+        'type': client.get_type_display(),
         'contact_list': contact_list
     }
 
@@ -120,16 +124,16 @@ def get_incomingtask_info(request):
 @ajax_request
 def ajax_task_add(request):
     try:
-        incomingclient = Client.objects.get(pk=int(request.GET.get('incomingclient')))
+        client = Client.objects.get(pk=int(request.GET.get('client')))
         type_id = int(request.GET.get('type'))
         date = datetime.strptime(request.GET.get('date'), '%d.%m.%Y')
         comment = request.GET.get('comment')
         manager = Manager.objects.get(pk=int(request.GET.get('manager')))
-        incomingclientcontact = ClientContact.objects.get(pk=int(request.GET.get('incomingclient_contact')))
+        clientcontact = ClientContact.objects.get(pk=int(request.GET.get('client_contact')))
         task = Task(
             manager=manager,
-            client=incomingclient,
-            incomingclientcontact=incomingclientcontact,
+            client=client,
+            clientcontact=clientcontact,
             type=type_id,
             date=date,
             comment=comment,
@@ -147,31 +151,32 @@ def ajax_task_add(request):
 
 @ajax_request
 def ajax_task_update(request):
+    print request.GET
     try:
         manager_id = int(request.GET.get('manager'))
-        incomingclient_id = int(request.GET.get('incomingclient'))
-        incomingtask_id = int(request.GET.get('incomingtask'))
-        incomingclient_contact_id = int(request.GET.get('incomingclient_contact'))
+        client_id = int(request.GET.get('client'))
+        task_id = int(request.GET.get('task'))
+        client_contact_id = int(request.GET.get('client_contact'))
         type_id = int(request.GET.get('type'))
         comment = request.GET.get('comment')
         date = datetime.strptime(request.GET.get('date'), '%d.%m.%Y')
 
-        incomingclient = Client.objects.get(pk=incomingclient_id)
-        incomingtask = Task.objects.get(pk=incomingtask_id)
+        client = Client.objects.get(pk=client_id)
+        task = Task.objects.get(pk=task_id)
         manager = Manager.objects.get(pk=manager_id)
-        incomingclientcontact = ClientContact.objects.get(pk=incomingclient_contact_id)
-        task = Task(
+        clientcontact = ClientContact.objects.get(pk=client_contact_id)
+        new_task = Task(
             manager=manager,
-            incomingclient=incomingclient,
-            incomingclientcontact=incomingclientcontact,
+            client=client,
+            clientcontact=clientcontact,
             type=type_id,
             date=date,
             comment=comment,
             status=0
         )
+        new_task.save()
+        task.status = 1
         task.save()
-        incomingtask.status = 1
-        incomingtask.save()
         return {
             'success': True
         }
@@ -181,21 +186,14 @@ def ajax_task_update(request):
         }
 
 
-def ajax_client_add(request):
-    r_incomingclient = request.POST.get('incomingclient')
+def ajax_sale_add(request):
+    r_client = request.POST.get('client')
     r_manager = request.POST.get('manager')
-    r_incomingtask = request.POST.get('incomingtask')
-    r_incomingcontact = request.POST.get('incomingcontact')
-    r_date = request.POST.get('date')
-    r_comment = request.POST.get('comment')
+    r_task = request.POST.get('task')
     r_email = request.POST.get('email')
     r_password = request.POST.get('password')
-    incomingclient = Client.objects.get(pk=int(r_incomingclient))
-    incomingtask = Task.objects.get(pk=int(r_incomingtask))
-    if r_incomingcontact:
-        incomingcontact = ClientContact.objects.get(pk=int(r_incomingcontact))
-    else:
-        incomingcontact = incomingtask.incomingclientcontact
+    client = Client.objects.get(pk=int(r_client))
+    task = Task.objects.get(pk=int(r_task))
     manager = Manager.objects.get(pk=int(r_manager))
     try:
         User.objects.get(email=r_email)
@@ -203,17 +201,18 @@ def ajax_client_add(request):
         user = User(email=r_email, password=r_password, type=3)
         user.set_password(r_password)
         user.save()
-        client = Client(
+        sale = Sale(
             user=user,
-            city=incomingclient.city,
-            manager=incomingclient.manager,
-            legal_name=incomingclient.name,
-            actual_name=incomingclient.name,
-            legal_address=incomingclient.actual_address
+            city=client.city,
+            manager=client.manager,
+            moderator=client.moderator,
+            legal_name=client.name,
+            actual_name=client.name,
+            legal_address=client.actual_address
         )
-        client.save()
-        incomingtask.status = 1
-        incomingtask.save()
-        return HttpResponseRedirect(reverse('client:change', args=(client.id, )))
-    return_url = reverse('incoming:task-list') + '?error=1'
+        sale.save()
+        task.status = 1
+        task.save()
+        return HttpResponseRedirect(reverse('sale:update', args=(sale.id, )))
+    return_url = reverse('client:task-list') + '?error=1'
     return HttpResponseRedirect(return_url)
