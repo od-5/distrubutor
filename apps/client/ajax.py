@@ -151,7 +151,6 @@ def ajax_task_add(request):
 
 @ajax_request
 def ajax_task_update(request):
-    print request.GET
     try:
         manager_id = int(request.GET.get('manager'))
         client_id = int(request.GET.get('client'))

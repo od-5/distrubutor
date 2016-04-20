@@ -80,7 +80,6 @@ def sale_view(request, pk):
 
 @ajax_request
 def sale_update(request):
-    print request.POST.get('user')
     if request.method == 'POST':
         user = request.user
         try:
@@ -121,7 +120,6 @@ class SaleListView(ListView):
                 qs = Sale.objects.filter(manager=user.manager_user)
         else:
             qs = None
-        print self.request.GET
         if self.request.GET.get('email'):
             qs = qs.filter(user__email=self.request.GET.get('email'))
         if self.request.GET.get('legal_name'):
@@ -213,7 +211,6 @@ def sale_order_update(request, pk):
             form.save()
             return HttpResponseRedirect(reverse('sale:order', args=(sale.id, )))
         else:
-            print form
             context.update({
                 'error': u'Проверьте правильность ввода полей'
             })
@@ -234,15 +231,12 @@ def sale_maket(request, pk):
     if request.method == 'POST':
         form = SaleMaketForm(request.POST, request.FILES)
         if form.is_valid():
-            print 'valid'
             form.save()
             context.update({
                 'success': u'Макет клиента успешно добавлен'
             })
             form = SaleMaketForm(initial={'sale': sale})
         else:
-            print 'invalid'
-            print form
             context.update({
                 'error': u'Проверьте правильность ввода полей'
             })

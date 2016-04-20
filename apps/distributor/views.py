@@ -291,7 +291,6 @@ def distributor_task_update(request, pk):
         context.update({
             'point_list': task.gpspoint_set.all()
         })
-    print task
     if request.method == 'POST':
         form = DistributorTaskUpdateForm(request.POST, user=user, instance=task)
         if form.is_valid():

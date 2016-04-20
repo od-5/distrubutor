@@ -11,24 +11,19 @@ __author__ = 'alexy'
 @ajax_request
 def distributor_payment_update(request):
     if request.method == 'POST':
-        print 'method=post'
         r_user = request.POST.get('user')
         distributor = Distributor.objects.get(user=int(r_user))
         form = DistributorPaymentForm(request.POST, instance=distributor)
         if form.is_valid():
-            print 'form valid'
             form.save()
             return {
                 'success': u'Изменения успешно сохранены.'
             }
         else:
-            print 'form invalid'
-            print form
             return {
                 'error': u'Проверьте правильность ввода данных.'
             }
     else:
-        print 'method != post'
         return {
             'error': u'Проверьте правильность ввода данных.'
         }
@@ -53,8 +48,6 @@ def get_distr_and_area_for_sale(request):
                 'id': area.id,
                 'name': area.name
             })
-        print distributor_list
-        print area_list
 
         return {
             'distributor_list': distributor_list,

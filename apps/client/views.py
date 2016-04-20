@@ -87,7 +87,6 @@ class ClientListView(ListView):
             manager_qs = Manager.objects.filter(moderator=user)
         elif user.type == 5:
             current_manager = user.manager_user
-            print 'manager %s' % current_manager
             context.update({
                 'current_manager': current_manager
             })

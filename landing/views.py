@@ -42,14 +42,10 @@ class LandingView(TemplateView):
 @ajax_request
 def set_current_city(request):
     if request.POST.get('city'):
-        print request.POST.get('city')
         try:
             current_city = City.objects.get(name__iexact=request.POST.get('city'))
-            print 1
         except:
             current_city = None
-            print 2
-        print current_city
         request.session['current_city'] = current_city.id
     return {
         'success': True
@@ -58,7 +54,6 @@ def set_current_city(request):
 @csrf_exempt
 def set_current_city_from_input(request):
     if request.POST.get('city'):
-        print request.POST.get('city')
         try:
             current_city = City.objects.get(name__iexact=request.POST.get('city'))
             request.session['current_city'] = current_city.id

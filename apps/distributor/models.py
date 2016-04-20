@@ -124,10 +124,7 @@ class GPSPoint(models.Model):
 
     def save(self, *args, **kwargs):
         try:
-            print self.coord_x
-            print self.coord_y
             name = api.geocodeName(api_key, self.coord_y, self.coord_x)
-            print name
             self.name = name
         except:
             pass

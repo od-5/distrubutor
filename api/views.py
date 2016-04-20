@@ -23,18 +23,13 @@ def api_root(request, format=None):
     Точка входа в Api.
     Получение данных авторизованного пользователя
     """
-    print 'point 1'
     user = request.user
     if request.method == 'GET':
-        print 'point GET'
         try:
             Distributor.objects.get(user=user)
-            print 'point TRY'
         except Distributor.DoesNotExist:
-            print 'point EXCEPT'
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = UserSerializer(user)
-        print 'point serializer'
         return Response(serializer.data)
 
 
@@ -46,11 +41,9 @@ def task_list(request):
     Получение списка задач авторизованного пользователя(распространителя)
     """
     user = request.user
-    print user
     if request.method == 'GET':
         tasks = user.distributor_user.distributortask_set.filter(closed=False)
         if not tasks:
-            print len(tasks)
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             serializer = DistributorTaskSerializer(tasks, many=True)
@@ -88,20 +81,14 @@ def task_detail(request, pk):
 @permission_classes((IsAuthenticated,))
 def gpspoint_add(request):
     if request.method == 'POST':
-        print 'request.method = POST'
         try:
-            print request.data
             serializer = GPSPointSerializer(data=request.data)
-            print serializer
-            print 'end serializer'
             if serializer.is_valid():
                 serializer.save()
-                print serializer.instance.id
                 return Response({'point': serializer.instance.id}, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
         except:
-            print 'except'
             return Response(status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -111,18 +98,12 @@ def gpspoint_add(request):
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
 def photo_add(request):
-    print 'start'
     try:
-        print request.data
-        print 'serializer'
         serializer = PointPhotoSerializer(data=request.data)
-        print serializer
-        print 'end serializer'
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
     except:
-        print 'except'
         return Response(status=status.HTTP_400_BAD_REQUEST)

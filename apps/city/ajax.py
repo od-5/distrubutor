@@ -11,15 +11,12 @@ __author__ = 'alexy'
 def find_city(request):
     if request.GET.get('name_startsWith'):
         name_startsWith = request.GET.get('name_startsWith')
-        print name_startsWith
         city_list = []
         city_qs = City.objects.filter(name__icontains=name_startsWith)
-        print city_qs
         for city in city_qs:
             city_list.append({
                 'name': city.name
             })
-        print city_list
         return {
             'city_list': city_list
         }
