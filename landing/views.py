@@ -22,7 +22,10 @@ class LandingView(TemplateView):
             self.request.session['current_city']
         except:
             self.request.session['current_city'] = City.objects.first().id
-        current_city = City.objects.get(pk=int(self.request.session['current_city']))
+        try:
+            current_city = City.objects.get(pk=int(self.request.session['current_city']))
+        except:
+            current_city = None
         setup = Setup.objects.first()
         context = {
             'city_list': City.objects.all(),
