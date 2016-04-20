@@ -4,7 +4,7 @@
   <div class="col-lg-12">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <p class="lead text-center remove-bottom">Пользователи</p>
+        <p class="lead text-center remove-bottom">Панель администратора</p>
       </div>
       <div class="panel-body">
         <div class="col-lg-2">
@@ -32,27 +32,6 @@
           </a>
         </div>
         <div class="col-lg-2">
-          <a href="{% url 'distributor:list' %}" class="dashboard__link">
-            <img src="{{ STATIC_URL }}icon/adjuster_list.png" alt="Список распространителей" class="dashboard__link_icon">
-            <span class="dashboard__link_text">Список распространителей</span>
-          </a>
-        </div>
-        <div class="col-lg-2">
-          <a href="{% url 'distributor:add' %}" class="dashboard__link">
-            <img src="{{ STATIC_URL }}icon/adjuster_add.png" alt="Добавить нового распространителя" class="dashboard__link_icon">
-            <span class="dashboard__link_text">Добавить нового распространителя</span>
-          </a>
-        </div>
-        <div class="clearfix"></div>
-      </div>
-    </div>
-
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <p class="lead text-center remove-bottom">Города</p>
-      </div>
-      <div class="panel-body">
-        <div class="col-lg-2">
           <a href="{% url 'city:list' %}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/city_list.png" alt="Список городов" class="dashboard__link_icon">
             <span class="dashboard__link_text">Список городов</span>
@@ -67,7 +46,6 @@
         <div class="clearfix"></div>
       </div>
     </div>
-
     <div class="panel panel-default">
       <div class="panel-heading">
         <p class="lead text-center remove-bottom">CRM - система управления клиентами</p>
@@ -112,6 +90,69 @@
         <div class="clearfix"></div>
       </div>
     </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <p class="lead text-center remove-bottom">Работа с распространителями</p>
+      </div>
+      <div class="panel-body">
+        <div class="col-lg-2">
+          <a href="{% url 'distributor:list' %}" class="dashboard__link">
+            <img src="{{ STATIC_URL }}icon/distributor_list.png" alt="Список распространителей" class="dashboard__link_icon">
+            <span class="dashboard__link_text">Список распространителей</span>
+          </a>
+        </div>
+        <div class="col-lg-2">
+          <a href="{% url 'distributor:add' %}" class="dashboard__link">
+            <img src="{{ STATIC_URL }}icon/distributor_add.png" alt="Добавить нового распространителя" class="dashboard__link_icon">
+            <span class="dashboard__link_text">Добавить нового распространителя</span>
+          </a>
+        </div>
+        <div class="col-lg-2">
+          <a href="{% url 'distributor:task-list' %}" class="dashboard__link">
+            <img src="{{ STATIC_URL }}icon/distributortask_list.png" alt="Список задач" class="dashboard__link_icon">
+            <span class="dashboard__link_text">Список задач</span>
+          </a>
+        </div>
+        <div class="col-lg-2">
+          <a href="{% url 'distributor:task-add' %}" class="dashboard__link">
+            <img src="{{ STATIC_URL }}icon/distributortask_add.png" alt="Добавить новую задачу" class="dashboard__link_icon">
+            <span class="dashboard__link_text">Добавить <br> новую задачу</span>
+          </a>
+        </div>
+        <div class="col-lg-2">
+          <a href="{% url 'distributor:task-archive' %}" class="dashboard__link">
+            <img src="{{ STATIC_URL }}icon/distributortask_archive.png" alt="Архив задач" class="dashboard__link_icon">
+            <span class="dashboard__link_text">Архив задач</span>
+          </a>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+
+
+{#    <div class="panel panel-default">#}
+{#      <div class="panel-heading">#}
+{#        <p class="lead text-center remove-bottom">Города</p>#}
+{#      </div>#}
+{#      <div class="panel-body">#}
+{#        <div class="col-lg-2">#}
+{#          <a href="{% url 'city:list' %}" class="dashboard__link">#}
+{#            <img src="{{ STATIC_URL }}icon/city_list.png" alt="Список городов" class="dashboard__link_icon">#}
+{#            <span class="dashboard__link_text">Список городов</span>#}
+{#          </a>#}
+{#        </div>#}
+{#        <div class="col-lg-2">#}
+{#          <a href="{% url 'city:add' %}" class="dashboard__link">#}
+{#            <img src="{{ STATIC_URL }}icon/city_add.png" alt="Добавить новый город" class="dashboard__link_icon">#}
+{#            <span class="dashboard__link_text">Добавить новый город</span>#}
+{#          </a>#}
+{#        </div>#}
+{#        <div class="clearfix"></div>#}
+{#      </div>#}
+{#    </div>#}
+
+
   </div>
   <div class="col-lg-6">
     <div class="panel panel-default">
@@ -135,34 +176,7 @@
       </div>
     </div>
   </div>
-  <div class="col-lg-6">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <p class="lead text-center remove-bottom">Работа с распространителями</p>
-      </div>
-      <div class="panel-body">
-        <div class="col-lg-4">
-          <a href="{% url 'distributor:list' %}" class="dashboard__link">
-            <img src="{{ STATIC_URL }}icon/adjustertask_list.png" alt="Список задач" class="dashboard__link_icon">
-            <span class="dashboard__link_text">Список задач</span>
-          </a>
-        </div>
-        <div class="col-lg-4">
-          <a href="{% url 'distributor:add' %}" class="dashboard__link">
-            <img src="{{ STATIC_URL }}icon/adjustertask_add.png" alt="Добавить новую задачу" class="dashboard__link_icon">
-            <span class="dashboard__link_text">Добавить <br> новую задачу</span>
-          </a>
-        </div>
-        <div class="col-lg-4">
-          <a href="#" class="dashboard__link">
-            <img src="{{ STATIC_URL }}icon/adjustertask_archive.png" alt="Архив задач" class="dashboard__link_icon">
-            <span class="dashboard__link_text">Архив задач</span>
-          </a>
-        </div>
-        <div class="clearfix"></div>
-      </div>
-    </div>
-  </div>
+
   <div class="col-lg-6">
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -170,19 +184,13 @@
       </div>
       <div class="panel-body">
         <div class="col-lg-4">
-          <a href="#" class="dashboard__link">
+          <a href="{% url 'site-setup' %}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/site_settings.png" alt="Настройки сайта" class="dashboard__link_icon">
             <span class="dashboard__link_text">Настройки сайта</span>
           </a>
         </div>
         <div class="col-lg-4">
-          <a href="#" class="dashboard__link">
-            <img src="{{ STATIC_URL }}icon/site_blocks.png" alt="Блоки сайта" class="dashboard__link_icon">
-            <span class="dashboard__link_text">Блоки сайта</span>
-          </a>
-        </div>
-        <div class="col-lg-4">
-          <a href="#" class="dashboard__link">
+          <a href="{% url 'ticket:list' %}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/site_task.png" alt="Заявки с сайта" class="dashboard__link_icon">
             <span class="dashboard__link_text">Заявки с сайта</span>
           </a>

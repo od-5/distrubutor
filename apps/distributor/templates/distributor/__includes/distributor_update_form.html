@@ -1,0 +1,64 @@
+<form action="" role="form" id="js-form-distributor-update" method="post">
+  {% csrf_token %}
+  {{ d_form.user }}
+  {{ d_form.user.errors }}
+  <div class="form-group {% if not user.type == 1 %}hide{% endif %}">
+    <div class="col-lg-5">{{ d_form.moderator.label_tag }}</div>
+    <div class="col-lg-7">{{ d_form.moderator }}</div>
+    {{ d_form.moderator.errors }}
+    <div class="clearfix"></div>
+  </div>
+  <div class="form-group">
+    <div class="col-lg-5">
+      {{ u_form.email.label_tag }}
+    </div>
+    <div class="col-lg-7">
+      {{ u_form.email }}
+    </div>
+    {{ u_form.email.errors }}
+    <div class="clearfix"></div>
+  </div>
+  <div class="form-group">
+    <div class="col-lg-5">
+      {{ u_form.last_name.label_tag }}
+    </div>
+    <div class="col-lg-7">
+      {{ u_form.last_name }}
+    </div>
+    {{ u_form.last_name.errors }}
+    <div class="clearfix"></div>
+  </div>
+  <div class="form-group">
+    <div class="col-lg-5">
+      {{ u_form.first_name.label_tag }}
+    </div>
+    <div class="col-lg-7">
+      {{ u_form.first_name }}
+    </div>
+    {{ u_form.first_name.errors }}
+    <div class="clearfix"></div>
+  </div>
+  <div class="form-group">
+    <div class="col-lg-5">
+      {{ u_form.patronymic.label_tag }}
+    </div>
+    <div class="col-lg-7">
+      {{ u_form.patronymic }}
+    </div>
+    {{ u_form.patronymic.errors }}
+    <div class="clearfix"></div>
+  </div>
+  <div class="form-group">
+    <div class="col-lg-5">
+      {{ u_form.phone.label_tag }}
+    </div>
+    <div class="col-lg-7">
+      {{ u_form.phone }}
+    </div>
+    {{ u_form.phone.errors }}
+    <div class="clearfix"></div>
+  </div>
+  <div class="text-center">
+    <button type="submit" class="btn btn-default">Сохранить</button>
+  </div>
+</form>

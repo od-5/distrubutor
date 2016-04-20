@@ -400,6 +400,42 @@ $(function() {
       }
     }
   });
+  // Валидация формы редактирования оплаты распространителю
+  $('#js-form-distributor-payment-update').validate({
+    rules: {
+      distribution_cost: {
+        required: true,
+        number: true
+      },
+      posting_cost: {
+        required: true,
+        number: true
+      }
+    },
+    messages: {
+      distribution_cost: {
+        required: 'Введите цену за оплату в рублях, либо 0',
+        number: "Введите число."
+      },
+      posting_cost: {
+        required: 'Введите цену за оплату в рублях, либо 0',
+        number: "Введите число."
+      }
+    },
+    submitHandler: function(e) {
+      $('#js-form-distributor-payment-update').ajaxSubmit({
+          success: function(data){
+            if (data.success) {
+              $.notify(data.success, 'success');
+            } else {
+              $.notify(data.error, 'error');
+            }
+          }
+      });
+    }
+  });
+
+
 
   // Валидация формы добавление клиента в CRM
   $('#js-form-client-add').validate({
@@ -775,73 +811,202 @@ $(function() {
     }
   });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // ДАЛЕЕ ИДЁТ СТАРЫЙ КОД!
-
-
-
-
-
-
-
-
-  // ajax форма редактирования задачи
-  //$('#js-ajax-client-add').ajaxForm({
-  //  success: function (data) {
-  //    if (data.error) {
-  //      $.notify('Клиент с таким e-mail уже зарегистрирован в системе', 'error');
-  //      $.fancybox.close();
-  //    }
-  //  }
-  //});
-  var ia_form = $('#js-form-incomingtask-add');
-  ia_form.find('#id_incomingclient').change(function(){
-    var client = $(this).val();
+  // валидация формы добавления задачи для распространителя
+  var d_t_a_form = $('#js-form-distributor-task-add');
+  d_t_a_form.validate({
+    rules: {
+      distributor: {
+        required: true
+      },
+      sale: {
+        required: true
+      },
+      area: {
+        required: true
+      },
+      type: {
+        required: true
+      },
+      material_count: {
+        required: true,
+        number: true
+      },
+      date: {
+        required: true
+      }
+    },
+    messages: {
+      material_count: {
+        required: "Введите число.",
+        number: "Введите число."
+      }
+    }
+  });
+  d_t_a_form.find('#id_sale').change(function(){
+    var distributor = d_t_a_form.find('#id_distributor');
+    var area = d_t_a_form.find('#id_area');
     var url = $(this).parents('.form-group').data('url');
-    console.log(url);
-    var clientcontact_selector = ia_form.find('#id_incomingclientcontact');
-    if (client) {
-      console.log(client);
-      clientcontact_selector.parents('.form-group').removeClass('hide');
+    if($(this).val()){
       $.ajax({
         type: "GET",
         url: url,
         data: {
-          incomingclient: client
+          sale: $(this).val()
         }
       }).done(function (data) {
-        if (data.contact_list) {
-          var contact_list = data.contact_list;
-          console.log(contact_list);
-          clientcontact_selector.find('option').remove();
-          clientcontact_selector.append($("<option value selected='selected'>---------</option>"));
-          for (var i = 0; i < contact_list.length; i++) {
-            clientcontact_selector.append($("<option/>", {
-              value: contact_list[i]['id'],
-              text: contact_list[i]['name']
+        if(data.error){
+          $.notify(data.error, 'success');
+        } else {
+          var distributor_list = data.distributor_list;
+          var area_list = data.area_list;
+          distributor.find('option').remove();
+          distributor.append($("<option value selected='selected'>---------</option>"));
+          for (var i = 0; i < distributor_list.length; i++) {
+            distributor.append($("<option/>", {
+              value: distributor_list[i]['id'],
+              text: distributor_list[i]['name']
             }));
           }
-
-        } else {
-          clientcontact_selector.find('option').remove();
+          area.find('option').remove();
+          area.append($("<option value selected='selected'>---------</option>"));
+          for (var j = 0; j < area_list.length; j++) {
+            area.append($("<option/>", {
+              value: area_list[j]['id'],
+              text: area_list[j]['name']
+            }));
+          }
         }
+
+      });
+
+      distributor.parents('.form-group').removeClass('hide');
+      area.parents('.form-group').removeClass('hide');
+    } else {
+      distributor.find('option').remove();
+      area.find('option').remove();
+      distributor.parents('.form-group').addClass('hide');
+      area.parents('.form-group').addClass('hide');
+    }
+  });
+
+  // валидация формы редактирования задачи для распространителя
+  var d_t_u_form = $('#js-form-distributor-task-update');
+  d_t_u_form.validate({
+    rules: {
+      distributor: {
+        required: true
+      },
+      sale: {
+        required: true
+      },
+      area: {
+        required: true
+      },
+      type: {
+        required: true
+      },
+      material_count: {
+        required: true,
+        number: true
+      },
+      date: {
+        required: true
+      }
+    },
+    messages: {
+      material_count: {
+        required: "Введите число.",
+        number: "Введите число."
+      }
+    }
+  });
+  d_t_u_form.find('#id_sale').change(function(){
+    var distributor = d_t_u_form.find('#id_distributor');
+    var area = d_t_u_form.find('#id_area');
+    var url = $(this).parents('.form-group').data('url');
+    if($(this).val()){
+      $.ajax({
+        type: "GET",
+        url: url,
+        data: {
+          sale: $(this).val()
+        }
+      }).done(function (data) {
+        if(data.error){
+          $.notify(data.error, 'success');
+        } else {
+          var distributor_list = data.distributor_list;
+          var area_list = data.area_list;
+          distributor.find('option').remove();
+          distributor.append($("<option value selected='selected'>---------</option>"));
+          for (var i = 0; i < distributor_list.length; i++) {
+            distributor.append($("<option/>", {
+              value: distributor_list[i]['id'],
+              text: distributor_list[i]['name']
+            }));
+          }
+          area.find('option').remove();
+          area.append($("<option value selected='selected'>---------</option>"));
+          for (var j = 0; j < area_list.length; j++) {
+            area.append($("<option/>", {
+              value: area_list[j]['id'],
+              text: area_list[j]['name']
+            }));
+          }
+        }
+
       });
     } else {
-      console.log('empty');
-      clientcontact_selector.find('option').remove();
-      clientcontact_selector.parents('.form-group').addClass('hide');
+      distributor.find('option').remove();
+      area.find('option').remove();
     }
-  })
+  });
+
+  $(".js-gallery").fancybox();
+
+  // Показать/скрыть календарь работ для распространителя
+  $('.js-calendar-heading').click(function(){
+    $('.js-calendar-body').slideToggle();
+  });
+
+  // Показать.скрыть panel-body по клику на panel-heading
+  $('.js-toggle-heading').click(function(){
+    $(this).next('.js-toggle-body').slideToggle();
+  });
+
+  // валидация формы настроек сайта
+  $('#js-form-setup').validate({
+    rules: {
+      meta_title: {
+        required: true
+      },
+      email: {
+        required: true,
+        email: true
+      }
+    },
+     email: {
+        required: "Вы не указали e-mail. На этот адрес будут приходит заявки с сайта",
+        email: "email должен иметь формат name@domain.com"
+      }
+  });
+
+  // валидация формы добавления отзыва
+  $('#js-form-review-add').validate({
+    rules: {
+      moderator: {
+        required: true
+      },
+      sale: {
+        required: true
+      },
+      text: {
+        required: true
+      },
+      rating: {
+        required: true
+      }
+    }
+  });
+
 });

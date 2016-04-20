@@ -1,6 +1,6 @@
 # coding=utf-8
 from django import forms
-from core.models import User
+from core.models import User, Setup
 
 __author__ = 'alexy'
 
@@ -53,4 +53,20 @@ class UserUpdateForm(forms.ModelForm):
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'patronymic': forms.TextInput(attrs={'class': 'form-control'}),
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class SetupForm(forms.ModelForm):
+    class Meta:
+        model = Setup
+        fields = '__all__'
+        widgets = {
+            'meta_title': forms.TextInput(attrs={'class': 'form-control'}),
+            'meta_keys': forms.Textarea(attrs={'class': 'form-control'}),
+            'meta_desc': forms.Textarea(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'video': forms.Textarea(attrs={'class': 'form-control'}),
+            'top_js': forms.Textarea(attrs={'class': 'form-control'}),
+            'bottom_js': forms.Textarea(attrs={'class': 'form-control'}),
+            'robots_txt': forms.Textarea(attrs={'class': 'form-control'}),
         }

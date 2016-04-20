@@ -22,10 +22,9 @@ class TicketListView(ListView):
         if user.type == 1:
             qs = Ticket.objects.all()
         elif user.type == 2:
-            qs = Ticket.objects.filter(city__moderator=user)
+            qs = Ticket.objects.filter(moderator=user.moderator_user)
         elif user.type == 5:
-            manager = Manager.objects.get(user=user)
-            qs = Ticket.objects.filter(city__moderator=manager.moderator)
+            qs = Ticket.objects.filter(moderator=user.manager_user.moderator.moderator_user)
         else:
             qs = None
         if self.request.GET.get('name'):
@@ -44,10 +43,10 @@ class TicketListView(ListView):
         if user.type == 1:
             city_qs = City.objects.all()
         elif user.type == 2:
-            city_qs = City.objects.filter(moderator=user)
+            city_qs = user.moderator_user.city.all()
         elif user.type == 5:
             manager = Manager.objects.get(user=user)
-            city_qs = City.objects.filter(moderator=manager.moderator)
+            city_qs = user.manager_user.moderator.moderator_user.city.all()
         else:
             city_qs = None
         context.update({

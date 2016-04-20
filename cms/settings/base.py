@@ -1,3 +1,4 @@
+# coding=utf-8
 import socket
 
 __author__ = 'alexy'
@@ -33,7 +34,14 @@ WSGI_APPLICATION = 'cms.wsgi.application'
 AUTH_USER_MODEL = 'core.User'
 LOGIN_URL = '/login/'
 
+LANGUAGES = (
+    ('ru', u'Русский'),
+    ('en', u'Английский'),
+)
 LANGUAGE_CODE = 'ru-ru'
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, '../locale'),
+)
 
 TIME_ZONE = 'UTC'
 

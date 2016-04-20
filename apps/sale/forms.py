@@ -1,11 +1,14 @@
 # coding=utf-8
 from django import forms
-from .models import Sale, SaleOrder, SaleMaket
+from .models import Sale, SaleOrder, SaleMaket, Review
 
 __author__ = 'alexy'
 
 
 class SaleAddForm(forms.ModelForm):
+    """
+    Форма добавления новой продажи
+    """
     class Meta:
         model = Sale
         exclude = ['user', ]
@@ -49,6 +52,9 @@ class SaleAddForm(forms.ModelForm):
 
 
 class SaleUpdateForm(forms.ModelForm):
+    """
+    Форма редактирования продажи
+    """
     class Meta:
         model = Sale
         exclude = []
@@ -89,6 +95,9 @@ class SaleUpdateForm(forms.ModelForm):
 
 
 class SaleOrderForm(forms.ModelForm):
+    """
+    Форма добавления/редактирования заказа по продаже
+    """
     class Meta:
         model = SaleOrder
         fields = '__all__'
@@ -104,6 +113,9 @@ class SaleOrderForm(forms.ModelForm):
 
 
 class SaleMaketForm(forms.ModelForm):
+    """
+    Форма добавления/редактирования макета рекламы по продаже
+    """
     class Meta:
         model = SaleMaket
         fields = ('sale', 'name', 'file', 'date')
@@ -113,3 +125,24 @@ class SaleMaketForm(forms.ModelForm):
             'file': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'date': forms.DateInput(attrs={'class': 'form-control'}),
         }
+
+
+class ReviewForm(forms.ModelForm):
+    """
+    Форма добавления/редактирования отзыва клиента(продажи) о работе модератора(исполнителя)
+    """
+    class Meta:
+        model = Review
+        fields = '__all__'
+        widgets = {
+            'moderator': forms.HiddenInput(attrs={'class': 'form-control'}),
+            'sale': forms.HiddenInput(attrs={'class': 'form-control'}),
+            'text': forms.Textarea(attrs={'class': 'form-control'}),
+            'rating': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user")
+        super(ReviewForm, self).__init__(*args, **kwargs)
+        self.fields['moderator'].initial = user.sale_user.moderator
+        self.fields['sale'].initial = user.sale_user

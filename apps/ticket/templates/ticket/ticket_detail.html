@@ -1,9 +1,9 @@
-{% extends 'cabinet_index.html' %}
+{% extends 'cabinet/cabinet_base.html' %}
 {% block content %}
   <div class="container">
     <div class="col-lg-12">
       <ol class="breadcrumb">
-        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
+        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
         <li><a href="{% url 'ticket:list' %}">Заявки с сайта</a></li>
         <li class="active">{{ object }}</li>
       </ol>

@@ -1,39 +1,66 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
-from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
-from apps.moderator.forms import ModeratorInfoForm
-from apps.moderator.models import ModeratorInfo
-from core.models import User
+from apps.moderator.models import ModeratorArea
+from apps.sale.models import Sale
+from .forms import DistributorPaymentForm
+from .models import Distributor
 
 __author__ = 'alexy'
 
 
 @ajax_request
-def moderator_remove(request):
-    if request.method == 'GET':
-        if request.GET.get('item_id'):
-            user = User.objects.get(id=int(request.GET.get('item_id')))
-            user.delete()
+def distributor_payment_update(request):
+    if request.method == 'POST':
+        print 'method=post'
+        r_user = request.POST.get('user')
+        distributor = Distributor.objects.get(user=int(r_user))
+        form = DistributorPaymentForm(request.POST, instance=distributor)
+        if form.is_valid():
+            print 'form valid'
+            form.save()
             return {
-                'success': int(request.GET.get('item_id'))
+                'success': u'Изменения успешно сохранены.'
             }
         else:
+            print 'form invalid'
+            print form
             return {
-                'error': True
+                'error': u'Проверьте правильность ввода данных.'
             }
     else:
+        print 'method != post'
         return {
-            'error': True
+            'error': u'Проверьте правильность ввода данных.'
         }
 
 
-def moderatorinfo_update(request):
-    r_moderator = request.POST.get('moderator')
-    user = User.objects.get(id=int(r_moderator))
-    moderatorinfo = ModeratorInfo.objects.get(moderator=user)
-    if request.method == 'POST':
-        form = ModeratorInfoForm(request.POST, instance=moderatorinfo)
-        if form.is_valid():
-            form.save()
-    return HttpResponseRedirect(reverse('moderator:change', args=(user.id,)))
+@ajax_request
+def get_distr_and_area_for_sale(request):
+    r_sale = request.GET.get('sale')
+    distributor_list = []
+    area_list = []
+    if r_sale:
+        sale = Sale.objects.get(pk=int(r_sale))
+        distributor_qs = Distributor.objects.filter(moderator=sale.moderator)
+        area_qs = ModeratorArea.objects.filter(moderator=sale.moderator, city=sale.city)
+        for distributor in distributor_qs:
+            distributor_list.append({
+                'id': distributor.id,
+                'name': distributor.__unicode__()
+            })
+        for area in area_qs:
+            area_list.append({
+                'id': area.id,
+                'name': area.name
+            })
+        print distributor_list
+        print area_list
+
+        return {
+            'distributor_list': distributor_list,
+            'area_list': area_list,
+        }
+    else:
+        return {
+            'error': u'Произошла ошибка. Приносим свои извинения. Обновите страницу и попробуйте ещё раз.'
+        }

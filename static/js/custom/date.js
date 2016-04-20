@@ -43,6 +43,14 @@ $(function() {
     defaultDate: 1,
     dateFormat: "dd.mm.yy"
   });
+  $('#js-form-distributor-task').find('#id_date').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
+  $('#js-form-distributor-task-add').find('#id_date').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
 
 
 });

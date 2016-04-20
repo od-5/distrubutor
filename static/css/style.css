@@ -6242,6 +6242,15 @@ body {
   background-color: #f1f1f1;
   overflow-y: scroll;
 }
+.sale-task-link-active {
+  font-weight: bold;
+}
+.js-toggle-heading {
+  cursor: pointer;
+}
+.js-toggle-body {
+  display: none;
+}
 .form-horizontal .control-label {
   text-align: left;
 }

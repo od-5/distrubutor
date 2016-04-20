@@ -1,9 +1,9 @@
-{% extends 'cabinet_index.html' %}
+{% extends 'cabinet/cabinet_base.html' %}
 {% block content %}
   <div class="container">
     <div class="col-lg-12">
       <ol class="breadcrumb">
-        <li><a href="{% url 'cabinet:cabinet' %}">Рабочий стол</a></li>
+        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
         <li class="active">Заявки с сайта</li>
       </ol>
       <div class="panel panel-default">
@@ -12,29 +12,30 @@
         </div>
         <div class="panel-body">
           <form action="" class="client-search-form" method="GET">
-            <select name="city" class="form-control">
+            <select name="city" class="form-control input-sm">
               <option value="0">Город</option>
               {% for city in city_list %}
                 <option value="{{ city.id }}" {% if city.id == r_city %}selected="selected"{% endif %}>{{ city.name }}</option>
               {% endfor %}
             </select>
-            <select name="type" class="form-control">
+            <select name="type" class="form-control input-sm">
               <option>---- Статус ----</option>
               <option value="0" {% if r_type == 0 %}selected="selected"{% endif %}>Новая заявка</option>
               <option value="1" {% if r_type == 1 %}selected="selected"{% endif %}>В обработке</option>
               <option value="2" {% if r_type == 2 %}selected="selected"{% endif %}>Отклонена</option>
             </select>
-            <input type="text" name="name" class="form-control" placeholder="Имя" value="{{ r_name|default:'' }}">
-            <input type="text" name="phone" class="form-control" placeholder="Телефон" value="{{ r_phone|default:'' }}">
-            <input type="submit" value="Искать" class="btn btn-info">
+            <input type="text" name="name" class="form-control input-sm" placeholder="Имя" value="{{ r_name|default:'' }}">
+            <input type="text" name="phone" class="form-control input-sm" placeholder="Телефон" value="{{ r_phone|default:'' }}">
+            <input type="submit" value="Искать" class="btn btn-sm btn-info">
           </form>
           <table class="table table-hover">
             <thead>
               <tr>
                 <th>Имя</th>
                 <th>Телефон</th>
+                <th>e-mail</th>
+                <th>Исполнитель</th>
                 <th>Город</th>
-                <th>Текст</th>
                 <th>Дата</th>
                 <th>Статус</th>
                 <th>&nbsp;</th>
@@ -47,8 +48,9 @@
                    class="{% if object.type == 1 %}info{% elif object.type == 2 %}danger{% else %}success{% endif %}">
                 <td><a href="{% url 'ticket:detail' object.id %}">{{ object.name|default:'Не указано' }}</a></td>
                 <td>{{ object.phone|default:'Не указано' }}</td>
+                <td>{{ object.mail|default:'Не указано' }}</td>
+                <td>{{ object.moderator|default:'Не указано' }}</td>
                 <td>{{ object.city|default:'Не указано' }}</td>
-                <td>{{ object.text|default:'Не указано' }}</td>
                 <td>{{ object.created|default:'Не указано' }}</td>
                 <td>{{ object.get_type_display|default:'Не указано' }}</td>
                 <td>
@@ -60,7 +62,7 @@
               {% endfor %}
             {% else %}
               <tr>
-                <td colspan="6"><p class="alert alert-info">Заявок нет</p></td>
+                <td colspan="8"><p class="alert alert-info">Заявок нет</p></td>
               </tr>
             {% endif %}
             </tbody>

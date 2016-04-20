@@ -4,12 +4,14 @@ from annoying.functions import get_object_or_None
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
+import datetime
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView
-from .models import Distributor
-from .forms import DistributorAddForm, DistributorUpdateForm
+from .task_calendar import get_months
+from .models import Distributor, DistributorTask
+from .forms import DistributorAddForm, DistributorUpdateForm, DistributorPaymentForm, DistributorTaskForm, DistributorTaskUpdateForm
 from core.forms import UserAddForm, UserUpdateForm
 from core.models import User
 
@@ -95,9 +97,13 @@ def distributor_update(request, pk):
     user = distributor.user
     success_msg = u''
     error_msg = u''
+    context.update(
+        get_months(),
+    )
     if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, instance=user)
         d_form = DistributorUpdateForm(request.POST, instance=distributor)
+        p_form = DistributorPaymentForm(request.POST, instance=distributor)
         if u_form.is_valid() and d_form.is_valid():
             u_form.save()
             d_form.save()
@@ -107,67 +113,198 @@ def distributor_update(request, pk):
     else:
         u_form = UserUpdateForm(instance=user)
         d_form = DistributorUpdateForm(instance=distributor)
+        p_form = DistributorPaymentForm(instance=distributor)
 
     context.update({
         'success': success_msg,
         'error': error_msg,
         'u_form': u_form,
         'd_form': d_form,
+        'p_form': p_form,
         'object': distributor
     })
     return render(request, 'distributor/distributor_update.html', context)
-#
-#
-# def moderator_view(request, pk):
-#     context = {}
-#     user = User.objects.get(pk=int(pk))
-#     success_msg = u''
-#     error_msg = u''
-#     try:
-#         moderator = Moderator.objects.get(user=user)
-#     except:
-#         moderator = Moderator(user=user)
-#         moderator.save()
-#     if request.method == 'POST':
-#         user_form = UserUpdateForm(request.POST, instance=user)
-#         if user_form.is_valid():
-#             user_form.save()
-#             success_msg += u' Изменения успешно сохранены'
-#         else:
-#             error_msg = u'Проверьте правильность ввода полей!'
-#     else:
-#         user_form = UserUpdateForm(instance=user)
-#     moderator_form = ModeratorForm(instance=moderator)
-#     context.update({
-#         'user_form': user_form,
-#         'moderator_form': moderator_form,
-#         'success': success_msg,
-#         'error': error_msg
-#     })
-#     return render(request, 'moderator/moderator_update.html', context)
-#
-#
-#
-# @ajax_request
-# def moderator_update(request):
-#     if request.method == 'POST':
-#         try:
-#             moderator = Moderator.objects.get(moderator=int(request.POST.get('moderator')))
-#         except:
-#             return {
-#                 'error': True
-#             }
-#         form = ModeratorForm(request.POST, instance=moderator)
-#         if form.is_valid():
-#             form.save()
-#             return {
-#                 'success': True
-#             }
-#         else:
-#             print form
-#             return {
-#                 'error': True
-#             }
-#     return {
-#         'error': True
-#     }
+
+
+class DistributorTaskListView(ListView):
+    model = DistributorTask
+    paginate_by = 25
+    template_name = 'distributor/task_list.html'
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.type == 1:
+            qs = DistributorTask.objects.filter(closed=False)
+        elif user.type == 2:
+            qs = DistributorTask.objects.filter(distributor__moderator=user.moderator_user, closed=False)
+        elif user.type == 4:
+            qs = DistributorTask.objects.filter(distributor=user.distributor_user, closed=False)
+        elif user.type == 5:
+            if user.manager_user.leader:
+                qs = DistributorTask.objects.filter(distributor__moderator=user.manager_user.moderator.moderator_user, closed=False)
+            else:
+                qs = DistributorTask.objects.filter(sale__manager=user.manager_user, closed=False)
+        else:
+            qs = None
+        r_city = self.request.GET.get('city')
+        r_type = self.request.GET.get('type')
+        r_company = self.request.GET.get('company')
+        r_distributor = self.request.GET.get('distributor')
+        r_date = self.request.GET.get('date')
+        if qs:
+            if r_city:
+                qs = qs.filter(sale__city__name=r_city)
+            if r_type:
+                qs = qs.filter(type=int(r_type))
+            if r_company:
+                qs = qs.filter(distributor__moderator__company__iexact=r_company)
+            if r_distributor:
+                qs = qs.filter(distributor__last_name__iexact=r_distributor)
+            if r_date:
+                qs = qs.filter(date=datetime.datetime.strptime(r_date, '%d.%m.%Y'))
+            if self.request.GET.get('date__day') and self.request.GET.get('date__month') and self.request.GET.get('date__year'):
+                day = self.request.GET.get('date__day')
+                month = self.request.GET.get('date__month')
+                year = self.request.GET.get('date__year')
+                qs = qs.filter(date__day=day, date__month=month, date__year=year)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(DistributorTaskListView, self).get_context_data()
+        context.update(
+            get_months(),
+        )
+        if self.request.GET.get('city'):
+            context.update({
+                'r_city': self.request.GET.get('city')
+            })
+        if self.request.GET.get('distributor'):
+            context.update({
+                'r_distributor': self.request.GET.get('distributor')
+            })
+        if self.request.GET.get('company'):
+            context.update({
+                'r_company': self.request.GET.get('company')
+            })
+        if self.request.GET.get('date'):
+            context.update({
+                'r_date': self.request.GET.get('date')
+            })
+        if self.request.GET.get('type'):
+            context.update({
+                'r_type': self.request.GET.get('type')
+            })
+        return context
+
+
+class DistributorTaskArchiveView(ListView):
+    model = DistributorTask
+    paginate_by = 25
+    template_name = 'distributor/task_list.html'
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.type == 1:
+            qs = DistributorTask.objects.filter(closed=True)
+        elif user.type == 2:
+            qs = DistributorTask.objects.filter(closed=True, distributor__moderator=user.moderator_user)
+        elif user.type == 4:
+            qs = DistributorTask.objects.filter(closed=True, distributor=user.distributor_user)
+        elif user.type == 5:
+            if user.manager_user.leader:
+                qs = DistributorTask.objects.filter(closed=True, distributor__moderator=user.manager_user.moderator.moderator_user)
+            else:
+                qs = DistributorTask.objects.filter(closed=True, sale__manager=user.manager_user)
+        else:
+            qs = None
+        r_city = self.request.GET.get('city')
+        r_type = self.request.GET.get('type')
+        r_company = self.request.GET.get('company')
+        r_distributor = self.request.GET.get('distributor')
+        r_date = self.request.GET.get('date')
+        if qs:
+            if r_city:
+                qs = qs.filter(sale__city__name=r_city)
+            if r_type:
+                qs = qs.filter(type=int(r_type))
+            if r_company:
+                qs = qs.filter(distributor__moderator__company__iexact=r_company)
+            if r_distributor:
+                qs = qs.filter(distributor__last_name__iexact=r_distributor)
+            if r_date:
+                qs = qs.filter(date=datetime.datetime.strptime(r_date, '%d.%m.%Y'))
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(DistributorTaskArchiveView, self).get_context_data()
+        if self.request.GET.get('city'):
+            context.update({
+                'r_city': self.request.GET.get('city')
+            })
+        if self.request.GET.get('distributor'):
+            context.update({
+                'r_distributor': self.request.GET.get('distributor')
+            })
+        if self.request.GET.get('company'):
+            context.update({
+                'r_company': self.request.GET.get('company')
+            })
+        if self.request.GET.get('date'):
+            context.update({
+                'r_date': self.request.GET.get('date')
+            })
+        if self.request.GET.get('type'):
+            context.update({
+                'r_type': self.request.GET.get('type')
+            })
+        context.update({
+            'archive': True
+        })
+        return context
+
+
+def distributor_task_add(request):
+    context = {}
+    user = request.user
+    if request.method == 'POST':
+        form = DistributorTaskForm(request.POST, user=user)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('distributor:task-list'))
+        else:
+            context.update({
+                'error': u'Проверьте правильность ввода полей'
+            })
+    else:
+        form = DistributorTaskForm(user=user)
+    context.update({
+        'form': form
+    })
+    return render(request, 'distributor/task_add.html', context)
+
+
+def distributor_task_update(request, pk):
+    context = {}
+    user = request.user
+    task = DistributorTask.objects.select_related().get(pk=int(pk))
+    if task.gpspoint_set.all():
+        context.update({
+            'point_list': task.gpspoint_set.all()
+        })
+    print task
+    if request.method == 'POST':
+        form = DistributorTaskUpdateForm(request.POST, user=user, instance=task)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('distributor:task-list'))
+        else:
+            context.update({
+                'error': u'Проверьте правильность ввода полей'
+            })
+    else:
+        form = DistributorTaskUpdateForm(user=user, instance=task)
+    context.update({
+        'form': form,
+        'object': task
+    })
+    return render(request, 'distributor/task_update.html', context)

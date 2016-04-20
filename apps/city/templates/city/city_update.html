@@ -39,7 +39,7 @@
           </p>
         </div>
         <div class="panel-body">
-          {% for moderator in object.moderator_set.all %}
+
           <table class="table">
             <thead>
               <tr>
@@ -49,6 +49,7 @@
               </tr>
             </thead>
             <tbody>
+            {% for moderator in object.moderator_set.all %}
               <tr>
                 <td>
                   <a href="{% url 'moderator:update' moderator.user.id %}"> {{ moderator.user.email|default:'' }}</a>
@@ -56,13 +57,20 @@
                 <td>{{ moderator.company|default:'Не указано' }}</td>
                 <td>{{ moderator.leader|default:'Не указан' }}</td>
               </tr>
+            {% empty %}
+              <tr>
+                <td colspan="3">
+                  <p class="alert alert-info">Для данного города модераторы ещё не назначены</p>
+                </td>
+              </tr>
+            {% endfor %}
             </tbody>
           </table>
-          {% endfor %}
+
         </div>
       </div>
       {% endif %}
-      {% if user.type == 2 %}
+      {% if user.type == 2 or user.manager_user.leader %}
       <div class="panel panel-default">
         <div class="panel-heading">
           <p class="lead text-center remove-bottom">Город {{ object.name|default:'Не указано' }}</p>

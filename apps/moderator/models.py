@@ -1,6 +1,8 @@
 # coding=utf-8
+from PIL import Image
 from django.db import models
 from apps.city.models import City
+from core.files import upload_to
 from core.models import User
 
 __author__ = 'alexy'
@@ -17,6 +19,26 @@ class Moderator(models.Model):
             return self.company
         else:
             return self.user.get_full_name()
+
+    def get_rating(self):
+        if self.review_set.count():
+            rate = 0
+            for review in self.review_set.all():
+                rate += review.rating
+            return int(round(float(rate)/self.review_set.count()))
+        else:
+            return None
+
+    def save(self, *args, **kwargs):
+        super(Moderator, self).save()
+        if self.logotype:
+            image = Image.open(self.logotype)
+            (width, height) = image.size
+            size = (200, 200)
+            "Max width and height 200"
+            if width > 200:
+                image.thumbnail(size, Image.ANTIALIAS)
+                image.save(self.logotype.path, "PNG")
 
     user = models.OneToOneField(
         to=User,
@@ -52,6 +74,11 @@ class Moderator(models.Model):
         blank=True,
         null=True
     )
+    experience = models.CharField(max_length=256, verbose_name=u'Стаж работы', blank=True, null=True)
+    description = models.TextField(verbose_name=u'Краткое описание', blank=True, null=True)
+    contact = models.TextField(verbose_name=u'Контакты', blank=True, null=True)
+    phone = models.CharField(max_length=100, verbose_name=u'Телефон', blank=True, null=True)
+    logotype = models.ImageField(verbose_name=u'Логотип', blank=True, null=True, upload_to=upload_to)
 
 
 class ModeratorArea(models.Model):

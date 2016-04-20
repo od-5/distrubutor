@@ -46,6 +46,17 @@ class ManagerListView(ListView):
                 qs = qs.filter(user__phone=self.request.GET.get('phone'))
         return qs
 
+    def get_context_data(self, **kwargs):
+        context = super(ManagerListView, self).get_context_data()
+        context.update({
+            'r_email': self.request.GET.get('email'),
+            'r_last_name': self.request.GET.get('last_name'),
+            'first_name': self.request.GET.get('first_name'),
+            'r_patronymic': self.request.GET.get('patronymic'),
+            'r_phone': self.request.GET.get('phone'),
+        })
+        return context
+
 
 def manager_add(request):
     context = {}

@@ -24,6 +24,7 @@ def showNode(node, level):
         for i in node:
             showNode(i, level + 1)
 
+
 # It's implemented in Werkzeug as follows:
 def url_fix(s, charset='utf-8'):
     """Sometimes you get an URL by a user that just isn't a real
@@ -44,6 +45,7 @@ def url_fix(s, charset='utf-8'):
     qs = urllib.quote_plus(qs, ':&=')
     return urlparse.urlunsplit((scheme, netloc, path, qs, anchor))
 
+
 def getJSON(address, key):
     """Get latitude longitude from Yandex.maps service.
     """
@@ -51,6 +53,7 @@ def getJSON(address, key):
             "?format=json&geocode=%s&key=%s" % (address, key))
     f = urllib2.urlopen(yandexGeotaggingApi)
     return f.read()
+
 
 def listGeoObject(address, key):
     response = getJSON(address, key)
@@ -64,6 +67,7 @@ def listGeoObject(address, key):
     else:
         print 'Nothing to find'
 
+
 def getpointGeoObject(address, key):
     response = getJSON(address, key)
     data = json.loads(response)['response']['GeoObjectCollection']
@@ -76,13 +80,48 @@ def getpointGeoObject(address, key):
     else:
         print 'Nothing to find'
 
+
+def getnameGeoObject(coord_x, coord_y, key):
+    print '***'
+    print coord_x
+    print coord_y
+    print '***'
+    coord_str = u'%s,%s&kind=house' % (coord_x, coord_y)
+    response = getJSON(coord_str, key)
+    data = json.loads(response)['response']['GeoObjectCollection']
+    if data['metaDataProperty']['GeocoderResponseMetaData']['found']:
+        geoObjects = data['featureMember']
+        for obj in geoObjects:
+            #showNode(obj['GeoObject'], 0);
+            yield obj['GeoObject']['metaDataProperty']['GeocoderMetaData']['text']
+            #print map(float, obj['GeoObject']['Point']['pos'].split(' '))
+    else:
+        print 'Nothing to find'
+
+
 def geocode(key, address):
     response = getpointGeoObject(address, key)
     pos = list(response)[0].split(' ')
     return pos
 
+
+def geocodeName(key, coord_x, coord_y):
+    response = getnameGeoObject(coord_x, coord_y, key)
+    # print
+    # pos = list(response)[0].split(' ')
+    pos = list(response)[0]
+    return pos
+
+
 if __name__ == '__main__':
+    print '*'*10
     address = "Волгоград Богданова 28"
     key = "ANpUFEkBAAAAf7jmJwMAHGZHrcKNDsbEqEVjEUtCmufxQMwAAAAAAAAAAAAvVrub"+\
           "VT4btztbduoIgTLAeFILaQ=="
     print geocode(key, address)
+    print '*'*10
+    coord_x = '44.519946'
+    coord_y = '48.709707'
+    key = "ANpUFEkBAAAAf7jmJwMAHGZHrcKNDsbEqEVjEUtCmufxQMwAAAAAAAAAAAAvVrub"+\
+          "VT4btztbduoIgTLAeFILaQ=="
+    print geocodeName(key, coord_x, coord_y)

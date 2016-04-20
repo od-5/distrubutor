@@ -77,9 +77,8 @@ class CityUpdateView(UpdateView):
         if user.type != 1:
             if user.type == 2:
                 moderator = user.moderator_user
-
             elif user.type == 5:
-                moderator = user.manager_user.moderator
+                moderator = user.manager_user.moderator.moderator_user
             else:
                 moderator = None
             area_qs = ModeratorArea.objects.filter(city=self.object, moderator=moderator)
@@ -91,6 +90,10 @@ class CityUpdateView(UpdateView):
             context.update({
                 'areaform': areaform,
                 'area_list': area_qs
+            })
+        else:
+            context.update({
+                'form': CityForm(instance=self.object)
             })
         return context
 

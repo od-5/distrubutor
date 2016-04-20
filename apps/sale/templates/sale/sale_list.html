@@ -16,13 +16,13 @@
           </a>
           <form action="" class="client-search-form" method="GET">
             <select name="city" class="form-control">
-              <option value="0">Город</option>
+              <option value="0">---- Город ----</option>
               {% for city in city_list %}
                 <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
               {% endfor %}
             </select>
             <select name="manager" class="form-control">
-              <option value="0">Менеджер</option>
+              <option value="0">---- Менеджер ----</option>
               {% for manager in manager_list %}
                 <option value="{{ manager.id }}" {% if manager.id == manager_id %}selected="selected"{% endif %}>{{ manager }}</option>
               {% endfor %}

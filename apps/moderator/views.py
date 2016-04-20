@@ -74,23 +74,24 @@ def moderator_add(request):
 
 def moderator_view(request, pk):
     context = {}
-    user = User.objects.get(pk=int(pk))
+    user = request.user
+    moderator_user = User.objects.get(pk=int(pk))
     success_msg = u''
     error_msg = u''
     try:
-        moderator = Moderator.objects.get(user=user)
+        moderator = Moderator.objects.get(user=moderator_user)
     except:
-        moderator = Moderator(user=user)
+        moderator = Moderator(user=moderator_user)
         moderator.save()
     if request.method == 'POST':
-        user_form = UserUpdateForm(request.POST, instance=user)
+        user_form = UserUpdateForm(request.POST, instance=moderator_user)
         if user_form.is_valid():
             user_form.save()
             success_msg += u' Изменения успешно сохранены'
         else:
             error_msg = u'Проверьте правильность ввода полей!'
     else:
-        user_form = UserUpdateForm(instance=user)
+        user_form = UserUpdateForm(instance=moderator_user)
     moderator_form = ModeratorForm(instance=moderator)
     context.update({
         'user_form': user_form,
@@ -106,25 +107,25 @@ def moderator_view(request, pk):
 def moderator_update(request):
     if request.method == 'POST':
         try:
-            moderator = Moderator.objects.get(moderator=int(request.POST.get('moderator')))
+            moderator = Moderator.objects.get(user=int(request.POST.get('user')))
         except:
             return {
                 'error': True
             }
-        form = ModeratorForm(request.POST, instance=moderator)
+        form = ModeratorForm(request.POST, request.FILES, instance=moderator)
         if form.is_valid():
             form.save()
             return {
                 'success': True
             }
         else:
-            print form
             return {
                 'error': True
             }
-    return {
-        'error': True
-    }
+    else:
+        return {
+            'error': True
+        }
 
 
 def area_add(request):
@@ -143,7 +144,6 @@ def area_update(request, pk):
     context = {}
     area = ModeratorArea.objects.get(pk=int(pk))
     if request.method == 'POST':
-        print 'POST'
         form = ModeratorAreaForm(request.POST, instance=area)
         if form.is_valid():
             form.save()
@@ -152,9 +152,7 @@ def area_update(request, pk):
             context.update({
                 'error': u'Проверьте правильность заполнения формы'
             })
-            print 'INVALID'
     else:
-        print 'NOT POST'
         form = ModeratorAreaForm(instance=area)
     context.update({
         'form': form,

@@ -9,7 +9,7 @@
       </ol>
       <div class="panel panel-default">
         <div class="panel-heading">
-          <p class="lead text-center remove-bottom">Редактирование модератора {{ object.email }}</p>
+          <p class="lead text-center remove-bottom">Редактирование модератора {{ object.user.email }}</p>
         </div>
         <div class="panel-body">
           <div class="col-lg-12">
@@ -97,19 +97,31 @@
                 </div>
               </div>
               <div id="moderator" class="tab-pane fade">
-                <div class="col-lg-6">
-                  <form action="{% url 'moderator:company' %}" role="form" id="js-form-moderator-update" method="post">
-                  {% csrf_token %}
+
+                <form action="{% url 'moderator:company' %}" role="form" id="js-form-moderator-update" enctype="multipart/form-data" method="post">
+                {% csrf_token %}
+                  <div class="col-lg-8">
                     <div class="form-group">
                       <p class="text-info lead">Информация об организации</p>
-                        {{ moderator_form.moderator }}
+                        {{ moderator_form.user }}
                     </div>
                     <div class="form-group">
                       <div class="col-lg-5">
                         {{ moderator_form.city.label_tag }}
                       </div>
                       <div class="col-lg-7">
+
+                      {% if user.type == 1 %}
                         {{ moderator_form.city }}
+                      {% else %}
+                        <div class="hide">
+                          {{ moderator_form.city }}
+                        </div>
+                        {% for city in object.city.all %}
+                          {{ city|default:'Не указано' }}
+                          {% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                      {% endif %}
                       </div>
                       <div class="clearfix"></div>
                         {{ moderator_form.city.errors }}
@@ -154,10 +166,69 @@
                       <div class="clearfix"></div>
                         {{ moderator_form.work_basis.errors }}
                     </div>
-                    <div class="clearfix"></div>
-                    <button type="submit" class="btn btn-default">Сохранить изменения</button>
-                  </form>
-                </div>
+                    <div class="panel panel-info">
+                      <div class="panel-heading js-toggle-heading">
+                        Информация для сайта <span class="caret"></span>
+                      </div>
+                      <div class="panel-body js-toggle-body">
+                        <div class="form-group">
+                          <div class="col-lg-5">
+                            {{ moderator_form.experience.label_tag }}
+                          </div>
+                          <div class="col-lg-7">
+                            {{ moderator_form.experience }}
+                          </div>
+                          <div class="clearfix"></div>
+                            {{ moderator_form.experience.errors }}
+                        </div>
+                        <div class="form-group">
+                          <div class="col-lg-5">
+                            {{ moderator_form.description.label_tag }}
+                          </div>
+                          <div class="col-lg-7">
+                            {{ moderator_form.description }}
+                          </div>
+                          <div class="clearfix"></div>
+                            {{ moderator_form.description.errors }}
+                        </div>
+                        <div class="form-group">
+                          <div class="col-lg-5">
+                            {{ moderator_form.contact.label_tag }}
+                          </div>
+                          <div class="col-lg-7">
+                            {{ moderator_form.contact }}
+                          </div>
+                          <div class="clearfix"></div>
+                            {{ moderator_form.contact.errors }}
+                        </div>
+                        <div class="form-group">
+                          <div class="col-lg-5">
+                            {{ moderator_form.phone.label_tag }}
+                          </div>
+                          <div class="col-lg-7">
+                            {{ moderator_form.phone }}
+                          </div>
+                          <div class="clearfix"></div>
+                            {{ moderator_form.phone.errors }}
+                        </div>
+                        <div class="form-group">
+                          <div class="col-lg-5">
+                            {{ moderator_form.logotype.label_tag }}
+                          </div>
+                          <div class="col-lg-7">
+                            {{ moderator_form.logotype }}
+                          </div>
+                          <div class="clearfix"></div>
+                            {{ moderator_form.logotype.errors }}
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="clearfix"></div>
+                    <button type="submit" class="btn btn-success">Сохранить изменения</button>
+                </form>
+
               </div>
               <div id="license" class="tab-pane fade">
 {#                <form action="{% url 'moderator:moderatorinfo' %}" role="form" id="js-form-moderatorinfo-update" method="post">#}

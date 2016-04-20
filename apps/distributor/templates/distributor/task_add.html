@@ -1,0 +1,69 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <ol class="breadcrumb">
+        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+        <li><a href="{% url 'distributor:task-list' %}">Список задач для распространителей</a></li>
+        <li class="active">Добавление новой задачи для распространителя</li>
+      </ol>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead text-center remove-bottom">
+            Добавление новой задачи для распространителя
+          </p>
+        </div>
+        <div class="panel-body">
+          {% if success %}
+            <p class="alert alert-success">{{ success }}</p>
+          {% elif error %}
+            <p class="alert alert-danger">{{ error }}</p>
+          {% endif %}
+          <div class="col-lg-6">
+            <form action="" role="form" id="js-form-distributor-task-add" method="post">
+              {% csrf_token %}
+
+              <div class="form-group" data-url="{% url 'distributor:get_distr_and_area_for_sale' %}">
+                <div class="col-lg-5">{{ form.sale.label_tag }}</div>
+                <div class="col-lg-7">{{ form.sale }}</div>
+                {{ form.sale.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group hide">
+                <div class="col-lg-5">{{ form.distributor.label_tag }}</div>
+                <div class="col-lg-7">{{ form.distributor }}</div>
+                {{ form.distributor.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group hide">
+                <div class="col-lg-5">{{ form.area.label_tag }}</div>
+                <div class="col-lg-7">{{ form.area }}</div>
+                {{ form.area.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">{{ form.type.label_tag }}</div>
+                <div class="col-lg-7">{{ form.type }}</div>
+                {{ form.type.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">{{ form.material_count.label_tag }}</div>
+                <div class="col-lg-7">{{ form.material_count }}</div>
+                {{ form.material_count.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">{{ form.date.label_tag }}</div>
+                <div class="col-lg-7">{{ form.date }}</div>
+                {{ form.date.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <button type="submit" class="btn btn-success">Сохранить</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

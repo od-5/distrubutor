@@ -81,3 +81,26 @@ class SaleMaket(models.Model):
     name = models.CharField(max_length=256, verbose_name=u'Название')
     file = models.FileField(verbose_name=u'Файл макета', upload_to=upload_to)
     date = models.DateField(verbose_name=u'Дата размещения макета')
+
+
+class Review(models.Model):
+    class Meta:
+        verbose_name = u'Отзыв'
+        verbose_name_plural = u'Отзывы'
+        app_label = 'sale'
+
+    def __unicode__(self):
+        return u'Клиента %s, оценка %d' % (self.sale, self.rating)
+
+    RATING_CHOICES = (
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5),
+    )
+
+    moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор')
+    sale = models.ForeignKey(to=Sale, verbose_name=u'Клиент')
+    rating = models.PositiveSmallIntegerField(verbose_name=u'Оценка', choices=RATING_CHOICES, default=5)
+    text = models.TextField(verbose_name=u'Текст сообщения', blank=True, null=True)

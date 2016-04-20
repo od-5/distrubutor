@@ -1,0 +1,116 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block extra_js %}
+<script src="//api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+<script>
+ymaps.ready(init);
+
+function init() {
+  var myMap = new ymaps.Map("map", {
+    center: ['{{ point_list.first.coord_x|safe }}', '{{ point_list.first.coord_y|safe }}'],
+    zoom: 13
+  }, {
+    searchControlProvider: 'yandex#search'
+  });
+  ymaps.route([
+    {% for i in point_list %}'{{ i.name|safe }}',{% endfor %}
+  ]).then(function (route) {
+    myMap.geoObjects.add(route);
+    var points = route.getWayPoints();
+    points.options.set('preset', 'islands#redStretchyIcon');
+  }, function (error) {
+    alert('Возникла ошибка: ' + error.message);
+  });
+};
+</script>
+{% endblock %}
+{% block content %}
+<div class="container dashboard">
+  <div class="col-lg-9">
+    <div class="panel panel-info">
+      <div class="panel-heading js-toggle-heading">
+        <p class="lead text-center remove-bottom">Оставьте ваш отзыв о исполнителе <span class="caret"></span></p>
+      </div>
+      <div class="panel-body js-toggle-body">
+        <form action="{% url 'sale:review-add' %}" id="js-form-review-add" method="post" role="form">
+          {% csrf_token %}
+          {{ form.moderator }}
+          {{ form.sale }}
+          <div class="form-group">
+            <div class="col-lg-2">{{ form.rating.label_tag }}</div>
+            <div class="col-lg-2">{{ form.rating }}</div>
+            {{ form.rating.errors }}
+            <div class="clearfix"></div>
+          </div>
+          <div class="form-group">
+            <div class="col-lg-2">{{ form.text.label_tag }}</div>
+            <div class="col-lg-10">{{ form.text }}</div>
+            {{ form.text.errors }}
+            <div class="clearfix"></div>
+          </div>
+          <div class="text-center">
+            <input type="submit" class="btn btn-success" value="Отправить">
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <p class="lead text-center remove-bottom">Отчёт от {{ current_task.date }}</p>
+      </div>
+      <div class="panel-body">
+        <div class="panel panel-success">
+          <div class="panel-heading js-toggle-heading">
+            Маршрут распространения <span class="caret"></span>
+          </div>
+          <div class="panel-body js-toggle-body">
+            <div id="map" style="width:100%; height:500px"></div>
+          </div>
+        </div>
+        {% if point_list %}
+        <table class="table">
+          <thead>
+            <tr>
+              <th>адрес</th>
+              <th>время</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for point in point_list %}
+          {% for photo in point.pointphoto_set.all %}
+          <tr>
+            <td>{{ photo.name|default:'Не указано' }}</td>
+            <td>{{ photo.timestamp|default:'Не указано' }}</td>
+            <td>
+              <a href="{{ photo.photo.url }}" rel="group" class="js-gallery" title="{{ photo.name }}, время {{ photo.timestamp }}">
+                <span class="glyphicon glyphicon-zoom-in"></span>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+          {% endfor %}
+          </tbody>
+        </table>
+      {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <p class="lead remove-bottom">Фотоотчёты</p>
+      </div>
+      <div class="panel-body">
+        {% for task in task_list %}
+        <p><a href="?task={{ task.id  }}" class="sale-task-link{% if task.id == current_task.id %}-active{% endif %}">{{ task.date }}</a></p>
+        {% empty %}
+        <p class="alert alert-info">
+          Отчётов не найдено
+        </p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

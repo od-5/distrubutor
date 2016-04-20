@@ -123,13 +123,11 @@ class Setup(models.Model):
     def __unicode__(self):
         return u'Настройки сайта'
 
-    meta_title = models.TextField(verbose_name=u'Заголовок сайта', blank=True, null=True)
+    meta_title = models.CharField(verbose_name=u'Заголовок сайта', max_length=256)
     meta_keys = models.TextField(verbose_name=u'Ключевые слова', blank=True, null=True)
     meta_desc = models.TextField(verbose_name=u'Мета описание', blank=True, null=True)
-    email = models.EmailField(verbose_name=u'e-mail для приёма заявок', blank=True)
-    phone = models.CharField(verbose_name=u'Контактный телефон', blank=True, null=True, max_length=20)
-    video_find = models.CharField(verbose_name=u'Видео: как найти наш офис', blank=True, null=True, max_length=256)
-    video = models.TextField(verbose_name=u'HTML-код видео: что получать наши клиенты', blank=True, null=True)
+    email = models.EmailField(verbose_name=u'e-mail для приёма заявок')
+    video = models.TextField(verbose_name=u'HTML-код видео', blank=True, null=True)
     top_js = models.TextField(verbose_name=u'Скрипты в <HEAD>..</HEAD>', blank=True)
     bottom_js = models.TextField(verbose_name=u'Скрипты перед закрывающим </BODY>', blank=True)
     robots_txt = models.TextField(verbose_name=u'robots.txt', blank=True, null=True)

@@ -1,6 +1,7 @@
 # coding=utf-8
 from django.db import models
 from apps.city.models import City
+from apps.moderator.models import Moderator
 from core.base_model import Common
 
 __author__ = 'alexy'
@@ -25,19 +26,22 @@ class Ticket(Common):
     )
 
     city = models.ForeignKey(to=City, verbose_name=u'Город', blank=True, null=True)
+    moderator = models.ForeignKey(to=Moderator, verbose_name=u'Исполнитель', blank=True, null=True)
     name = models.CharField(
         verbose_name=u'Имя',
         max_length=256)
+    mail = models.EmailField(
+        verbose_name=u'E-mail',
+        max_length=20,
+        blank=True,
+        null=True
+    )
     phone = models.CharField(
         verbose_name=u'Телефон',
         max_length=20,
         blank=True,
         null=True
     )
-    text = models.TextField(
-        verbose_name=u'Сообщение клиента',
-        blank=True,
-        null=True)
     type = models.PositiveSmallIntegerField(
         verbose_name=u'Статус заявки',
         choices=TICKET_TYPE_CHOICE,

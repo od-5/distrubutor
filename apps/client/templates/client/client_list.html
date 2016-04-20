@@ -52,10 +52,19 @@
                 <td>{{ object.moderator|default:'Не указано' }}</td>
                 <td data-manager-id="{{ object.manager.id }}" data-manager-name="{{ object.manager }}" data-url="{% url 'client:get_available_manager_list' %}">
                   <span class="js-manager-name">{{ object.manager|default:'Не указано' }}</span>
+                  {% if user.type == 5 %}
+                    {% if user.manager_user.leader %}
                   <br>
                   <a href="#reassign-manager" id="js-reassign-manager-{{ object.id }}" class="js-reassign-manager btn btn-warning btn-sm">
                     <span class="glyphicon glyphicon-refresh"></span> переназначить
                   </a>
+                    {% endif %}
+                  {% elif user.type == 1 or user.type == 2 %}
+                  <br>
+                  <a href="#reassign-manager" id="js-reassign-manager-{{ object.id }}" class="js-reassign-manager btn btn-warning btn-sm">
+                    <span class="glyphicon glyphicon-refresh"></span> переназначить
+                  </a>
+                  {% endif %}
                 </td>
                 <td>{{ object.city|default:'Не указано' }}</td>
                 <td>

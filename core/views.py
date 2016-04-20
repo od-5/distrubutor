@@ -5,29 +5,42 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import UpdateView
-from core.forms import UserUpdateForm
+from core.forms import UserUpdateForm, SetupForm
 from core.models import User, Setup
 
 __author__ = 'alexy'
 
 
-def cms_login(request):
+def cms_login(request, usertype=None):
     error = None
-    if request.method == "POST":
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                return HttpResponseRedirect(reverse('dashboard:index'))
-                # return HttpResponseRedirect('/')
-            else:
-                error = u'Пользователь заблокирован'
-        else:
-            error = u'Вы ввели неверный e-mail или пароль'
-    context = {'error': error}
-    return render(request, 'core/login.html', context)
+    if request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('dashboard:index'))
+    else:
+        if request.method == "POST":
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            try:
+                user = authenticate(username=username, password=password)
+                if user is not None:
+                    if user.is_active:
+                        login(request, user)
+                        return HttpResponseRedirect(reverse('dashboard:index'))
+                        # return HttpResponseRedirect('/')
+                    else:
+                        error = u'Пользователь заблокирован'
+                else:
+                    error = u'Вы ввели неверный e-mail или пароль'
+            except:
+                if usertype == 2:
+                    error = u'Модератора с таким e-mail не зарегистрировано в системе. Проверьте правильность ввода даных.'
+                elif usertype == 3:
+                    error = u'Клиента с таким e-mail не зарегистрировано в системе. Проверьте правильность ввода даных.'
+                elif usertype == 4:
+                    error = u'Исполнителя с таким e-mail не зарегистрировано в системе. Проверьте правильность ввода даных.'
+                elif usertype == 5:
+                    error = u'Менеджера с таким e-mail не зарегистрировано в системе. Проверьте правильность ввода даных.'
+        context = {'error': error}
+        return render(request, 'core/login.html', context)
 
 
 @ajax_request
@@ -53,12 +66,35 @@ def password_change(request):
         }
 
 
+def setup_view(request):
+    context = {}
+    try:
+        instance = Setup.objects.first()
+    except:
+        instance = Setup(meta_title=u'Рекламное агенство Дружба', email=u'direktor@vlifte.pro')
+        instance.save()
+    if request.method == 'POST':
+        form = SetupForm(request.POST, instance=instance)
+        if form.is_valid():
+            form.save()
+        else:
+            context.update({
+                'error': u'Проверьте правильность ввода данных'
+            })
+    else:
+        form = SetupForm(instance=instance)
+    context.update({
+        'form': form
+    })
+    return render(request, 'core/site_setup.html', context)
+
+
 def get_robots_txt(request):
     """
     Функция отображения robots.txt
     """
-    setup = Setup.objects.all().first()
     try:
+        setup = Setup.objects.first()
         content = setup.robots_txt
     except:
         content = u'User-agent: *'

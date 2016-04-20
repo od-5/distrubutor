@@ -10,7 +10,7 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           <p class="lead text-center remove-bottom">
-            Редактирование распространителя
+            Редактирование распространителя {{ object }}
           </p>
         </div>
         <div class="panel-body">
@@ -28,70 +28,7 @@
             <div id="user" class="tab-pane fade in active">
               <br>
               <div class="col-lg-6">
-                <form action="" role="form" id="js-form-distributor-update" method="post">
-                  {% csrf_token %}
-                  {{ d_form.user }}
-                  {{ d_form.user.errors }}
-                  <div class="form-group {% if not user.type == 1 %}hide{% endif %}">
-                    <div class="col-lg-5">{{ d_form.moderator.label_tag }}</div>
-                    <div class="col-lg-7">{{ d_form.moderator }}</div>
-                    {{ d_form.moderator.errors }}
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-lg-5">
-                      {{ u_form.email.label_tag }}
-                    </div>
-                    <div class="col-lg-7">
-                      {{ u_form.email }}
-                    </div>
-                    {{ u_form.email.errors }}
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-lg-5">
-                      {{ u_form.last_name.label_tag }}
-                    </div>
-                    <div class="col-lg-7">
-                      {{ u_form.last_name }}
-                    </div>
-                    {{ u_form.last_name.errors }}
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-lg-5">
-                      {{ u_form.first_name.label_tag }}
-                    </div>
-                    <div class="col-lg-7">
-                      {{ u_form.first_name }}
-                    </div>
-                    {{ u_form.first_name.errors }}
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-lg-5">
-                      {{ u_form.patronymic.label_tag }}
-                    </div>
-                    <div class="col-lg-7">
-                      {{ u_form.patronymic }}
-                    </div>
-                    {{ u_form.patronymic.errors }}
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-lg-5">
-                      {{ u_form.phone.label_tag }}
-                    </div>
-                    <div class="col-lg-7">
-                      {{ u_form.phone }}
-                    </div>
-                    {{ u_form.phone.errors }}
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="text-center">
-                    <button type="submit" class="btn btn-default">Сохранить</button>
-                  </div>
-                </form>
+                {% include 'distributor/__includes/distributor_update_form.html' %}
               </div>
               <div class="col-lg-6">
                 <p class="text-info lead">Смена пароля</p>
@@ -100,15 +37,75 @@
             </div>
             <div id="tasks" class="tab-pane fade">
               <br>
-              Задачи
+              <div class="col-lg-12">
+                {% load tasks %}
+                {% if months %}
+                  <div class="add-bottom panel panel-success">
+                    <div class="panel-heading js-calendar-heading">
+                      Календарь монтажных работ <span class="caret"></span>
+                    </div>
+                    <div class="panel-body js-calendar-body">
+                  {% for date in months %}
+                      <div class="calendar col-lg-3 add-bottom">
+                      {% calendar object.user date.year date.month %}
+                      </div>
+                  {% endfor %}
+                      <div class="clearfix"></div>
+                    </div>
+                  </div>
+                {% endif %}
+              </div>
+              {% if object.distributortask_set.all %}
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Город</th>
+                    <th>Район</th>
+                    <th>Тип задачи</th>
+                    <th>Дата задачи</th>
+                    <th>кол-во рекламных материалов, шт</th>
+                    <th>Стоимость работы, руб</th>
+                    <th>&nbsp;</th>
+                  </tr>
+                </thead>
+                <tbody class="js-list">
+                {% for task in object.distributortask_set.all %}
+                  <tr data-id="{{ task.id }}" data-name="{{ task }}" data-model="DistributorTask" id="id_DistributorTask_{{ task.id }}">
+                    <td><a href="{% url 'distributor:task-update' task.id %}" class="btn btn-sm btn-info"><span class="glyphicon glyphicon-edit"></span> редактировать</a></td>
+                    <td>{{ task.sale.city|default:'Не указано' }}</td>
+                    <td>{{ task.area|default:'Не указано' }}</td>
+                    <td>{{ task.get_type_display|default:'Не указано' }}</td>
+                    <td>{{ task.date|default:'Не указано' }}</td>
+                    <td>{{ task.material_count|default:'Не указано' }}</td>
+                    <td>{{ task.total_cost|default:'Не указано' }}</td>
+                    <td>
+                      <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ task.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
+                        <span class="glyphicon glyphicon-remove"></span> Удалить
+                      </a>
+                    </td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="8">
+                      <p class="alert alert-info">Задач не найдено</p>
+                    </td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+              {% endif %}
             </div>
             <div id="payment" class="tab-pane fade">
-              <br>
-              Стоимость работ
+              <div class="col-lg-6">
+                <br>
+                {% include 'distributor/__includes/distributor_payment_form.html' %}
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+  {% include '__modal/js_ajax_remove_form.html' %}
 {% endblock %}
