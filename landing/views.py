@@ -21,14 +21,16 @@ class LandingView(TemplateView):
         try:
             # self.request.session['current_city']
             current_city = City.objects.get(pk=int(self.request.session['current_city']))
+            moderator_qs = current_city.moderator_set.all()
         except:
             current_city = City.objects.first()
+            moderator_qs = Moderator.objects.all()
             self.request.session['current_city'] = None
         # current_city = City.objects.get(pk=int(self.request.session['current_city']))
         setup = Setup.objects.first()
         context = {
             'city_list': City.objects.all(),
-            'moderator_list': current_city.moderator_set.all(),
+            'moderator_list': moderator_qs,
             # 'moderator_list': Moderator.objects.all(),
             'current_city': current_city,
             'SETUP': setup
