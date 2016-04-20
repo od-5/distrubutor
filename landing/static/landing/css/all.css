@@ -897,6 +897,7 @@ label.error {
 	padding: 50px 67px 43px;
 }
 .city-input-text {
+    display: none;
 	margin: 0 0 36px;
 	color: #fd5279;
 	font-size: 14px;
