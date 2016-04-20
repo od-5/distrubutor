@@ -6,16 +6,16 @@
   <meta name="keywords" content="{{ SETUP.meta_keys|default:'' }}">
   <meta name="description" content="{{ SETUP.meta_desc|default:'' }}">
   <meta name="format-detection" content="telephone=no">
-  <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
+{#  <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />#}
   <title>{{ SETUP.meta_title|default:'Заголовок сайта' }}</title>
   <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/all.css' %}" />
-  <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/jquery.bxslider.css' %}" />
+  <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/owl.carousel.css' %}" />
   <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/jquery.fancybox.css' %}" />
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <script src="{% static 'landing/js/jquery-1.9.1.min.js' %}"></script>
   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-  <script src="{% static 'landing/js/jquery.bxslider.js' %}"></script>
+  <script src="{% static 'landing/js/owl.carousel.min.js' %}"></script>
   <script src="{% static 'landing/js/jquery.validate.js' %}"></script>
   <script src="{% static 'landing/js/jquery.form.js' %}"></script>
   <script src="{% static 'landing/js/jquery.fancybox.js' %}"></script>
@@ -86,7 +86,7 @@
           <div class="header-city">Выберите город: <a href="">{{ current_city.name|default:'Не указано' }}</a></div>
           <div class="header-enter">
             <a href="{% url 'dashboard:index' %}" class="enter-link {% if not user.is_authenticated %}enter-link-top{% endif %}">
-            {% if user.is_authenticated %}{{ user.email }}{% else %} Войти как...{% endif %}
+              {% if user.is_authenticated %}{{ user.email }}{% else %} Войти как...{% endif %}
             </a>
             <div class="header-enter-hidden">
               <a href="{% url 'login-client' %}" class="enter-link">Клиент</a>
@@ -103,7 +103,7 @@
           и распространению рекламной продукции</span></div>
           <h1 class="main-title">
             <span class="main-title1">Эффективная</span>
-            <span class="main-title2">рекламная кампания</span>
+            <span class="main-title2">рекламная компания</span>
             <span class="main-title3">за копе<span>й</span>ки</span>
           </h1>
           <div class="header-main-text">Рекламные плакаты на городских досках объявлений и листовки в почтовых ящиках</div>
@@ -198,19 +198,20 @@
         <h2>Выберите исполнителя</h2>
         <div class="title-min">По распространению листовок по почтовым ящикам или расклейки<br>
         рекламных объявлений по своему городу <a href="#popup4" class="info-city fancybox">{{ current_city.name|default:'Не указано' }}</a></div>
-        {% if moderator_list %}
+      {% if moderator_list %}
         <div class="info-slider">
           <div class="info-top">
-            <!--<span class="info-index">1</span> из <span class="info-all">250</span>-->
+            <span class="info-index">1</span> из <span class="info-all">{{ moderator_list.count }}</span>
           </div>
-          <ul class="i-slider">
+          <div class="owl-carousel">
           {% for moderator in moderator_list %}
-            <li class="info-slide">
+            <div class="info-slide">
               <aside class="info-left">
                 <div class="info-logo">
                 {% if moderator.logotype %}
                   <img src="{{ moderator.logotype.url }}" alt="{{ moderator.company|default:'' }}">
                 {% endif %}
+{#                  <img src="{% static 'landing/images/media/info/1.jpg' %}" alt="">#}
                 </div>
                 <div class="info-form-title">Заполните онлайн-заявку</div>
                 <div class="info-form-text">И получите предложение <br>по рекламе от: <br>
@@ -264,29 +265,34 @@
                   <dd>{{ moderator.phone|default:'' }}</dd>
                 </dl>
                 <div class="info-reviews">
-                  <div class="info-reviews-title">Отзывы <span>{{ moderator.review_set.count }}</span></div>
-                {% for review in moderator.review_set.all %}
-                  <div class="review-item">
-                    <div class="review-author">{{ review.sale.user.get_full_name|default:'' }}</div>
-                    <div class="review-text">
-                      {{ review.text|safe|linebreaksbr|default:'' }}
-                    </div>
+                  <div class="info-reviews-title">Отзывы <span>80</span></div>
+
+                  <div class="review-item review-pink">
+                    <div class="review-author">Василий</div>
+                    <div class="review-text">Давно выяснено, что при оценке дизайна и композиции читаемый
+                    текст мешает сосредоточиться. Lorem Ipsum используют потому, что тот обеспечивает более
+                    или менее стандартное заполнение шаблона, а также реальное</div>
                   </div>
-                {% empty %}
-                  <div class="info-reviews-text">Нет отзывов</div>
-                {% endfor %}
+                  <div class="review-item">
+                    <div class="review-author">Василий</div>
+                    <div class="review-text">Давно выяснено, что при оценке дизайна и композиции читаемый
+                    текст мешает сосредоточиться. Lorem Ipsum используют потому, что тот обеспечивает более
+                    или менее стандартное заполнение шаблона, а также реальное</div>
+                  </div>
+                  <div class="review-item review-pink">
+                    <div class="review-author">Василий</div>
+                    <div class="review-text">Давно выяснено, что при оценке дизайна и композиции читаемый
+                    текст мешает сосредоточиться. Lorem Ipsum используют потому, что тот обеспечивает более
+                    или менее стандартное заполнение шаблона, а также реальное</div>
+                  </div>
+                  <a href="" class="review-button">Показать ещё</a>
                 </div>
               </div>
-            </li>
-          {% empty %}
+            </div>
           {% endfor %}
-          </ul>
-        </div>
-        {% else %}
-          <div>
-          Нет исполнителей по данному городу
           </div>
-        {% endif %}
+        </div>
+      {% endif %}
       </div>
     </section>
     <section class="bottom">
@@ -328,7 +334,7 @@
     <!--   Всплывающие окна  -->
     <div id="popup">
       <div class="video-popup">
-        {{ SETUP.video|safe }}
+        <iframe width="800" height="600" src="https://www.youtube.com/embed/Y1wWqG4UiTY" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
     <div id="popup2" class="popup">
@@ -487,7 +493,7 @@
     <div id="popup5" class="popup">
       <div class="form-block">
         <div class="form-title">Оставить заявку</div>
-        <form action="">
+        <form action="" class="ticket-form">
           <fieldset>
             <input type="text" name="name" class="input required" placeholder="Ваше имя *">
             <input type="text" name="mail" class="input required" placeholder="Ваш email *">
@@ -503,6 +509,7 @@
         <a href="" class="close"></a>
         <div class="tablet-popup">
           <div class="tablet-video">
+{#            <iframe width="695" height="522" src="https://www.youtube.com/embed/Y1wWqG4UiTY" frameborder="0" allowfullscreen></iframe>#}
             {{ SETUP.video|safe|default:'' }}
           </div>
         </div>

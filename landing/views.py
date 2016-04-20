@@ -26,8 +26,8 @@ class LandingView(TemplateView):
         setup = Setup.objects.first()
         context = {
             'city_list': City.objects.all(),
-            # 'moderator_list': current_city.moderator_set.all(),
-            'moderator_list': Moderator.objects.all(),
+            'moderator_list': current_city.moderator_set.all(),
+            # 'moderator_list': Moderator.objects.all(),
             'current_city': current_city,
             'SETUP': setup
         }

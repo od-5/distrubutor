@@ -19,8 +19,8 @@ else:
     DATABASES = {
         'default': {
              'ENGINE': 'django.db.backends.mysql',
-             'NAME': 'enjoyafrru_distributor',
-             'USER': 'enjoyafrru_distributor',
+             'NAME': 'enjoyafrru_distr',
+             'USER': 'enjoyafrru_distr',
              'PASSWORD': 'alena2010',
              'HOST': 'localhost',
              'PORT': '',
