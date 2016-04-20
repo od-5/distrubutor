@@ -19,13 +19,12 @@ class LandingView(TemplateView):
 
     def get_context_data(self, **kwargs):
         try:
-            self.request.session['current_city']
+            # self.request.session['current_city']
+            current_city = City.objects.get(pk=int(self.request.session['current_city']))
         except:
-            try:
-                self.request.session['current_city'] = City.objects.first().id
-            except:
-                self.request.session['current_city'] = None
-        current_city = City.objects.get(pk=int(self.request.session['current_city']))
+            current_city = City.objects.first()
+            self.request.session['current_city'] = None
+        # current_city = City.objects.get(pk=int(self.request.session['current_city']))
         setup = Setup.objects.first()
         context = {
             'city_list': City.objects.all(),
