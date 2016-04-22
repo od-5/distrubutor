@@ -21,11 +21,13 @@ class Moderator(models.Model):
             return self.user.get_full_name()
 
     def get_rating(self):
-        if self.review_set.count():
+        qs = self.review_set.filter(rating__isnull=False)
+        count = qs.count()
+        if count > 0:
             rate = 0
-            for review in self.review_set.all():
+            for review in qs:
                 rate += review.rating
-            return int(round(float(rate)/self.review_set.count()))
+            return int(round(float(rate)/count))
         else:
             return None
 
@@ -93,3 +95,16 @@ class ModeratorArea(models.Model):
     city = models.ForeignKey(to=City, verbose_name=u'Город')
     moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор')
     name = models.CharField(max_length=100, verbose_name=u'Название')
+
+
+class ModeratorAction(models.Model):
+    class Meta:
+        verbose_name = u'Вид деятельности'
+        verbose_name_plural = u'Виды деятельности'
+        app_label = 'moderator'
+
+    def __unicode__(self):
+        return self.name
+
+    moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор')
+    name = models.CharField(verbose_name=u'Название', max_length=256)

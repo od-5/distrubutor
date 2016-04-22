@@ -34,7 +34,8 @@ function init() {
         <form action="{% url 'sale:review-add' %}" id="js-form-review-add" method="post" role="form">
           {% csrf_token %}
           {{ form.moderator }}
-          {{ form.sale }}
+          {{ form.name }}
+          {{ form.mail }}
           <div class="form-group">
             <div class="col-lg-2">{{ form.rating.label_tag }}</div>
             <div class="col-lg-2">{{ form.rating }}</div>

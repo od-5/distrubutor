@@ -177,17 +177,6 @@ $(function() {
       company: {
         required: true
       }
-    },
-    submitHandler: function(e) {
-      $('#js-form-moderator-update').ajaxSubmit({
-          success: function(data){
-            if (data.success) {
-              $.notify('Изменения успешно сохранены', 'success');
-            } else {
-              $.notify('Произошла ошибка! Проверьте правильность введённых данных', 'error');
-            }
-          }
-      });
     }
   });
 
@@ -320,6 +309,9 @@ $(function() {
       sale: {
         required: true
       },
+      type: {
+        required: true
+      },
       date_start: {
         required: true
       },
@@ -328,6 +320,11 @@ $(function() {
       },
       cost: {
         required: true
+      }
+    },
+    messages: {
+      type: {
+        required: '* вы не выбрали тип заказа!'
       }
     }
   });
@@ -444,7 +441,7 @@ $(function() {
         required: true
       },
       manager: {
-        required: true,
+        required: true
       },
       city: {
         required: true
@@ -821,10 +818,10 @@ $(function() {
       sale: {
         required: true
       },
-      area: {
+      order: {
         required: true
       },
-      type: {
+      area: {
         required: true
       },
       material_count: {
@@ -845,6 +842,7 @@ $(function() {
   d_t_a_form.find('#id_sale').change(function(){
     var distributor = d_t_a_form.find('#id_distributor');
     var area = d_t_a_form.find('#id_area');
+    var order = d_t_a_form.find('#id_order');
     var url = $(this).parents('.form-group').data('url');
     if($(this).val()){
       $.ajax({
@@ -859,6 +857,7 @@ $(function() {
         } else {
           var distributor_list = data.distributor_list;
           var area_list = data.area_list;
+          var order_list = data.order_list;
           distributor.find('option').remove();
           distributor.append($("<option value selected='selected'>---------</option>"));
           for (var i = 0; i < distributor_list.length; i++) {
@@ -875,17 +874,28 @@ $(function() {
               text: area_list[j]['name']
             }));
           }
+          order.find('option').remove();
+          order.append($("<option value selected='selected'>---------</option>"));
+          for (var k = 0; k < order_list.length; k++) {
+            order.append($("<option/>", {
+              value: order_list[k]['id'],
+              text: order_list[k]['name']
+            }));
+          }
         }
 
       });
 
       distributor.parents('.form-group').removeClass('hide');
       area.parents('.form-group').removeClass('hide');
+      order.parents('.form-group').removeClass('hide');
     } else {
       distributor.find('option').remove();
       area.find('option').remove();
+      order.find('option').remove();
       distributor.parents('.form-group').addClass('hide');
       area.parents('.form-group').addClass('hide');
+      order.parents('.form-group').addClass('hide');
     }
   });
 
@@ -899,12 +909,15 @@ $(function() {
       sale: {
         required: true
       },
+      order: {
+        required: true
+      },
       area: {
         required: true
       },
-      type: {
-        required: true
-      },
+      //type: {
+      //  required: true
+      //},
       material_count: {
         required: true,
         number: true
@@ -923,6 +936,7 @@ $(function() {
   d_t_u_form.find('#id_sale').change(function(){
     var distributor = d_t_u_form.find('#id_distributor');
     var area = d_t_u_form.find('#id_area');
+    var order = d_t_u_form.find('#id_order');
     var url = $(this).parents('.form-group').data('url');
     if($(this).val()){
       $.ajax({
@@ -937,6 +951,7 @@ $(function() {
         } else {
           var distributor_list = data.distributor_list;
           var area_list = data.area_list;
+          var order_list = data.order_list;
           distributor.find('option').remove();
           distributor.append($("<option value selected='selected'>---------</option>"));
           for (var i = 0; i < distributor_list.length; i++) {
@@ -953,12 +968,21 @@ $(function() {
               text: area_list[j]['name']
             }));
           }
+          order.find('option').remove();
+          order.append($("<option value selected='selected'>---------</option>"));
+          for (var k = 0; k < order_list.length; k++) {
+            area.append($("<option/>", {
+              value: order_list[k]['id'],
+              text: order_list[k]['name']
+            }));
+          }
         }
 
       });
     } else {
       distributor.find('option').remove();
       area.find('option').remove();
+      order.find('option').remove();
     }
   });
 
@@ -985,10 +1009,12 @@ $(function() {
         email: true
       }
     },
-     email: {
+    messages: {
+      email: {
         required: "Вы не указали e-mail. На этот адрес будут приходит заявки с сайта",
         email: "email должен иметь формат name@domain.com"
       }
+    }
   });
 
   // валидация формы добавления отзыва
@@ -997,14 +1023,24 @@ $(function() {
       moderator: {
         required: true
       },
-      sale: {
+      name: {
         required: true
+      },
+      mail: {
+        required: true,
+        mail: true
       },
       text: {
         required: true
       },
       rating: {
         required: true
+      }
+    },
+    messages: {
+      mail: {
+        required: "Вы не указали ваш e-mail.",
+        email: "e-mail должен иметь формат name@domain.com"
       }
     }
   });

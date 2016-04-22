@@ -2,6 +2,27 @@ body {
   background-color: #f1f1f1;
   overflow-y: scroll;
 }
+.add-row,
+.delete-row {
+  color: #333;
+  font-size: 12px;
+}
+.add-row {
+  display: block;
+  text-align: right;
+  margin-bottom: 20px;
+}
+.add-row span {
+  color: #009900;
+}
+.delete-row {
+  position: absolute;
+  top: 8px;
+  right: 0;
+}
+.delete-row span {
+  color: #cc0000;
+}
 .sale-task-link-active {
   font-weight: bold;
 }

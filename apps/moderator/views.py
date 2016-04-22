@@ -8,8 +8,9 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView
-from .forms import ModeratorForm, ModeratorAreaForm
-from .models import Moderator, ModeratorArea
+from django.forms.models import inlineformset_factory, modelformset_factory
+from .forms import ModeratorForm, ModeratorAreaForm, ModeratorActionForm
+from .models import Moderator, ModeratorArea, ModeratorAction
 from core.forms import UserAddForm, UserUpdateForm
 from core.models import User
 
@@ -72,9 +73,8 @@ def moderator_add(request):
     return render(request, 'moderator/moderator_add.html', context)
 
 
-def moderator_view(request, pk):
+def moderator_user_update(request, pk):
     context = {}
-    user = request.user
     moderator_user = User.objects.get(pk=int(pk))
     success_msg = u''
     error_msg = u''
@@ -84,18 +84,44 @@ def moderator_view(request, pk):
         moderator = Moderator(user=moderator_user)
         moderator.save()
     if request.method == 'POST':
-        user_form = UserUpdateForm(request.POST, instance=moderator_user)
-        if user_form.is_valid():
-            user_form.save()
+        form = UserUpdateForm(request.POST, instance=moderator_user)
+        if form.is_valid():
+            form.save()
             success_msg += u' Изменения успешно сохранены'
         else:
             error_msg = u'Проверьте правильность ввода полей!'
     else:
-        user_form = UserUpdateForm(instance=moderator_user)
-    moderator_form = ModeratorForm(instance=moderator)
+        form = UserUpdateForm(instance=moderator_user)
     context.update({
-        'user_form': user_form,
-        'moderator_form': moderator_form,
+        'form': form,
+        'success': success_msg,
+        'error': error_msg,
+        'object': moderator
+    })
+    return render(request, 'moderator/moderator_user_update.html', context)
+
+
+def moderator_company_update(request, pk):
+    context = {}
+    moderator_user = User.objects.get(pk=int(pk))
+    success_msg = u''
+    error_msg = u''
+    try:
+        moderator = Moderator.objects.get(user=moderator_user)
+    except:
+        moderator = Moderator(user=moderator_user)
+        moderator.save()
+    if request.method == 'POST':
+        form = ModeratorForm(request.POST, request.FILES, instance=moderator)
+        if form.is_valid():
+            form.save()
+            success_msg += u' Изменения успешно сохранены'
+        else:
+            error_msg = u'Проверьте правильность ввода полей!'
+    else:
+        form = ModeratorForm(instance=moderator)
+    context.update({
+        'form': form,
         'success': success_msg,
         'error': error_msg,
         'object': moderator
@@ -103,29 +129,34 @@ def moderator_view(request, pk):
     return render(request, 'moderator/moderator_update.html', context)
 
 
-@ajax_request
-def moderator_update(request):
+def moderator_action_update(request, pk):
+    context = {}
+    moderator_user = User.objects.get(pk=int(pk))
+    success_msg = u''
+    error_msg = u''
+    try:
+        moderator = Moderator.objects.get(user=moderator_user)
+    except:
+        moderator = Moderator(user=moderator_user)
+        moderator.save()
+    moderatoraction_formset = inlineformset_factory(Moderator, ModeratorAction, form=ModeratorActionForm, can_delete=True, extra=1)
     if request.method == 'POST':
-        try:
-            moderator = Moderator.objects.get(user=int(request.POST.get('user')))
-        except:
-            return {
-                'error': True
-            }
-        form = ModeratorForm(request.POST, request.FILES, instance=moderator)
-        if form.is_valid():
-            form.save()
-            return {
-                'success': True
-            }
+        formset = moderatoraction_formset(request.POST, instance=moderator)
+        if formset.is_valid():
+            formset.save()
+            success_msg += u' Изменения успешно сохранены'
+            formset = moderatoraction_formset(instance=moderator)
         else:
-            return {
-                'error': True
-            }
+            error_msg = u'Проверьте правильность ввода полей!'
     else:
-        return {
-            'error': True
-        }
+        formset = moderatoraction_formset(instance=moderator)
+    context.update({
+        'formset': formset,
+        'success': success_msg,
+        'error': error_msg,
+        'object': moderator
+    })
+    return render(request, 'moderator/moderator_action_update.html', context)
 
 
 def area_add(request):

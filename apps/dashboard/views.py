@@ -1,6 +1,7 @@
 # coding=utf-8
 import os
 import datetime
+from django.forms import HiddenInput
 from django.utils.timezone import utc
 from django.views.generic import TemplateView
 from apps.distributor.models import GPSPoint, DistributorTask
@@ -38,7 +39,15 @@ class DashboardView(TemplateView):
             else:
                 task = task_qs.first()
             point_qs = task.gpspoint_set.all()
-            form = ReviewForm(user=user)
+            form = ReviewForm(
+                initial={
+                    'moderator': user.sale_user.moderator,
+                    'name': user.get_full_name(),
+                    'mail': user.email
+                }
+            )
+            form.fields['name'].widget = HiddenInput()
+            form.fields['mail'].widget = HiddenInput()
             context.update({
                 'current_task': task,
                 'task_list': task_qs,

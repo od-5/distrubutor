@@ -1,6 +1,6 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
-from .ajax import distributor_payment_update, get_distr_and_area_for_sale
+from .ajax import distributor_payment_update, get_task_initial
 from .views import DistributorListView, DistributorTaskListView, DistributorTaskArchiveView
 
 __author__ = 'alexy'
@@ -19,5 +19,5 @@ urlpatterns = patterns(
     url(r'^task/(?P<pk>\d+)/$', 'distributor_task_update', name='task-update'),
 
     # ajax
-    url(r'^get_distr_and_area_for_sale/$', get_distr_and_area_for_sale, name='get_distr_and_area_for_sale'),
+    url(r'^get_distr_and_area_for_sale/$', get_task_initial, name='get_task_initial'),
 )

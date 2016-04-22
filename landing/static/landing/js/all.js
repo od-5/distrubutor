@@ -224,4 +224,34 @@ $(document).ready(function () {
     });
   });
 
+  // Валидация формы добавления комментария
+  $('.js-form-review-add').each(function(){
+    $(this).validate({
+      rules: {
+        moderator: {
+          required: true
+        },
+        name: {
+          required: true
+        },
+        mail: {
+          required: true,
+          mail: true
+        },
+        text: {
+          required: true
+        },
+        rating: {
+          required: true
+        }
+      },
+      messages: {
+        mail: {
+          required: "Вы не указали ваш e-mail.",
+          email: "e-mail должен иметь формат name@domain.com"
+        }
+      }
+    });
+  });
+
 });

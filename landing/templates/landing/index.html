@@ -267,13 +267,26 @@
                   <div class="info-reviews-title">Отзывы <span>{{ moderator.review_set.count }}</span></div>
                 {% for review in moderator.review_set.all %}
                   <div class="review-item">
-                    <div class="review-author">{{ review.sale.user.get_full_name|default:'' }}</div>
+                    <div class="review-author">{{ review.name|default:'' }}</div>
                     <div class="review-text">
                       {{ review.text|safe|linebreaksbr|default:'' }}
                     </div>
                   </div>
                 {% empty %}
                   <div class="info-reviews-text">Нет отзывов</div>
+                  <div class="comment-form">
+										<form action="{% url 'sale:review-add' %}" class="js-form-review-add" method="post">
+											<fieldset>
+												<input name="moderator" type="hidden" value="{{ moderator.id }}" class="input" placeholder="Ваш имя *">
+                        <input type="hidden" name="rating" value="">
+												<input name="name" type="text" class="input" placeholder="Ваш имя *">
+												<input name="mail" type="text" class="input" placeholder="Ваш e-mail *">
+												<textarea name="text" cols="30" rows="10" class="textarea required" placeholder="Текст отзыва"></textarea>
+												<button class="submit">Оставить отзыв</button>
+											</fieldset>
+										</form>
+									</div>
+									<a href="" class="submit comment-button">Оставить отзыв</a>
                 {% endfor %}
                 </div>
               </div>

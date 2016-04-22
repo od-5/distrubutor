@@ -1,0 +1,16 @@
+<ol class="breadcrumb">
+  <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+  <li><a href="{% url 'moderator:list' %}">Список модераторов</a></li>
+  <li class="active">Редактирование модератора</li>
+</ol>
+<div class="div add-bottom">
+  <a href="{% url 'moderator:update' object.user.id %}" class="btn btn-default">
+    <span class="glyphicon glyphicon-edit"></span> Информация о пользователе
+  </a>
+  <a href="{% url 'moderator:company' object.user.id %}" class="btn btn-default">
+    <span class="glyphicon glyphicon-check"></span> Информация об организации
+  </a>
+  <a href="{% url 'moderator:action' object.user.id %}" class="btn btn-default">
+    <span class="glyphicon glyphicon-folder-open"></span> Виды деятельности
+  </a>
+</div>

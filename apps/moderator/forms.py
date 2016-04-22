@@ -1,7 +1,7 @@
 # coding=utf-8
 from django import forms
 from django.contrib.admin.widgets import ManyToManyRawIdWidget
-from .models import Moderator, ModeratorArea
+from .models import Moderator, ModeratorArea, ModeratorAction
 
 __author__ = 'alexy'
 
@@ -33,4 +33,14 @@ class ModeratorAreaForm(forms.ModelForm):
             'moderator': forms.HiddenInput(),
             'city': forms.HiddenInput(),
             'name': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class ModeratorActionForm(forms.ModelForm):
+    class Meta:
+        model = ModeratorAction
+        fields = '__all__'
+        widgets = {
+            'moderator': forms.TextInput(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'})
         }

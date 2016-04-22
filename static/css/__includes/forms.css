@@ -20,3 +20,6 @@ label.error {
   overflow-y: scroll;
   height: 150px;
 }
+#js-form-moderator-action .form-group {
+  position: relative;
+}

@@ -17,7 +17,12 @@
             <div class="col-lg-6">
               {{ form.sale }}
               {{ form.sale.errors }}
-
+              <div class="form-group">
+                <div class="col-lg-5">{{ form.type.label_tag }}</div>
+                <div class="col-lg-7">{{ form.type }}</div>
+                {{ form.type.errors }}
+                <div class="clearfix"></div>
+              </div>
               <div class="form-group">
                 <div class="col-lg-5">{{ form.date_start.label_tag }}</div>
                 <div class="col-lg-7">{{ form.date_start }}</div>
@@ -36,6 +41,7 @@
                 {{ form.count.errors }}
                 <div class="clearfix"></div>
               </div>
+              {{ form.closed }}
             </div>
             <div class="col-lg-6">
 
@@ -89,7 +95,7 @@
             </thead>
             <tbody class="js-list">
             {% for order in order_list %}
-              <tr data-id="{{ order.id }}" data-name="{{ order }}" data-model="SaleOrder" id="id_SaleOrder_{{ order.id }}">
+              <tr data-id="{{ order.id }}" data-name="{{ order }}" {% if order.closed %}class="info" {% endif %}data-model="SaleOrder" id="id_SaleOrder_{{ order.id }}">
                 <td><a href="{% url 'sale:order-update' order.id %}">{{ order|default:'Не указано' }}</a></td>
                 <td>{{ order.date_start|default:'Не указано' }}</td>
                 <td>{{ order.date_end|default:'Не указано' }}</td>

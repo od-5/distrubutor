@@ -50,12 +50,13 @@ class DistributorPaymentForm(forms.ModelForm):
 class DistributorTaskForm(forms.ModelForm):
     class Meta:
         model = DistributorTask
-        exclude = ['closed', ]
+        exclude = ['closed', 'type']
         widgets = {
             'distributor': forms.Select(attrs={'class': 'form-control'}),
             'sale': forms.Select(attrs={'class': 'form-control'}),
+            'order': forms.Select(attrs={'class': 'form-control'}),
             'area': forms.Select(attrs={'class': 'form-control'}),
-            'type': forms.Select(attrs={'class': 'form-control'}),
+            # 'type': forms.Select(attrs={'class': 'form-control'}),
             'material_count': forms.NumberInput(attrs={'class': 'form-control'}),
             'date': forms.DateInput(attrs={'class': 'form-control'}),
             'comment': forms.Textarea(attrs={'class': 'form-control'}),
@@ -82,12 +83,13 @@ class DistributorTaskForm(forms.ModelForm):
 class DistributorTaskUpdateForm(forms.ModelForm):
     class Meta:
         model = DistributorTask
-        exclude = ['closed', ]
+        exclude = ['closed', 'type']
         widgets = {
             'distributor': forms.Select(attrs={'class': 'form-control'}),
             'sale': forms.Select(attrs={'class': 'form-control'}),
+            'order': forms.Select(attrs={'class': 'form-control'}),
             'area': forms.Select(attrs={'class': 'form-control'}),
-            'type': forms.Select(attrs={'class': 'form-control'}),
+            # 'type': forms.Select(attrs={'class': 'form-control'}),
             'material_count': forms.NumberInput(attrs={'class': 'form-control'}),
             'date': forms.DateInput(attrs={'class': 'form-control'}),
             'comment': forms.Textarea(attrs={'class': 'form-control'}),

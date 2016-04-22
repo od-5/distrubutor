@@ -105,10 +105,12 @@ class SaleOrderForm(forms.ModelForm):
             'sale': forms.HiddenInput(attrs={'class': 'form-control'}),
             'date_start': forms.DateInput(attrs={'class': 'form-control'}),
             'date_end': forms.DateInput(attrs={'class': 'form-control'}),
+            'type': forms.Select(attrs={'class': 'form-control'}),
             'count': forms.NumberInput(attrs={'class': 'form-control'}),
             'cost': forms.NumberInput(attrs={'class': 'form-control'}),
             'add_cost': forms.NumberInput(attrs={'class': 'form-control'}),
             'discount': forms.NumberInput(attrs={'class': 'form-control'}),
+            'closed': forms.CheckboxInput(),
         }
 
 
@@ -136,13 +138,8 @@ class ReviewForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'moderator': forms.HiddenInput(attrs={'class': 'form-control'}),
-            'sale': forms.HiddenInput(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'mail': forms.EmailInput(attrs={'class': 'form-control'}),
             'text': forms.Textarea(attrs={'class': 'form-control'}),
             'rating': forms.Select(attrs={'class': 'form-control'}),
         }
-
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user")
-        super(ReviewForm, self).__init__(*args, **kwargs)
-        self.fields['moderator'].initial = user.sale_user.moderator
-        self.fields['sale'].initial = user.sale_user

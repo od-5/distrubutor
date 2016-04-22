@@ -1,0 +1,78 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block extra_js %}
+<script type="text/javascript">
+  $(function() {
+    $('#js-form-moderator-action .form-group').formset({
+      prefix: '{{ formset.prefix }}',
+      addText: '<span class="glyphicon glyphicon-plus-sign"></span> добавить ещё',
+      deleteText: '<span class="glyphicon glyphicon-minus-sign"></span> удалить'
+    });
+  })
+</script>
+{% endblock %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      {% include 'moderator/__include/moderator_menu.html' %}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead text-center remove-bottom">Виды деятельности модератора {{ object.user.email }}</p>
+        </div>
+        <div class="panel-body">
+          <div class="col-lg-12">
+              {% if error %}
+                <div class="alert alert-danger">
+                  {{ error }}
+                </div>
+              {%  endif %}
+              {% if success %}
+                <div class="alert alert-success">
+                  {{ success }}
+                </div>
+              {% endif %}
+          </div>
+          <div class="col-lg-12">
+            <form action="" role="form" id="js-form-moderator-action" method="post">
+              <div class="col-lg-6">
+              {% csrf_token %}
+              {{ formset.management_form }}
+              {% for form in formset %}
+                {{ form.id }}
+                {{ form.moderator }}
+                <div class="form-group">
+                  <div class="col-lg-3">{{ form.name.label_tag }}</div>
+                  <div class="col-lg-7">{{ form.name }}</div>
+                  {{ form.name.errors }}
+                  <div class="clearfix"></div>
+                  {% if form.instance.pk %}
+                  <div class="col-lg-10 text-right">{{ form.DELETE.label_tag }}</div>
+                  <div class="col-lg-2">{{ form.DELETE }}</div>
+                  <div class="clearfix"></div>
+                  {% endif %}
+                </div>
+              {% endfor %}
+{#                    {% for form in formset %}#}
+{##}
+{#                      <div class="form-group">#}
+{#                      {% if form.errors %}#}
+{#                        <div class="div alert alert-danger">#}
+{#                          {{ form.errors }}#}
+{#                        </div>#}
+{#                      {% endif %}#}
+{#                        {{ form.moderator }}#}
+{#                        {{ form.moderator.errors }}#}
+{#                        <div class="col-lg-5">{{ form.name.label_tag }}</div>#}
+{#                        <div class="col-lg-7">{{ form.name }}</div>#}
+{#                        {{ form.name.errors }}#}
+{#                        <div class="clearfix"></div>#}
+{#                      </div>#}
+{#                    {% endfor %}#}
+              <input type="submit" value="Сохранить" class="btn btn-success">
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

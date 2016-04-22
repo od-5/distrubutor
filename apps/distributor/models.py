@@ -3,8 +3,8 @@ from PIL import Image
 from django.db import models
 from django.conf import settings
 from apps.city.models import City
-from apps.moderator.models import Moderator, ModeratorArea
-from apps.sale.models import Sale
+from apps.moderator.models import Moderator, ModeratorArea, ModeratorAction
+from apps.sale.models import Sale, SaleOrder
 from core.files import upload_to
 from core.models import User
 import core.geotagging as api
@@ -57,11 +57,14 @@ class DistributorTask(models.Model):
     def __unicode__(self):
         return u'Задача: %s, %sшт. %s' % (self.get_type_display(), self.material_count, self.date)
 
+    def get_type_display(self):
+        return self.type.name
+
     def total_cost(self):
-        if self.type == 1:
-            price = self.distributor.posting_cost
-        else:
-            price = self.distributor.distribution_cost
+        # if self.type == 1:
+        #     price = self.distributor.posting_cost
+        # else:
+        #     price = self.distributor.distribution_cost
         try:
             return price * self.material_count
         except:
@@ -89,14 +92,17 @@ class DistributorTask(models.Model):
         to=Sale,
         verbose_name=u'Клиент'
     )
+    order = models.ForeignKey(
+        to=SaleOrder,
+        verbose_name=u'Заказ клиента'
+    )
     area = models.ForeignKey(
         to=ModeratorArea,
         verbose_name=u'Район'
     )
-    type = models.PositiveSmallIntegerField(
+    type = models.ForeignKey(
+        to=ModeratorAction,
         verbose_name=u'Тип задачи',
-        choices=TYPE_CHOICES,
-        default=0
     )
     material_count = models.PositiveIntegerField(
         verbose_name=u'Кол-во рекламной продукции',

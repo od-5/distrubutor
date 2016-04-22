@@ -12,6 +12,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
+from django.forms import HiddenInput
 from apps.city.models import City
 from .forms import SaleAddForm, SaleUpdateForm, SaleOrderForm, SaleMaketForm, ReviewForm
 from apps.manager.models import Manager
@@ -72,6 +73,7 @@ def sale_view(request, pk):
         sale_form = SaleUpdateForm(user=user, instance=sale)
     context.update({
         'object': sale,
+        'sale': sale,
         'user_form': user_form,
         'sale_form': sale_form
     })
@@ -192,10 +194,13 @@ def sale_order(request, pk):
         form = SaleOrderForm(initial={
             'sale': sale
         })
+    form.fields['type'].queryset = sale.moderator.moderatoraction_set.all()
+    form.fields['closed'].widget = HiddenInput()
     context.update({
         'error': error,
         'form': form,
         'object': sale,
+        'sale': sale,
         'order_list': order_list
     })
     return render(request, 'sale/sale_order.html', context)
@@ -216,9 +221,11 @@ def sale_order_update(request, pk):
             })
     else:
         form = SaleOrderForm(instance=order)
+    form.fields['type'].queryset = sale.moderator.moderatoraction_set.all()
     context.update({
         'form': form,
         'object': order,
+        'sale': sale
     })
     return render(request, 'sale/sale_order_update.html', context)
 
@@ -256,6 +263,7 @@ def sale_maket(request, pk):
     except EmptyPage:
         maket_list = paginator.page(paginator.num_pages)
     context.update({
+        'sale': sale,
         'success': success,
         'error': error,
         'form': form,
@@ -288,10 +296,13 @@ def sale_maket_update(request, pk):
     return render(request, 'sale/sale_maket_update.html', context)
 
 
+@csrf_exempt
 def review_add(request):
     user = request.user
     if user.type == 3 and request.method == 'POST':
-        form = ReviewForm(request.POST, user=user)
+        form = ReviewForm(request.POST)
         if form.is_valid():
             form.save()
+        if not request.POST.get('rating'):
+            return HttpResponseRedirect(reverse('landing:index'))
     return HttpResponseRedirect(reverse('dashboard:index'))

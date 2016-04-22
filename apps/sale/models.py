@@ -2,7 +2,7 @@
 import datetime
 from django.db import models
 from apps.city.models import City
-from apps.moderator.models import Moderator
+from apps.moderator.models import Moderator, ModeratorAction
 from core.files import upload_to
 from core.models import User
 from apps.manager.models import Manager
@@ -59,12 +59,14 @@ class SaleOrder(models.Model):
         return round(total, 2)
 
     sale = models.ForeignKey(to=Sale, verbose_name=u'Продажа')
-    date_start = models.DateField(verbose_name=u'Дата начала', default=datetime.date.today())
+    date_start = models.DateField(verbose_name=u'Дата начала')
     date_end = models.DateField(verbose_name=u'Дата окончания', blank=True, null=True)
+    type = models.ForeignKey(to=ModeratorAction, verbose_name=u'Тип заказа')
     count = models.PositiveIntegerField(verbose_name=u'Количество материала, шт')
     cost = models.PositiveIntegerField(verbose_name=u'Стоимость за 1шт., руб')
     add_cost = models.PositiveIntegerField(verbose_name=u'Наценка, %', default=0)
     discount = models.PositiveIntegerField(verbose_name=u'Скидка, %', default=0)
+    closed = models.BooleanField(verbose_name=u'Заказ закрыт', default=False)
 
 
 class SaleMaket(models.Model):
@@ -90,7 +92,7 @@ class Review(models.Model):
         app_label = 'sale'
 
     def __unicode__(self):
-        return u'Клиента %s, оценка %d' % (self.sale, self.rating)
+        return u'Отзыв %s' % self.name
 
     RATING_CHOICES = (
         (1, 1),
@@ -101,6 +103,8 @@ class Review(models.Model):
     )
 
     moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор')
-    sale = models.ForeignKey(to=Sale, verbose_name=u'Клиент')
-    rating = models.PositiveSmallIntegerField(verbose_name=u'Оценка', choices=RATING_CHOICES, default=5)
+    name = models.CharField(verbose_name=u'Ваше имя', max_length=100, blank=True, null=True)
+    mail = models.EmailField(verbose_name=u'Ваше e-mail', max_length=100, blank=True, null=True)
+    # sale = models.ForeignKey(to=Sale, verbose_name=u'Клиент')
+    rating = models.PositiveSmallIntegerField(verbose_name=u'Оценка', choices=RATING_CHOICES, default=5, blank=True, null=True)
     text = models.TextField(verbose_name=u'Текст сообщения', blank=True, null=True)

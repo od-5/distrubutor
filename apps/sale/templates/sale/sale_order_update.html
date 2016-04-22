@@ -18,12 +18,18 @@
           {% endif %}
           <form action="" id="js-form-sale-order" method="post" role="form" class="add-bottom">
             {% csrf_token %}
+            {{ form.errors }}
             {{ form.sale }}
             <div class="form-group">
               <p class="lead add-bottom text-center">Редактировать заказ</p>
             </div>
             <div class="col-lg-6">
-
+              <div class="form-group">
+                <div class="col-lg-5">{{ form.type.label_tag }}</div>
+                <div class="col-lg-7">{{ form.type }}</div>
+                {{ form.type.errors }}
+                <div class="clearfix"></div>
+              </div>
               <div class="form-group">
                 <div class="col-lg-5">{{ form.date_start.label_tag }}</div>
                 <div class="col-lg-7">{{ form.date_start }}</div>
@@ -60,6 +66,12 @@
                 <div class="col-lg-5">{{ form.discount.label_tag }}</div>
                 <div class="col-lg-7">{{ form.discount }}</div>
                 {{ form.discount.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">{{ form.closed.label_tag }}</div>
+                <div class="col-lg-7">{{ form.closed }}</div>
+                {{ form.closed.errors }}
                 <div class="clearfix"></div>
               </div>
             </div>

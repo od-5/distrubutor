@@ -4,13 +4,13 @@
   <li class="active">Редактирование продажи</li>
 </ol>
 <div class="div add-bottom">
-  <a href="{% url 'sale:update' object.id %}" class="btn btn-default">
+  <a href="{% url 'sale:update' sale.id %}" class="btn btn-default">
     <span class="glyphicon glyphicon-edit"></span> Редактирование продажи
   </a>
-  <a href="{% url 'sale:order' object.id %}" class="btn btn-default">
+  <a href="{% url 'sale:order' sale.id %}" class="btn btn-default">
     <span class="glyphicon glyphicon-check"></span> Заказы
   </a>
-  <a href="{% url 'sale:maket' object.id %}" class="btn btn-default">
+  <a href="{% url 'sale:maket' sale.id %}" class="btn btn-default">
     <span class="glyphicon glyphicon-folder-open"></span> Архив материалов
   </a>
 </div>

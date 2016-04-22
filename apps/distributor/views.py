@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 import datetime
 from django.core.urlresolvers import reverse
+from django.forms import HiddenInput
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView
@@ -269,7 +270,10 @@ def distributor_task_add(request):
     if request.method == 'POST':
         form = DistributorTaskForm(request.POST, user=user)
         if form.is_valid():
-            form.save()
+            task = form.save(commit=False)
+            task.type = task.order.type
+            task.save()
+            print task.order.type
             return HttpResponseRedirect(reverse('distributor:task-list'))
         else:
             context.update({
@@ -294,7 +298,9 @@ def distributor_task_update(request, pk):
     if request.method == 'POST':
         form = DistributorTaskUpdateForm(request.POST, user=user, instance=task)
         if form.is_valid():
-            form.save()
+            instance = form.save(commit=False)
+            instance.type = instance.order.type
+            instance.save()
             return HttpResponseRedirect(reverse('distributor:task-list'))
         else:
             context.update({
@@ -302,6 +308,8 @@ def distributor_task_update(request, pk):
             })
     else:
         form = DistributorTaskUpdateForm(user=user, instance=task)
+    form.fields['sale'].widget = HiddenInput()
+    form.fields['order'].queryset = task.sale.saleorder_set.filter(closed=False)
     context.update({
         'form': form,
         'object': task
