@@ -31,7 +31,7 @@ function init() {
         <p class="lead text-center remove-bottom">Оставьте ваш отзыв о исполнителе <span class="caret"></span></p>
       </div>
       <div class="panel-body js-toggle-body">
-        <form action="{% url 'sale:review-add' %}" id="js-form-review-add" method="post" role="form">
+        <form action="{% url 'moderator:review-add' %}" id="js-form-review-add" method="post" role="form">
           {% csrf_token %}
           {{ form.moderator }}
           {{ form.name }}

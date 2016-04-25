@@ -34,6 +34,7 @@ class Distributor(models.Model):
         to=Moderator,
         verbose_name=u'Модератор'
     )
+    # todo: Сделать новую инлайн модель для указания оплаты за тип работы
     distribution_cost = models.PositiveIntegerField(
         verbose_name=u'Олата за распространение, руб/шт',
         default=0,
@@ -61,6 +62,7 @@ class DistributorTask(models.Model):
         return self.type.name
 
     def total_cost(self):
+        # todo: Сделать новый расчёт полной стоимости задачи
         # if self.type == 1:
         #     price = self.distributor.posting_cost
         # else:

@@ -108,3 +108,28 @@ class ModeratorAction(models.Model):
 
     moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор')
     name = models.CharField(verbose_name=u'Название', max_length=256)
+
+
+class Review(models.Model):
+    class Meta:
+        verbose_name = u'Отзыв'
+        verbose_name_plural = u'Отзывы'
+        app_label = 'moderator'
+
+    def __unicode__(self):
+        return u'Отзыв %s' % self.name
+
+    RATING_CHOICES = (
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5),
+    )
+
+    moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор')
+    name = models.CharField(verbose_name=u'Ваше имя', max_length=100, blank=True, null=True)
+    mail = models.EmailField(verbose_name=u'Ваше e-mail', max_length=100, blank=True, null=True)
+    # sale = models.ForeignKey(to=Sale, verbose_name=u'Клиент')
+    rating = models.PositiveSmallIntegerField(verbose_name=u'Оценка', choices=RATING_CHOICES, default=5, blank=True, null=True)
+    text = models.TextField(verbose_name=u'Текст сообщения', blank=True, null=True)

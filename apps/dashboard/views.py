@@ -5,7 +5,7 @@ from django.forms import HiddenInput
 from django.utils.timezone import utc
 from django.views.generic import TemplateView
 from apps.distributor.models import GPSPoint, DistributorTask
-from apps.sale.forms import ReviewForm
+from apps.moderator.forms import ReviewForm
 
 __author__ = 'alexy'
 

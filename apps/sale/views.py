@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
 from django.forms import HiddenInput
 from apps.city.models import City
-from .forms import SaleAddForm, SaleUpdateForm, SaleOrderForm, SaleMaketForm, ReviewForm
+from .forms import SaleAddForm, SaleUpdateForm, SaleOrderForm, SaleMaketForm
 from apps.manager.models import Manager
 from apps.moderator.models import Moderator
 from core.forms import UserAddForm, UserUpdateForm
@@ -296,13 +296,10 @@ def sale_maket_update(request, pk):
     return render(request, 'sale/sale_maket_update.html', context)
 
 
-@csrf_exempt
-def review_add(request):
-    user = request.user
-    if user.type == 3 and request.method == 'POST':
-        form = ReviewForm(request.POST)
-        if form.is_valid():
-            form.save()
-        if not request.POST.get('rating'):
-            return HttpResponseRedirect(reverse('landing:index'))
-    return HttpResponseRedirect(reverse('dashboard:index'))
+# @csrf_exempt
+# def review_add(request):
+#     if request.method == 'POST':
+#         form = ReviewForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#     return HttpResponseRedirect(request.META['HTTP_REFERER'])

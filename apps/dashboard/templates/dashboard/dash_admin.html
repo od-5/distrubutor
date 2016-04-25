@@ -195,6 +195,12 @@
             <span class="dashboard__link_text">Заявки с сайта</span>
           </a>
         </div>
+        <div class="col-lg-4">
+          <a href="{% url 'moderator:review-list' %}" class="dashboard__link">
+            <img src="{{ STATIC_URL }}icon/site_blocks.png" alt="Отзывы" class="dashboard__link_icon">
+            <span class="dashboard__link_text">Отзывы</span>
+          </a>
+        </div>
         <div class="clearfix"></div>
       </div>
     </div>

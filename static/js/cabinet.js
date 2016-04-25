@@ -1045,4 +1045,29 @@ $(function() {
     }
   });
 
+  // валидация формы редактирования комментария
+  $('#js-form-review-update').validate({
+    rules: {
+      moderator: {
+        required: true
+      },
+      mail: {
+        required: true,
+        email: true
+      },
+      name: {
+        required: true
+      },
+      text: {
+        required: true
+      }
+    },
+    messages: {
+      mail: {
+        required: "Вы не указали e-mail.",
+        email: "e-mail должен иметь формат name@domain.com"
+      }
+    }
+  });
+
 });

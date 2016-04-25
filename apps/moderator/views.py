@@ -5,12 +5,13 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.http import HttpResponseRedirect, Http404
+from django.shortcuts import render, get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
 from django.forms.models import inlineformset_factory, modelformset_factory
-from .forms import ModeratorForm, ModeratorAreaForm, ModeratorActionForm
-from .models import Moderator, ModeratorArea, ModeratorAction
+from .forms import ModeratorForm, ModeratorAreaForm, ModeratorActionForm, ReviewForm
+from .models import Moderator, ModeratorArea, ModeratorAction, Review
 from core.forms import UserAddForm, UserUpdateForm
 from core.models import User
 
@@ -191,3 +192,66 @@ def area_update(request, pk):
     })
 
     return render(request, 'moderator/moderatorarea_update.html', context)
+
+
+@csrf_exempt
+def review_add(request):
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            form.save()
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
+
+def review_update(request, pk):
+    context = {}
+    review = get_object_or_404(Review, pk=int(pk))
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, instance=review)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('moderator:review-list'))
+        else:
+            context.update({
+                'error': u'Проверьте правильность ввода данных'
+            })
+    else:
+        form = ReviewForm(instance=review)
+    context.update({
+        'form': form,
+        'object': review
+    })
+    return render(request, 'moderator/review_update.html', context)
+
+
+class ReviewListView(ListView):
+    model = Review
+    template_name = 'moderator/review_list.html'
+    paginate_by = 25
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.type == 1:
+            qs = Review.objects.all()
+            if self.request.GET.get('moderator') and self.request.GET.get('moderator') != '0':
+                qs = qs.filter(moderator=int(self.request.GET.get('moderator')))
+        elif user.type == 2:
+            qs = Review.objects.filter(moderator=user.moderator_user)
+        elif user.type == 5:
+            qs = Review.objects.filter(moderator=user.manager_user.moderator.moderator_user)
+        else:
+            raise Http404
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(ReviewListView, self).get_context_data()
+        if self.request.user.type == 1:
+            moderator_qs = Moderator.objects.all()
+            context.update({
+                'moderator_list': moderator_qs
+            })
+            if self.request.GET.get('moderator'):
+                context.update({
+                    'r_moderator': int(self.request.GET.get('moderator'))
+                })
+        return context

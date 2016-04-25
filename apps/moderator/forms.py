@@ -1,7 +1,7 @@
 # coding=utf-8
 from django import forms
 from django.contrib.admin.widgets import ManyToManyRawIdWidget
-from .models import Moderator, ModeratorArea, ModeratorAction
+from .models import Moderator, ModeratorArea, ModeratorAction, Review
 
 __author__ = 'alexy'
 
@@ -44,3 +44,20 @@ class ModeratorActionForm(forms.ModelForm):
             'moderator': forms.TextInput(attrs={'class': 'form-control'}),
             'name': forms.TextInput(attrs={'class': 'form-control'})
         }
+
+
+class ReviewForm(forms.ModelForm):
+    """
+    Форма добавления/редактирования отзыва клиента(продажи) о работе модератора(исполнителя)
+    """
+    class Meta:
+        model = Review
+        fields = '__all__'
+        widgets = {
+            'moderator': forms.HiddenInput(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'mail': forms.EmailInput(attrs={'class': 'form-control'}),
+            'text': forms.Textarea(attrs={'class': 'form-control'}),
+            'rating': forms.Select(attrs={'class': 'form-control'}),
+        }
+

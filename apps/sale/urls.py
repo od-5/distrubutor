@@ -20,7 +20,7 @@ urlpatterns = patterns(
     url(r'^(?P<pk>\d+)/order/$', 'sale_order', name='order'),
     url(r'^order/(?P<pk>\d+)/$', 'sale_order_update', name='order-update'),
 
-    url(r'review/add/$', 'review_add', name='review-add')
+    # url(r'review/add/$', 'review_add', name='review-add')
     # url(r'^order/(?P<pk>\d+)/export/$', 'client_order_export', name='order-export'),
     #
     # url(r'^(?P<pk>\d+)/journal/$', 'client_journal', name='journal'),

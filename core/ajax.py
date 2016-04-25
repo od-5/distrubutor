@@ -3,7 +3,7 @@ from annoying.decorators import ajax_request
 from django.shortcuts import get_object_or_404
 from core.models import User
 from apps.manager.models import Manager
-from apps.moderator.models import Moderator, ModeratorArea
+from apps.moderator.models import Moderator, ModeratorArea, Review
 from apps.distributor.models import Distributor, DistributorTask
 from apps.sale.models import Sale, SaleOrder, SaleMaket
 from apps.city.models import City
@@ -63,6 +63,9 @@ def ajax_remove_item(request):
                 user = User.objects.get(pk=item.user.id)
                 user.delete()
             if model == 'Moderator':
+                if item.review_set.all():
+                    for review in item.review_set.all():
+                        review.delete()
                 user = User.objects.get(pk=item.user.id)
                 user.delete()
             if model == 'Manager':
