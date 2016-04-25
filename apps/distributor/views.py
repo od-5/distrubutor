@@ -6,13 +6,14 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 import datetime
 from django.core.urlresolvers import reverse
-from django.forms import HiddenInput
+from django.forms import HiddenInput, inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView
 from .task_calendar import get_months
-from .models import Distributor, DistributorTask
-from .forms import DistributorAddForm, DistributorUpdateForm, DistributorPaymentForm, DistributorTaskForm, DistributorTaskUpdateForm
+from .models import Distributor, DistributorTask, DistributorPayment
+from .forms import DistributorAddForm, DistributorUpdateForm, DistributorPaymentForm, DistributorTaskForm, \
+    DistributorTaskUpdateForm
 from core.forms import UserAddForm, UserUpdateForm
 from core.models import User
 
@@ -101,10 +102,15 @@ def distributor_update(request, pk):
     context.update(
         get_months(),
     )
+    formset_fields_count = distributor.moderator.moderatoraction_set.count()
+    distributor_formset = inlineformset_factory(Distributor, DistributorPayment, form=DistributorPaymentForm,
+                                                can_delete=True, min_num=formset_fields_count,
+                                                max_num=formset_fields_count)
     if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, instance=user)
         d_form = DistributorUpdateForm(request.POST, instance=distributor)
-        p_form = DistributorPaymentForm(request.POST, instance=distributor)
+        # p_form = DistributorPaymentForm(request.POST, instance=distributor)
+        formset = distributor_formset(request.POST, instance=distributor)
         if u_form.is_valid() and d_form.is_valid():
             u_form.save()
             d_form.save()
@@ -114,14 +120,17 @@ def distributor_update(request, pk):
     else:
         u_form = UserUpdateForm(instance=user)
         d_form = DistributorUpdateForm(instance=distributor)
-        p_form = DistributorPaymentForm(instance=distributor)
-
+        # p_form = DistributorPaymentForm(instance=distributor)
+        formset = distributor_formset(instance=distributor)
+    for form in formset:
+        form.fields['type'].queryset = distributor.moderator.moderatoraction_set.all()
     context.update({
         'success': success_msg,
         'error': error_msg,
         'u_form': u_form,
         'd_form': d_form,
-        'p_form': p_form,
+        # 'p_form': p_form,
+        'formset': formset,
         'object': distributor
     })
     return render(request, 'distributor/distributor_update.html', context)
@@ -142,7 +151,8 @@ class DistributorTaskListView(ListView):
             qs = DistributorTask.objects.filter(distributor=user.distributor_user, closed=False)
         elif user.type == 5:
             if user.manager_user.leader:
-                qs = DistributorTask.objects.filter(distributor__moderator=user.manager_user.moderator.moderator_user, closed=False)
+                qs = DistributorTask.objects.filter(distributor__moderator=user.manager_user.moderator.moderator_user,
+                                                    closed=False)
             else:
                 qs = DistributorTask.objects.filter(sale__manager=user.manager_user, closed=False)
         else:
@@ -163,7 +173,8 @@ class DistributorTaskListView(ListView):
                 qs = qs.filter(distributor__last_name__iexact=r_distributor)
             if r_date:
                 qs = qs.filter(date=datetime.datetime.strptime(r_date, '%d.%m.%Y'))
-            if self.request.GET.get('date__day') and self.request.GET.get('date__month') and self.request.GET.get('date__year'):
+            if self.request.GET.get('date__day') and self.request.GET.get('date__month') and self.request.GET.get(
+                    'date__year'):
                 day = self.request.GET.get('date__day')
                 month = self.request.GET.get('date__month')
                 year = self.request.GET.get('date__year')
@@ -213,7 +224,8 @@ class DistributorTaskArchiveView(ListView):
             qs = DistributorTask.objects.filter(closed=True, distributor=user.distributor_user)
         elif user.type == 5:
             if user.manager_user.leader:
-                qs = DistributorTask.objects.filter(closed=True, distributor__moderator=user.manager_user.moderator.moderator_user)
+                qs = DistributorTask.objects.filter(closed=True,
+                                                    distributor__moderator=user.manager_user.moderator.moderator_user)
             else:
                 qs = DistributorTask.objects.filter(closed=True, sale__manager=user.manager_user)
         else:

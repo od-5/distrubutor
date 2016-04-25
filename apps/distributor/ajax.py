@@ -1,25 +1,29 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
+from django.forms import inlineformset_factory
 from apps.moderator.models import ModeratorArea
 from apps.sale.models import Sale
 from .forms import DistributorPaymentForm
-from .models import Distributor
+from .models import Distributor, DistributorPayment
 
 __author__ = 'alexy'
 
 
 @ajax_request
 def distributor_payment_update(request):
+    distributor_formset = inlineformset_factory(Distributor, DistributorPayment, form=DistributorPaymentForm)
     if request.method == 'POST':
-        r_user = request.POST.get('user')
-        distributor = Distributor.objects.get(user=int(r_user))
-        form = DistributorPaymentForm(request.POST, instance=distributor)
-        if form.is_valid():
-            form.save()
+        print request.POST.get('user')
+        distributor = Distributor.objects.get(pk=int(request.POST.get('user')))
+        print distributor
+        formset = distributor_formset(request.POST, instance=distributor)
+        if formset.is_valid():
+            formset.save()
             return {
                 'success': u'Изменения успешно сохранены.'
             }
         else:
+            print formset.errors
             return {
                 'error': u'Проверьте правильность ввода данных.'
             }

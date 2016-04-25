@@ -400,23 +400,13 @@ $(function() {
   // Валидация формы редактирования оплаты распространителю
   $('#js-form-distributor-payment-update').validate({
     rules: {
-      distribution_cost: {
+      cost: {
         required: true,
         number: true
       },
-      posting_cost: {
+      type: {
         required: true,
         number: true
-      }
-    },
-    messages: {
-      distribution_cost: {
-        required: 'Введите цену за оплату в рублях, либо 0',
-        number: "Введите число."
-      },
-      posting_cost: {
-        required: 'Введите цену за оплату в рублях, либо 0',
-        number: "Введите число."
       }
     },
     submitHandler: function(e) {

@@ -1,7 +1,7 @@
 # coding=utf-8
 from django import forms
 from apps.sale.models import Sale
-from .models import Distributor, DistributorTask
+from .models import Distributor, DistributorTask, DistributorPayment
 
 __author__ = 'alexy'
 
@@ -37,14 +37,20 @@ class DistributorUpdateForm(forms.ModelForm):
 
 class DistributorPaymentForm(forms.ModelForm):
     class Meta:
-        model = Distributor
+        model = DistributorPayment
         fields = '__all__'
         widgets = {
-            'user': forms.HiddenInput(),
-            'moderator': forms.HiddenInput(),
-            'distribution_cost': forms.NumberInput(attrs={'class': 'form-control'}),
-            'posting_cost': forms.NumberInput(attrs={'class': 'form-control'})
+            'distributor': forms.HiddenInput(),
+            'type': forms.Select(attrs={'class': 'form-control'}),
+            'cost': forms.NumberInput(attrs={'class': 'form-control'})
         }
+    #
+    # def __init__(self, *args, **kwargs):
+    #     # self.request = kwargs.pop("request")
+    #     super(DistributorPaymentForm, self).__init__(*args, **kwargs)
+    #     print kwargs
+
+        # print self.instance
 
 
 class DistributorTaskForm(forms.ModelForm):

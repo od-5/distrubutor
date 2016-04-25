@@ -1,19 +1,38 @@
-<form action="{% url 'distributor:payment-update' %}" role="form" id="js-form-distributor-payment-update" method="post">
+{#<form action="{% url 'distributor:payment-update' %}" role="form" id="js-form-distributor-payment-update" method="post">#}
+{#  {% csrf_token %}#}
+{#  {{ p_form.errors }}#}
+{#  {{ p_form.user }}#}
+{#  {{ p_form.moderator }}#}
+{#  <div class="form-group">#}
+{#    <div class="col-lg-5">{{ p_form.distribution_cost.label_tag }}</div>#}
+{#    <div class="col-lg-7">{{ p_form.distribution_cost }}</div>#}
+{#    {{ p_form.distribution_cost.errors }}#}
+{#    <div class="clearfix"></div>#}
+{#  </div>#}
+{#  <div class="form-group">#}
+{#    <div class="col-lg-5">{{ p_form.posting_cost.label_tag }}</div>#}
+{#    <div class="col-lg-7">{{ p_form.posting_cost }}</div>#}
+{#    {{ p_form.posting_cost.errors }}#}
+{#    <div class="clearfix"></div>#}
+{#  </div>#}
+{#  <button type="submit" class="btn btn-default">Сохранить</button>#}
+{#</form>#}
+<form action="{% url 'distributor:payment-update' %}" role="form" method="post" id="js-form-distributor-payment">
   {% csrf_token %}
-  {{ p_form.errors }}
-  {{ p_form.user }}
-  {{ p_form.moderator }}
-  <div class="form-group">
-    <div class="col-lg-5">{{ p_form.distribution_cost.label_tag }}</div>
-    <div class="col-lg-7">{{ p_form.distribution_cost }}</div>
-    {{ p_form.distribution_cost.errors }}
-    <div class="clearfix"></div>
-  </div>
-  <div class="form-group">
-    <div class="col-lg-5">{{ p_form.posting_cost.label_tag }}</div>
-    <div class="col-lg-7">{{ p_form.posting_cost }}</div>
-    {{ p_form.posting_cost.errors }}
-    <div class="clearfix"></div>
-  </div>
+  <input type="hidden" name="user" value="{{ object.id }}">
+  {{ formset.management_form }}
+  {% for form in formset %}
+    {{ form.id }}
+    {{ form.distributor }}
+    <div class="form-group">
+      <div class="col-lg-3">{{ form.type.label_tag }}</div>
+      <div class="col-lg-3">{{ form.type }}</div>
+      <div class="col-lg-3">{{ form.cost.label_tag }}</div>
+      <div class="col-lg-3">{{ form.cost }}</div>
+      {{ form.cost.errors }}
+      {{ form.type.errors }}
+      <div class="clearfix"></div>
+    </div>
+  {% endfor %}
   <button type="submit" class="btn btn-default">Сохранить</button>
 </form>

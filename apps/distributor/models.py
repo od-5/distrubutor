@@ -49,6 +49,26 @@ class Distributor(models.Model):
     )
 
 
+class DistributorPayment(models.Model):
+    class Meta:
+        verbose_name = u'Стоимость работы'
+        verbose_name_plural = u'Стоимость работ'
+        app_label = 'distributor'
+        unique_together = (("distributor", "type"),)
+
+    def __unicode__(self):
+        return u'Оплата %s' % self.type
+
+    distributor = models.ForeignKey(to=Distributor)
+    type = models.ForeignKey(to=ModeratorAction, verbose_name=u'Тип работы')
+    cost = models.PositiveIntegerField(
+        verbose_name=u'Олата, руб/шт',
+        default=0,
+        null=True,
+        blank=True
+    )
+
+
 class DistributorTask(models.Model):
     class Meta:
         verbose_name = u'Задача для распространителя'
