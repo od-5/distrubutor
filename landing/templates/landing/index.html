@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
   {% load staticfiles %}
+  {% load i18n %}
   <meta charset="utf-8">
   <meta name="keywords" content="{{ SETUP.meta_keys|default:'' }}">
   <meta name="description" content="{{ SETUP.meta_desc|default:'' }}">
@@ -67,20 +68,29 @@
       </div>
       <div class="header-top">
         <div class="holder">
-          <div class="header-lang">
+          <div class="header-lang" data-url="{% url 'set_language' %}">
+            {% csrf_token %}
+            {% get_current_language as LANGUAGE_CODE %}
             <a href="" class="lang-link lang-link-top">
-              <img src="{% static 'landing/images/flag1.png' %}" alt="">Русский
+              <img src="{{ STATIC_URL }}landing/images/flag_{{ LANGUAGE_CODE }}.png" alt="">{{ LANGUAGE_CODE|language_name_local }}
             </a>
             <div class="header-lang-hidden">
-              <a href="" class="lang-link">
-                <img src="{% static 'landing/images/flag1.png' %}" alt="">Русский
+
+            {% get_language_info_list for LANGUAGES as languages %}
+            {% for language in languages %}
+              <a href="" class="lang-link js-lang-link" data-language="{{ language.code }}">
+                <img src="{{ STATIC_URL }}landing/images/flag_{{ language.code }}.png" alt="">{{ language.name_local }}
               </a>
-              <a href="" class="lang-link">
-                <img src="{% static 'landing/images/flag2.png' %}" alt="">Казахский
-              </a>
-              <a href="" class="lang-link">
-                <img src="{% static 'landing/images/flag3.png' %}" alt="">Украинский
-              </a>
+            {% endfor %}
+{#              <a href="" class="lang-link">#}
+{#                <img src="{% static 'landing/images/flag_ru.png' %}" alt="">Русский#}
+{#              </a>#}
+{#              <a href="" class="lang-link">#}
+{#                <img src="{% static 'landing/images/flag_kk.png' %}" alt="">Казахский#}
+{#              </a>#}
+{#              <a href="" class="lang-link">#}
+{#                <img src="{% static 'landing/images/flag_uk.png' %}" alt="">Украинский#}
+{#              </a>#}
             </div>
           </div>
           <div class="header-city">Выберите город: <a href="">{{ current_city.name|default:'Не указано' }}</a></div>
@@ -264,7 +274,31 @@
                   <dd>{{ moderator.phone|default:'' }}</dd>
                 </dl>
                 <div class="info-reviews">
-                  <div class="info-reviews-title">Отзывы <span>{{ moderator.review_set.count }}</span></div>
+                  <div class="info-reviews-title">
+                    Отзывы <span>{{ moderator.review_set.count }}</span>
+                    <div class="social">
+                    {% if moderator.fb_link %}
+                      <a href="{{ moderator.fb_link|safe }}" class="social-link">
+                        <img src="{% static 'landing/images/icons/fb.png' %}" class="social-link-icon" alt="{{ moderator.fb_link|safe }}">
+                      </a>
+                    {% endif %}
+                    {% if moderator.vk_link %}
+                      <a href="{{ moderator.vk_link|safe }}" class="social-link">
+                        <img src="{% static 'landing/images/icons/vk.png' %}" class="social-link-icon" alt="{{ moderator.vk_link|safe }}">
+                      </a>
+                    {% endif %}
+                    {% if moderator.ok_link %}
+                      <a href="{{ moderator.ok_link|safe }}" class="social-link">
+                        <img src="{% static 'landing/images/icons/ok.png' %}" class="social-link-icon" alt="{{ moderator.ok_link|safe }}">
+                      </a>
+                    {% endif %}
+                    {% if moderator.insta_link %}
+                      <a href="{{ moderator.insta_link|safe }}" class="social-link">
+                        <img src="{% static 'landing/images/icons/insta.png' %}" class="social-link-icon" alt="{{ moderator.insta_link|safe }}">
+                      </a>
+                    {% endif %}
+                    </div>
+                  </div>
                   <div class="comment-form">
                     <form action="{% url 'moderator:review-add' %}" class="js-form-review-add" method="post">
                       <fieldset>

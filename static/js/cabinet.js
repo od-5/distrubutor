@@ -162,6 +162,9 @@ $(function() {
   // валидация формы добавления/изменения города
   $( '#js-city-form' ).validate({
     rules: {
+      country: {
+        required: true
+      },
       name: {
         required: true
       }
@@ -176,6 +179,20 @@ $(function() {
       },
       company: {
         required: true
+      }
+    },
+    messages: {
+      fb_link: {
+        url: 'Адрес должен начинаться с http://'
+      },
+      vk_link: {
+        url: 'Адрес должен начинаться с http://'
+      },
+      ok_link: {
+        url: 'Адрес должен начинаться с http://'
+      },
+      insta_link: {
+        url: 'Адрес должен начинаться с http://'
       }
     }
   });
@@ -398,7 +415,7 @@ $(function() {
     }
   });
   // Валидация формы редактирования оплаты распространителю
-  $('#js-form-distributor-payment-update').validate({
+  $('#js-form-distributor-payment').validate({
     rules: {
       cost: {
         required: true,
@@ -410,7 +427,7 @@ $(function() {
       }
     },
     submitHandler: function(e) {
-      $('#js-form-distributor-payment-update').ajaxSubmit({
+      $('#js-form-distributor-payment').ajaxSubmit({
           success: function(data){
             if (data.success) {
               $.notify(data.success, 'success');

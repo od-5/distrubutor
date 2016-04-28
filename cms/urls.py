@@ -21,6 +21,7 @@ urlpatterns = patterns(
     url(r'^client/', include('apps.client.urls', namespace='client'),),
     url(r'', include('core.urls')),
     url(r'', include('landing.urls', namespace='landing')),
+    (r'^i18n/', include('django.conf.urls.i18n')),
 
     url(r'^ckeditor/', include('ckeditor.urls')),
     url(r'^admin/', include(admin.site.urls)),

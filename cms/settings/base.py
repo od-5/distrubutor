@@ -1,5 +1,6 @@
 # coding=utf-8
 import socket
+from django.utils.translation import ugettext_lazy as _
 
 __author__ = 'alexy'
 
@@ -33,9 +34,14 @@ AUTH_USER_MODEL = 'core.User'
 LOGIN_URL = '/login/'
 
 LANGUAGES = (
-    ('ru', u'Русский'),
-    ('en', u'Английский'),
+    ('ru', u'Россия'),
+    ('uk', u'Украина'),
+    ('kk', u'Казахстан'),
 )
+# LANGUAGES = (
+#     ('de', _('German')),
+#     ('en', _('English')),
+# )
 LANGUAGE_CODE = 'ru-ru'
 LOCALE_PATHS = (
     os.path.join(BASE_DIR, '../locale'),

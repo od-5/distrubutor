@@ -66,6 +66,7 @@ class DistributorTaskForm(forms.ModelForm):
             'material_count': forms.NumberInput(attrs={'class': 'form-control'}),
             'date': forms.DateInput(attrs={'class': 'form-control'}),
             'comment': forms.Textarea(attrs={'class': 'form-control'}),
+            'define_address': forms.CheckboxInput(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -99,6 +100,7 @@ class DistributorTaskUpdateForm(forms.ModelForm):
             'material_count': forms.NumberInput(attrs={'class': 'form-control'}),
             'date': forms.DateInput(attrs={'class': 'form-control'}),
             'comment': forms.Textarea(attrs={'class': 'form-control'}),
+            'define_address': forms.CheckboxInput(),
         }
 
     def __init__(self, *args, **kwargs):

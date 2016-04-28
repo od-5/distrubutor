@@ -254,4 +254,24 @@ $(document).ready(function () {
     });
   });
 
+  $('a.js-lang-link').click(function(){
+    var url = $(this).parents('.header-lang').data('url');
+    console.log(url);
+    var csrfmiddlewaretoken = $('.header-lang input[name=csrfmiddlewaretoken]').val();
+    console.log(csrfmiddlewaretoken);
+    var language = $(this).data('language');
+    console.log(language);
+    $.ajax({
+      type: "POST",
+      url: url,
+      data: {
+        language: language,
+        csrfmiddlewaretoken: csrfmiddlewaretoken
+      },
+      success: function(){
+        location.reload();
+      }
+    });
+  });
+
 });

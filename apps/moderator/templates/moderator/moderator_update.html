@@ -23,127 +23,182 @@
           <div class="col-lg-12">
             <form action="" role="form" id="js-form-moderator-update" enctype="multipart/form-data" method="post">
             {% csrf_token %}
-              <div class="col-lg-8">
-                <div class="form-group">
-                  <p class="text-info lead">Информация об организации</p>
-                    {{ form.user }}
+              <div class="form-group">
+                <p class="text-info lead">Информация об организации</p>
+                  {{ form.user }}
+              </div>
+              <div class="form-group">
+                <div class="col-lg-3">
+                  {{ form.city.label_tag }}
                 </div>
-                <div class="form-group">
-                  <div class="col-lg-5">
-                    {{ form.city.label_tag }}
-                  </div>
-                  <div class="col-lg-7">
+                <div class="col-lg-9">
 
-                  {% if user.type == 1 %}
+                {% if user.type == 1 %}
+                  {{ form.city }}
+                {% else %}
+                  <div class="hide">
                     {{ form.city }}
-                  {% else %}
-                    <div class="hide">
-                      {{ form.city }}
-                    </div>
-                    {% for city in object.city.all %}
-                      {{ city|default:'Не указано' }}
-                      {% if not forloop.last %}, {% endif %}
-                    {% endfor %}
-                  {% endif %}
                   </div>
-                  <div class="clearfix"></div>
-                    {{ form.city.errors }}
+                  {% for city in object.city.all %}
+                    {{ city|default:'Не указано' }}
+                    {% if not forloop.last %}, {% endif %}
+                  {% endfor %}
+                {% endif %}
                 </div>
-                <div class="form-group">
-                  <div class="col-lg-5">
-                    {{ form.company.label_tag }}
-                  </div>
-                  <div class="col-lg-7">
-                    {{ form.company }}
-                  </div>
-                  <div class="clearfix"></div>
-                    {{ form.company.errors }}
+                <div class="clearfix"></div>
+                  {{ form.city.errors }}
+              </div>
+              <div class="form-group">
+                <div class="col-lg-3">
+                  {{ form.company.label_tag }}
                 </div>
-                <div class="form-group">
-                  <div class="col-lg-5">
-                    {{ form.leader.label_tag }}
-                  </div>
-                  <div class="col-lg-7">
-                    {{ form.leader }}
-                  </div>
-                  <div class="clearfix"></div>
-                    {{ form.leader.errors }}
+                <div class="col-lg-9">
+                  {{ form.company }}
                 </div>
-                <div class="form-group">
-                  <div class="col-lg-5">
-                    {{ form.leader_function.label_tag }}
-                  </div>
-                  <div class="col-lg-7">
-                    {{ form.leader_function }}
-                  </div>
-                  <div class="clearfix"></div>
-                    {{ form.leader_function.errors }}
+                <div class="clearfix"></div>
+                  {{ form.company.errors }}
+              </div>
+              <div class="form-group">
+                <div class="col-lg-3">
+                  {{ form.leader.label_tag }}
                 </div>
-                <div class="form-group">
-                  <div class="col-lg-5">
-                    {{ form.work_basis.label_tag }}
-                  </div>
-                  <div class="col-lg-7">
-                    {{ form.work_basis }}
-                  </div>
-                  <div class="clearfix"></div>
-                    {{ form.work_basis.errors }}
+                <div class="col-lg-9">
+                  {{ form.leader }}
                 </div>
-                <div class="panel panel-info">
-                  <div class="panel-heading js-toggle-heading">
-                    Информация для сайта <span class="caret"></span>
+                <div class="clearfix"></div>
+                  {{ form.leader.errors }}
+              </div>
+              <div class="form-group">
+                <div class="col-lg-3">
+                  {{ form.leader_function.label_tag }}
+                </div>
+                <div class="col-lg-9">
+                  {{ form.leader_function }}
+                </div>
+                <div class="clearfix"></div>
+                  {{ form.leader_function.errors }}
+              </div>
+              <div class="form-group">
+                <div class="col-lg-3">
+                  {{ form.work_basis.label_tag }}
+                </div>
+                <div class="col-lg-9">
+                  {{ form.work_basis }}
+                </div>
+                <div class="clearfix"></div>
+                  {{ form.work_basis.errors }}
+              </div>
+              <div class="form-group">
+                <div class="col-lg-3">
+                  {{ form.phone.label_tag }}
+                </div>
+                <div class="col-lg-9">
+                  {{ form.phone }}
+                </div>
+                <div class="clearfix"></div>
+                  {{ form.phone.errors }}
+              </div>
+              <div class="form-group">
+                <div class="col-lg-3">
+                  {{ form.logotype.label_tag }}
+                </div>
+                <div class="col-lg-9">
+                  {{ form.logotype }}
+                </div>
+                <div class="clearfix"></div>
+                  {{ form.logotype.errors }}
+              </div>
+              <div class="panel panel-info">
+                <div class="panel-heading js-toggle-heading">
+                  Ссылки на социальные сети <span class="caret"></span>
+                </div>
+                <div class="panel-body js-toggle-body">
+                  <div class="form-group">
+                    <div class="col-lg-3">{{ form.fb_link.label_tag }}</div>
+                    <div class="col-lg-9">{{ form.fb_link }}</div>
+                    <div class="clearfix"></div>
+                    {{ form.fb_link.errors }}
                   </div>
-                  <div class="panel-body js-toggle-body">
-                    <div class="form-group">
-                      <div class="col-lg-5">
-                        {{ form.experience.label_tag }}
-                      </div>
-                      <div class="col-lg-7">
-                        {{ form.experience }}
-                      </div>
-                      <div class="clearfix"></div>
-                        {{ form.experience.errors }}
+                  <div class="form-group">
+                    <div class="col-lg-3">{{ form.ok_link.label_tag }}</div>
+                    <div class="col-lg-9">{{ form.ok_link }}</div>
+                    <div class="clearfix"></div>
+                    {{ form.ok_link.errors }}
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-3">{{ form.vk_link.label_tag }}</div>
+                    <div class="col-lg-9">{{ form.vk_link }}</div>
+                    <div class="clearfix"></div>
+                    {{ form.vk_link.errors }}
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-3">{{ form.insta_link.label_tag }}</div>
+                    <div class="col-lg-9">{{ form.insta_link }}</div>
+                    <div class="clearfix"></div>
+                    {{ form.insta_link.errors }}
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-info">
+                <div class="panel-heading js-toggle-heading">
+                  Информация для сайта (на русском языке) <span class="caret"></span>
+                </div>
+                <div class="panel-body js-toggle-body">
+                  <div class="form-group">
+                    <div class="col-lg-3">
+                      {{ form.experience.label_tag }}
                     </div>
-                    <div class="form-group">
-                      <div class="col-lg-5">
-                        {{ form.description.label_tag }}
-                      </div>
-                      <div class="col-lg-7">
-                        {{ form.description }}
-                      </div>
-                      <div class="clearfix"></div>
-                        {{ form.description.errors }}
+                    <div class="col-lg-9">
+                      {{ form.experience }}
                     </div>
-                    <div class="form-group">
-                      <div class="col-lg-5">
-                        {{ form.contact.label_tag }}
-                      </div>
-                      <div class="col-lg-7">
-                        {{ form.contact }}
-                      </div>
-                      <div class="clearfix"></div>
-                        {{ form.contact.errors }}
+                    <div class="clearfix"></div>
+                      {{ form.experience.errors }}
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-3">
+                      {{ form.description.label_tag }}
                     </div>
-                    <div class="form-group">
-                      <div class="col-lg-5">
-                        {{ form.phone.label_tag }}
-                      </div>
-                      <div class="col-lg-7">
-                        {{ form.phone }}
-                      </div>
-                      <div class="clearfix"></div>
-                        {{ form.phone.errors }}
+                    <div class="col-lg-9">
+                      {{ form.description }}
                     </div>
-                    <div class="form-group">
-                      <div class="col-lg-5">
-                        {{ form.logotype.label_tag }}
-                      </div>
-                      <div class="col-lg-7">
-                        {{ form.logotype }}
-                      </div>
-                      <div class="clearfix"></div>
-                        {{ form.logotype.errors }}
+                    <div class="clearfix"></div>
+                      {{ form.description.errors }}
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-3">
+                      {{ form.contact.label_tag }}
                     </div>
+                    <div class="col-lg-9">
+                      {{ form.contact }}
+                    </div>
+                    <div class="clearfix"></div>
+                      {{ form.contact.errors }}
+                  </div>
+
+                </div>
+              </div>
+              <div class="panel panel-info">
+                <div class="panel-heading js-toggle-heading">
+                  Информация для сайта (на родном языке) <span class="caret"></span>
+                </div>
+                <div class="panel-body js-toggle-body">
+                  <div class="form-group">
+                    <div class="col-lg-3">{{ form.experience_lang.label_tag }}</div>
+                    <div class="col-lg-9">{{ form.experience_lang }}</div>
+                    <div class="clearfix"></div>
+                    {{ form.experience_lang.errors }}
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-3">{{ form.description_lang.label_tag }}</div>
+                    <div class="col-lg-9">{{ form.description_lang }}</div>
+                    <div class="clearfix"></div>
+                    {{ form.description_lang.errors }}
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-3">{{ form.contact_lang.label_tag }}</div>
+                    <div class="col-lg-9">{{ form.contact_lang }}</div>
+                    <div class="clearfix"></div>
+                    {{ form.contact_lang.errors }}
                   </div>
                 </div>
               </div>

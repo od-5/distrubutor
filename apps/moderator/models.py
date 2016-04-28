@@ -71,7 +71,7 @@ class Moderator(models.Model):
         null=True
     )
     work_basis = models.CharField(
-        verbose_name=u'Должность руководителя',
+        verbose_name=u'Основание для работы',
         max_length=200,
         blank=True,
         null=True
@@ -81,6 +81,13 @@ class Moderator(models.Model):
     contact = models.TextField(verbose_name=u'Контакты', blank=True, null=True)
     phone = models.CharField(max_length=100, verbose_name=u'Телефон', blank=True, null=True)
     logotype = models.ImageField(verbose_name=u'Логотип', blank=True, null=True, upload_to=upload_to)
+    experience_lang = models.CharField(max_length=256, verbose_name=u'Стаж работы', blank=True, null=True)
+    description_lang = models.TextField(verbose_name=u'Краткое описание', blank=True, null=True)
+    contact_lang = models.TextField(verbose_name=u'Контакты', blank=True, null=True)
+    fb_link = models.URLField(verbose_name=u'Facebook', max_length=256, blank=True, null=True)
+    ok_link = models.URLField(verbose_name=u'Одноклассники', max_length=256, blank=True, null=True)
+    vk_link = models.URLField(verbose_name=u'ВКонтакте', max_length=256, blank=True, null=True)
+    insta_link = models.URLField(verbose_name=u'Instagram', max_length=256, blank=True, null=True)
 
 
 class ModeratorArea(models.Model):

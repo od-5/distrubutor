@@ -34,19 +34,6 @@ class Distributor(models.Model):
         to=Moderator,
         verbose_name=u'Модератор'
     )
-    # todo: Сделать новую инлайн модель для указания оплаты за тип работы
-    distribution_cost = models.PositiveIntegerField(
-        verbose_name=u'Олата за распространение, руб/шт',
-        default=0,
-        null=True,
-        blank=True
-    )
-    posting_cost = models.PositiveIntegerField(
-        verbose_name=u'Олата за расклеивание, руб/шт',
-        default=0,
-        null=True,
-        blank=True
-    )
 
 
 class DistributorPayment(models.Model):
@@ -82,13 +69,9 @@ class DistributorTask(models.Model):
         return self.type.name
 
     def total_cost(self):
-        # todo: Сделать новый расчёт полной стоимости задачи
-        # if self.type == 1:
-        #     price = self.distributor.posting_cost
-        # else:
-        #     price = self.distributor.distribution_cost
+        payment = DistributorPayment.objects.get(distributor=self.distributor, type=self.type)
         try:
-            return price * self.material_count
+            return payment.cost * self.material_count
         except:
             return 0
 
@@ -134,6 +117,7 @@ class DistributorTask(models.Model):
         verbose_name=u'Дата'
     )
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
+    define_address = models.BooleanField(default=True, verbose_name=u'Определять адреса')
     closed = models.BooleanField(default=False)
 
 
@@ -151,11 +135,12 @@ class GPSPoint(models.Model):
             return u'%s, %s' % (self.coord_x, self.coord_y)
 
     def save(self, *args, **kwargs):
-        try:
-            name = api.geocodeName(api_key, self.coord_y, self.coord_x)
-            self.name = name
-        except:
-            pass
+        if self.task.define_address:
+            try:
+                name = api.geocodeName(api_key, self.coord_y, self.coord_x)
+                self.name = name
+            except:
+                pass
         super(GPSPoint, self).save()
 
     task = models.ForeignKey(to=DistributorTask, verbose_name=u'Задача')

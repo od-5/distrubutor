@@ -1,17 +1,18 @@
 # coding=utf-8
-from django.forms import ModelForm, TextInput, Select, DateInput, HiddenInput
+from django import forms
 from core.models import User
 from .models import City
 
 __author__ = 'alexy'
 
 
-class CityForm(ModelForm):
+class CityForm(forms.ModelForm):
     class Meta:
         model = City
-        fields = ('name',)
+        fields = ('country', 'name')
         widgets = {
-            'name': TextInput(attrs={'class': 'form-control'}),
+            'country': forms.Select(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
         }
     #
     # def __init__(self, *args, **kwargs):

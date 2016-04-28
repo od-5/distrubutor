@@ -601,6 +601,21 @@ pulse
 	line-height: 30px;
 }
 .info-reviews-title span {color: #29abe1;}
+.social {
+	display: inline-block;
+	float: right;
+}
+.social-link{
+	text-decoration: none;
+}
+.social-link-icon {
+	width: 30px;
+}
+.social-link-icon:hover {
+	opacity: 0.8;
+}
+
+
 .info-reviews-text {
 	margin: 0 0 30px;
 }

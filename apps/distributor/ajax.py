@@ -13,9 +13,7 @@ __author__ = 'alexy'
 def distributor_payment_update(request):
     distributor_formset = inlineformset_factory(Distributor, DistributorPayment, form=DistributorPaymentForm)
     if request.method == 'POST':
-        print request.POST.get('user')
         distributor = Distributor.objects.get(pk=int(request.POST.get('user')))
-        print distributor
         formset = distributor_formset(request.POST, instance=distributor)
         if formset.is_valid():
             formset.save()
@@ -23,9 +21,8 @@ def distributor_payment_update(request):
                 'success': u'Изменения успешно сохранены.'
             }
         else:
-            print formset.errors
             return {
-                'error': u'Проверьте правильность ввода данных.'
+                'error': u'Проверьте правильность ввода данных.()'
             }
     else:
         return {
