@@ -9,6 +9,19 @@ __author__ = 'alexy'
 api_key = settings.YANDEX_MAPS_API_KEY
 
 
+class Country(models.Model):
+    class Meta:
+        verbose_name = u'Страна'
+        verbose_name_plural = u'Страны'
+        app_label = 'city'
+
+    def __unicode__(self):
+        return self.name
+
+    name = models.CharField(max_length=100, verbose_name=u'Название')
+    code = models.CharField(max_length=10, verbose_name=u'Код')
+
+
 class City(models.Model):
     class Meta:
         verbose_name = u'Город'
@@ -28,7 +41,7 @@ class City(models.Model):
         self.coord_y = float(pos[1])
         super(City, self).save()
 
-    country = models.CharField(max_length=20, verbose_name=u'Страна', choices=settings.LANGUAGES, default=settings.LANGUAGES[0][0])
+    country = models.ForeignKey(to=Country, verbose_name=u'Страны')
     name = models.CharField(max_length=100, verbose_name=u'Название')
     coord_x = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
     coord_y = models.DecimalField(max_digits=8, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')

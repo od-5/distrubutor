@@ -12,9 +12,10 @@
   <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/all.css' %}" />
   <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/jquery.bxslider.css' %}" />
   <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/jquery.fancybox.css' %}" />
+  <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/animate.min.css' %}" />
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <script src="{% static 'landing/js/jquery-1.9.1.min.js' %}"></script>
-  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+{#  <script src="//code.jquery.com/jquery-1.10.2.js"></script>#}
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
   <script src="{% static 'landing/js/jquery.bxslider.js' %}"></script>
   <script src="{% static 'landing/js/jquery.validate.js' %}"></script>
@@ -22,6 +23,9 @@
   <script src="{% static 'landing/js/jquery.fancybox.js' %}"></script>
   <script src="{% static 'landing/js/jquery.scrollTo.js' %}"></script>
   <script src="{% static 'landing/js/jquery.maskedinput.js' %}"></script>
+  <script src="{% static 'landing/js/jquery.lettering.js' %}"></script>
+  <script src="{% static 'landing/js/jquery.textillate.js' %}"></script>
+  <script src="{% static 'landing/js/tabs.js' %}"></script>
   <script src="{% static 'landing/js/notify-combined.min.js' %}"></script>
   <!--[if lt IE 9]><script type="text/javascript" src="{% static 'landing/js/html5.js' %}"></script><![endif]-->
   <!--[if lt IE 9]><script type="text/javascript" src="{% static 'landing/js/placeholder.js' %}"></script><![endif]-->
@@ -45,13 +49,66 @@
             </div>
             <div class="city-input-text">В этом городе нет пока представительства</div>
           </div>
-          <div class="city-block">
-            <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">
-              {% for city in city_list %}
-              <li><a>{{ city.name }}</a></li>
-              {% endfor %}
+          <div class="city-tabs">
+            <ul class="tabs">
+            {% for country in country_list %}
+              {% if country.city_set.count %}
+              <li><a href="#tab1_{{ country.id }}">{{ country.name }}</a></li>
+              {% endif %}
+            {% endfor %}
+{#              <li><a href="#tab1">Россия</a></li>#}
+{#              <li><a href="#tab2">Казахстан</a></li>#}
+{#              <li><a href="#tab3">Украина</a></li>#}
+{#              <li><a href="#tab4">Белоруссия</a></li>#}
             </ul>
           </div>
+          <div class="city-block">
+            {% for country in country_list %}
+              {% if country.city_set.count %}
+              <div id="tab1_{{ country.id }}"  class="tab-content">
+                <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">
+                {% for city in country.city_set.all %}
+                  <li><a>{{ city.name }}</a></li>
+                {% endfor %}
+                </ul>
+              </div>
+              {% endif %}
+            {% endfor %}
+{#            <div id="tab1" class="tab-content">#}
+{#              <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">#}
+{#                <li><a>Ростов-на-Дону</a></li>#}
+{#                <li><a>Волгоград</a></li>#}
+{#                <li><a>Саратов</a></li>#}
+{#                <li><a>Киров</a></li>#}
+{#                <li><a>Казань</a></li>#}
+{#              </ul>#}
+{#            </div>#}
+{#            <div id="tab2" class="tab-content">#}
+{#              <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">#}
+{#                <li><a>Город</a></li>#}
+{#                <li><a>Город</a></li>#}
+{#              </ul>#}
+{#            </div>#}
+{#            <div id="tab3" class="tab-content">#}
+{#              <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">#}
+{#                <li><a>Город</a></li>#}
+{#              </ul>#}
+{#            </div>#}
+{#            <div id="tab4" class="tab-content">#}
+{#              <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">#}
+{#                <li><a>Город</a></li>#}
+{#                <li><a>Город</a></li>#}
+{#                <li><a>Город</a></li>#}
+{#              </ul>#}
+{#            </div>#}
+          </div>
+{#          <div class="city-block">#}
+{#            <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">#}
+{#              {% for city in city_list %}#}
+{#              <li><a>{{ city.name }}</a></li>#}
+{#              {% endfor %}#}
+{#            </ul>#}
+{#          </div>#}
         </div>
       </div>
       <div class="header-fix">
@@ -109,12 +166,12 @@
       </div>
       <div class="header-main">
         <div class="holder">
-          <div class="header-main-top"><span>Федеральная сеть агентств по расклейки<br>
-          и распространению рекламной продукции</span></div>
+          <div class="header-main-top"><span>Сеть агентств по расклейки и <br>
+          распространению рекламной продукции № 1</span></div>
           <h1 class="main-title">
-            <span class="main-title1">Эффективная</span>
-            <span class="main-title2">рекламная кампания</span>
-            <span class="main-title3">за копе<span>й</span>ки</span>
+            <span class="main-title1" data-in-effect="flash">Эффективная</span>
+            <span class="main-title2" data-in-effect="flash">рекламная кампания</span>
+            <span class="main-title3" data-in-effect="flash">за копе<span class="lower">й</span>ки</span>
           </h1>
           <div class="header-main-text">Рекламные плакаты на городских досках объявлений и листовки в почтовых ящиках</div>
           <div class="header-main-button scroll">
@@ -299,6 +356,17 @@
                     {% endif %}
                     </div>
                   </div>
+
+                  <br>
+                  <br>
+                {% for review in moderator.review_set.all %}
+                  <div class="review-item">
+                    <div class="review-author">{{ review.name|default:'' }}</div>
+                    <div class="review-text">
+                      {{ review.text|safe|linebreaksbr|default:'' }}
+                    </div>
+                  </div>
+                {% empty %}
                   <div class="comment-form">
                     <form action="{% url 'moderator:review-add' %}" class="js-form-review-add" method="post">
                       <fieldset>
@@ -313,16 +381,9 @@
                   </div>
                   <a href="" class="submit comment-button">Оставить отзыв</a>
                   <br>
-                  <br>
-                {% for review in moderator.review_set.all %}
                   <div class="review-item">
-                    <div class="review-author">{{ review.name|default:'' }}</div>
-                    <div class="review-text">
-                      {{ review.text|safe|linebreaksbr|default:'' }}
-                    </div>
+                    <div class="reviews-text">Нет отзывов</div>
                   </div>
-                {% empty %}
-                  <div class="info-reviews-text">Нет отзывов</div>
                 {% endfor %}
                 </div>
               </div>
@@ -359,6 +420,10 @@
           <div class="copy"><a href="#hidden-block" class="fancybox">Политика конфиденциальности</a><br>
           РА «Дружба» &copy;
           <script type="text/javascript">var mdate = new Date(); document.write(mdate.getFullYear());</script></div>
+          <div class="footer-download">
+            <div class="footer-download-text">Скачать приложение</div>
+            <a href=""><img src="{% static 'landing/images/googleplay.png' %}" alt=""></a>
+          </div>
           <a href="http://5lands.ru/" target="_blank" class="studio">
             Дизайн сайта<br>
             <img src="{% static 'landing/images/studio.png' %}" alt="">
@@ -524,13 +589,37 @@
           </form>
         </div>
         <div class="city-input-text">В этом городе нет пока представительства</div>
-        <div class="city-list-holder">
-          <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">
-          {% for city in city_list %}
-            <li><a>{{ city.name }}</a></li>
+        <div class="city-tabs">
+          <ul class="tabs">
+          {% for country in country_list %}
+            {% if country.city_set.count %}
+            <li><a href="#tab2_{{ country.id }}">{{ country.name }}</a></li>
+            {% endif %}
           {% endfor %}
           </ul>
         </div>
+        <div class="city-list-holder">
+        {% for country in country_list %}
+          {% if country.city_set.all %}
+          <div id="tab2_{{ country.id }}" class="tab-content">
+            <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">
+            {% for city in country.city_set.all %}
+              <li><a>{{ city.name }}</a></li>
+            {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+        {% endfor %}
+        </div>
+
+{#        <div class="city-list-holder">#}
+{#          <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">#}
+{#          {% for city in city_list %}#}
+{#            <li><a>{{ city.name }}</a></li>#}
+{#          {% endfor %}#}
+{#          </ul>#}
+{#        </div>#}
+
       </div>
     </div>
     <div id="popup5" class="popup">

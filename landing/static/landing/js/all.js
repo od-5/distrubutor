@@ -9,6 +9,10 @@ $(document).ready(function () {
       $('.header-fix').addClass('fixed');
       $('.city-hidden').slideUp();
       $('.header-city a').removeClass('active');
+      $('.header-lang-hidden').slideUp();
+      $('.lang-link-top').removeClass('active');
+      $('.header-enter-hidden').slideUp();
+      $('.enter-link-top').removeClass('active');
     }else{
       $('.header-fix').removeClass('fixed');
     }
@@ -269,9 +273,24 @@ $(document).ready(function () {
         csrfmiddlewaretoken: csrfmiddlewaretoken
       },
       success: function(){
-        location.reload();
+        //location.reload();
       }
     });
   });
 
+});
+
+$(window).load(function () {
+  // text animation
+  $(function () {
+    $('.main-title1').textillate({
+      initialDelay: 0
+    });
+    $('.main-title2').textillate({
+      initialDelay: 900
+    });
+    $('.main-title3').textillate({
+      initialDelay: 2000
+    });
+  });
 });

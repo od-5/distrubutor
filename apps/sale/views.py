@@ -167,6 +167,66 @@ class SaleListView(ListView):
         return context
 
 
+class JournalListView(ListView):
+    model = SaleOrder
+    paginate_by = 25
+    template_name = 'sale/journal_list.html'
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.type == 1:
+            qs = SaleOrder.objects.select_related().all()
+        elif user.type == 2:
+            qs = SaleOrder.objects.select_related().filter(sale__moderator=user.moderator_user)
+        elif user.type == 5:
+            if user.manager_user.leader:
+                qs = SaleOrder.objects.select_related().filter(sale__moderator=user.manager_user.moderator.moderator_user)
+            else:
+                qs = SaleOrder.objects.select_related().filter(sale__manager=user.manager_user)
+        else:
+            qs = None
+        if self.request.GET.get('legal_name'):
+            qs = qs.filter(sale__legal_name=self.request.GET.get('legal_name'))
+        if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
+            qs = qs.filter(sale__city=int(self.request.GET.get('city')))
+        if self.request.GET.get('manager') and int(self.request.GET.get('manager')) != 0:
+            qs = qs.filter(sale__manager=int(self.request.GET.get('manager')))
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(JournalListView, self).get_context_data(**kwargs)
+        user = self.request.user
+        if user.type == 1:
+            city_qs = City.objects.all()
+            manager_qs = None
+        elif user.type == 2:
+            city_qs = user.moderator_user.city.all()
+            manager_qs = user.manager_set.all()
+        elif user.type == 5:
+            manager = Manager.objects.get(user=user)
+            city_qs = City.objects.filter(moderator=manager.moderator)
+            manager_qs = Manager.objects.filter(moderator=manager.moderator)
+        else:
+            city_qs = None
+            manager_qs = None
+        context.update({
+            'city_list': city_qs,
+            'manager_list': manager_qs,
+        })
+        if self.request.GET.get('city'):
+            context.update({
+                'city_id': int(self.request.GET.get('city'))
+            })
+        if self.request.GET.get('manager'):
+            context.update({
+                'manager_id': int(self.request.GET.get('manager'))
+            })
+        context.update({
+            'r_legal_name': self.request.GET.get('legal_name')
+        })
+        return context
+
+
 def sale_order(request, pk):
     context = {}
     error = u''

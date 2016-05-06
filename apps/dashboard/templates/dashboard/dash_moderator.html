@@ -86,43 +86,49 @@
     </div>
 
   </div>
-  <div class="col-lg-4">
+  <div class="col-lg-6">
     <div class="panel panel-default">
       <div class="panel-heading">
         <p class="lead text-center remove-bottom">Продажи</p>
       </div>
       <div class="panel-body">
-        <div class="col-lg-6">
+        <div class="col-lg-4">
           <a href="{% url 'sale:list' %}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/client_list.png" alt="Список продаж" class="dashboard__link_icon">
             <span class="dashboard__link_text">Список продаж</span>
           </a>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-4">
           <a href="{% url 'sale:add' %}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/client_add.png" alt="Добавить новую продажу" class="dashboard__link_icon">
             <span class="dashboard__link_text">Добавить новую продажу</span>
+          </a>
+        </div>
+        <div class="col-lg-4">
+          <a href="{% url 'sale:journal' %}" class="dashboard__link">
+            <img src="{{ STATIC_URL }}icon/journal_list.png" alt="Журнал продаж" class="dashboard__link_icon">
+            <span class="dashboard__link_text">Журнал продаж</span>
           </a>
         </div>
         <div class="clearfix"></div>
       </div>
     </div>
   </div>
-  <div class="col-lg-4">
+  <div class="col-lg-6">
     <div class="panel panel-default">
       <div class="panel-heading">
         <p class="lead text-center remove-bottom">Города</p>
       </div>
       <div class="panel-body">
         {% if user.type != 5 %}
-        <div class="col-lg-6">
+        <div class="col-lg-4">
           <a href="{% url 'moderator:update' user.id %}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/moderator_list.png" alt="Данные модератора" class="dashboard__link_icon">
             <span class="dashboard__link_text">Данные модератора</span>
           </a>
         </div>
         {% endif %}
-        <div class="col-lg-6">
+        <div class="col-lg-4">
           <a href="{% url 'city:list' %}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/city_list.png" alt="Список городов" class="dashboard__link_icon">
             <span class="dashboard__link_text">Список городов</span>

@@ -1,28 +1,5 @@
 {% extends 'cabinet/cabinet_base.html' %}
-{% block extra_js %}
-<script src="//api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
-<script>
-ymaps.ready(init);
 
-function init() {
-    var myMap = new ymaps.Map("map", {
-            center: [48.709866, 44.521522],
-            zoom: 13
-        }, {
-            searchControlProvider: 'yandex#search'
-    });
-    ymaps.route([
-        {% for i in object.gpspoint_set.all %}'{{ i.name|safe }}',{% endfor %}
-    ]).then(function (route) {
-        myMap.geoObjects.add(route);
-        var points = route.getWayPoints();
-        points.options.set('preset', 'islands#redStretchyIcon');
-    }, function (error) {
-        alert('Возникла ошибка: ' + error.message);
-    });
-};
-</script>
-{% endblock %}
 {% block content %}
   <div class="container">
     <div class="col-lg-12">
@@ -116,7 +93,7 @@ function init() {
               </div>
             </div>
             <div id="task_map" class="tab-pane fade">
-              <div id="map" style="width:100%; height:500px"></div>
+              <div id="map" data-task="{{ object.id }}" data-url="{% url 'distributor:get_task_cord_list' %}" style="width:100%; height:500px"></div>
               <div id="photo_list">
               {% if point_list %}
                 <table class="table">
@@ -151,4 +128,54 @@ function init() {
       </div>
     </div>
   </div>
+{% endblock %}
+{% block bottom_js %}
+<script src="//api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+<script>
+ymaps.ready(init);
+function init() {
+  var myMap = new ymaps.Map("map", {
+      center: [48.709866, 44.521522],
+      zoom: 13
+    }, {
+      searchControlProvider: 'yandex#search'
+  });
+
+  var map_id = $('#map');
+  var url = map_id.data('url');
+  var task = map_id.data('task');
+  console.log(url);
+  console.log(task);
+
+  var data_list = '';
+  $.ajax({
+    type: "POST",
+    async: false,
+    url: url,
+    data: {
+      task: task
+    }
+  }).done(function (data) {
+    console.log(data);
+    if (data.coord_list.length){
+      data_list = data.coord_list;
+    } else {
+      if (data.address_list.length) {
+        data_list = data.address_list;
+      }
+    }
+  });
+  console.log(data_list);
+  console.log(data_list.length);
+  ymaps.route(
+    data_list
+  ).then(function (route) {
+    myMap.geoObjects.add(route);
+    var points = route.getWayPoints();
+    points.options.set('preset', 'islands#redStretchyIcon');
+  }, function (error) {
+    alert('Возникла ошибка: ' + error.message);
+  });
+};
+</script>
 {% endblock %}

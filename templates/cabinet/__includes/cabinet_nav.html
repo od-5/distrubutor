@@ -102,6 +102,12 @@
               <span class="glyphicon glyphicon-plus-sign text-success"></span> Добавить новую продажу
             </a>
           </li>
+          <li class="divider"></li>
+          <li>
+            <a href="{% url 'sale:journal' %}">
+              <span class="glyphicon glyphicon-list-alt text-success"></span> Журнал продаж
+            </a>
+          </li>
         </ul>
       </li>
     {% if user.manager_user and not user.manager_user.leader %}{% else %}

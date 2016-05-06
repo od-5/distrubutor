@@ -1,10 +1,11 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
 from django.forms import inlineformset_factory
+from django.views.decorators.csrf import csrf_exempt
 from apps.moderator.models import ModeratorArea
 from apps.sale.models import Sale
 from .forms import DistributorPaymentForm
-from .models import Distributor, DistributorPayment
+from .models import Distributor, DistributorPayment, DistributorTask
 
 __author__ = 'alexy'
 
@@ -66,3 +67,28 @@ def get_task_initial(request):
         return {
             'error': u'Произошла ошибка. Приносим свои извинения. Обновите страницу и попробуйте ещё раз.'
         }
+
+
+@ajax_request
+@csrf_exempt
+def get_task_cord_list(request):
+    coord_list = []
+    address_list = []
+    print 'hey'
+    if request.POST.get('task'):
+        task = DistributorTask.objects.get(id=int(request.POST.get('task')))
+        print task
+        if task.define_address:
+            for i in task.gpspoint_set.all():
+                address_list.append(i.name)
+            print 'address_list'
+            print address_list
+        else:
+            for i in task.gpspoint_set.all():
+                coord_list.append([i.coord_x, i.coord_y])
+            print 'coord_list'
+            print coord_list
+    return {
+        'coord_list': coord_list,
+        'address_list': address_list
+    }

@@ -33,16 +33,12 @@ WSGI_APPLICATION = 'cms.wsgi.application'
 AUTH_USER_MODEL = 'core.User'
 LOGIN_URL = '/login/'
 
+LANGUAGE_CODE = 'ru-ru'
 LANGUAGES = (
     ('ru', u'Россия'),
     ('uk', u'Украина'),
     ('kk', u'Казахстан'),
 )
-# LANGUAGES = (
-#     ('de', _('German')),
-#     ('en', _('English')),
-# )
-LANGUAGE_CODE = 'ru-ru'
 LOCALE_PATHS = (
     os.path.join(BASE_DIR, '../locale'),
 )

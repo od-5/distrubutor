@@ -7,7 +7,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
-from apps.city.models import City
+from django.conf import settings
+from apps.city.models import City, Country
 from apps.moderator.models import Moderator
 from core.models import Setup
 
@@ -18,6 +19,7 @@ class LandingView(TemplateView):
     template_name = 'landing/index.html'
 
     def get_context_data(self, **kwargs):
+        # print self.request.META['LANG']
         try:
             # self.request.session['current_city']
             current_city = City.objects.get(pk=int(self.request.session['current_city']))
@@ -29,6 +31,7 @@ class LandingView(TemplateView):
         # current_city = City.objects.get(pk=int(self.request.session['current_city']))
         setup = Setup.objects.first()
         context = {
+            'country_list': Country.objects.select_related().all(),
             'city_list': City.objects.all(),
             'moderator_list': moderator_qs,
             # 'moderator_list': Moderator.objects.all(),
@@ -44,12 +47,14 @@ def set_current_city(request):
     if request.POST.get('city'):
         try:
             current_city = City.objects.get(name__iexact=request.POST.get('city'))
+            request.session['current_city'] = current_city.id
         except:
             current_city = None
-        request.session['current_city'] = current_city.id
+            request.session['current_city'] = None
     return {
         'success': True
     }
+
 
 @csrf_exempt
 def set_current_city_from_input(request):
@@ -60,34 +65,3 @@ def set_current_city_from_input(request):
         except:
             pass
     return HttpResponseRedirect(reverse('landing:index'))
-
-# def cms_login(request, usertype=None):
-#     error = None
-#     if request.user.is_authenticated():
-#         return HttpResponseRedirect(reverse('dashboard:index'))
-#     else:
-#         if request.method == "POST":
-#             username = request.POST.get('username')
-#             password = request.POST.get('password')
-#             try:
-#                 user = authenticate(username=username, password=password)
-#                 if user is not None:
-#                     if user.is_active:
-#                         login(request, user)
-#                         return HttpResponseRedirect(reverse('dashboard:index'))
-#                         # return HttpResponseRedirect('/')
-#                     else:
-#                         error = u'Пользователь заблокирован'
-#                 else:
-#                     error = u'Вы ввели неверный e-mail или пароль'
-#             except:
-#                 if usertype == 2:
-#                     error = u'Модератора с таким e-mail не зарегистрировано в системе. Проверьте правильность ввода даных.'
-#                 elif usertype == 3:
-#                     error = u'Клиента с таким e-mail не зарегистрировано в системе. Проверьте правильность ввода даных.'
-#                 elif usertype == 4:
-#                     error = u'Исполнителя с таким e-mail не зарегистрировано в системе. Проверьте правильность ввода даных.'
-#                 elif usertype == 5:
-#                     error = u'Менеджера с таким e-mail не зарегистрировано в системе. Проверьте правильность ввода даных.'
-#         context = {'error': error}
-#         return render(request, 'core/login.html', context)
