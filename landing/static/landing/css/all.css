@@ -809,8 +809,20 @@ label.error {
 .footer-bottom {
     padding: 59px 0 72px;
 }
+.copy, .footer-download, .studio, .social-group {
+    display: inline-block;
+    width: 24%;
+    vertical-align: top;
+}
+.social-group {
+    font-size: 14px;
+    text-align: center;
+}
+.social-group__img {
+    height: 42px;
+}
 .copy {
-    float: left;
+    /*float: left;*/
     font-size: 14px;
     line-height: 18px;
 }
@@ -819,8 +831,8 @@ label.error {
     text-decoration: none;
 }
 .footer-download {
-    float: left;
-    margin: -20px 0 -20px 200px;
+    /*float: left;*/
+    /*margin: -20px 0 -20px 200px;*/
     font-size: 14px;
     text-align: center;
 }
@@ -828,8 +840,9 @@ label.error {
     width: 130px;
 }
 .studio {
-    float: right;
-    margin: -4px 0 0;
+    /*float: right;*/
+    /*margin: -4px 0 0;*/
+    text-align: right;
     color: #000;
     font-size: 14px;
     line-height: 20px;

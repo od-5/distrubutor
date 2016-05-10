@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView
 from apps.city.forms import CityForm
-from apps.city.models import City
+from apps.city.models import City, Country
 from apps.moderator.forms import ModeratorAreaForm
 from apps.moderator.models import ModeratorArea
 
@@ -27,6 +27,8 @@ class CityListView(ListView):
             qs = user.manager_user.moderator.moderator_user.city.all()
         else:
             qs = None
+        if self.request.GET.get('country') and int(self.request.GET.get('country')) != 0:
+            qs = qs.filter(country=int(self.request.GET.get('country')))
         if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
             qs = qs.filter(id=int(self.request.GET.get('city')))
         if self.request.GET.get('moderator'):
@@ -39,6 +41,9 @@ class CityListView(ListView):
         user = self.request.user
         if user.type == 1:
             qs = City.objects.all()
+            context.update({
+                'country_list': Country.objects.all()
+            })
         elif user.type == 2:
             qs = user.moderator_user.city.all()
         elif user.type == 5:
@@ -51,6 +56,10 @@ class CityListView(ListView):
         if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
             context.update({
                 'r_city': int(self.request.GET.get('city'))
+            })
+        if self.request.GET.get('country') and int(self.request.GET.get('country')) != 0:
+            context.update({
+                'r_country': int(self.request.GET.get('country'))
             })
         if self.request.GET.get('moderator'):
             context.update({

@@ -27,6 +27,14 @@
 
 
           <form action="" method="GET" role="form" class="form-inline">
+          {% if user.type == 1 %}
+            <select name="country" id="city_filter" class="form-control input-sm">
+              <option value="0">Город</option>
+              {% for country in country_list %}
+                <option value="{{ country.id }}" {% if country.id == r_country %}selected="selected"{% endif %}>{{ country.name }}</option>
+              {% endfor %}
+            </select>
+          {% endif %}
             <select name="city" id="city_filter" class="form-control input-sm">
               <option value="0">Город</option>
               {% for city in object_list %}
