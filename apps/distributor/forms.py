@@ -9,7 +9,7 @@ __author__ = 'alexy'
 class DistributorAddForm(forms.ModelForm):
     class Meta:
         model = Distributor
-        exclude = ['user', ]
+        fields = ['moderator', ]
         widgets = {
             'moderator': forms.Select(attrs={'class': 'form-control'}),
         }

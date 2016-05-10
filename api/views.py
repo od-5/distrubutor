@@ -7,7 +7,7 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from api.serializers import UserSerializer, DistributorTaskSerializer, GPSPointSerializer, PointPhotoSerializer
+from api.serializers import UserSerializer, DistributorTaskSerializer, GPSPointSerializer, PointPhotoSerializer, DistributorSerializer
 from core.common import str_to_bool
 from core.models import User
 from apps.distributor.models import Distributor, DistributorTask, GPSPoint
@@ -31,6 +31,38 @@ def api_root(request, format=None):
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = UserSerializer(user)
         return Response(serializer.data)
+
+
+@api_view(['PUT'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def location_view(request):
+    if request.method == 'PUT':
+        user = request.user
+        print 'request method = PUT'
+        try:
+            distributor = user.distributor_user
+            print distributor
+            coord_x = request.data.get('coord_x')
+            coord_y = request.data.get('coord_y')
+            try:
+                distributor.coord_x = float(coord_x)
+                distributor.coord_y = float(coord_y)
+                print coord_x
+                print coord_y
+                distributor.coord_time = datetime.datetime.now()
+                print 'coord_time end'
+                distributor.save()
+                print 'distributor save()'
+                serializer = DistributorSerializer(distributor)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except:
+                serializer = DistributorSerializer(distributor)
+                return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])

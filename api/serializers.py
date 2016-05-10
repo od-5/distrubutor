@@ -1,9 +1,25 @@
 # coding=utf-8
 from rest_framework import serializers
 from core.models import User
-from apps.distributor.models import DistributorTask, GPSPoint, PointPhoto
+from apps.distributor.models import Distributor, DistributorTask, GPSPoint, PointPhoto
 
 __author__ = 'alexy'
+
+
+class DistributorSerializer(serializers.ModelSerializer):
+    """
+    Сериализация модели исполнителя
+    """
+    class Meta:
+        model = Distributor
+        fields = (
+            'id',
+            'user',
+            'moderator',
+            'coord_x',
+            'coord_y',
+            'coord_time',
+        )
 
 
 class UserSerializer(serializers.ModelSerializer):

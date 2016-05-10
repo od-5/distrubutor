@@ -34,6 +34,9 @@ class Distributor(models.Model):
         to=Moderator,
         verbose_name=u'Модератор'
     )
+    coord_x = models.DecimalField(max_digits=8, decimal_places=6, verbose_name=u'Ширина', blank=True, null=True)
+    coord_y = models.DecimalField(max_digits=8, decimal_places=6, verbose_name=u'Долгота', blank=True, null=True)
+    coord_time = models.DateTimeField(verbose_name=u'Временная метка', blank=True, null=True)
 
 
 class DistributorPayment(models.Model):

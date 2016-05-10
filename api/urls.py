@@ -14,8 +14,8 @@ urlpatterns = patterns(
     url(r'^point/$', 'gpspoint_add', name='point_add'),
     url(r'^point/(?P<pk>[0-9]+)/$', 'gpspoint_comment', name='point_comment'),
     url(r'^photo/$', 'photo_add', name='photo_add'),
-    # # url(r'^tasks/surface/(?P<pk>[0-9]+)/$', 'tasksurface_detail', name='tasksurface_detail'),
-    # url(r'^tasks/surface/porch/(?P<pk>[0-9]+)/$', 'tasksurfaceporch_detail', name='tasksurfaceporch_detail'),
+    url(r'^location/$', 'location_view', name='location'),
+
 )
 
 # Format suffixes
