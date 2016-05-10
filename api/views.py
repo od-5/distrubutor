@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from api.serializers import UserSerializer, DistributorTaskSerializer, GPSPointSerializer, PointPhotoSerializer
 from core.common import str_to_bool
 from core.models import User
-from apps.distributor.models import Distributor, DistributorTask
+from apps.distributor.models import Distributor, DistributorTask, GPSPoint
 
 __author__ = 'alexy'
 
@@ -87,6 +87,37 @@ def gpspoint_add(request):
                 serializer.save()
                 return Response({'point': serializer.instance.id}, status=status.HTTP_201_CREATED)
             else:
+                return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PUT'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def gpspoint_comment(request, pk):
+    if request.method == 'GET':
+        try:
+            point = GPSPoint.objects.get(pk=int(pk))
+            serializer = GPSPointSerializer(point)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    if request.method == 'PUT':
+        try:
+            point = GPSPoint.objects.get(pk=int(pk))
+            count = request.data.get('count', None)
+            comment = request.data.get('comment', None)
+            try:
+                point.comment = comment
+                point.count = count
+                point.save()
+                serializer = GPSPointSerializer(point)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except:
+                serializer = GPSPointSerializer(point)
                 return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)

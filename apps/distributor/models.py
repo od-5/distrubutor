@@ -145,6 +145,8 @@ class GPSPoint(models.Model):
 
     task = models.ForeignKey(to=DistributorTask, verbose_name=u'Задача')
     name = models.CharField(max_length=150, verbose_name=u'Название', blank=True, null=True)
+    count = models.PositiveIntegerField(verbose_name=u'Кол-во материала', blank=True, null=True)
+    comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
     coord_x = models.DecimalField(max_digits=8, decimal_places=6, verbose_name=u'Ширина')
     coord_y = models.DecimalField(max_digits=8, decimal_places=6, verbose_name=u'Долгота')
     timestamp = models.DateTimeField(auto_now_add=True, verbose_name=u'Временная метка')

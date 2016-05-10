@@ -285,7 +285,6 @@ def distributor_task_add(request):
             task = form.save(commit=False)
             task.type = task.order.type
             task.save()
-            print task.order.type
             return HttpResponseRedirect(reverse('distributor:task-list'))
         else:
             context.update({

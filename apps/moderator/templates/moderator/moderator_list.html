@@ -43,7 +43,7 @@
                 <td>{{ object.patronymic|default:'Не указано' }}</td>
                 <td>{{ object.phone|default:'Не указано' }}</td>
                 <td>
-                {% for city in object.moderator.city.all %}
+                {% for city in object.moderator_user.city.all %}
                   {{ city.name|default:'' }}
                   {% if not forloop.last %}<br> {% endif %}
                 {% endfor %}

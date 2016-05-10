@@ -50,6 +50,8 @@ class GPSPointSerializer(serializers.ModelSerializer):
         model = GPSPoint
         fields = (
             'task',
+            'count',
+            'comment',
             'coord_x',
             'coord_y',
         )
