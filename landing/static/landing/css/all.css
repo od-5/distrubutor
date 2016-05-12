@@ -664,6 +664,9 @@ pulse
     margin: 0 0 12px;
     font-weight: 700;
 }
+.review-author, .review-text {
+    font-size: 14px;
+}
 .review-button {
     display: block;
     height: 50px;
