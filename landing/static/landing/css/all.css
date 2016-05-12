@@ -604,7 +604,8 @@ pulse
 .info-list {
     overflow: hidden;
     margin: 0 0 41px;
-    line-height: 30px;
+    line-height: 24px;
+    font-size: 14px;
 }
 .info-list dt {
     float: left;
