@@ -79,6 +79,7 @@
           </p>
         </div>
         <div class="panel-body">
+          <p class="lead">Всего заказов на сумму: {{ total_sum|default:'0' }} руб.</p>
           <table class="table table-hover">
             <thead>
               <tr>
@@ -89,7 +90,7 @@
                 <th>Стоимость 1 шт, руб</th>
                 <th>Наценка, %</th>
                 <th>Скидка, %</th>
-                <th>Итоговая стоимость, руб</th>
+                <th>Итого, руб</th>
                 <th>&nbsp;</th>
               </tr>
             </thead>

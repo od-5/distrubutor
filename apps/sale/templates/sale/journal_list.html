@@ -11,6 +11,7 @@
           <p class="lead remove-bottom text-center">Журнал продаж</p>
         </div>
         <div class="panel-body">
+          <p class="lead">Всего заказов на сумму: {{ total_sum|default:'0' }} руб.</p>
           <form action="" class="client-search-form" method="GET">
           {% if user.type == 1 %}
             <select name="city" class="form-control">
@@ -30,16 +31,19 @@
             <input type="text" name="legal_name" class="form-control" placeholder="Юридическое название">
             <input type="submit" value="Искать" class="btn btn-info">
           </form>
+
           <table class="table table-hover">
             <thead>
               <tr>
                 <th>Название</th>
                 <th>Юридическое наименование</th>
-                <th>Фактическое наименование</th>
                 <th>Город</th>
                 <th>Менеджер</th>
-                <th>Руководитель</th>
-                <th>Должность руководителя</th>
+                <th>Кол-во материалов</th>
+                <th>Стоимость 1 шт, руб</th>
+                <th>Наценка, %</th>
+                <th>Скидка, %</th>
+                <th>Итого, руб</th>
                 <th>&nbsp;</th>
               </tr>
             </thead>
@@ -49,11 +53,13 @@
               <tr data-id="{{ object.id }}" data-name="{{ object }}" data-model="SaleOrder" id="id_SaleOrder_{{ object.id }}">
                 <td><a href="{% url 'sale:order-update' object.id %}">{{ object|default:'Не указано' }}</a></td>
                 <td>{{ object.sale.legal_name|default:'Не указано' }}</td>
-                <td>{{ object.sale.actual_name|default:'Не указано' }}</td>
                 <td>{{ object.sale.city|default:'Не указано' }}</td>
                 <td>{{ object.sale.manager|default:'Не указано' }}</td>
-                <td>{{ object.sale.leader|default:'Не указано' }}</td>
-                <td>{{ object.sale.leader_function|default:'Не указано' }}</td>
+                <td>{{ object.count|default:'0' }}</td>
+                <td>{{ object.cost|default:'0' }}</td>
+                <td>{{ object.add_cost|default:'0' }}</td>
+                <td>{{ object.discount|default:'0' }}</td>
+                <td>{{ object.total_sum|default:'0' }}</td>
                 <td>
                   <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
                     <span class="glyphicon glyphicon-remove"></span> Удалить
@@ -63,7 +69,7 @@
               {% endfor %}
             {% else %}
               <tr>
-                <td colspan="8"><p class="alert alert-info">Клиентов нет</p></td>
+                <td colspan="10"><p class="alert alert-info">Клиентов нет</p></td>
               </tr>
             {% endif %}
             </tbody>

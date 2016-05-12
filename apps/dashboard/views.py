@@ -33,12 +33,43 @@ class DashboardView(TemplateView):
         context = super(DashboardView, self).get_context_data()
         user = self.request.user
         if user.type == 3:
-            task_qs = DistributorTask.objects.filter(sale=user.sale_user)
-            if self.request.GET.get('task'):
-                task = DistributorTask.objects.get(pk=int(self.request.GET.get('task')))
+            sale = user.sale_user
+            task_qs = sale.distributortask_set.select_related().all()
+            order_qs = sale.saleorder_set.all()
+            point_qs = GPSPoint.objects.filter(task__sale=sale)
+            # ловим значения из формы поиска
+            r_task = self.request.GET.get('task') or None
+            r_date_start = self.request.GET.get('date_start') or None
+            r_date_end = self.request.GET.get('date_end') or None
+            r_order = self.request.GET.get('order') or None
+            show_table = self.request.GET.get('show_table') or None
+            if r_task and r_task != '0':
+                point_qs = point_qs.filter(task=int(r_task))
+                context.update({
+                    'r_task': int(r_task)
+                })
+            if r_order and r_order != '0':
+                point_qs = point_qs.filter(task__order=int(r_order))
+                context.update({
+                    'r_order': int(r_order)
+                })
+            if r_date_start:
+                point_qs = point_qs.filter(timestamp__gte=datetime.datetime.strptime(r_date_start, '%d.%m.%Y'))
+                context.update({
+                    'r_date_start': r_date_start
+                })
+            if r_date_end:
+                point_qs = point_qs.filter(timestamp__lte=datetime.datetime.strptime(r_date_end, '%d.%m.%Y'))
+                context.update({
+                    'r_date_end': r_date_end
+                })
+            if show_table:
+                if int(show_table) == 0:
+                    show_table = None
+                else:
+                    show_table = True
             else:
-                task = task_qs.first()
-            point_qs = task.gpspoint_set.all()
+                show_table = True
             form = ReviewForm(
                 initial={
                     'moderator': user.sale_user.moderator,
@@ -49,7 +80,9 @@ class DashboardView(TemplateView):
             form.fields['name'].widget = HiddenInput()
             form.fields['mail'].widget = HiddenInput()
             context.update({
-                'current_task': task,
+                'show_table': show_table,
+                'order_list': order_qs,
+                # 'current_task': task,
                 'task_list': task_qs,
                 'point_list': point_qs,
                 'form': form

@@ -99,24 +99,29 @@
                 <table class="table">
                   <thead>
                     <tr>
-                      <th>адрес</th>
-                      <th>время</th>
-                      <th></th>
+                      <th>Адрес\Координаты</th>
+                      <th>Время</th>
+                      <th>Комментарий</th>
+                      <th>Кол-во материала</th>
                     </tr>
                   </thead>
                   <tbody>
                   {% for point in point_list %}
-                  {% for photo in point.pointphoto_set.all %}
-                  <tr>
-                    <td>{{ photo.name|default:'Не указано' }}</td>
-                    <td>{{ photo.timestamp|default:'Не указано' }}</td>
-                    <td>
-                      <a href="{{ photo.photo.url }}" rel="group" class="js-gallery" title="{{ photo.name }}, время {{ photo.timestamp }}">
-                        <span class="glyphicon glyphicon-zoom-in"></span>
-                      </a>
-                    </td>
-                  </tr>
-                  {% endfor %}
+                    <tr>
+                      <td>{{ point|default:'Не указано' }}</td>
+                      <td>{{ point.timestamp|time:'H:i'|default:'Не указано' }} - {{ point.timestamp|date:'d.m.Y'|default:'Не указано' }}</td>
+                      <td>{{ point.comment|default:'Не указано' }}</td>
+                      <td>{{ point.count|default:'Не указано' }}</td>
+                    </tr>
+                    <tr>
+                      <td colspan="4">
+                      {% for photo in point.pointphoto_set.all %}
+                        <a href="{{ photo.photo.url }}" rel="group" class="js-gallery" title="{{ photo.name }}, время {{ photo.timestamp|time:'H:i'|default:'Не указано' }}">
+                          <span class="glyphicon glyphicon-camera"></span>
+                        </a>
+                      {% endfor %}
+                      </td>
+                    </tr>
                   {% endfor %}
                   </tbody>
                 </table>
@@ -134,20 +139,11 @@
 <script>
 ymaps.ready(init);
 function init() {
-  var myMap = new ymaps.Map("map", {
-      center: [48.709866, 44.521522],
-      zoom: 13
-    }, {
-      searchControlProvider: 'yandex#search'
-  });
-
   var map_id = $('#map');
   var url = map_id.data('url');
   var task = map_id.data('task');
-  console.log(url);
-  console.log(task);
-
   var data_list = '';
+  var center = '';
   $.ajax({
     type: "POST",
     async: false,
@@ -156,7 +152,7 @@ function init() {
       task: task
     }
   }).done(function (data) {
-    console.log(data);
+    center = data.center;
     if (data.coord_list.length){
       data_list = data.coord_list;
     } else {
@@ -165,17 +161,29 @@ function init() {
       }
     }
   });
-  console.log(data_list);
-  console.log(data_list.length);
-  ymaps.route(
-    data_list
-  ).then(function (route) {
-    myMap.geoObjects.add(route);
-    var points = route.getWayPoints();
-    points.options.set('preset', 'islands#redStretchyIcon');
-  }, function (error) {
-    alert('Возникла ошибка: ' + error.message);
+  var myMap = new ymaps.Map("map", {
+      center: center,
+      zoom: 13
+    }, {
+      searchControlProvider: 'yandex#search'
   });
-};
+  if (data_list.length > 1){
+    ymaps.route(
+      data_list
+    ).then(function (route) {
+      myMap.geoObjects.add(route);
+      var points = route.getWayPoints();
+      points.options.set('preset', 'islands#redStretchyIcon');
+    }, function (error) {
+      alert('Возникла ошибка: ' + error.message);
+    });
+  } else {
+    myPlacemark = new ymaps.Placemark(myMap.getCenter(), {
+            hintContent: data_list[0],
+            balloonContent: data_list[0]
+        });
+    myMap.geoObjects.add(myPlacemark);
+  }
+}
 </script>
 {% endblock %}

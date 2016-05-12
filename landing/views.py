@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.utils.translation import get_language
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 from django.conf import settings
@@ -20,19 +21,31 @@ class LandingView(TemplateView):
 
     def get_context_data(self, **kwargs):
         # print self.request.META['LANG']
+        lang = get_language()
+        if lang == 'ru':
+            country_qs = Country.objects.select_related().all()
+        else:
+            country_qs = Country.objects.select_related().filter(code=lang)
         try:
             # self.request.session['current_city']
             current_city = City.objects.get(pk=int(self.request.session['current_city']))
-            moderator_qs = current_city.moderator_set.all()
+            if lang != 'ru':
+                if current_city.country.code != lang:
+                    current_city = None
+                    self.request.session['current_city'] = None
+                    moderator_qs = None
+                else:
+                    moderator_qs = current_city.moderator_set.all()
+            else:
+                moderator_qs = current_city.moderator_set.all()
         except:
-            current_city = City.objects.first()
-            moderator_qs = Moderator.objects.all()
+            current_city = None
+            moderator_qs = None
             self.request.session['current_city'] = None
         # current_city = City.objects.get(pk=int(self.request.session['current_city']))
         setup = Setup.objects.first()
         context = {
-            'country_list': Country.objects.select_related().all(),
-            'city_list': City.objects.all(),
+            'country_list': country_qs,
             'moderator_list': moderator_qs,
             # 'moderator_list': Moderator.objects.all(),
             'current_city': current_city,

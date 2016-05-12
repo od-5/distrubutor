@@ -6333,6 +6333,9 @@ body {
 .btn-right {
   float: right;
 }
+#photo_list .glyphicon-camera {
+  font-size: 50px;
+}
 #js-ajax-item-remove {
   display: none;
 }

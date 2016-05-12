@@ -39,21 +39,15 @@ def api_root(request, format=None):
 def location_view(request):
     if request.method == 'PUT':
         user = request.user
-        print 'request method = PUT'
         try:
             distributor = user.distributor_user
-            print distributor
             coord_x = request.data.get('coord_x')
             coord_y = request.data.get('coord_y')
             try:
                 distributor.coord_x = float(coord_x)
                 distributor.coord_y = float(coord_y)
-                print coord_x
-                print coord_y
                 distributor.coord_time = datetime.datetime.now()
-                print 'coord_time end'
                 distributor.save()
-                print 'distributor save()'
                 serializer = DistributorSerializer(distributor)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             except:

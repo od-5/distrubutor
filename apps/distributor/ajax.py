@@ -74,15 +74,19 @@ def get_task_initial(request):
 def get_task_cord_list(request):
     coord_list = []
     address_list = []
+    center = []
     if request.POST.get('task'):
         task = DistributorTask.objects.get(id=int(request.POST.get('task')))
+        qs = task.gpspoint_set.all()
+        center = [qs.first().coord_x, qs.first().coord_y]
         if task.define_address:
-            for i in task.gpspoint_set.all():
+            for i in qs:
                 address_list.append(i.name)
         else:
-            for i in task.gpspoint_set.all():
+            for i in qs:
                 coord_list.append([i.coord_x, i.coord_y])
     return {
+        'center': center,
         'coord_list': coord_list,
         'address_list': address_list
     }

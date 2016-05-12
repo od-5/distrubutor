@@ -66,7 +66,7 @@ class DistributorTask(models.Model):
         app_label = 'distributor'
 
     def __unicode__(self):
-        return u'Задача: %s, %sшт. %s' % (self.get_type_display(), self.material_count, self.date)
+        return u'%s, %sшт. %s' % (self.get_type_display(), self.material_count, self.date)
 
     def get_type_display(self):
         return self.type.name
@@ -167,7 +167,7 @@ class PointPhoto(models.Model):
 
     def save(self, *args, **kwargs):
         try:
-            self.name = self.point.name
+            self.name = self.point.__unicode__()
         except:
             pass
         super(PointPhoto, self).save()

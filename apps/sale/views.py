@@ -14,6 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
 from django.forms import HiddenInput
 from apps.city.models import City
+from apps.distributor.models import GPSPoint
 from .forms import SaleAddForm, SaleUpdateForm, SaleOrderForm, SaleMaketForm
 from apps.manager.models import Manager
 from apps.moderator.models import Moderator
@@ -224,6 +225,14 @@ class JournalListView(ListView):
         context.update({
             'r_legal_name': self.request.GET.get('legal_name')
         })
+        order_qs = self.get_queryset()
+        total_sum = 0
+        for order in order_qs:
+            if order.total_sum():
+                total_sum += order.total_sum()
+        context.update({
+            'total_sum': total_sum
+        })
         return context
 
 
@@ -232,6 +241,10 @@ def sale_order(request, pk):
     error = u''
     sale = Sale.objects.get(pk=int(pk))
     order_list_qs = sale.saleorder_set.all()
+    total_sum = 0
+    for order in order_list_qs:
+        if order.total_sum():
+            total_sum += order.total_sum()
     page = request.GET.get('page')
     paginator = Paginator(order_list_qs, 25)
     page = request.GET.get('page')
@@ -257,6 +270,7 @@ def sale_order(request, pk):
     form.fields['type'].queryset = sale.moderator.moderatoraction_set.all()
     form.fields['closed'].widget = HiddenInput()
     context.update({
+        'total_sum': total_sum,
         'error': error,
         'form': form,
         'object': sale,
@@ -356,10 +370,94 @@ def sale_maket_update(request, pk):
     return render(request, 'sale/sale_maket_update.html', context)
 
 
-# @csrf_exempt
-# def review_add(request):
-#     if request.method == 'POST':
-#         form = ReviewForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#     return HttpResponseRedirect(request.META['HTTP_REFERER'])
+def address_export(request):
+    sale = request.user.sale_user
+    point_qs = GPSPoint.objects.filter(task__sale=sale)
+    # ловим значения из формы поиска
+    r_task = request.GET.get('task') or None
+    r_date_start = request.GET.get('date_start') or None
+    r_date_end = request.GET.get('date_end') or None
+    r_order = request.GET.get('order') or None
+    if r_task and r_task != '0':
+        point_qs = point_qs.filter(task=int(r_task))
+    if r_order and r_order != '0':
+        point_qs = point_qs.filter(task__order=int(r_order))
+    if r_date_start:
+        point_qs = point_qs.filter(timestamp__gte=datetime.datetime.strptime(r_date_start, '%d.%m.%Y'))
+    if r_date_end:
+        point_qs = point_qs.filter(timestamp__lte=datetime.datetime.strptime(r_date_end, '%d.%m.%Y'))
+
+    font0 = xlwt.Font()
+    font0.name = 'Times New Roman'
+    font0.height = 240
+
+    alignment_center = xlwt.Alignment()
+    alignment_center.horz = xlwt.Alignment.HORZ_CENTER
+    alignment_center.vert = xlwt.Alignment.VERT_TOP
+
+    borders = xlwt.Borders()
+    borders.left = xlwt.Borders.THIN
+    borders.right = xlwt.Borders.THIN
+    borders.top = xlwt.Borders.THIN
+    borders.bottom = xlwt.Borders.THIN
+
+    style0 = xlwt.XFStyle()
+    style0.font = font0
+    style0.alignment = alignment_center
+
+    style1 = xlwt.XFStyle()
+    style1.font = font0
+
+    style2 = xlwt.XFStyle()
+    style2.font = font0
+    style2.borders = borders
+
+    wb = xlwt.Workbook()
+    ws = wb.add_sheet(u'Список контрольных точек')
+    ws.write_merge(0, 0, 0, 3, u'Отчёт о распространении рекламных материалов', style0)
+    ws.write(1, 0, u'Город: %s' % sale.city, style1)
+    ws.write(2, 0, u'Исполнитель: %s' % sale.moderator, style1)
+    ws.write(3, 0, u'Заказчик: %s' % sale, style1)
+    ws.write_merge(5, 5, 0, 3, u'Список адресов контрольных точек', style0)
+    ws.write(7, 0, u'Адрес', style2)
+    ws.write(7, 1, u'Время', style2)
+    ws.write(7, 2, u'Комментарий', style2)
+    ws.write(7, 3, u'Кол-во материала', style2)
+    i = 8
+    material_count = 0
+    for point in point_qs:
+        ws.write(i, 0, point.name, style2)
+        ws.write(i, 1, str(point.timestamp), style2)
+        ws.write(i, 2, point.comment, style2)
+        ws.write(i, 3, point.count, style2)
+        i += 1
+        if point.count:
+            material_count += point.count
+    ws.write(i+1, 0, u'Итого указанное кол-во материала', style1)
+    ws.write(i+1, 1, material_count, style1)
+    # i = 6
+    # porch_total = 0
+    # for item in order.clientordersurface_set.all():
+    #     ws.write(i, 0, item.surface.city.name, style1)
+    #     ws.write(i, 1, item.surface.street.area.name, style1)
+    #     ws.write(i, 2, item.surface.street.name, style1)
+    #     ws.write(i, 3, item.surface.house_number, style1)
+    #     ws.write(i, 4, item.surface.porch_count(), style1)
+    #     i += 1
+    #     porch_total += item.surface.porch_count()
+    # ws.write(i + 1, 0, u'Кол-во домов: %d' % order.clientordersurface_set.all().count(), style0)
+    # ws.write(i + 2, 0, u'Кол-во стендов: %d' % porch_total, style0)
+    #
+    ws.col(0).width = 12000
+    ws.col(1).width = 8000
+    ws.col(2).width = 15000
+    ws.col(3).width = 5000
+    # ws.col(4).width = 5000
+    for count in range(i):
+        ws.row(count).height = 300
+
+    fname = 'address_list.xls'
+    response = HttpResponse(content_type="application/ms-excel")
+    response['Content-Disposition'] = 'attachment; filename=%s' % fname
+    wb.save(response)
+    return response

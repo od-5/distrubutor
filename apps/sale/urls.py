@@ -2,6 +2,7 @@
 from django.conf.urls import patterns, url
 from .models import Sale
 from .views import SaleListView, JournalListView
+from .ajax import get_client_coord_list
 
 __author__ = 'alexy'
 
@@ -16,10 +17,10 @@ urlpatterns = patterns(
     url(r'^(?P<pk>\d+)/order/$', 'sale_order', name='order'),
     url(r'^order/(?P<pk>\d+)/$', 'sale_order_update', name='order-update'),
     url(r'^journal/$', JournalListView.as_view(), name='journal'),
-    # url(r'^journal/(?P<pk>\d+)/export/$', 'client_journal_export', name='journal-export'),
+    url(r'export/$', 'address_export', name='address-export'),
     # url(r'^add-surface/$', 'add_client_surface', name='add-client-surface'),
     #
-    # url(r'^get_order_list/$', get_client_order_list, name='get_order_list'),
+    url(r'^get_coord_list/$', get_client_coord_list, name='get_cord_list'),
     # url(r'^get_order_address_list/$', get_client_order_address_list, name='get_order_address_list'),
     #
     #

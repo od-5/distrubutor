@@ -1013,3 +1013,9 @@ label.error {
     position: relative !important;
     z-index: 99999 !important;
 }
+.lead {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #666;
+}

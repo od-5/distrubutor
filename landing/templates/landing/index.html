@@ -15,7 +15,6 @@
   <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/animate.min.css' %}" />
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <script src="{% static 'landing/js/jquery-1.9.1.min.js' %}"></script>
-{#  <script src="//code.jquery.com/jquery-1.10.2.js"></script>#}
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
   <script src="{% static 'landing/js/jquery.bxslider.js' %}"></script>
   <script src="{% static 'landing/js/jquery.validate.js' %}"></script>
@@ -56,10 +55,6 @@
               <li><a href="#tab1_{{ country.id }}">{{ country.name }}</a></li>
               {% endif %}
             {% endfor %}
-{#              <li><a href="#tab1">Россия</a></li>#}
-{#              <li><a href="#tab2">Казахстан</a></li>#}
-{#              <li><a href="#tab3">Украина</a></li>#}
-{#              <li><a href="#tab4">Белоруссия</a></li>#}
             </ul>
           </div>
           <div class="city-block">
@@ -74,33 +69,6 @@
               </div>
               {% endif %}
             {% endfor %}
-{#            <div id="tab1" class="tab-content">#}
-{#              <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">#}
-{#                <li><a>Ростов-на-Дону</a></li>#}
-{#                <li><a>Волгоград</a></li>#}
-{#                <li><a>Саратов</a></li>#}
-{#                <li><a>Киров</a></li>#}
-{#                <li><a>Казань</a></li>#}
-{#              </ul>#}
-{#            </div>#}
-{#            <div id="tab2" class="tab-content">#}
-{#              <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">#}
-{#                <li><a>Город</a></li>#}
-{#                <li><a>Город</a></li>#}
-{#              </ul>#}
-{#            </div>#}
-{#            <div id="tab3" class="tab-content">#}
-{#              <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">#}
-{#                <li><a>Город</a></li>#}
-{#              </ul>#}
-{#            </div>#}
-{#            <div id="tab4" class="tab-content">#}
-{#              <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">#}
-{#                <li><a>Город</a></li>#}
-{#                <li><a>Город</a></li>#}
-{#                <li><a>Город</a></li>#}
-{#              </ul>#}
-{#            </div>#}
           </div>
 {#          <div class="city-block">#}
 {#            <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">#}
@@ -139,18 +107,9 @@
                 <img src="{{ STATIC_URL }}landing/images/flag_{{ language.code }}.png" alt="">{{ language.name_local }}
               </a>
             {% endfor %}
-{#              <a href="" class="lang-link">#}
-{#                <img src="{% static 'landing/images/flag_ru.png' %}" alt="">Русский#}
-{#              </a>#}
-{#              <a href="" class="lang-link">#}
-{#                <img src="{% static 'landing/images/flag_kk.png' %}" alt="">Казахский#}
-{#              </a>#}
-{#              <a href="" class="lang-link">#}
-{#                <img src="{% static 'landing/images/flag_uk.png' %}" alt="">Украинский#}
-{#              </a>#}
             </div>
           </div>
-          <div class="header-city">Выберите город: <a href="">{{ current_city.name|default:'Не указано' }}</a></div>
+          <div class="header-city">Выберите город: <a href="">{{ current_city.name|default:'Не выбрано' }}</a></div>
           <div class="header-enter">
             <a href="{% url 'dashboard:index' %}" class="enter-link {% if not user.is_authenticated %}enter-link-top{% endif %}">
             {% if user.is_authenticated %}{{ user.email }}{% else %} Войти как...{% endif %}
@@ -393,8 +352,10 @@
           </ul>
         </div>
         {% else %}
-          <div>
-          Нет исполнителей по данному городу
+          <div class="review-item">
+            <div class="review-text lead">
+              Нет исполнителей по данному городу
+            </div>
           </div>
         {% endif %}
       </div>
@@ -617,15 +578,6 @@
           {% endif %}
         {% endfor %}
         </div>
-
-{#        <div class="city-list-holder">#}
-{#          <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">#}
-{#          {% for city in city_list %}#}
-{#            <li><a>{{ city.name }}</a></li>#}
-{#          {% endfor %}#}
-{#          </ul>#}
-{#        </div>#}
-
       </div>
     </div>
     <div id="popup5" class="popup">
