@@ -6342,6 +6342,10 @@ body {
 .photo_image {
   display: block;
   height: 150px;
+  text-align: center;
+}
+.photo_image img {
+  max-height: 100%;
 }
 .sign {
   display: table;
