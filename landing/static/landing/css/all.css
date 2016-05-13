@@ -659,7 +659,9 @@ pulse
     background: #f2fdff;
     border-radius: 5px;
 }
-.review-pink {background: #fffbf2;}
+.info-reviews .review-item:nth-child(odd) {
+    background: #fffbf2;
+}
 .review-author {
     margin: 0 0 12px;
     font-weight: 700;
@@ -818,6 +820,7 @@ label.error {
     width: 33%;
     vertical-align: top;
 }
+
 .social-group {
     font-size: 14px;
     text-align: center;
@@ -837,6 +840,7 @@ label.error {
 .footer-download {
     /*float: left;*/
     /*margin: -20px 0 -20px 200px;*/
+    width: 300px;
     font-size: 14px;
     text-align: center;
 }
