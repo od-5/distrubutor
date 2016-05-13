@@ -314,11 +314,7 @@
                 <div class="info-reviews">
                   <div class="info-reviews-title">
                     Отзывы <span>{{ moderator.review_set.count }}</span>
-
                   </div>
-
-                  <br>
-                  <br>
                 {% for review in moderator.review_set.all %}
                   <div class="review-item">
                     <div class="review-author">{{ review.name|default:'' }}</div>
