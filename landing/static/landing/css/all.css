@@ -845,7 +845,6 @@ label.error {
     width: 49%;
     font-size: 14px;
     text-align: center;
-    line-height: 42px;
 }
 .footer-download a {
     text-decoration: none;
@@ -853,7 +852,7 @@ label.error {
 }
 .footer-download img {
     width: 130px;
-    padding-left: 40px;
+    padding-left: 20px;
 }
 .studio {
     /*float: right;*/
