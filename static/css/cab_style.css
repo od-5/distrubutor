@@ -6339,6 +6339,10 @@ body {
 #photo_list .glyphicon-camera {
   font-size: 50px;
 }
+.photo_image {
+  display: block;
+  height: 150px;
+}
 .sign {
   display: table;
   height: 100%;

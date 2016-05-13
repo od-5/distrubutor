@@ -58,20 +58,24 @@
           </select>
           <input type="hidden" name="show_table" value="{% if show_table %}1{% else %}0{% endif %}">
           <button class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span> Искать</button>
+
+        </form>
+        <div>
           <a href="{% url 'sale:address-export' %}?date_start={{ r_date_start|default:'' }}&date_end={{ r_date_end|default:'' }}&order={{ r_order|default:'' }}&task={{ r_task|default:'' }}" class="btn btn-success btn-sm">
             <span class="glyphicon glyphicon-download-alt"></span>
             Скачать в Excel</a>
           {% if show_table %}
           <a href="?date_start={{ r_date_start|default:'' }}&date_end={{ r_date_end|default:'' }}&order={{ r_order|default:'' }}&task={{ r_task|default:'' }}&show_table=0" class="btn btn-warning btn-sm" title="Показать плиткой">
-            <span class="glyphicon glyphicon-th-large"></span>
+            <span class="glyphicon glyphicon-th-large"></span> Показать плиткой
           </a>
           {% else %}
           <a href="?date_start={{ r_date_start|default:'' }}&date_end={{ r_date_end|default:'' }}&order={{ r_order|default:'' }}&task={{ r_task|default:'' }}&show_table=1" class="btn btn-warning btn-sm" title="Показать таблицей">
-            <span class="glyphicon glyphicon-th-list"></span>
+            <span class="glyphicon glyphicon-th-list"></span> Показать таблицей
           </a>
           {% endif %}
-        </form>
-
+        </div>
+        <div class="clearfix"></div>
+        <br>
       {% if point_list %}
         {% if show_table %}
         <table class="table" id="photo_list">
@@ -107,7 +111,7 @@
         {% for point in point_list %}
         {% for photo in point.pointphoto_set.all %}
         <div class="col-lg-3">
-          <a href="{{ photo.photo.url }}" rel="group" class="js-gallery" title="{{ photo.name }}, время {{ photo.timestamp|time:'H:i'|default:'Не указано' }}">
+          <a href="{{ photo.photo.url }}" rel="group" class="js-gallery photo_image" title="{{ photo.name }}, время {{ photo.timestamp|time:'H:i'|default:'Не указано' }}">
             <img src="{{ photo.photo.url }}" alt="">
           </a>
         </div>
