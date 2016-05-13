@@ -1,6 +1,8 @@
 <nav class="navbar navbar-default">
   <div class="col-lg-8">
-    <img src="{{ STATIC_URL }}img/banner_control.jpg" alt="Контроль расклейки и распространения">
+    <a href="{% url 'dashboard:index' %}" title="Рабочий стол">
+      <img src="{{ STATIC_URL }}img/banner_control.jpg" alt="Контроль расклейки и распространения">
+    </a>
   </div>
   <div class="col-lg-4 text-right">
     <div>

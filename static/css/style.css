@@ -6238,6 +6238,9 @@ a.lead {
 .remove-padding {
   padding: 0;
 }
+#ui-datepicker-div {
+  z-index: 2!important;
+}
 body {
   background-color: #f1f1f1;
   overflow-y: scroll;

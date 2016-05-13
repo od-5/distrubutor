@@ -22,7 +22,7 @@ class Sale(models.Model):
     user = models.OneToOneField(to=User, limit_choices_to={'type': 3}, verbose_name=u'Пользователь', related_name='sale_user')
     moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор', related_name='sale_moderator')
     city = models.ForeignKey(to=City, verbose_name=u'Город', related_name='sale_city')
-    manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер', blank=True, null=True, related_name='sale_city')
+    manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер', blank=True, null=True, related_name='sale_manager')
     legal_name = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Юридическое название')
     actual_name = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Фактичексое название')
     inn = models.CharField(max_length=50, blank=True, null=True, verbose_name=u'ИНН')

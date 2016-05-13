@@ -780,7 +780,7 @@ label.error {
 /************************* bottom-block *************************/
 .bottom-block {
     height: 140px;
-    margin: 0 0 120px;
+    /*margin: 0 0 120px;*/
     padding: 61px 0 0;
     text-align: center;
     background: url(../images/media/bg3.png) 0 0 no-repeat;
@@ -794,13 +794,11 @@ label.error {
 }
 .footer-nav ul {width: 980px;}
 .footer-nav li {
-    float: left;
-    margin: 0 0 0 86px;
+    display: inline;
 }
 .footer-nav li:before {
     display: inline-block;
     content: '|';
-    padding: 0 86px 0 0;
     color: #d0d0d0;
 }
 .footer-nav li:first-child {
@@ -809,13 +807,15 @@ label.error {
 .footer-nav li:first-child:before {display: none;}
 .footer-nav a {
     color: #29abe1;
+    padding: 0 100px;
 }
 .footer-bottom {
-    padding: 59px 0 72px;
+    /*padding: 59px 0 72px;*/
+    padding: 20px 0;
 }
 .copy, .footer-download, .studio, .social-group {
     display: inline-block;
-    width: 24%;
+    width: 33%;
     vertical-align: top;
 }
 .social-group {

@@ -192,6 +192,13 @@ class JournalListView(ListView):
             qs = qs.filter(sale__city=int(self.request.GET.get('city')))
         if self.request.GET.get('manager') and int(self.request.GET.get('manager')) != 0:
             qs = qs.filter(sale__manager=int(self.request.GET.get('manager')))
+        if self.request.GET.get('date_start'):
+            datetime.datetime.strptime(self.request.GET.get('date_start'), '%d.%m.%Y')
+            qs = qs.filter(date_start__gte=datetime.datetime.strptime(self.request.GET.get('date_start'), '%d.%m.%Y'))
+        if self.request.GET.get('date_end'):
+            datetime.datetime.strptime(self.request.GET.get('date_end'), '%d.%m.%Y')
+            qs = qs.filter(date_end__lte=datetime.datetime.strptime(self.request.GET.get('date_end'), '%d.%m.%Y'))
+
         return qs
 
     def get_context_data(self, **kwargs):
@@ -214,6 +221,14 @@ class JournalListView(ListView):
             'city_list': city_qs,
             'manager_list': manager_qs,
         })
+        if self.request.GET.get('date_start'):
+            context.update({
+                'r_date_start': self.request.GET.get('date_start')
+            })
+        if self.request.GET.get('date_end'):
+            context.update({
+                'r_date_end': self.request.GET.get('date_end')
+            })
         if self.request.GET.get('city'):
             context.update({
                 'city_id': int(self.request.GET.get('city'))

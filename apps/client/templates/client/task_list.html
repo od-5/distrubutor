@@ -35,7 +35,9 @@
               <option value="0" {% if r_status == 0 %}selected="selected"{% endif %}>План</option>
               <option value="1" {% if r_status == 1 %}selected="selected"{% endif %}>Сделано</option>
             </select>
-            <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
+            <button type="submit" class="btn btn-info btn-sm">
+              <span class="glyphicon glyphicon-search"></span> Искать
+            </button>
             {% if show_all %}
               <a href="?all=0" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-calendar"></span> Показать задачи на сегодня</a>
             {% else %}

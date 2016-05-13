@@ -22,13 +22,15 @@ def ticket(request):
         email = 'od-5@yandex.ru'
     if request.method == "POST":
         form = TicketAddForm(data=request.POST)
+        if request.POST.get('moderator'):
+            email = Moderator.objects.select_related().get(pk=int(request.POST.get('moderator'))).user.email
         if form.is_valid():
             ticket = form.save(commit=False)
             ticket.type = 0
             ticket.save()
             theme = request.POST.get('theme')
             mail_title_msg = u'Новая заявка на сайте reklamadoma.com'
-            message = u'Имя: %s\nТелефон: %s\n' % (ticket.name, ticket.phone)
+            message = u'Тема: %s\nИмя: %s\nТелефон: %s\n' % (theme, ticket.name, ticket.phone)
             if email:
                 send_mail(
                     mail_title_msg,

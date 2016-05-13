@@ -81,6 +81,12 @@
             <span class="dashboard__link_text">Добавить нового распространителя</span>
           </a>
         </div>
+        <div class="col-lg-2">
+          <a href="{% url 'moderator:review-list' %}" class="dashboard__link">
+            <img src="{{ STATIC_URL }}icon/site_blocks.png" alt="Отзывы" class="dashboard__link_icon">
+            <span class="dashboard__link_text">Отзывы</span>
+          </a>
+        </div>
         <div class="clearfix"></div>
       </div>
     </div>
@@ -117,7 +123,7 @@
   <div class="col-lg-6">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <p class="lead text-center remove-bottom">Города</p>
+        <p class="lead text-center remove-bottom">Настройки</p>
       </div>
       <div class="panel-body">
         {% if user.type != 5 %}
@@ -134,26 +140,10 @@
             <span class="dashboard__link_text">Список городов</span>
           </a>
         </div>
-        <div class="clearfix"></div>
-      </div>
-    </div>
-  </div>
-  <div class="col-lg-4">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <p class="lead text-center remove-bottom">Сайт</p>
-      </div>
-      <div class="panel-body">
-        <div class="col-lg-6">
+        <div class="col-lg-4">
           <a href="{% url 'ticket:list' %}" class="dashboard__link">
             <img src="{{ STATIC_URL }}icon/site_task.png" alt="Заявки с сайта" class="dashboard__link_icon">
             <span class="dashboard__link_text">Заявки с сайта</span>
-          </a>
-        </div>
-        <div class="col-lg-6">
-          <a href="{% url 'moderator:review-list' %}" class="dashboard__link">
-            <img src="{{ STATIC_URL }}icon/site_blocks.png" alt="Отзывы" class="dashboard__link_icon">
-            <span class="dashboard__link_text">Отзывы</span>
           </a>
         </div>
         <div class="clearfix"></div>

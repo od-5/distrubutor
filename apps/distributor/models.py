@@ -174,9 +174,9 @@ class PointPhoto(models.Model):
         if self.photo:
             image = Image.open(self.photo)
             (width, height) = image.size
-            size = (200, 200)
+            size = (800, 800)
             "Max width and height 200"
-            if width > 200:
+            if width > 800:
                 image.thumbnail(size, Image.ANTIALIAS)
                 image.save(self.photo.path, "PNG")
 
