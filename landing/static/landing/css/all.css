@@ -849,6 +849,7 @@ label.error {
 .footer-download a {
     text-decoration: none;
     color: #000000;
+    vertical-align: top;
 }
 .footer-download img {
     width: 130px;
