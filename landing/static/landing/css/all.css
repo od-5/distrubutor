@@ -643,7 +643,7 @@ pulse
     text-decoration: none;
 }
 .social-link-icon {
-    width: 30px;
+    height: 30px;
 }
 .social-link-icon:hover {
     opacity: 0.8;
