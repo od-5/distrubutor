@@ -815,9 +815,9 @@ label.error {
     /*padding: 59px 0 72px;*/
     padding: 20px 0;
 }
-.copy, .footer-download, .studio, .social-group {
+.copy, .studio, .social-group {
     display: inline-block;
-    width: 33%;
+    width: 25%;
     vertical-align: top;
 }
 
@@ -838,14 +838,22 @@ label.error {
     text-decoration: none;
 }
 .footer-download {
+    display: inline-block;
+    vertical-align: top;
     /*float: left;*/
     /*margin: -20px 0 -20px 200px;*/
-    width: 300px;
+    width: 49%;
     font-size: 14px;
     text-align: center;
+    line-height: 42px;
+}
+.footer-download a {
+    text-decoration: none;
+    color: #000000;
 }
 .footer-download img {
     width: 130px;
+    padding-left: 40px;
 }
 .studio {
     /*float: right;*/
