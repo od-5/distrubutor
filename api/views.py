@@ -15,7 +15,7 @@ from apps.distributor.models import Distributor, DistributorTask, GPSPoint
 __author__ = 'alexy'
 
 
-@api_view(['GET', ])
+@api_view(['GET'])
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
 def api_root(request, format=None):
