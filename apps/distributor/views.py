@@ -122,8 +122,9 @@ def distributor_update(request, pk):
         d_form = DistributorUpdateForm(instance=distributor)
         # p_form = DistributorPaymentForm(instance=distributor)
         formset = distributor_formset(instance=distributor)
-    for form in formset:
-        form.fields['type'].queryset = distributor.moderator.moderatoraction_set.all()
+    if distributor.moderator.moderatoraction_set.count():
+        for form in formset:
+            form.fields['type'].queryset = distributor.moderator.moderatoraction_set.all()
     context.update({
         'success': success_msg,
         'error': error_msg,
