@@ -90,3 +90,46 @@ def get_task_cord_list(request):
         'coord_list': coord_list,
         'address_list': address_list
     }
+
+
+@ajax_request
+@csrf_exempt
+def get_current_location(request):
+    email = request.POST.get('email') or None
+    moderator = request.POST.get('moderator') or None
+    last_name = request.POST.get('last_name') or None
+    first_name = request.POST.get('first_name') or None
+    phone = request.POST.get('phone') or None
+    user = request.user
+    data_list = []
+    if user.type == 1:
+        qs = Distributor.objects.select_related().all()
+        if moderator:
+            qs = qs.filter(moderator__company__iexact=moderator)
+    elif user.type == 2:
+        qs = Distributor.objects.select_related().filter(moderator=user.moderator_user)
+    elif user.type == 5:
+        qs = Distributor.objects.select_related().filter(moderator=user.manager_user.moderator)
+    else:
+        qs = None
+    if email:
+        qs = qs.filter(user__email__iexact=email)
+    if last_name:
+        qs = qs.filter(user__last_name__iexact=last_name)
+    if first_name:
+        qs = qs.filter(user__first_name__iexact=first_name)
+    if phone:
+        qs = qs.filter(user__phone__iexact=phone)
+    for item in qs:
+        if item.coord_x and item.coord_y:
+            data_list.append({
+                'name': item.__unicode__(),
+                'coord_x': item.coord_x,
+                'coord_y': item.coord_y,
+                'coord_time': item.coord_time.strftime("%H:%M:%S %d.%m.%Y"),
+            })
+    center = [qs.first().coord_x, qs.first().coord_y]
+    return {
+        'data_list': data_list,
+        'center': center
+    }

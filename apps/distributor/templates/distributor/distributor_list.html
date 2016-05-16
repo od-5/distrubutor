@@ -11,15 +11,22 @@
           <p class="lead remove-bottom text-center">Распространители</p>
         </div>
         <div class="panel-body">
+          <div class="panel panel-success">
+            <div class="panel-heading js-toggle-heading">Карта метонахождения распространителей <span class="caret"></span></div>
+            <div class="panel-body js-toggle-body">
+              <div id="map" style="height: 500px;" data-url="{% url 'distributor:get_current_location' %}">
+              </div>
+            </div>
+          </div>
           <a href="{% url 'distributor:add' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить нового распространителя
           </a>
-          <form action="" method="GET" role="form" class="form-inline">
-            <input type="text" name="email" value="{{ r_email|default:'' }}" class="form-control input-sm" placeholder="e-mail">
-            <input type="text" name="moderator" value="{{ r_moderator|default:'' }}" class="form-control input-sm" placeholder="Организация">
-            <input type="text" name="last_name" value="{{ r_last_name|default:'' }}" class="form-control input-sm" placeholder="Фамилия">
-            <input type="text" name="first_name" value="{{ r_first_name|default:'' }}" class="form-control input-sm" placeholder="Имя">
-            <input type="text" name="phone" value="{{ r_phone|default:'' }}" class="form-control input-sm" placeholder="Телефон">
+          <form action="" method="GET" role="form" id="js-form-distributor-search" class="form-inline">
+            <input type="text" name="email" id="id_email" value="{{ r_email|default:'' }}" class="form-control input-sm" placeholder="e-mail">
+            <input type="text" name="moderator" id="id_moderator" value="{{ r_moderator|default:'' }}" class="form-control input-sm" placeholder="Организация">
+            <input type="text" name="last_name" id="id_last_name" value="{{ r_last_name|default:'' }}" class="form-control input-sm" placeholder="Фамилия">
+            <input type="text" name="first_name" id="id_first_name" value="{{ r_first_name|default:'' }}" class="form-control input-sm" placeholder="Имя">
+            <input type="text" name="phone" id="id_phone" value="{{ r_phone|default:'' }}" class="form-control input-sm" placeholder="Телефон">
             <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
           </form>
           <table class="table table-hover">
@@ -64,4 +71,55 @@
     </div>
   </div>
   {% include '__modal/js_ajax_remove_form.html' %}
+{% endblock %}
+{% block bottom_js %}
+<script src="//api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+<script>
+ymaps.ready(init);
+function init() {
+  var map_id = $('#map');
+  var url = map_id.data('url');
+  var data_list = '';
+  var center = '';
+  var form_id = $('#js-form-distributor-search');
+  var email = form_id.find('#id_email').val();
+  var moderator = form_id.find('#id_moderator').val();
+  var last_name = form_id.find('#id_last_name').val();
+  var first_name = form_id.find('#id_first_name').val();
+  var phone = form_id.find('#id_phone').val();
+  $.ajax({
+    type: "POST",
+    async: false,
+    url: url,
+    data: {
+      email: email,
+      moderator: moderator,
+      last_name: last_name,
+      first_name: first_name,
+      phone: phone
+    }
+  }).done(function (data) {
+    center = data.center;
+    data_list = data.data_list;
+  });
+  var myMap = new ymaps.Map("map", {
+      center: center,
+      zoom: 13
+    }, {
+      searchControlProvider: 'yandex#search'
+  });
+  for(var i = 0; i < data_list.length; i++) {
+    myMap.geoObjects.add(
+      new ymaps.Placemark([data_list[i]['coord_x'], data_list[i]['coord_y']], {
+          balloonContent: data_list[i]['name'] + '<br>' + data_list[i]['coord_time'],
+          hintContent: data_list[i]['name'] + '<br>' + data_list[i]['coord_time'],
+          iconContent: data_list[i]['name']
+        }, {
+          preset: 'islands#darkGreenStretchyIcon'
+        }
+      )
+    );
+  }
+}
+</script>
 {% endblock %}
