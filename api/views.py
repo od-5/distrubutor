@@ -1,5 +1,7 @@
 # coding=utf-8
+import json
 import datetime
+from django.core.urlresolvers import reverse
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
@@ -7,6 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from api.serializers import UserSerializer, DistributorTaskSerializer, GPSPointSerializer, PointPhotoSerializer, DistributorSerializer
 from core.common import str_to_bool
+from core.models import User
 from apps.distributor.models import Distributor, DistributorTask, GPSPoint
 
 __author__ = 'alexy'
@@ -15,7 +18,7 @@ __author__ = 'alexy'
 @api_view(['GET'])
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
-def api_root(request):
+def api_root(request, format=None):
     """
     Точка входа в Api.
     Получение данных авторизованного пользователя
