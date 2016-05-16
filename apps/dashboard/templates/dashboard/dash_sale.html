@@ -73,6 +73,7 @@
             <span class="glyphicon glyphicon-th-list"></span> Показать таблицей
           </a>
           {% endif %}
+          <a href="{% url 'sale:download-archive' %}?date_start={{ r_date_start|default:'' }}&date_end={{ r_date_end|default:'' }}&order={{ r_order|default:'' }}&task={{ r_task|default:'' }}" class="btn btn-info btn-sm">Скачать</a>
         </div>
         <div class="clearfix"></div>
         <br>

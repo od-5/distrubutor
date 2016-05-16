@@ -1,10 +1,16 @@
 # coding=utf-8
 import datetime
+import os
+import zipfile
+import StringIO
+
 from django.conf import settings
 from django.core.mail import send_mail
+import xlwt
+
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
-import xlwt
+
 from datetime import date
 from annoying.decorators import ajax_request
 from django.core.urlresolvers import reverse
@@ -476,3 +482,60 @@ def address_export(request):
     response['Content-Disposition'] = 'attachment; filename=%s' % fname
     wb.save(response)
     return response
+
+
+def get_files(request):
+    # Files (local path) to put in the .zip
+    # FIXME: Change this (get paths from DB etc)
+    sale = request.user.sale_user
+    point_qs = GPSPoint.objects.select_related().filter(task__sale=sale)
+    # ловим значения из формы поиска
+    r_task = request.GET.get('task') or None
+    r_date_start = request.GET.get('date_start') or None
+    r_date_end = request.GET.get('date_end') or None
+    r_order = request.GET.get('order') or None
+    if r_task and r_task != '0':
+        point_qs = point_qs.filter(task=int(r_task))
+    if r_order and r_order != '0':
+        point_qs = point_qs.filter(task__order=int(r_order))
+    if r_date_start:
+        point_qs = point_qs.filter(timestamp__gte=datetime.datetime.strptime(r_date_start, '%d.%m.%Y'))
+    if r_date_end:
+        point_qs = point_qs.filter(timestamp__lte=datetime.datetime.strptime(r_date_end, '%d.%m.%Y'))
+    filenames = []
+    for point in point_qs:
+        for q in point.pointphoto_set.all():
+            filenames.append(q.photo.path)
+    print('filenames %s' % filenames)
+
+    # filenames = ["/tmp/file1.txt", "/tmp/file2.txt"]
+
+    # Folder name in ZIP archive which contains the above files
+    # E.g [thearchive.zip]/somefiles/file2.txt
+    # FIXME: Set this to something better
+    zip_subdir = "photoarchive"
+    zip_filename = "%s.zip" % zip_subdir
+
+    # Open StringIO to grab in-memory ZIP contents
+    s = StringIO.StringIO()
+
+    # The zip compressor
+    zf = zipfile.ZipFile(s, "w")
+
+    for fpath in filenames:
+        # Calculate path for file in zip
+        fdir, fname = os.path.split(fpath)
+        zip_path = os.path.join(zip_subdir, fname)
+
+        # Add file, at correct path
+        zf.write(fpath, zip_path)
+
+    # Must close zip for all contents to be written
+    zf.close()
+
+    # Grab ZIP file from in-memory, make response with correct MIME-type
+    resp = HttpResponse(s.getvalue(), content_type="application/x-zip-compressed")
+    # ..and correct content-disposition
+    resp['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
+
+    return resp

@@ -18,6 +18,7 @@ urlpatterns = patterns(
     url(r'^order/(?P<pk>\d+)/$', 'sale_order_update', name='order-update'),
     url(r'^journal/$', JournalListView.as_view(), name='journal'),
     url(r'export/$', 'address_export', name='address-export'),
+    url(r'archive/$', 'get_files', name='download-archive'),
     # url(r'^add-surface/$', 'add_client_surface', name='add-client-surface'),
     #
     url(r'^get_coord_list/$', get_client_coord_list, name='get_cord_list'),
