@@ -1,9 +1,4 @@
 # coding=utf-8
-from annoying.decorators import ajax_request
-from annoying.functions import get_object_or_None
-from django.conf import settings
-from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail
 import datetime
 from django.core.urlresolvers import reverse
 from django.forms import HiddenInput, inlineformset_factory
@@ -110,7 +105,7 @@ def distributor_update(request, pk):
         u_form = UserUpdateForm(request.POST, instance=user)
         d_form = DistributorUpdateForm(request.POST, instance=distributor)
         # p_form = DistributorPaymentForm(request.POST, instance=distributor)
-        formset = distributor_formset(request.POST, instance=distributor)
+        formset = distributor_formset(instance=distributor)
         if u_form.is_valid() and d_form.is_valid():
             u_form.save()
             d_form.save()
@@ -122,9 +117,8 @@ def distributor_update(request, pk):
         d_form = DistributorUpdateForm(instance=distributor)
         # p_form = DistributorPaymentForm(instance=distributor)
         formset = distributor_formset(instance=distributor)
-    if distributor.moderator.moderatoraction_set.count():
-        for form in formset:
-            form.fields['type'].queryset = distributor.moderator.moderatoraction_set.all()
+    for form in formset.forms:
+        form.fields['type'].queryset = distributor.moderator.moderatoraction_set.all()
     context.update({
         'success': success_msg,
         'error': error_msg,
