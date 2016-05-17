@@ -17,5 +17,6 @@ class GPSPointAdmin(admin.ModelAdmin):
     ]
 
 
+admin.site.register(PointPhoto)
 admin.site.register(DistributorTask)
 admin.site.register(GPSPoint, GPSPointAdmin)

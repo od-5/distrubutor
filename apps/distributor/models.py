@@ -1,11 +1,13 @@
 # coding=utf-8
 from PIL import Image
+from os import path as op
 from django.db import models
 from django.conf import settings
+from pytils.translit import slugify
 from apps.city.models import City
 from apps.moderator.models import Moderator, ModeratorArea, ModeratorAction
 from apps.sale.models import Sale, SaleOrder
-from core.files import upload_to
+from core.files import upload_to, pointphoto_upload
 from core.models import User
 import core.geotagging as api
 
@@ -183,4 +185,4 @@ class PointPhoto(models.Model):
     point = models.ForeignKey(to=GPSPoint, verbose_name=u'GPS точка')
     name = models.CharField(max_length=150, verbose_name=u'Название', blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True, verbose_name=u'Временная метка')
-    photo = models.ImageField(verbose_name=u'Фотография', upload_to=upload_to)
+    photo = models.ImageField(verbose_name=u'Фотография', upload_to=pointphoto_upload)
