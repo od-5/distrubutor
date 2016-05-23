@@ -34,14 +34,11 @@ def pointphoto_upload(instance, filename, prefix=None):
         """
         name, ext = op.splitext(filename)
         try:
-            print instance.name
-            print slugify(instance.name)
             time = instance.timestamp.strftime("%H-%M")
             name = slugify(instance.name)
             filename = "%s-%s%s" % (time, name, ext or '.jpg')
             date = instance.timestamp.strftime("%d-%m-%Y")
         except:
-            print 'except'
             filename = "%s%s" % (uuid.uuid4(), ext or '.jpg')
             date = datetime.today().strftime('%d-%m-%Y')
         basedir = op.join(instance._meta.app_label, instance._meta.model_name)

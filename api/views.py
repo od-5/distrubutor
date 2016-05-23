@@ -1,7 +1,8 @@
 # coding=utf-8
 import json
 import datetime
-from django.core.urlresolvers import reverse
+import core.geotagging as api
+from django.conf import settings
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
@@ -9,10 +10,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from api.serializers import UserSerializer, DistributorTaskSerializer, GPSPointSerializer, PointPhotoSerializer, DistributorSerializer
 from core.common import str_to_bool
-from core.models import User
 from apps.distributor.models import Distributor, DistributorTask, GPSPoint
 
+
 __author__ = 'alexy'
+api_key = settings.YANDEX_MAPS_API_KEY
 
 
 @api_view(['GET'])
@@ -31,6 +33,38 @@ def api_root(request, format=None):
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = UserSerializer(user)
         return Response(serializer.data)
+
+
+@api_view(['PUT'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def confirm_address(request):
+    """
+    Подтверждение адреса
+    """
+    address = request.data.get('address')
+    point = request.data.get('point')
+    try:
+        item = GPSPoint.objects.get(pk=int(point))
+        if address:
+            if item.name != address:
+                pos = api.geocode(api_key, address)
+                coord_y = float(pos[0])
+                coord_x = float(pos[1])
+                item.coord_x = coord_x
+                item.coord_y = coord_y
+                try:
+                    name = api.geocodeName(api_key, coord_x, coord_y)
+                except:
+                    pass
+                item.save()
+        context = {
+            'point': item.id,
+            'address': item.name
+        }
+        return Response(context, status=status.HTTP_200_OK)
+    except:
+        return Response(status=status.HTTP_205_RESET_CONTENT)
 
 
 @api_view(['PUT'])
@@ -111,7 +145,11 @@ def gpspoint_add(request):
             serializer = GPSPointSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response({'point': serializer.instance.id}, status=status.HTTP_201_CREATED)
+                context = {
+                    'point': serializer.instance.id,
+                    'address': serializer.instance.name
+                }
+                return Response(context, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
         except:

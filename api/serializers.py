@@ -54,6 +54,7 @@ class DistributorTaskSerializer(serializers.ModelSerializer):
             'material_count',
             'date',
             'comment',
+            'define_address',
             'closed'
         )
 
@@ -70,6 +71,7 @@ class GPSPointSerializer(serializers.ModelSerializer):
             'comment',
             'coord_x',
             'coord_y',
+            'name',
         )
 
 

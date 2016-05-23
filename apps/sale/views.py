@@ -506,7 +506,6 @@ def get_files(request):
     for point in point_qs:
         for q in point.pointphoto_set.all():
             filenames.append(q.photo.path)
-    print('filenames %s' % filenames)
 
     # filenames = ["/tmp/file1.txt", "/tmp/file2.txt"]
 
