@@ -10,6 +10,7 @@
   <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
   <title>{{ SETUP.meta_title|default:'Заголовок сайта' }}</title>
   <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/all.css' %}" />
+  <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/change.css' %}" />
   <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/jquery.bxslider.css' %}" />
   <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/jquery.fancybox.css' %}" />
   <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/animate.min.css' %}" />
@@ -170,30 +171,56 @@
         </div>
       </div>
     </section>
-    <section class="servises" id="block3">
-      <div class="holder">
-        <h2>Наши услуги</h2>
-        <div class="serv-column">
-          <div class="serv-img"><img src="{% static 'landing/images/media/img1.jpg' %}" alt=""></div>
-          <div class="serv-title">Расскажите<br> о себе</div>
-          <div class="serv-text">Расклейка рекламных объявлений в<br> любом районе города</div>
+    <section class="servises" id="block3"> <!-- Изменения в структуре и стилях данной секции -->
+      <h2>Наши услуги</h2>
+      <div class="servises-bg"></div>
+      <div class="serv-column bg-line">
+        <div class="wrap-left">
+          <div class="serv-title">Расклейка рекламных объявлений в любом районе города</div>
+          <div class="serv-text">Расскажите о себе</div>
+          <ul>
+            <li>- Невысокая стоимость</li>
+            <li>- Охват большой аудитории</li>
+            <li>- Высокая эффективность</li>
+            <li>- Эффективный инструмент контроля</li>
+          </ul>
           <div class="serv-button">
             <a href="#popup2" class="button fancybox">Узнать подробнее</a>
           </div>
         </div>
-        <div class="serv-column serv-column-right">
-          <div class="serv-img"><img src="{% static 'landing/images/media/img2.jpg' %}" alt=""></div>
-          <div class="serv-title">Распространение листовок по<br> почтовым ящикам</div>
-          <div class="serv-text">Доступный метод увеличения<br> ваших продаж</div>
+        <div class="img">
+          <img src="{% static 'landing/images/media/bg_line.jpg' %}" alt="">
+        </div>
+      </div>
+      <div class="serv-column serv-column-right">
+        <div class="wrap-right">
+          <div class="serv-title">Распространение листовок по почтовым ящикам</div>
+          <div class="serv-text">Доступный метод увеличения ваших продаж</div>
+          <ul>
+            <li>- Невысокая стоимость и высокая эффективность</li>
+            <li>- Вашу рекламу увидят</li>
+            <li>- Способ, проверенный годами</li>
+            <li>- Вы контролируете процесс</li>
+          </ul>
           <div class="serv-button">
             <a href="#popup3" class="button fancybox">Узнать подробнее</a>
           </div>
         </div>
       </div>
+      <div class="clear">.</div>
+    </section>
+    <section class="competitors">
+      <div class="holder">
+        <h3>Что могут предложить наши <span>конкуренты</span></h3>
+        <p class="know">А знаете ли вы, что 30% рекламных материалов по статистике отправляется в ближайший мусорный ящик?</p>
+        <img src="{% static 'landing/images/media/competitors.jpg' %}" alt="">
+        <p class="descr">Отчет о работе в текстовом формате и совместный выезд по избранным адресам, участвующим в рекламной акции. При таком подходе клиент не может быть до конца уверен, что каждая листовка попала по назначению, а не была выброшена в мусорную корзину....</p>
+        <p class="warranty">...и никаких гарантий.</p>
+      </div>
     </section>
     <section class="garanty" id="block4">
       <div class="holder">
-        <h2>Гарантия качества</h2>
+        <h2>Что можем предложить <span>мы</span></h2>
         <div class="title-min">Отслеживайте выполнение заказа в онлайн-режиме с помощью уникальной программной
         разработки «Контроль расклейки и распространения объявлений»</div>
         <div class="garanty-video">
@@ -363,20 +390,24 @@
       </div>
     </section>
     <footer class="footer">
+      <div class="footer-nav">
+        <div class="holder">
+          <ul>
+            <li class="first"><a href="{% url 'login-client' %}">Клиентам</a></li>
+            <li class="third"><a href="{% url 'login-moderator' %}">Менеджерам</a></li>
+            <li class="second"><a href="{% url 'login-manager' %}">Модераторам</a></li>
+          </ul>
+        </div>
+      </div>
       <div class="footer-bottom">
         <div class="holder">
           <div class="copy"><a href="#hidden-block" class="fancybox">Политика конфиденциальности</a><br>
           РА «Дружба» &copy;
           <script type="text/javascript">var mdate = new Date(); document.write(mdate.getFullYear());</script></div>
           <div class="footer-download">
-            <a href=""  target="_blank">Скачать приложение <img src="{% static 'landing/images/googleplay.png' %}" alt=""></a>
+            <div class="footer-download-text">Скачать приложение</div>
+            <a href="" target="_blank"><img src="{% static 'landing/images/googleplay.png' %}" alt=""></a>
           </div>
-{#          <div class="social-group">#}
-{#            <span>Официальная группа Вконтакте</span>#}
-{#            <a href="http://vk.com/franchise.reklamadoma" target="_blank">#}
-{#              <img src="{% static 'landing/images/vk_link.png' %}" alt="Официальная группа Вконтакте" class="social-group__img">#}
-{#            </a>#}
-{#          </div>#}
           <a href="http://5lands.ru/" target="_blank" class="studio">
             Дизайн сайта<br>
             <img src="{% static 'landing/images/studio.png' %}" alt="">
@@ -391,16 +422,8 @@
           </div>
         </div>
       </div>
-      <div class="footer-nav">
-        <div class="holder">
-          <ul>
-            <li><a href="{% url 'login-client' %}">Клиентам</a></li>
-            <li><a href="{% url 'login-moderator' %}">Модераторам</a></li>
-            <li><a href="{% url 'login-manager' %}">Менеджерам</a></li>
-          </ul>
-        </div>
-      </div>
     </footer>
+
     <!--   Всплывающие окна  -->
     <div id="popup">
       <div class="video-popup">

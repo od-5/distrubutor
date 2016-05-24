@@ -815,21 +815,9 @@ label.error {
     /*padding: 59px 0 72px;*/
     padding: 20px 0;
 }
-.copy, .studio, .social-group {
-    display: inline-block;
-    width: 25%;
-    vertical-align: top;
-}
 
-.social-group {
-    font-size: 14px;
-    text-align: center;
-}
-.social-group__img {
-    height: 42px;
-}
 .copy {
-    /*float: left;*/
+    float: left;
     font-size: 14px;
     line-height: 18px;
 }
@@ -838,31 +826,21 @@ label.error {
     text-decoration: none;
 }
 .footer-download {
-    display: inline-block;
-    vertical-align: top;
-    /*float: left;*/
-    /*margin: -20px 0 -20px 200px;*/
-    width: 49%;
-    font-size: 14px;
-    text-align: center;
-}
-.footer-download a {
-    text-decoration: none;
-    color: #000000;
-    vertical-align: top;
+	float: left;
+	margin: -20px 0 -20px 200px;
+	font-size: 14px;
+	text-align: center;
 }
 .footer-download img {
-    width: 130px;
-    padding-left: 20px;
+	width: 130px;
 }
 .studio {
-    /*float: right;*/
-    /*margin: -4px 0 0;*/
-    text-align: right;
-    color: #000;
-    font-size: 14px;
-    line-height: 20px;
-    text-decoration: none;
+	float: right;
+	margin: -4px 0 0;
+	color: #000;
+	font-size: 14px;
+	line-height: 20px;
+	text-decoration: none;
 }
 #hidden-block {
     display: none;
