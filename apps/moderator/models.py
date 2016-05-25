@@ -33,14 +33,17 @@ class Moderator(models.Model):
 
     def save(self, *args, **kwargs):
         super(Moderator, self).save()
-        if self.logotype.url:
-            image = Image.open(self.logotype)
-            (width, height) = image.size
-            size = (200, 200)
-            "Max width and height 200"
-            if width > 200:
-                image.thumbnail(size, Image.ANTIALIAS)
-                image.save(self.logotype.path, "PNG")
+        try:
+            if self.logotype:
+                image = Image.open(self.logotype)
+                (width, height) = image.size
+                size = (200, 200)
+                "Max width and height 200"
+                if width > 200:
+                    image.thumbnail(size, Image.ANTIALIAS)
+                    image.save(self.logotype.path, "PNG")
+        except:
+            pass
 
     user = models.OneToOneField(
         to=User,
