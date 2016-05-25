@@ -554,6 +554,7 @@ pulse
 .info-slide {
     overflow: hidden;
     padding: 0 0 1px;
+    min-height: 700px;
 }
 .info-left {
     float: left;
@@ -605,7 +606,7 @@ pulse
     overflow: hidden;
     margin: 0 0 41px;
     line-height: 30px;
-    /*font-size: 14px;*/
+    font-size: 14px;
 }
 .info-list dt {
     float: left;

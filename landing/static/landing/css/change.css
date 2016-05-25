@@ -36,6 +36,7 @@
 }
 .serv-column {
 	padding: 65px 0;
+	position: relative;
 }
 .bg-line {
 	position: relative;
@@ -80,6 +81,26 @@
 .wrap-right .serv-text {
 	width: 250px;
 }
+/*@media screen and (min-width: 900px) {*/
+  /*.wrap-right .serv-text {*/
+	/*width: 250px;*/
+  /*}*/
+/*}*/
+@media screen and (max-width: 1000px) {
+	.wrap-left, .wrap-right {
+		width: auto;
+	}
+	.wrap-right .serv-text {
+		width: auto;
+	}
+	.wrap-right ul, .wrap-left ul {
+		min-height: 120px;
+  	}
+	.info-list {
+		font-size: 20px;
+	}
+}
+
 .wrap-right ul {
 	margin-left: 10px;
 }

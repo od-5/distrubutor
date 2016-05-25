@@ -173,6 +173,10 @@ $(document).ready(function () {
     $('.window').hide();
   });
   //Скрипт всплывающих окон
+  $('.hidden').on('click', function(){
+		$(this).hide();
+		$('.hide').slideDown(400);
+	})
   //  обработка нажатия на город
   $('.city-list').find('a').click(function () {
     var url = $(this).parents('.city-list').data('url');

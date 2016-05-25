@@ -125,7 +125,7 @@
       </div>
       <div class="header-main">
         <div class="holder">
-          <div class="header-main-top"><span>Интернет-портал агентств по расклейке и <br>
+          <div class="header-main-top"><span>Интернет-портал по расклейке и <br>
           распространению рекламной продукции № 1</span></div>
           <h1 class="main-title">
             <span class="main-title1" data-in-effect="flash">Эффективная</span>
@@ -259,31 +259,36 @@
           {% for moderator in moderator_list %}
             <li class="info-slide">
               <aside class="info-left">
-                <div class="info-logo">
+								<div class="info-logo">
                 {% if moderator.logotype %}
                   <img src="{{ moderator.logotype.url }}" alt="{{ moderator.company|default:'' }}">
                 {% endif %}
                 </div>
-                <div class="info-form-title">Заполните онлайн-заявку</div>
-                <div class="info-form-text">И получите предложение <br>по рекламе от: <br>
-                <a href="">{{ moderator.company|default:'Не указано' }}</a></div>
-                <div class="info-form">
-                  <form action="{% url 'ticket:send' %}" class="ticket-form" method="post">
-                    {% csrf_token %}
-                    <fieldset>
-                      <input type="hidden" name="moderator" value="{{ moderator.id }}">
-                      <input type="hidden" name="city" value="{{ current_city.id|default:'' }}">
-                      <input type="text" name="name" class="input required" placeholder="Ваше имя *">
-                      <input type="text" name="mail" class="input required" placeholder="Ваш email *">
-                      <input type="text" name="phone" class="input no-margin required" placeholder="+7 (___) ___ - __ - __">
-                      <input type="hidden" name="theme" value="Заявка - исполнитель {{ moderator.company|default:'Не указано' }}">
-                      <div class="submit-holder">
-                        <button class="submit">Отправить заявку</button>
-                      </div>
-                    </fieldset>
-                  </form>
-                </div>
-              </aside>
+								<div class="submit-holder hidden">
+									<button class="button">Отправить заявку</button>
+								</div>
+								<div class="hide">
+									<div class="info-form-title">Заполните онлайн-заявку</div>
+									<div class="info-form-text">И получите предложение <br>по рекламе от: <br>
+									<a href="">{{ moderator.company|default:'Не указано' }}</a></div>
+									<div class="info-form">
+										<form action="{% url 'ticket:send' %}" class="ticket-form" method="post">
+                      {% csrf_token %}
+											<fieldset>
+                        <input type="hidden" name="moderator" value="{{ moderator.id }}">
+                        <input type="hidden" name="city" value="{{ current_city.id|default:'' }}">
+												<input type="text" name="name" class="input required" placeholder="Ваше имя *">
+												<input type="text" name="mail" class="input required" placeholder="Ваш email *">
+												<input type="text" name="phone" class="input no-margin required" placeholder="+7 (___) ___ - __ - __">
+												<input type="hidden" name="theme" value="Заявка - исполнитель {{ moderator.company|default:'Не указано' }}">
+												<div class="submit-holder">
+													<button class="submit">Отправить заявку</button>
+												</div>
+											</fieldset>
+										</form>
+									</div>
+								</div>
+							</aside>
               <div class="info-right">
                 <div class="info-title">{{ moderator.company|default:'Не указано' }}</div>
                 <dl class="info-list">
