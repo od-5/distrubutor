@@ -145,7 +145,7 @@ class GPSPoint(models.Model):
                 name = api.geocodeName(api_key, self.coord_y, self.coord_x)
                 self.name = name
             except:
-                pass
+                self.name = u'%s, %s' % (self.coord_y, self.coord_x)
         super(GPSPoint, self).save()
 
     task = models.ForeignKey(to=DistributorTask, verbose_name=u'Задача')
