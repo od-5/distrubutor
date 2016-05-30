@@ -195,6 +195,7 @@ def gpspoint_comment(request, pk):
 def photo_add(request):
     try:
         serializer = PointPhotoSerializer(data=request.data)
+        print request.data
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
