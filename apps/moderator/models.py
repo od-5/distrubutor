@@ -16,7 +16,8 @@ class Moderator(models.Model):
 
     def __unicode__(self):
         if self.company:
-            return self.company
+            city_list = ', '.join(city.name for city in self.city.all())
+            return u'%s (г.%s)' % (self.company, city_list)
         else:
             return self.user.get_full_name()
 
