@@ -103,13 +103,13 @@ def get_current_location(request):
     user = request.user
     data_list = []
     if user.type == 1:
-        qs = Distributor.objects.select_related().all()
+        qs = Distributor.objects.select_related().filter(coord_x__isnull=False, coord_y__isnull=False)
         if moderator:
             qs = qs.filter(moderator__company__iexact=moderator)
     elif user.type == 2:
-        qs = Distributor.objects.select_related().filter(moderator=user.moderator_user)
+        qs = Distributor.objects.select_related().filter(moderator=user.moderator_user, coord_x__isnull=False, coord_y__isnull=False)
     elif user.type == 5:
-        qs = Distributor.objects.select_related().filter(moderator=user.manager_user.moderator)
+        qs = Distributor.objects.select_related().filter(moderator=user.manager_user.moderator, coord_x__isnull=False, coord_y__isnull=False)
     else:
         qs = None
     if email:
@@ -121,13 +121,13 @@ def get_current_location(request):
     if phone:
         qs = qs.filter(user__phone__iexact=phone)
     for item in qs:
-        if item.coord_x and item.coord_y:
-            data_list.append({
-                'name': item.__unicode__(),
-                'coord_x': item.coord_x,
-                'coord_y': item.coord_y,
-                'coord_time': item.coord_time.strftime("%H:%M:%S %d.%m.%Y"),
-            })
+        # if item.coord_x and item.coord_y:
+        data_list.append({
+            'name': item.__unicode__(),
+            'coord_x': item.coord_x,
+            'coord_y': item.coord_y,
+            'coord_time': item.coord_time.strftime("%H:%M:%S %d.%m.%Y"),
+        })
     center = [qs.first().coord_x, qs.first().coord_y]
     return {
         'data_list': data_list,

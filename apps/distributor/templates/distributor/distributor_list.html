@@ -102,6 +102,11 @@ function init() {
     center = data.center;
     data_list = data.data_list;
   });
+{#  if (data_list.length){#}
+{#    center = [data_list[0]['coord_y'], data_list[0]['coord_x']];#}
+{#  } else {#}
+{#    center = [48.713339, 44.497116]#}
+{#  }#}
   console.log(data_list);
   console.log(center);
   var myMap = new ymaps.Map("map", {
