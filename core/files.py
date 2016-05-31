@@ -35,6 +35,8 @@ def pointphoto_upload(instance, filename, prefix=None):
         name, ext = op.splitext(filename)
         try:
             time = instance.timestamp.strftime("%H-%M")
+            if len(instance.name.split(',')) > 2:
+                instance.name = ','.join(instance.name.split(',')[2:])
             name = slugify(instance.name)
             filename = "%s-%s%s" % (time, name, ext or '.jpg')
             date = instance.timestamp.strftime("%d-%m-%Y")
