@@ -11,6 +11,9 @@ h2 {
   -o-transition: color 0.5s ease;
   transition: color 0.5s ease;
 }
+.break-all {
+  word-break: break-all;
+}
 img {
   -webkit-transition: opacity 0.5s ease;
   -moz-transition: opacity 0.5s ease;
