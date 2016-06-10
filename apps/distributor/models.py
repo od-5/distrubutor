@@ -36,8 +36,8 @@ class Distributor(models.Model):
         to=Moderator,
         verbose_name=u'Модератор'
     )
-    coord_x = models.DecimalField(max_digits=8, decimal_places=6, verbose_name=u'Ширина', blank=True, null=True)
-    coord_y = models.DecimalField(max_digits=8, decimal_places=6, verbose_name=u'Долгота', blank=True, null=True)
+    coord_x = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=u'Ширина', blank=True, null=True)
+    coord_y = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=u'Долгота', blank=True, null=True)
     coord_time = models.DateTimeField(verbose_name=u'Временная метка', blank=True, null=True)
 
 
@@ -147,8 +147,8 @@ class GPSPoint(models.Model):
     name = models.CharField(max_length=150, verbose_name=u'Название', blank=True, null=True)
     count = models.PositiveIntegerField(verbose_name=u'Кол-во материала', blank=True, null=True)
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
-    coord_x = models.DecimalField(max_digits=8, decimal_places=6, verbose_name=u'Ширина')
-    coord_y = models.DecimalField(max_digits=8, decimal_places=6, verbose_name=u'Долгота')
+    coord_x = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=u'Ширина')
+    coord_y = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=u'Долгота')
     timestamp = models.DateTimeField(auto_now_add=True, verbose_name=u'Временная метка')
 
 
