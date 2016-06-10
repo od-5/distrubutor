@@ -89,11 +89,6 @@ class DistributorTask(models.Model):
     def get_sale_city(self):
         return self.sale.city.name
 
-    TYPE_CHOICES = (
-        (0, u'Расклейка'),
-        (1, u'Распространение')
-    )
-
     distributor = models.ForeignKey(
         to=Distributor,
         verbose_name=u'Распространитель'

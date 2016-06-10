@@ -20,7 +20,7 @@
                 <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
               {% endfor %}
             </select>
-          {% else %}
+          {% endif %}
             {% if not user.manager_user and not user.manager_user.leader %}
             <select name="manager" class="form-control input-sm">
               <option value="0">---- Менеджер ----</option>
@@ -29,7 +29,6 @@
               {% endfor %}
             </select>
             {% endif %}
-          {% endif %}
             <input type="text" name="legal_name" class="form-control input-sm" value="{{ r_legal_name|default:'' }}" placeholder="Юридическое название">
             <input type="text" name="date_start" id="id_date_start" class="form-control input-sm" value="{{ r_date_start|default:'' }}" placeholder="Начальная дата">
             <input type="text" name="date_end" id="id_date_end" class="form-control input-sm" value="{{ r_date_end|default:'' }}" placeholder="Конечная дата">

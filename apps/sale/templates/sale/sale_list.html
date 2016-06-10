@@ -29,8 +29,8 @@
               {% endfor %}
             </select>
             {% endif %}
-            <input type="text" name="email" class="form-control input-sm" placeholder="email">
-            <input type="text" name="legal_name" class="form-control input-sm" placeholder="Юридическое название">
+            <input type="text" name="email" class="form-control input-sm" placeholder="email" value="{{ r_email }}">
+            <input type="text" name="legal_name" class="form-control input-sm" placeholder="Юридическое название" value="{{ r_legal_name }}">
             <button type="submit" class="btn btn-info btn-sm">
               <span class="glyphicon glyphicon-search"></span> Искать
             </button>

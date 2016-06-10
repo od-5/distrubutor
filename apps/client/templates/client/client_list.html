@@ -19,6 +19,14 @@
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить нового клиента
           </a>
           <form action="" method="GET" role="form" class="form-inline add-bottom">
+            {% if not user.manager_user and not user.manager_user.leader %}
+            <select name="manager" class="form-control input-sm">
+              <option value="0">---- Менеджер ----</option>
+              {% for manager in manager_list %}
+                <option value="{{ manager.id }}" {% if manager.id == r_manager %}selected="selected"{% endif %}>{{ manager }}</option>
+              {% endfor %}
+            </select>
+            {% endif %}
             <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
             <input type="text" name="phone" value="{{ r_phone|default:'' }}" class="form-control input-sm" placeholder="телефон контактного лица">
             <input type="text" name="contact" value="{{ r_contact|default:'' }}" class="form-control input-sm" placeholder="фамилия контактного лица">

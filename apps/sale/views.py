@@ -132,7 +132,7 @@ class SaleListView(ListView):
         if self.request.GET.get('email'):
             qs = qs.filter(user__email=self.request.GET.get('email'))
         if self.request.GET.get('legal_name'):
-            qs = qs.filter(legal_name=self.request.GET.get('legal_name'))
+            qs = qs.filter(legal_name__icontains=self.request.GET.get('legal_name'))
         if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
             qs = qs.filter(city=int(self.request.GET.get('city')))
         if self.request.GET.get('manager') and int(self.request.GET.get('manager')) != 0:
@@ -212,7 +212,7 @@ class JournalListView(ListView):
         user = self.request.user
         if user.type == 1:
             city_qs = City.objects.all()
-            manager_qs = None
+            manager_qs = Manager.objects.all()
         elif user.type == 2:
             city_qs = user.moderator_user.city.all()
             manager_qs = user.manager_set.all()

@@ -31,6 +31,7 @@ class ClientListView(ListView):
         name = self.request.GET.get('name')
         phone = self.request.GET.get('phone')
         contact = self.request.GET.get('contact')
+        manager = self.request.GET.get('manager')
         if user.type == 1:
             qs = Client.objects.all()
         elif user.type == 2:
@@ -42,9 +43,11 @@ class ClientListView(ListView):
                 qs = Client.objects.filter(manager=user.manager_user)
         else:
             qs = None
+        if manager and int(manager) != 0:
+            qs = qs.filter(manager=int(manager))
         if name:
-            qs = qs.filter(name=name)
-        if phone or name:
+            qs = qs.filter(name__icontains=name)
+        if phone or contact:
             client_id_list = [int(i.id) for i in qs]
             c_qs = ClientContact.objects.filter(client__in=client_id_list)
             if phone:
@@ -70,6 +73,10 @@ class ClientListView(ListView):
         if self.request.GET.get('contact'):
             context.update({
                 'r_contact': self.request.GET.get('contact')
+            })
+        if self.request.GET.get('manager'):
+            context.update({
+                'r_manager': int(self.request.GET.get('manager'))
             })
         queryset = self.get_queryset()
         manager_client_count = queryset.count()

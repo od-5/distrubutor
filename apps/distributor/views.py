@@ -5,6 +5,7 @@ from django.forms import HiddenInput, inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView
+from apps.moderator.models import ModeratorAction
 from .task_calendar import get_months
 from .models import Distributor, DistributorTask, DistributorPayment
 from .forms import DistributorAddForm, DistributorUpdateForm, DistributorPaymentForm, DistributorTaskForm, \
@@ -45,7 +46,7 @@ class DistributorListView(ListView):
         if self.request.GET.get('phone'):
             qs = qs.filter(phone=self.request.GET.get('phone'))
         if self.request.GET.get('moderator'):
-            qs = qs.filter(distributor_user__moderator__company__iexact=self.request.GET.get('moderator'))
+            qs = qs.filter(distributor_user__moderator__company__icontains=self.request.GET.get('moderator'))
         return qs
 
     def get_context_data(self, **kwargs):
@@ -159,13 +160,13 @@ class DistributorTaskListView(ListView):
         r_date = self.request.GET.get('date')
         if qs:
             if r_city:
-                qs = qs.filter(sale__city__name=r_city)
+                qs = qs.filter(sale__city__name__icontains=r_city)
             if r_type:
                 qs = qs.filter(type=int(r_type))
             if r_company:
-                qs = qs.filter(distributor__moderator__company__iexact=r_company)
+                qs = qs.filter(distributor__moderator__company__icontains=r_company)
             if r_distributor:
-                qs = qs.filter(distributor__last_name__iexact=r_distributor)
+                qs = qs.filter(distributor__user__last_name__icontains=r_distributor)
             if r_date:
                 qs = qs.filter(date=datetime.datetime.strptime(r_date, '%d.%m.%Y'))
             if self.request.GET.get('date__day') and self.request.GET.get('date__month') and self.request.GET.get(
@@ -181,6 +182,16 @@ class DistributorTaskListView(ListView):
         context.update(
             get_months(),
         )
+        user = self.request.user
+        if user.type == 2:
+            action_qs = ModeratorAction.objects.all()
+        elif user.type == 5:
+            action_qs = ModeratorAction.objects.filter(moderator=user.manager_user.moderator.moderator_user)
+        else:
+            action_qs = None
+        context.update({
+            'action_list': action_qs
+        })
         if self.request.GET.get('city'):
             context.update({
                 'r_city': self.request.GET.get('city')
@@ -197,9 +208,9 @@ class DistributorTaskListView(ListView):
             context.update({
                 'r_date': self.request.GET.get('date')
             })
-        if self.request.GET.get('type'):
+        if self.request.GET.get('type') and int(self.request.GET.get('type')) != 0:
             context.update({
-                'r_type': self.request.GET.get('type')
+                'r_type': int(self.request.GET.get('type'))
             })
         return context
 
