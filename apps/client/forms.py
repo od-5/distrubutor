@@ -6,6 +6,10 @@ from .models import Client, Task, ClientContact
 __author__ = 'alexy'
 
 
+class ClientImportForm(forms.Form):
+    file = forms.FileField(label=u'Выберите файл', widget=forms.FileInput(attrs={'class': 'btn btn-default form-control'}))
+
+
 class ClientAddForm(forms.ModelForm):
     class Meta:
         model = Client

@@ -19,30 +19,60 @@
           <a href="{% url 'client:task-add' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую задачу по клиенту
           </a>
-          <form action="" method="GET" role="form" id="js-form-task-search" class="form-inline add-bottom">
-            <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
-            <input type="text" name="date_s" id="id_date_s" value="{{ r_date_s|default:'' }}" class="form-control input-sm" placeholder="Дата от">
-            <input type="text" name="date_e" id="id_date_e" value="{{ r_date_e|default:'' }}" class="form-control input-sm" placeholder="Дата до">
-            <select name="type"  class="form-control input-sm">
-              <option value="">Тип задачи</option>
-              <option value="0" {% if r_type == 0 %}selected="selected"{% endif %}>Назначена встреча</option>
-              <option value="1" {% if r_type == 1 %}selected="selected"{% endif %}>Назначен звонок</option>
-              <option value="2" {% if r_type == 2 %}selected="selected"{% endif %}>Продажа</option>
-              <option value="3" {% if r_type == 3 %}selected="selected"{% endif %}>Отказ</option>
-            </select>
-            <select name="status"  class="form-control input-sm">
-              <option value="">Статус</option>
-              <option value="0" {% if r_status == 0 %}selected="selected"{% endif %}>План</option>
-              <option value="1" {% if r_status == 1 %}selected="selected"{% endif %}>Сделано</option>
-            </select>
-            <button type="submit" class="btn btn-info btn-sm">
-              <span class="glyphicon glyphicon-search"></span> Искать
-            </button>
-            {% if show_all %}
-              <a href="?all=0" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-calendar"></span> Показать задачи на сегодня</a>
-            {% else %}
-              <a href="?all=1" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-list-alt"></span> Показать все задачи</a>
-            {% endif %}
+          <form action="" method="GET" role="form" id="js-form-task-search" class="add-bottom">
+            <table class="table table-condensed search-form-table">
+              <tbody>
+              <tr>
+                <td>
+                  <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
+                </td>
+                <td>
+                  <input type="text" name="date_s" id="id_date_s" value="{{ r_date_s|default:'' }}" class="form-control input-sm" placeholder="Дата от">
+                </td>
+                <td>
+                  <input type="text" name="date_e" id="id_date_e" value="{{ r_date_e|default:'' }}" class="form-control input-sm" placeholder="Дата до">
+                </td>
+                <td>
+                  <select name="type"  class="form-control input-sm">
+                    <option value="">Тип задачи</option>
+                    <option value="0" {% if r_type == 0 %}selected="selected"{% endif %}>Назначена встреча</option>
+                    <option value="1" {% if r_type == 1 %}selected="selected"{% endif %}>Назначен звонок</option>
+                    <option value="2" {% if r_type == 2 %}selected="selected"{% endif %}>Продажа</option>
+                    <option value="3" {% if r_type == 3 %}selected="selected"{% endif %}>Отказ</option>
+                  </select>
+                </td>
+                <td>
+                  <select name="status"  class="form-control input-sm">
+                    <option value="">Статус</option>
+                    <option value="0" {% if r_status == 0 %}selected="selected"{% endif %}>План</option>
+                    <option value="1" {% if r_status == 1 %}selected="selected"{% endif %}>Сделано</option>
+                  </select>
+                </td>
+                <td>
+                  {% if not user.manager_user and not user.manager_user.leader %}
+                  <select name="manager" class="form-control input-sm">
+                    <option value="0">---- Менеджер ----</option>
+                    {% for manager in manager_list %}
+                      <option value="{{ manager.id }}" {% if manager.id == r_manager %}selected="selected"{% endif %}>{{ manager }}</option>
+                    {% endfor %}
+                  </select>
+                  {% endif %}
+                </td>
+                <td>
+                  <button type="submit" class="btn btn-info btn-sm">
+                    <span class="glyphicon glyphicon-search"></span> Искать
+                  </button>
+                </td>
+                <td>
+                {% if show_all %}
+                  <a href="?all=0" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-calendar"></span> Показать задачи на сегодня</a>
+                {% else %}
+                  <a href="?all=1" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-list-alt"></span> Показать все задачи</a>
+                {% endif %}
+                </td>
+              </tr>
+              </tbody>
+            </table>
           </form>
           <table class="table table-hover" style="font-size: 12px;">
             <thead>

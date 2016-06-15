@@ -6397,6 +6397,11 @@ label.error {
 .errorlist {
   color: #FF4646;
 }
+.search-form-table th,
+.search-form-table td {
+  border: none !important;
+  background-color: #fff !important;
+}
 #js-form-moderator-update input[type='checkbox'] {
   width: auto;
   height: auto;

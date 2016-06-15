@@ -16,7 +16,7 @@ from apps.manager.models import Manager
 from core.forms import UserAddForm, UserUpdateForm
 from core.models import User
 from .models import Client, Task, ClientContact, ClientManager
-from .forms import ClientAddForm, ClientUpdateForm, TaskForm, ClientContactForm
+from .forms import ClientAddForm, ClientUpdateForm, TaskForm, ClientContactForm, ClientImportForm
 
 __author__ = 'alexy'
 
@@ -81,6 +81,17 @@ class ClientListView(ListView):
         queryset = self.get_queryset()
         manager_client_count = queryset.count()
         manager_task_count = 0
+        search_client_name = self.request.GET.get('client_name')
+        if search_client_name:
+            if self.request.user.type == 5:
+                qs = Client.objects.filter(moderator=self.request.user.manager_user.moderator.moderator_user)
+            else:
+                qs = queryset
+            search_client_qs = qs.filter(name__icontains=search_client_name)
+            context.update({
+                'search_client_list': search_client_qs,
+                'r_client_name': search_client_name
+            })
         for client in queryset:
             manager_task_count += client.task_set.count()
         context.update({
@@ -100,7 +111,9 @@ class ClientListView(ListView):
             manager_qs = Manager.objects.filter(moderator=current_manager.moderator.moderator_user)
         else:
             manager_qs = None
+        import_form = ClientImportForm()
         context.update({
+            'import_form': import_form,
             'manager_list': manager_qs
         })
         return context
@@ -243,21 +256,30 @@ def task_list(request):
     user = request.user
     if user.type == 1:
         qs = Task.objects.all()
+        manager_qs = Manager.objects.all()
     elif user.type == 2:
         qs = Task.objects.filter(manager__moderator=user)
+        manager_qs = Manager.objects.filter(moderator=user)
     elif user.type == 5:
         if user.manager_user.leader:
             qs = Task.objects.filter(manager__moderator=user.manager_user.moderator)
+            manager_qs = Manager.objects.filter(moderator=user.manager_user.moderator.moderator_user)
         else:
             qs = Task.objects.filter(manager=user.manager_user)
+            manager_qs = None
     else:
         qs = None
+        manager_qs = None
+    context.update({
+        'manager_list': manager_qs
+    })
     r_name = request.GET.get('name')
     r_date_s = request.GET.get('date_s')
     r_date_e = request.GET.get('date_e')
     r_all = request.GET.get('all')
     r_type = request.GET.get('type')
     r_status = request.GET.get('status')
+    r_manager = request.GET.get('manager')
     if r_all and int(r_all) == 1:
         request.session['show_all_task'] = True
     elif r_all and int(r_all) == 0:
@@ -266,7 +288,11 @@ def task_list(request):
         show_all = request.session['show_all_task']
     except:
         show_all = False
-
+    if r_manager and int(r_manager) != 0:
+        qs = qs.filter(manager=int(r_manager))
+        context.update({
+            'r_manager': int(r_manager)
+        })
     if not r_name and not r_date_s and not r_date_e and not show_all:
         qs = qs.filter(date=timezone.localtime(timezone.now()))
     else:
