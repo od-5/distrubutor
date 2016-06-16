@@ -19,10 +19,8 @@ class DistributorAddForm(forms.ModelForm):
         super(DistributorAddForm, self).__init__(*args, **kwargs)
         if user.type == 2:
             self.fields['moderator'].initial = user.moderator_user
-            # self.fields['moderator'].widget = forms.HiddenInput()
         elif user.type == 5:
             self.fields['moderator'].initial = user.manager_user.moderator.moderator_user
-            # self.fields['moderator'].widget = forms.HiddenInput()
 
 
 class DistributorUpdateForm(forms.ModelForm):
@@ -44,13 +42,6 @@ class DistributorPaymentForm(forms.ModelForm):
             'type': forms.Select(attrs={'class': 'form-control'}),
             'cost': forms.NumberInput(attrs={'class': 'form-control'})
         }
-    #
-    # def __init__(self, *args, **kwargs):
-    #     # self.request = kwargs.pop("request")
-    #     super(DistributorPaymentForm, self).__init__(*args, **kwargs)
-    #     print kwargs
-
-        # print self.instance
 
 
 class DistributorTaskForm(forms.ModelForm):
@@ -62,7 +53,6 @@ class DistributorTaskForm(forms.ModelForm):
             'sale': forms.Select(attrs={'class': 'form-control'}),
             'order': forms.Select(attrs={'class': 'form-control'}),
             'area': forms.Select(attrs={'class': 'form-control'}),
-            # 'type': forms.Select(attrs={'class': 'form-control'}),
             'material_count': forms.NumberInput(attrs={'class': 'form-control'}),
             'date': forms.DateInput(attrs={'class': 'form-control'}),
             'comment': forms.Textarea(attrs={'class': 'form-control'}),
@@ -70,53 +60,34 @@ class DistributorTaskForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        # self.request = kwargs.pop("request")
         user = kwargs.pop("user")
         super(DistributorTaskForm, self).__init__(*args, **kwargs)
         if user.type == 2:
             self.fields['distributor'].queryset = user.moderator_user.distributor_set.all()
             self.fields['sale'].queryset = Sale.objects.filter(moderator=user.moderator_user)
             self.fields['area'].queryset = user.moderator_user.moderatorarea_set.all()
-            # self.fields['moderator'].initial = user.moderator_user
-            # self.fields['moderator'].widget = forms.HiddenInput()
-        # elif user.type == 5:
-            # self.fields['city'].queryset = user.manager_user.moderator.moderator_user.city.all()
-            # self.fields['manager'].queryset = user.manager_user.moderator.manager_set.all()
-            # self.fields['manager'].initial = user.manager_user
-            # self.fields['moderator'].initial = user.manager_user.moderator.moderator_user
-            # self.fields['moderator'].widget = forms.HiddenInput()
 
 
 class DistributorTaskUpdateForm(forms.ModelForm):
     class Meta:
         model = DistributorTask
-        exclude = ['closed', 'type']
+        exclude = ['type']
         widgets = {
             'distributor': forms.Select(attrs={'class': 'form-control'}),
             'sale': forms.Select(attrs={'class': 'form-control'}),
             'order': forms.Select(attrs={'class': 'form-control'}),
             'area': forms.Select(attrs={'class': 'form-control'}),
-            # 'type': forms.Select(attrs={'class': 'form-control'}),
             'material_count': forms.NumberInput(attrs={'class': 'form-control'}),
             'date': forms.DateInput(attrs={'class': 'form-control'}),
             'comment': forms.Textarea(attrs={'class': 'form-control'}),
             'define_address': forms.CheckboxInput(),
+            'closed': forms.CheckboxInput(),
         }
 
     def __init__(self, *args, **kwargs):
-        # self.request = kwargs.pop("request")
         user = kwargs.pop("user")
         super(DistributorTaskUpdateForm, self).__init__(*args, **kwargs)
         if user.type == 2:
             self.fields['distributor'].queryset = user.moderator_user.distributor_set.all()
             self.fields['sale'].queryset = Sale.objects.filter(moderator=user.moderator_user)
             self.fields['area'].queryset = user.moderator_user.moderatorarea_set.all()
-
-        #     self.fields['moderator'].initial = user.moderator_user
-        #     self.fields['moderator'].widget = forms.HiddenInput()
-        # elif user.type == 5:
-        #     self.fields['city'].queryset = user.manager_user.moderator.moderator_user.city.all()
-        #     self.fields['manager'].queryset = user.manager_user.moderator.manager_set.all()
-        #     self.fields['manager'].initial = user.manager_user
-        #     self.fields['moderator'].initial = user.manager_user.moderator.moderator_user
-        #     self.fields['moderator'].widget = forms.HiddenInput()

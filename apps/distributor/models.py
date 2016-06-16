@@ -118,7 +118,7 @@ class DistributorTask(models.Model):
     )
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
     define_address = models.BooleanField(default=True, verbose_name=u'Определять адреса')
-    closed = models.BooleanField(default=False)
+    closed = models.BooleanField(default=False, verbose_name=u'Задача закрыта')
 
 
 class GPSPoint(models.Model):

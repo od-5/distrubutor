@@ -88,6 +88,12 @@
                     {{ form.comment.errors }}
                     <div class="clearfix"></div>
                   </div>
+                  <div class="form-group">
+                    <div class="col-lg-5">{{ form.closed.label_tag }}</div>
+                    <div class="col-lg-7">{{ form.closed }}</div>
+                    {{ form.closed.errors }}
+                    <div class="clearfix"></div>
+                  </div>
                   <button type="submit" class="btn btn-success">Сохранить</button>
                 </form>
               </div>
@@ -155,13 +161,15 @@ function init() {
     center = data.center;
     if (data.coord_list.length){
       data_list = data.coord_list;
+      for(var i=0;i<data_list.length;i++){
+        console.log(data_list[i])
+      }
     } else {
       if (data.address_list.length) {
         data_list = data.address_list;
       }
     }
   });
-  console.log(data_list);
   var myMap = new ymaps.Map("map", {
       center: center,
       zoom: 13

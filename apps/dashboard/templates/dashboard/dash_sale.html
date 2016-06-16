@@ -90,6 +90,7 @@
           </thead>
           <tbody>
           {% for point in point_list %}
+            {% if point.pointphoto_set.count %}
             <tr>
               <td>{{ point|default:'Не указано' }}</td>
               <td>{{ point.timestamp|time:'H:i'|default:'Не указано' }} - {{ point.timestamp|date:'d.m.Y'|default:'Не указано' }}</td>
@@ -105,6 +106,7 @@
               {% endfor %}
               </td>
             </tr>
+            {% endif %}
           {% endfor %}
           </tbody>
         </table>

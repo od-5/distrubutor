@@ -84,7 +84,8 @@ def get_task_cord_list(request):
                 address_list.append(i.name)
         else:
             for i in qs:
-                coord_list.append([i.coord_x, i.coord_y])
+                if i.coord_x and i.coord_y:
+                    coord_list.append([float(i.coord_x), float(i.coord_y)])
     return {
         'center': center,
         'coord_list': coord_list,
