@@ -141,6 +141,8 @@ class GPSPoint(models.Model):
                 self.name = name
             except:
                 self.name = u'%s, %s' % (self.coord_y, self.coord_x)
+        else:
+            self.name = u'%s, %s' % (self.coord_y, self.coord_x)
         super(GPSPoint, self).save()
 
     task = models.ForeignKey(to=DistributorTask, verbose_name=u'Задача')
