@@ -77,7 +77,7 @@ def get_task_cord_list(request):
     center = []
     if request.POST.get('task'):
         task = DistributorTask.objects.get(id=int(request.POST.get('task')))
-        qs = task.gpspoint_set.filter(name__isnull=False)
+        qs = task.gpspoint_set.all()
         center = [qs.first().coord_x, qs.first().coord_y]
         if task.define_address:
             for i in qs:

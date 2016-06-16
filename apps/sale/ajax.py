@@ -36,7 +36,7 @@ def get_client_coord_list(request):
                 address_list.append(i.name)
         else:
             for i in qs:
-                coord_list.append([i.coord_x, i.coord_y])
+                coord_list.append([float(i.coord_x), float(i.coord_y)])
     else:
         for i in task_qs:
             for point in i.gpspoint_set.all():
