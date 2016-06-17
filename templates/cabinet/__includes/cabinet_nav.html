@@ -1,4 +1,17 @@
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default hidden-md hidden-lg">
+  <div class="col-sm-12 col-xs-12">
+    <a href="{% url 'dashboard:index' %}" title="Рабочий стол">
+      <img src="{{ STATIC_URL }}img/banner_control.jpg" alt="Контроль расклейки и распространения">
+    </a>
+  </div>
+  <div class="col-sm-12 col-xs-12">
+    <ul class="nav navbar-nav nav-mobile">
+      <li><a href="{% url 'profile' %}"><span class="glyphicon glyphicon-user"></span> {{ user }} </a></li>
+      <li><a href="{% url 'logout' %}?next={% url 'dashboard:index' %}"><span class="glyphicon glyphicon-log-out"></span> Выход</a></li>
+    </ul>
+  </div>
+</nav>
+<nav class="navbar navbar-default hidden-xs hidden-sm">
   <div class="col-lg-8">
     <a href="{% url 'dashboard:index' %}" title="Рабочий стол">
       <img src="{{ STATIC_URL }}img/banner_control.jpg" alt="Контроль расклейки и распространения">

@@ -53,7 +53,9 @@ class DistributorPayment(models.Model):
 
     distributor = models.ForeignKey(to=Distributor)
     type = models.ForeignKey(to=ModeratorAction, verbose_name=u'Тип работы')
-    cost = models.PositiveIntegerField(
+    cost = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
         verbose_name=u'Олата, руб/шт',
         default=0,
         null=True,

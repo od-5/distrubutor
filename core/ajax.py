@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from core.models import User
 from apps.manager.models import Manager
 from apps.moderator.models import Moderator, ModeratorArea, Review
-from apps.distributor.models import Distributor, DistributorTask
+from apps.distributor.models import Distributor, DistributorTask, GPSPoint
 from apps.sale.models import Sale, SaleOrder, SaleMaket
 from apps.city.models import City
 from apps.client.models import Client, ClientContact, Task
@@ -81,6 +81,9 @@ def ajax_remove_item(request):
                     contact.delete()
                 for task in item.task_set.all():
                     task.delete()
+            if model == 'GPSPoint':
+                for photo in item.pointphoto_set.all():
+                    photo.delete()
             item.delete()
             return {
                 'id': int(request.GET.get('item_id')),

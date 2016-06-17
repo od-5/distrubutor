@@ -35,6 +35,16 @@ body {
 .form-horizontal .control-label {
   text-align: left;
 }
+.nav-mobile li {
+  display: inline-block;
+}
+.nav-mobile li a {
+  color: #777;
+}
+.nav-mobile li:last-child {
+  text-align: right;
+  float: right;
+}
 .table tbody tr td {
   background-color: #f6f7f8;
 }

@@ -55,7 +55,7 @@ class SaleOrder(models.Model):
             return u'Заказ  %s - <дата окончания не указана> ' % self.date_start
 
     def total_sum(self):
-        total = ((self.cost*(1+self.add_cost*0.01))*(1-self.discount*0.01)) * self.count
+        total = ((float(self.cost)*(1+float(self.add_cost)*0.01))*(1-float(self.discount)*0.01)) * self.count
         return round(total, 2)
 
     sale = models.ForeignKey(to=Sale, verbose_name=u'Продажа')
@@ -63,9 +63,9 @@ class SaleOrder(models.Model):
     date_end = models.DateField(verbose_name=u'Дата окончания', blank=True, null=True)
     type = models.ForeignKey(to=ModeratorAction, verbose_name=u'Тип заказа')
     count = models.PositiveIntegerField(verbose_name=u'Количество материала, шт')
-    cost = models.PositiveIntegerField(verbose_name=u'Стоимость за 1шт., руб')
-    add_cost = models.PositiveIntegerField(verbose_name=u'Наценка, %', default=0)
-    discount = models.PositiveIntegerField(verbose_name=u'Скидка, %', default=0)
+    cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Стоимость за 1шт., руб')
+    add_cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Наценка, %', default=0)
+    discount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Скидка, %', default=0)
     closed = models.BooleanField(verbose_name=u'Заказ закрыт', default=False)
 
 

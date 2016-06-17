@@ -35,6 +35,9 @@ $(function() {
         $.notify('Объект был удалён', 'success');
         console.log($('#id_'+data.model+'_'+data.id));
         $('#id_'+data.model+'_'+data.id).remove();
+        if ($('tr').is('#id_'+data.model+'_'+data.id+'_photo')){
+          $('#id_'+data.model+'_'+data.id+'_photo').remove();
+        }
         $.fancybox.close();
       } else {
         $.notify('Произошла ошибка. Объект не удалён', 'error');
