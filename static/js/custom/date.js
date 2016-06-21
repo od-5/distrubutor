@@ -5,7 +5,7 @@ $(function() {
   $.datepicker.setDefaults(
         $.extend($.datepicker.regional["ru"])
   );
-  var client_search_form = $('.client-search-form');
+  var client_search_form = $('#js-client-search-form');
   client_search_form.find("#id_date_start").datepicker({
     defaultDate: 1,
     dateFormat: "dd.mm.yy"

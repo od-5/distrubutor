@@ -46,7 +46,7 @@
         </div>
         <div class="panel-body">
 
-          <table class="table">
+          <table class="table table-condensed table-bordered table-list">
             <thead>
               <tr>
                 <th>e-mail</th>
@@ -66,7 +66,7 @@
             {% empty %}
               <tr>
                 <td colspan="3">
-                  <p class="alert alert-info">Для данного города модераторы ещё не назначены</p>
+                  <p class="alert alert-info text-left">Для данного города модераторы ещё не назначены</p>
                 </td>
               </tr>
             {% endfor %}
@@ -95,7 +95,7 @@
             </div>
             <div class="clearfix"></div>
           </form>
-          <table class="table">
+          <table class="table table-condensed table-bordered table-list">
             <tbody class="js-list">
             {% for area in area_list %}
               <tr data-id="{{ area.id }}" data-name="{{ area.name }}" data-model="ModeratorArea" id="id_ModeratorArea_{{ area.id }}">
@@ -113,7 +113,7 @@
             {% empty %}
               <tr>
                 <td colspan="2">
-                  <p class="alert alert-info">
+                  <p class="alert alert-info text-left">
                     Ещё не добавлено ни одного района
                   </p>
                 </td>

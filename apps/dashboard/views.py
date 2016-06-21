@@ -1,6 +1,7 @@
 # coding=utf-8
 import os
 import datetime
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.forms import HiddenInput
 from django.utils.timezone import utc
 from django.views.generic import TemplateView
@@ -79,12 +80,20 @@ class DashboardView(TemplateView):
             )
             form.fields['name'].widget = HiddenInput()
             form.fields['mail'].widget = HiddenInput()
+            paginator = Paginator(point_qs, 1)
+            page = self.request.GET.get('page')
+            try:
+                point_list = paginator.page(page)
+            except PageNotAnInteger:
+                point_list = paginator.page(1)
+            except EmptyPage:
+                point_list = paginator.page(paginator.num_pages)
             context.update({
                 'show_table': show_table,
                 'order_list': order_qs,
                 # 'current_task': task,
                 'task_list': task_qs,
-                'point_list': point_qs,
+                'point_list': point_list,
                 'form': form
             })
         if user.type == 5:

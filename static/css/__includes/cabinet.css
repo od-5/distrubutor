@@ -112,5 +112,13 @@ body {
   text-align: center;
 }
 .photo_image img {
-  max-height: 100%;
+  height: 100%;
+}
+.sale-photo-item {
+  margin-bottom: 20px;
+}
+.sale-photo-item span {
+  display: block;
+  height: 50px;
+  padding: 0 10px;
 }

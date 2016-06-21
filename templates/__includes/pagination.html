@@ -40,7 +40,7 @@
     <ul class="pagination pagination-sm">
       {% if page_obj.has_previous %}
       <li>
-        <a href="{{ URL_WITH_FILTER }}page={{ page_obj.previous_page_number }}" aria-label="Previous">
+        <a href="{{ URL_WITH_FILTER|default:'?' }}page={{ page_obj.previous_page_number }}" aria-label="Previous">
           <span aria-hidden="true">&laquo;</span>
         </a>
       </li>

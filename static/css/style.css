@@ -6130,6 +6130,32 @@ h2 {
   padding-bottom: 100px;
   background-color: #fff;
 }
+.table-list {
+  font-size: 12px;
+}
+.table-list thead {
+  background-color: #666;
+  color: #fff;
+  vertical-align: top;
+}
+.table-list thead tr th {
+  vertical-align: top;
+  font-weight: normal;
+}
+.table-list tr td:last-child {
+  text-align: right;
+}
+.table-search {
+  font-size: 12px;
+}
+.table-search thead tr th {
+  border: none;
+  background: transparent;
+}
+.table-search tbody tr td {
+  border: none;
+  background-color: transparent !important;
+}
 #scrollup {
   position: fixed;
   opacity: 0.8;
@@ -6358,7 +6384,15 @@ body {
   text-align: center;
 }
 .photo_image img {
-  max-height: 100%;
+  height: 100%;
+}
+.sale-photo-item {
+  margin-bottom: 20px;
+}
+.sale-photo-item span {
+  display: block;
+  height: 50px;
+  padding: 0 10px;
 }
 #js-ajax-item-remove {
   display: none;

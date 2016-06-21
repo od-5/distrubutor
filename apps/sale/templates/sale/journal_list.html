@@ -12,7 +12,7 @@
         </div>
         <div class="panel-body">
           <p class="lead">Всего заказов на сумму: {{ total_sum|default:'0' }} руб.</p>
-          <form action="" class="client-search-form form-inline" role="form" method="GET">
+          <form action="" class="form-inline add-bottom" id="js-client-search-form" role="form" method="GET">
           {% if user.type == 1 %}
             <select name="city" class="form-control input-sm">
               <option value="0">---- Город ----</option>
@@ -37,7 +37,7 @@
             </button>
           </form>
 
-          <table class="table table-hover">
+          <table class="table table-hover table-condensed table-bordered table-list">
             <thead>
               <tr>
                 <th>Название</th>
@@ -74,7 +74,7 @@
               {% endfor %}
             {% else %}
               <tr>
-                <td colspan="10"><p class="alert alert-info">Клиентов нет</p></td>
+                <td colspan="10"><p class="alert alert-info text-left">Клиентов нет</p></td>
               </tr>
             {% endif %}
             </tbody>

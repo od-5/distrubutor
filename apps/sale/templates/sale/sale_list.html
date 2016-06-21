@@ -14,7 +14,7 @@
           <a href="{% url 'sale:add' %}" class="btn btn-success">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую продажу
           </a>
-          <form action="" class="client-search-form form-inline" role="form" method="GET">
+          <form action="" class="client-search-form form-inline add-bottom" role="form" method="GET">
             <select name="city" class="form-control input-sm">
               <option value="0">---- Город ----</option>
               {% for city in city_list %}
@@ -29,16 +29,15 @@
               {% endfor %}
             </select>
             {% endif %}
-            <input type="text" name="email" class="form-control input-sm" placeholder="email" value="{{ r_email }}">
-            <input type="text" name="legal_name" class="form-control input-sm" placeholder="Юридическое название" value="{{ r_legal_name }}">
+            <input type="text" name="email" class="form-control input-sm" placeholder="email" value="{{ r_email|default:'' }}">
+            <input type="text" name="legal_name" class="form-control input-sm" placeholder="Юридическое название" value="{{ r_legal_name|default:'' }}">
             <button type="submit" class="btn btn-info btn-sm">
               <span class="glyphicon glyphicon-search"></span> Искать
             </button>
           </form>
-          <table class="table table-hover">
+          <table class="table table-hover table-condensed table-bordered table-list">
             <thead>
               <tr>
-                <th>id</th>
                 <th>Юридические наименование</th>
                 <th>Фактичесское наименование</th>
                 <th>Город</th>
@@ -53,7 +52,6 @@
             {% if object_list %}
               {% for object in object_list %}
               <tr data-id="{{ object.id }}" data-name="{{ object.legal_name }}" data-model="Sale" id="id_Sale_{{ object.id }}">
-                <td>{{ object.id|default:'Не указано' }}</td>
                 <td><a href="{% url 'sale:update' object.id %}">{{ object.legal_name|default:'Не указано' }}</a></td>
                 <td>{{ object.actual_name|default:'Не указано' }}</td>
                 <td>{{ object.city|default:'Не указано' }}</td>
@@ -70,7 +68,7 @@
               {% endfor %}
             {% else %}
               <tr>
-                <td colspan="9"><p class="alert alert-info">Клиентов нет</p></td>
+                <td colspan="8"><p class="alert alert-info text-left">Клиентов нет</p></td>
               </tr>
             {% endif %}
             </tbody>

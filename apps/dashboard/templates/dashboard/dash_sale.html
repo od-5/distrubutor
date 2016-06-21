@@ -113,18 +113,21 @@
           {% endfor %}
           </tbody>
         </table>
+
       {% else %}
         {% for point in point_list %}
         {% for photo in point.pointphoto_set.all %}
-        <div class="col-lg-3">
+        <div class="col-lg-3 sale-photo-item">
           <a href="{{ photo.photo.url }}" rel="group" class="js-gallery photo_image" title="{{ photo.name }}, время {{ photo.timestamp|time:'H:i'|default:'Не указано' }}">
             <img src="{{ photo.photo.url }}" alt="">
           </a>
+          <span class="small">{{ photo.name|default:'Не указано' }}</span>
         </div>
         {% endfor %}
         {% endfor %}
         <div class="clearfix"></div>
       {% endif %}
+        {% include '__includes/pagination.html' with page_obj=point_list%}
     {% endif %}
       </div>
     </div>

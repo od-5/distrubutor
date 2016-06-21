@@ -12,7 +12,7 @@
         </div>
         <div class="panel-body">
         {% if user.type == 1 %}
-          <form action="" method="GET" role="form" class="form-inline">
+          <form action="" method="GET" role="form" class="form-inline add-bottom">
             <select name="moderator" id="" class="form-control input-sm">
               <option value="0">---- Модератор ------</option>
             {% for item in moderator_list %}
@@ -22,7 +22,7 @@
             <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
           </form>
         {% endif %}
-          <table class="table table-hover">
+          <table class="table table-hover table-condensed table-bordered table-list">
             <thead>
               <tr>
                 <th>e-mail</th>
@@ -46,7 +46,7 @@
             {% empty %}
               <tr>
                 <td colspan="4">
-                  <p class="alert alert-info">Отзывов не найдено</p>
+                  <p class="alert alert-info text-left">Отзывов не найдено</p>
                 </td>
               </tr>
             {% endfor %}

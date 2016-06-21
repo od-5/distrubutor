@@ -80,7 +80,7 @@
         </div>
         <div class="panel-body">
           <p class="lead">Всего заказов на сумму: {{ total_sum|default:'0' }} руб.</p>
-          <table class="table table-hover">
+          <table class="table table-hover table-condensed table-bordered table-list">
             <thead>
               <tr>
                 <th>Название</th>
@@ -119,7 +119,7 @@
             {% empty %}
               <tr>
               <td colspan="9">
-                <p class="alert alert-info">Заказов не найдено</p>
+                <p class="alert alert-info text-left">Заказов не найдено</p>
               </td>
               </tr>
             {% endfor %}
