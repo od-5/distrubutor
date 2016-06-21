@@ -80,7 +80,7 @@ class DashboardView(TemplateView):
             )
             form.fields['name'].widget = HiddenInput()
             form.fields['mail'].widget = HiddenInput()
-            paginator = Paginator(point_qs, 1)
+            paginator = Paginator(point_qs, 50)
             page = self.request.GET.get('page')
             try:
                 point_list = paginator.page(page)
