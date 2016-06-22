@@ -11,30 +11,64 @@
           <p class="lead remove-bottom text-center">Журнал продаж</p>
         </div>
         <div class="panel-body">
-          <p class="lead">Всего заказов на сумму: {{ total_sum|default:'0' }} руб.</p>
-          <form action="" class="form-inline add-bottom" id="js-client-search-form" role="form" method="GET">
-          {% if user.type == 1 %}
-            <select name="city" class="form-control input-sm">
-              <option value="0">---- Город ----</option>
-              {% for city in city_list %}
-                <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
-              {% endfor %}
-            </select>
-          {% endif %}
-            {% if not user.manager_user and not user.manager_user.leader %}
-            <select name="manager" class="form-control input-sm">
-              <option value="0">---- Менеджер ----</option>
-              {% for manager in manager_list %}
-                <option value="{{ manager.id }}" {% if manager.id == manager_id %}selected="selected"{% endif %}>{{ manager }}</option>
-              {% endfor %}
-            </select>
-            {% endif %}
-            <input type="text" name="legal_name" class="form-control input-sm" value="{{ r_legal_name|default:'' }}" placeholder="Юридическое название">
-            <input type="text" name="date_start" id="id_date_start" class="form-control input-sm" value="{{ r_date_start|default:'' }}" placeholder="Начальная дата">
-            <input type="text" name="date_end" id="id_date_end" class="form-control input-sm" value="{{ r_date_end|default:'' }}" placeholder="Конечная дата">
-            <button type="submit" class="btn btn-info btn-sm">
-              <span class="glyphicon glyphicon-search"></span> Искать
-            </button>
+          <div class="col-lg-6">
+            <p>Всего заказов на сумму: {{ total_sum|default:'0' }} руб.</p>
+          </div>
+          <div class="col-lg-6">
+            <p class="text-right">
+              Общая сумма поступлений: <strong>{{ payments_sum|default:'0' }}</strong> руб
+            </p>
+          </div>
+          <form action="" class="add-bottom" id="js-client-search-form" role="form" method="GET">
+            <table class="table table-condensed table-search">
+              <tbody>
+                <tr>
+                {% if user.type == 1 %}
+                  <td>
+                    <select name="city" class="form-control input-sm">
+                    <option value="0">-- Город --</option>
+                    {% for city in city_list %}
+                      <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
+                    {% endfor %}
+                  </select>
+                  </td>
+                {% endif %}
+                {% if not user.manager_user and not user.manager_user.leader %}
+                  <td>
+                    <select name="manager" class="form-control input-sm">
+                      <option value="0">-- Менеджер --</option>
+                      {% for manager in manager_list %}
+                        <option value="{{ manager.id }}" {% if manager.id == manager_id %}selected="selected"{% endif %}>{{ manager }}</option>
+                      {% endfor %}
+                    </select>
+                  </td>
+                {% endif %}
+                  <td>
+                    <input type="text" name="legal_name" class="form-control input-sm" value="{{ r_legal_name|default:'' }}" placeholder="Юридическое название">
+                  </td>
+                  <td>
+                    <input type="text" name="date_start" id="id_date_start" class="form-control input-sm" value="{{ r_date_start|default:'' }}" placeholder="Начальная дата">
+                  </td>
+                  <td>
+                    <input type="text" name="date_end" id="id_date_end" class="form-control input-sm" value="{{ r_date_end|default:'' }}" placeholder="Конечная дата">
+                  </td>
+                  <td>
+                    <select name="payment" id="" class="form-control input-sm">
+                      <option value="">-- Поступления --</option>
+                      <option value="0" {% if r_payment == 0 %}selected="selected"{% endif %}>Нет поступлений</option>
+                      <option value="1" {% if r_payment == 1 %}selected="selected"{% endif %}>Полная оплата</option>
+                      <option value="2" {% if r_payment == 2 %}selected="selected"{% endif %}>Частичная оплата</option>
+                      <option value="3" {% if r_payment == 3 %}selected="selected"{% endif %}>Частичная и полная оплата</option>
+                    </select>
+                  </td>
+                  <td>
+                    <button type="submit" class="btn btn-info btn-sm">
+                      <span class="glyphicon glyphicon-search"></span> Искать
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </form>
 
           <table class="table table-hover table-condensed table-bordered table-list">
@@ -49,13 +83,14 @@
                 <th>Наценка, %</th>
                 <th>Скидка, %</th>
                 <th>Итого, руб</th>
+                <th>Поступления, руб</th>
                 <th>&nbsp;</th>
               </tr>
             </thead>
             <tbody class="js-list">
             {% if object_list %}
               {% for object in object_list %}
-              <tr data-id="{{ object.id }}" data-name="{{ object }}" data-model="SaleOrder" id="id_SaleOrder_{{ object.id }}">
+              <tr data-id="{{ object.id }}" class="saleorder-tr{% if object.full_payment %} success{% elif object.has_payment %} info{% endif %}" data-name="{{ object }}" data-model="SaleOrder" id="id_SaleOrder_{{ object.id }}">
                 <td><a href="{% url 'sale:order-update' object.id %}">{{ object|default:'Не указано' }}</a></td>
                 <td>{{ object.sale.legal_name|default:'Не указано' }}</td>
                 <td>{{ object.sale.city|default:'Не указано' }}</td>
@@ -65,6 +100,12 @@
                 <td>{{ object.add_cost|default:'0' }}</td>
                 <td>{{ object.discount|default:'0' }}</td>
                 <td>{{ object.total_sum|default:'0' }}</td>
+                <td style="width: 120px;">
+                  {{ object.current_payment|default:'0' }}
+                  <a href="#js-modal-payment-add" id="js-payment-btn-{{ object.id }}" class="btn btn-sm btn-info js-payment-add-btn hide" data-sale="{{ object.sale.id }}" data-saleorder="{{ object.id }}">
+                    <span class="glyphicon glyphicon-plus-sign"></span> Добавить
+                  </a>
+                </td>
                 <td>
                   <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
                     <span class="glyphicon glyphicon-remove"></span> Удалить
@@ -85,4 +126,5 @@
     </div>
   </div>
 {% include '__modal/js_ajax_remove_form.html' %}
+{% include 'sale/__modal/payment_modal.html' %}
 {% endblock %}

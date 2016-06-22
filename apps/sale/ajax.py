@@ -3,6 +3,7 @@ from annoying.decorators import ajax_request
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 from apps.distributor.models import DistributorTask
+from apps.sale.models import SaleOrder, Sale, SaleOrderPayment
 
 __author__ = 'alexy'
 
@@ -51,3 +52,34 @@ def get_client_coord_list(request):
         'address_list': address_list,
         'all_address_list': all_address_list
     }
+
+
+@ajax_request
+def payment_add(request):
+    try:
+        print request.META.get('HTTP_REFERER')
+        print request.POST.get('p_sale')
+        print request.POST.get('p_saleorder')
+        print request.POST.get('p_sum')
+        sale = Sale.objects.get(pk=int(request.POST.get('p_sale')))
+        print '1'*10
+        saleorder = SaleOrder.objects.get(pk=int(request.POST.get('p_saleorder')))
+        print '2'*10
+        sum = request.POST.get('p_sum')
+        print '3'*10
+        payment = SaleOrderPayment(
+            sale=sale,
+            saleorder=saleorder,
+            sum=sum
+        )
+        print '4'*10
+        payment.save()
+        print '5'*10
+        return {
+            'success': True
+        }
+    except:
+        return {
+            'error': True
+        }
+

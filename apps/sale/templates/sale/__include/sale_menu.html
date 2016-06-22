@@ -10,6 +10,9 @@
   <a href="{% url 'sale:order' sale.id %}" class="btn btn-default">
     <span class="glyphicon glyphicon-check"></span> Заказы
   </a>
+  <a href="{% url 'sale:payment-list' sale.id %}" class="btn btn-default">
+    <span class="glyphicon glyphicon-shopping-cart"></span> Журнал поступлений
+  </a>
   <a href="{% url 'sale:maket' sale.id %}" class="btn btn-default">
     <span class="glyphicon glyphicon-folder-open"></span> Архив материалов
   </a>

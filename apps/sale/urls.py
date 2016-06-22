@@ -2,7 +2,7 @@
 from django.conf.urls import patterns, url
 from .models import Sale
 from .views import SaleListView, JournalListView
-from .ajax import get_client_coord_list
+from .ajax import get_client_coord_list, payment_add
 
 __author__ = 'alexy'
 
@@ -26,4 +26,6 @@ urlpatterns = patterns(
     #
     #
     # url(r'^export/(?P<pk>\d+)/$', 'client_excel_export', name='excel_export'),
+    url(r'(?P<pk>\d+)/payment/$', 'saleorderpayment_list', name='payment-list'),
+    url(r'payment/add/$', payment_add, name='payment-add')
 )

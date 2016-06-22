@@ -10,6 +10,60 @@ $(function() {
 
   $.validator.messages.required = "* поле обязательно для заполнения";
 
+  // показать\спрятать кнопку добавления оплаты
+  $('.saleorder-tr').hover(
+    function(){
+      $(this).find('.js-payment-add-btn').removeClass('hide');
+    },
+    function() {
+      $(this).find('.js-payment-add-btn').addClass('hide')
+    }
+  );
+  // валидация формы добавления оплаты
+  $( '.js-modal-payment-add-form' ).validate({
+    rules: {
+      p_sale: {
+        required: true
+      },
+      p_saleorder: {
+        required: true
+      },
+      p_sum: {
+        required: true,
+        number: true
+      }
+    }
+  });
+  // форма добавления оплаты
+  $('.js-payment-add-btn').fancybox({
+    afterClose: function () {
+      $('.js-modal-payment-add-form').resetForm();
+    },
+    beforeLoad: function() {
+      var item_id = '#' + this.element[0].id;
+      var item = $(item_id);
+      var form = $('.js-modal-payment-add-form');
+      console.log(item);
+      console.log(item.data('sale'));
+      console.log(item.data('saleorder'));
+      form.find('#p_sale').val(item.data('sale'));
+      form.find('#p_saleorder').val(item.data('saleorder'));
+      console.log('sale' + form.find('#p_sale').val());
+      console.log('saleorder' + form.find('#p_saleorder').val());
+     }
+  });
+  $('.js-modal-payment-add-form').ajaxForm({
+    success: function (data) {
+      if (data.success) {
+        $.notify('Оплата сохранена. Идёт пересчёт поступлений.', 'success');
+        $.fancybox.close();
+        location.reload();
+      } else {
+        $.notify('Произошла ошибка. Оплата не сохранена', 'error');
+        $.fancybox.close();
+      }
+    }
+  });
   // ajax удаление объектов
   var fancy_initial = function(){
     $('.js-ajax-remove-btn').fancybox({

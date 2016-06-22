@@ -146,8 +146,8 @@ class GPSPoint(models.Model):
                 self.name = u'%s, %s' % (self.coord_y, self.coord_x)
         else:
             self.name = u'%s, %s' % (self.coord_y, self.coord_x)
-        hours = self.task.sale.city.timezone
-        self.timestamp += datetime.timedelta(hours=hours)
+        # hours = self.task.sale.city.timezone
+        # self.timestamp += datetime.timedelta(hours=hours)
         super(GPSPoint, self).save()
 
     task = models.ForeignKey(to=DistributorTask, verbose_name=u'Задача')
@@ -174,8 +174,8 @@ class PointPhoto(models.Model):
             self.name = self.point.__unicode__()
         except:
             pass
-        hours = self.point.task.sale.city.timezone
-        self.timestamp += datetime.timedelta(hours=hours)
+        # hours = self.point.task.sale.city.timezone
+        # self.timestamp += datetime.timedelta(hours=hours)
         super(PointPhoto, self).save()
         if self.photo:
             image = Image.open(self.photo)

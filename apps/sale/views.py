@@ -204,7 +204,16 @@ class JournalListView(ListView):
         if self.request.GET.get('date_end'):
             datetime.datetime.strptime(self.request.GET.get('date_end'), '%d.%m.%Y')
             qs = qs.filter(date_end__lte=datetime.datetime.strptime(self.request.GET.get('date_end'), '%d.%m.%Y'))
-
+        if self.request.GET.get('payment'):
+            payment = int(self.request.GET.get('payment'))
+            if payment == 0:
+                qs = qs.filter(has_payment=False)
+            elif payment == 1:
+                qs = qs.filter(full_payment=True)
+            elif payment == 2:
+                qs = qs.filter(full_payment=False, has_payment=True)
+            elif payment == 3:
+                qs = qs.filter(has_payment=True)
         return qs
 
     def get_context_data(self, **kwargs):
@@ -227,6 +236,10 @@ class JournalListView(ListView):
             'city_list': city_qs,
             'manager_list': manager_qs,
         })
+        if self.request.GET.get('payment'):
+            context.update({
+                'r_payment': int(self.request.GET.get('payment'))
+            })
         if self.request.GET.get('date_start'):
             context.update({
                 'r_date_start': self.request.GET.get('date_start')
@@ -248,11 +261,14 @@ class JournalListView(ListView):
         })
         order_qs = self.get_queryset()
         total_sum = 0
+        payments_sum = 0
         for order in order_qs:
             if order.total_sum():
                 total_sum += order.total_sum()
+            payments_sum += order.current_payment()
         context.update({
-            'total_sum': total_sum
+            'total_sum': total_sum,
+            'payments_sum': payments_sum
         })
         return context
 
@@ -323,6 +339,28 @@ def sale_order_update(request, pk):
         'sale': sale
     })
     return render(request, 'sale/sale_order_update.html', context)
+
+
+def saleorderpayment_list(request, pk):
+    context = {}
+    sale = Sale.objects.get(pk=int(pk))
+    success_msg = u''
+    error_msg = u''
+    qs = sale.saleorderpayment_set.all()
+    paginator = Paginator(qs, 25)
+    page = request.GET.get('page')
+    try:
+        qs_list = paginator.page(page)
+    except PageNotAnInteger:
+        qs_list = paginator.page(1)
+    except EmptyPage:
+        qs_list = paginator.page(paginator.num_pages)
+    context.update({
+        'object': sale,
+        'sale': sale,
+        'object_list': qs_list
+    })
+    return render(request, 'sale/saleorderpayment_list.html', context)
 
 
 def sale_maket(request, pk):

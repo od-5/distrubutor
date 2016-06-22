@@ -54,6 +54,15 @@ class SaleOrder(models.Model):
         else:
             return u'Заказ  %s - <дата окончания не указана> ' % self.date_start
 
+    def current_payment(self):
+        """
+        Показывает текущую сумму поступлений по покупке
+        """
+        count = 0
+        for payment in self.saleorderpayment_set.all():
+            count += payment.sum
+        return round(count, 2)
+
     def total_sum(self):
         total = ((float(self.cost)*(1+float(self.add_cost)*0.01))*(1-float(self.discount)*0.01)) * self.count
         return round(total, 2)
@@ -67,6 +76,34 @@ class SaleOrder(models.Model):
     add_cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Наценка, %', default=0)
     discount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Скидка, %', default=0)
     closed = models.BooleanField(verbose_name=u'Заказ закрыт', default=False)
+    has_payment = models.BooleanField(default=False, verbose_name=u'Есть поступления')
+    full_payment = models.BooleanField(default=False, verbose_name=u'Оплачено')
+
+
+class SaleOrderPayment(models.Model):
+    class Meta:
+        verbose_name = u'Поступление'
+        verbose_name_plural = u'Поступления'
+        app_label = 'sale'
+        ordering = ['-created']
+
+    def __unicode__(self):
+        return u'Поступление на сумму %s руб. Дата: %s' % (self.sum, self.created)
+
+    def save(self, *args, **kwargs):
+        super(SaleOrderPayment, self).save()
+        saleorder = self.saleorder
+        saleorder.has_payment = True
+        if saleorder.current_payment() >= saleorder.total_sum():
+            saleorder.full_payment = True
+        else:
+            saleorder.full_payment = False
+        saleorder.save()
+
+    sale = models.ForeignKey(to=Sale, verbose_name=u'Клиент')
+    saleorder = models.ForeignKey(to=SaleOrder, verbose_name=u'Покупка')
+    sum = models.DecimalField(max_digits=11, decimal_places=2, verbose_name=u'Сумма')
+    created = models.DateField(auto_now_add=True, verbose_name=u'Дата создания')
 
 
 class SaleMaket(models.Model):

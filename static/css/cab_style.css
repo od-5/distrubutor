@@ -6463,6 +6463,9 @@ label.error {
 #js-ajax-item-remove {
   display: none;
 }
+#js-modal-payment-add {
+  display: none;
+}
 .dashboard .panel-body {
   min-height: 130px;
 }
