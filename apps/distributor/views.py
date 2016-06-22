@@ -309,7 +309,12 @@ def distributor_task_update(request, pk):
     user = request.user
     task = DistributorTask.objects.select_related().get(pk=int(pk))
     if task.gpspoint_set.all():
+        material_count = 0
+        for point in task.gpspoint_set.all():
+            if point.count:
+                material_count += int(point.count)
         context.update({
+            'material_count': material_count,
             'point_list': task.gpspoint_set.all()
         })
     if request.method == 'POST':
