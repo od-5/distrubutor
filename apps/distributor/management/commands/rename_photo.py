@@ -36,12 +36,8 @@ class Command(BaseCommand):
                     image = Image.open(path)
                     image.save(new_full_path, "PNG")
                     print 'image save complete'
-                except:
-                    print 'image save fail'
-                try:
-                    print 'set new path for instance'
                     instance.photo = new_short_path
                     instance.save()
                     print 'instance save ok'
                 except:
-                    print 'instance save fail'
+                    print 'image save fail'
