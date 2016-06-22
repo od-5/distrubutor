@@ -100,7 +100,7 @@
             </div>
             <div id="task_map" class="tab-pane fade">
               <p class="lead">
-                Всего израсходовано материалов: <strong>{{ material_count|default:'' }}</strong>
+                Всего израсходовано материалов: <strong>{{ material_count|default:'не указано' }}</strong>
               </p>
               <div id="map" data-task="{{ object.id }}" data-url="{% url 'distributor:get_task_cord_list' %}" style="width:100%; height:500px"></div>
               <div id="photo_list">
