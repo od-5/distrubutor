@@ -41,8 +41,28 @@ class City(models.Model):
         self.coord_y = float(pos[1])
         super(City, self).save()
 
+    TIME_ZONE_CHOICE = (
+        (0, 0),
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5),
+        (6, 6),
+        (7, 7),
+        (8, 8),
+        (9, 9),
+        (10, 10),
+        (11, 11),
+        (12, 12),
+    )
+
     country = models.ForeignKey(to=Country, verbose_name=u'Страна')
     name = models.CharField(max_length=100, verbose_name=u'Название')
     coord_x = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
     coord_y = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
-
+    timezone = models.SmallIntegerField(
+        verbose_name=u'Часовой пояс',
+        choices=TIME_ZONE_CHOICE,
+        default=TIME_ZONE_CHOICE[0][0]
+    )

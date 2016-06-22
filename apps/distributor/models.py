@@ -10,6 +10,7 @@ from apps.sale.models import Sale, SaleOrder
 from core.files import upload_to, pointphoto_upload
 from core.models import User
 import core.geotagging as api
+import datetime
 
 __author__ = 'alexy'
 
@@ -145,6 +146,8 @@ class GPSPoint(models.Model):
                 self.name = u'%s, %s' % (self.coord_y, self.coord_x)
         else:
             self.name = u'%s, %s' % (self.coord_y, self.coord_x)
+        hours = self.task.sale.city.timezone
+        self.timestamp += datetime.timedelta(hours=hours)
         super(GPSPoint, self).save()
 
     task = models.ForeignKey(to=DistributorTask, verbose_name=u'Задача')
@@ -171,6 +174,8 @@ class PointPhoto(models.Model):
             self.name = self.point.__unicode__()
         except:
             pass
+        hours = self.point.task.sale.city.timezone
+        self.timestamp += datetime.timedelta(hours=hours)
         super(PointPhoto, self).save()
         if self.photo:
             image = Image.open(self.photo)
