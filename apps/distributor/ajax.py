@@ -78,7 +78,10 @@ def get_task_cord_list(request):
     if request.POST.get('task'):
         task = DistributorTask.objects.get(id=int(request.POST.get('task')))
         qs = task.gpspoint_set.all()
-        center = [qs.first().coord_x, qs.first().coord_y]
+        try:
+            center = [qs.first().coord_x, qs.first().coord_y]
+        except:
+            center = [task.sale.city.coord_x, task.sale.city.coord_x]
         if task.define_address:
             for i in qs:
                 address_list.append(i.name)

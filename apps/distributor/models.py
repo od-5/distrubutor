@@ -146,8 +146,8 @@ class GPSPoint(models.Model):
                 self.name = u'%s, %s' % (self.coord_y, self.coord_x)
         else:
             self.name = u'%s, %s' % (self.coord_y, self.coord_x)
-        # hours = self.task.sale.city.timezone
-        # self.timestamp += datetime.timedelta(hours=hours)
+        hours = self.task.sale.city.timezone
+        self.timestamp = datetime.datetime.now() + datetime.timedelta(hours=hours)
         super(GPSPoint, self).save()
 
     task = models.ForeignKey(to=DistributorTask, verbose_name=u'Задача')
@@ -156,7 +156,7 @@ class GPSPoint(models.Model):
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
     coord_x = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=u'Ширина')
     coord_y = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=u'Долгота')
-    timestamp = models.DateTimeField(auto_now_add=True, verbose_name=u'Временная метка')
+    timestamp = models.DateTimeField(default=datetime.datetime.now(), verbose_name=u'Временная метка')
 
 
 class PointPhoto(models.Model):

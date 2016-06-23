@@ -30,6 +30,6 @@ INSTALLED_APPS = (
     # 'apps.surface',
     # 'apps.journal',
 
-    # 'apps.sign',
+    'apps.mobile',
     'django_cleanup',
 )
