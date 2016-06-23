@@ -11,7 +11,10 @@ from rest_framework.response import Response
 from api.serializers import UserSerializer, DistributorTaskSerializer, GPSPointSerializer, PointPhotoSerializer, DistributorSerializer
 from core.common import str_to_bool
 from apps.distributor.models import Distributor, DistributorTask, GPSPoint
-
+# import the logging library
+import logging
+# Get an instance of a logger
+logger = logging.getLogger('django.request')
 
 __author__ = 'alexy'
 api_key = settings.YANDEX_MAPS_API_KEY
@@ -44,6 +47,7 @@ def confirm_address(request):
     """
     address = request.data.get('address')
     point = request.data.get('point')
+    logger.error(u'confirm_address. Address: %s, Point: %s' % (address, point))
     try:
         item = GPSPoint.objects.get(pk=int(point))
         if address:
@@ -53,11 +57,13 @@ def confirm_address(request):
                 coord_x = float(pos[1])
                 item.coord_x = coord_x
                 item.coord_y = coord_y
+                logger.error(u'confirm_address. coord_x: %s, coord_y: %s' % (coord_x, coord_y))
                 try:
                     name = api.geocodeName(api_key, coord_x, coord_y)
                 except:
                     pass
                 item.save()
+                logger.error(u'confirm_address. Save complite')
         context = {
             'point': item.id,
             'address': item.name
@@ -143,12 +149,14 @@ def gpspoint_add(request):
     if request.method == 'POST':
         try:
             serializer = GPSPointSerializer(data=request.data)
+            logger.error(u'GPSPoint add. Data: %s' % request.data)
             if serializer.is_valid():
                 serializer.save()
                 context = {
                     'point': serializer.instance.id,
                     'address': serializer.instance.name
                 }
+                logger.error(u'GPSPoint add. coord_x: %s, coord_y: %s' % (serializer.instance.coord_x, serializer.instance.coord_y))
                 return Response(context, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
