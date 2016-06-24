@@ -110,7 +110,7 @@
                     <tr>
                       <th>Адрес\Координаты</th>
                       <th>Время</th>
-                      <th>Комментарий</th>
+{#                      <th>Комментарий</th>#}
                       <th>Кол-во материала</th>
                       <th></th>
                     </tr>
@@ -120,7 +120,7 @@
                     <tr data-id="{{ point.id }}" data-name="контрольную точку {{ point }}" data-model="GPSPoint" id="id_GPSPoint_{{ point.id }}">
                       <td>{{ point|default:'Не указано' }}</td>
                       <td>{{ point.timestamp|time:'H:i'|default:'Не указано' }} - {{ point.timestamp|date:'d.m.Y'|default:'Не указано' }}</td>
-                      <td>{{ point.comment|default:'Не указано' }}</td>
+{#                      <td>{{ point.comment|default:'Не указано' }}</td>#}
                       <td>{{ point.count|default:'Не указано' }}</td>
                       <td>
                         <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ point.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">

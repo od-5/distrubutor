@@ -8,17 +8,17 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
-from apps.distributor.models import PointPhoto
+from apps.distributor.models import GPSPoint
 
 __author__ = 'alexy'
 
 
 class GPSPointListView(ListView):
-    model = PointPhoto
+    model = GPSPoint
     template_name = 'mobile/point_list.html'
     paginate_by = 25
 
     def get_queryset(self):
         user = self.request.user
-        qs = PointPhoto.objects.all()
+        qs = GPSPoint.objects.all()
         return qs

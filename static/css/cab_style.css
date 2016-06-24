@@ -6419,6 +6419,11 @@ body {
   border-radius: 10px;
   border: 10px solid #aeaeae;
 }
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+  .sign-wrapper-container {
+    width: auto;
+  }
+}
 .sign-wrapper-container_text {
   font-weight: bold;
 }

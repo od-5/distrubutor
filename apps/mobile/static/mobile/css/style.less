@@ -1,3 +1,17 @@
+body {
+  background: #f1f1f1;
+}
+header {
+  background-color: #eee;
+  -webkit-box-shadow: 0 0 10px #333;
+  -moz-box-shadow: 0 0 10px #333;
+  box-shadow: 0 0 10px #333;
+  margin-bottom: 10px;
+  .text {
+    color: #666;
+    font-weight: bold;
+  }
+}
 a {
   color: #777;
   -webkit-transition: color 0.5s ease;
@@ -9,6 +23,12 @@ a {
     color: #333;
   }
 }
+h2 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
 img {
   max-width: 100%;
 }
@@ -26,5 +46,51 @@ img {
   }
   &-center {
     text-align: center;
+  }
+}
+.menu {
+  &-btn {
+    margin-top: 20px;
+  }
+}
+.navbar {
+  display: none;
+  border: none;
+  background-color: transparent;
+}
+.btn {
+  &-default {
+    background-color: #ccc;
+    border-color: #eee;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+}
+.form {
+  &-control {
+    margin-bottom: 5px;
+  }
+  &-search {
+    display: none;
+  }
+}
+.photo {
+  &-item {
+    &-link {
+      display: block;
+      margin-bottom: 10px;
+      position: relative;
+      &__name {
+        position: absolute;
+        z-index: 99;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.78);
+        color: #333;
+        font-size: 18px;
+      }
+      &__image {
+        width: 100%;
+      }
+    }
   }
 }

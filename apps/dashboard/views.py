@@ -1,6 +1,7 @@
 # coding=utf-8
 import os
 import datetime
+import re
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.forms import HiddenInput
 from django.utils.timezone import utc
@@ -22,7 +23,15 @@ class DashboardView(TemplateView):
         elif user.type == 2:
             template = 'dash_moderator.html'
         elif user.type == 3:
-            template = 'dash_sale.html'
+            try:
+                self.request.session['is_mobile']
+            except:
+                mobile_check(self.request)
+            if self.request.session['is_mobile']:
+                template = 'mobile/point_list.html'
+                return template
+            else:
+                template = 'dash_sale.html'
         elif user.type == 5:
             if user.manager_user.leader:
                 template = 'dash_moderator.html'
@@ -39,6 +48,10 @@ class DashboardView(TemplateView):
             order_qs = sale.saleorder_set.all()
             point_qs = GPSPoint.objects.filter(task__sale=sale)
             # ловим значения из формы поиска
+            if self.request.GET.get('full_view') == '1':
+                self.request.session['is_mobile'] = False
+            elif self.request.GET.get('full_view') == '0':
+                self.request.session['is_mobile'] = True
             r_task = self.request.GET.get('task') or None
             r_date_start = self.request.GET.get('date_start') or None
             r_date_end = self.request.GET.get('date_end') or None
@@ -104,4 +117,56 @@ class DashboardView(TemplateView):
                     'actual_task_count': actual_task_count
                 })
         return context
+
+
+def mobile_check(request):
+    try:
+        request.session['is_mobile']
+    except:
+        request.session['is_mobile'] = False
+    if 'HTTP_USER_AGENT' in request.META:
+        user_agent = request.META['HTTP_USER_AGENT']
+        patterns = [
+            'up.browser',
+            'up.link',
+            'mmp',
+            'symbian',
+            'smartphone',
+            'midp',
+            'wap',
+            'phone',
+            'pda',
+            'mobile',
+            'mini',
+            'palm',
+            'netfront',
+            'android',
+            'blackberry',
+            'WordPress App',
+            'wp-iphone',
+            'pluckItCrawler',
+            'tablet',
+            'SAMSUNG-SGH-i900',
+            'Facebook App .*',
+            'ipad',
+            'iOS',
+            '^Flipboard App .*$',
+            'Flixster App .*$',
+            'Flixster App',
+            'GT-P3100',
+            'Puffin/3.7',
+            'FBAV/.*',
+            'Silk/.*',
+            'Windows CE',
+            'SymbOS\*Opera Mobi',
+            'HTC',
+            'TBD.*',
+            'TERRA_101',
+            'DINO.*',
+        ]
+        pattern = "(%s)" % '|'.join(patterns)
+        prog = re.compile(pattern, re.IGNORECASE)
+        match = prog.search(user_agent)
+        if match:
+            request.session['is_mobile'] = True
 

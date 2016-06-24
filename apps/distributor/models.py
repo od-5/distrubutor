@@ -71,7 +71,7 @@ class DistributorTask(models.Model):
         app_label = 'distributor'
 
     def __unicode__(self):
-        return u'%s, %sшт. %s' % (self.get_type_display(), self.material_count, self.date)
+        return u'%s, %s' % (self.get_type_display(), self.date)
 
     def get_type_display(self):
         return self.type.name
