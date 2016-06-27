@@ -32,7 +32,10 @@ img {
   max-width: 100%;
 }
 .add-bottom {
-  margin-bottom: 20px;
+  margin-bottom: 20px !important;
+}
+.remove-bottom {
+  margin-bottom: 0;
 }
 .text-left {
   text-align: left;
@@ -65,7 +68,6 @@ img {
 }
 .photo-item-link {
   display: block;
-  margin-bottom: 10px;
   position: relative;
 }
 .photo-item-link__name {
@@ -74,8 +76,25 @@ img {
   bottom: 0;
   background: rgba(255, 255, 255, 0.78);
   color: #333;
-  font-size: 18px;
+  font-size: 16px;
+  width: 100%;
 }
 .photo-item-link__image {
+  width: 100%;
+}
+#map-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 800;
+}
+#map-wrapper #map {
+  z-index: 900;
+}
+#map-wrapper .js-map-hide-btn {
+  z-index: 999;
+  position: absolute;
+  top: 0;
   width: 100%;
 }

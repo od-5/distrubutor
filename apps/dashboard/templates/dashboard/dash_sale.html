@@ -117,7 +117,7 @@
         {% for photo in point.pointphoto_set.all %}
         <div class="col-lg-3 sale-photo-item">
           <a href="{{ photo.photo.url }}" rel="group" class="js-gallery photo_image" title="{{ photo.name }}, время {{ photo.timestamp|time:'H:i'|default:'Не указано' }}">
-            <img src="{{ photo.photo.url }}" alt="">
+            <img src="{{ photo.image_resize.url }}" alt="">
           </a>
           <span class="small">{{ photo.name|default:'Не указано' }}</span>
         </div>

@@ -3,6 +3,8 @@ from PIL import Image
 from os import path as op
 from django.db import models
 from django.conf import settings
+from imagekit.models import ImageSpecField
+from pilkit.processors import SmartResize
 from pytils.translit import slugify
 from apps.city.models import City
 from apps.moderator.models import Moderator, ModeratorArea, ModeratorAction
@@ -174,8 +176,8 @@ class PointPhoto(models.Model):
             self.name = self.point.__unicode__()
         except:
             pass
-        # hours = self.point.task.sale.city.timezone
-        # self.timestamp += datetime.timedelta(hours=hours)
+        hours = self.point.task.sale.city.timezone
+        self.timestamp = datetime.datetime.now() + datetime.timedelta(hours=hours)
         super(PointPhoto, self).save()
         if self.photo:
             image = Image.open(self.photo)
@@ -188,5 +190,8 @@ class PointPhoto(models.Model):
 
     point = models.ForeignKey(to=GPSPoint, verbose_name=u'GPS точка')
     name = models.CharField(max_length=150, verbose_name=u'Название', blank=True, null=True)
-    timestamp = models.DateTimeField(auto_now_add=True, verbose_name=u'Временная метка')
+    timestamp = models.DateTimeField(default=datetime.datetime.now(), verbose_name=u'Временная метка')
     photo = models.ImageField(verbose_name=u'Фотография', upload_to=pointphoto_upload)
+    image_resize = ImageSpecField(
+        [SmartResize(*settings.POINT_PHOTO_THUMB_SIZE)], source='photo', format='JPEG', options={'quality': 94}
+    )

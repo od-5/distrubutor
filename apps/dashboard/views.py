@@ -77,6 +77,12 @@ class DashboardView(TemplateView):
                 context.update({
                     'r_date_end': r_date_end
                 })
+            material_count = 0
+            photo_count = 0
+            for point in point_qs:
+                if point.count:
+                    material_count += point.count
+                photo_count += point.pointphoto_set.count()
             if show_table:
                 if int(show_table) == 0:
                     show_table = None
@@ -105,8 +111,10 @@ class DashboardView(TemplateView):
                 'show_table': show_table,
                 'order_list': order_qs,
                 # 'current_task': task,
+                'material_count': material_count,
                 'task_list': task_qs,
                 'point_list': point_list,
+                'photo_count': photo_count,
                 'form': form
             })
         if user.type == 5:

@@ -1,4 +1,4 @@
-<main class="container">
+<main class="container" data-city="{{ point_list.task.sale.city.name|default:'Волгоград' }}">
   <div class="row">
     <div class="col-md-12 col-xs-12">
       <form action="" method="GET" role="form" id="js-sale-photo-search-form" class="add-bottom form-search">
@@ -24,16 +24,29 @@
     </div>
   </div>
   <div class="row">
+    <div class="col-xs-12 col-md-12">
+      <p class="lead">
+        Количество фотографий: {{ photo_count|default:'0' }}
+      </p>
+      <p class="lead">
+        Количество материалов: {{ material_count|default:'0' }}
+      </p>
+    </div>
   {% for point in point_list %}
     {% for photo in point.pointphoto_set.all %}
     <div class="col-xs-12 col-md-12 photo-item">
       <a href="{{ photo.photo.url }}" class="photo-item-link" title="{{ photo.name }}, время {{ photo.timestamp|time:'H:i'|default:'Не указано' }}" target="_blank">
-        <img src="{{ photo.photo.url }}" alt="" class="photo-item-link__image">
-        <span class="photo-item-link__name">{{ photo.name|default:'Не указано' }}</span>
+        <img src="{{ photo.image_resize.url }}" alt="" class="photo-item-link__image">
+        <span class="photo-item-link__name">{{ photo.name|default:'Не указано' }} <br>
+        Время: {{ point.timestamp|date:'d.m.Y'|default:'Не указано' }} - {{ point.timestamp|time:'H:i'|default:'Не указано' }}</span>
       </a>
-
+      <button data-coord-x="{{ point.coord_x|safe }}" data-coord-y="{{ point.coord_y|safe }}" class="btn btn-success form-control add-bottom js-map-show-btn">Показать на карте</button>
     </div>
     {% endfor %}
   {% endfor %}
   </div>
 </main>
+<div id="map-wrapper" class="hide">
+  <div id="map" style="width:100%; height:100%;"></div>
+  <button class="btn btn-info btn-lg js-map-hide-btn">Закрыть карту</button>
+</div>
