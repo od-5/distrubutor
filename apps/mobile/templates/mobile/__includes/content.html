@@ -44,6 +44,8 @@
     </div>
     {% endfor %}
   {% endfor %}
+   <div class="clearfix"></div>
+    {% include '__includes/pagination.html' with page_obj=point_list%}
   </div>
 </main>
 <div id="map-wrapper" class="hide">
