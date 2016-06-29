@@ -108,6 +108,12 @@ class UserUpdateView(UpdateView):
     form_class = UserUpdateForm
     # success_url = '/profile/'
 
+    def get_template_names(self):
+        if self.request.user.type == 3 and self.request.session['is_mobile']:
+            return 'mobile/profile_mobile.html'
+        else:
+            return 'core/profile.html'
+
     def get_object(self, queryset=None):
         return self.request.user
 

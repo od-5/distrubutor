@@ -12,6 +12,9 @@
   <script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
   <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
   <script src="{% static 'js/jquery.fancybox.pack.js' %}"></script>
+  <script src="{% static 'js/jquery.form.js' %}"></script>
+  <script src="{% static 'js/jquery.validate.js' %}"></script>
+  <script src="{% static 'js/notify-combined.min.js' %}"></script>
   <script src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
   <script src="{% static 'mobile/js/map.js' %}"></script>
   <script src="{% static 'mobile/js/script.js' %}"></script>
@@ -21,6 +24,8 @@
 </head>
 <body>
   {% include 'mobile/__includes/header.html' %}
+{% block content %}
   {% include 'mobile/__includes/content.html' %}
+{% endblock %}
 </body>
 </html>

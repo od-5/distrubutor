@@ -2,7 +2,9 @@
 {% block content %}
 <div class="container dashboard">
   <div class="col-lg-12">
-    <a href="{% url 'dashboard:index' %}?full_view=0">Перейти на мобильную версию</a>
+    <a href="{% url 'dashboard:index' %}?full_view=0" class="btn btn-info add-bottom">
+      <span class="glyphicon glyphicon-globe"></span> Перейти на мобильную версию
+    </a>
     <div class="panel panel-info">
       <div class="panel-heading js-toggle-heading">
         <p class="lead text-center remove-bottom">Оставьте ваш отзыв об исполнителе <span class="caret"></span></p>
@@ -207,7 +209,7 @@ function init() {
         var points = route.getWayPoints();
         points.options.set('preset', 'islands#redStretchyIcon');
       }, function (error) {
-        alert('Возникла ошибка: ' + error.message);
+        console.log('Возникла ошибка: ' + error.message);
       });
     } else {
       console.log('В маршруте всего одна точка!');

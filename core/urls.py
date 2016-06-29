@@ -3,6 +3,7 @@ from django.conf.urls import patterns, url
 from django.contrib.auth.views import logout
 from .ajax import ajax_remove_item
 from .views import UserUpdateView
+from django.contrib.auth.decorators import login_required
 
 __author__ = 'alexy'
 
@@ -16,7 +17,7 @@ urlpatterns = patterns(
     url(r'^login/distributor/$', 'cms_login', {'usertype': 4}, name='login-distributor'),
     url(r'^login/manager/$', 'cms_login', {'usertype': 5},  name='login-manager'),
     url(r'^logout/$', logout, name='logout'),
-    url(r'^profile/$', UserUpdateView.as_view(), name='profile'),
+    url(r'^profile/$', login_required(UserUpdateView.as_view()), name='profile'),
     url(r'^password_change/$', 'password_change', name='password_change'),
 
     url(r'^site_setup/$', 'setup_view', name='site-setup'),

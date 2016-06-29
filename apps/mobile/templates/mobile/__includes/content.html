@@ -10,12 +10,6 @@
           <option value="{{ order.id }}" {% if order.id == r_order %}selected='selected'{% endif %}>{{ order }}</option>
           {% endfor %}
         </select>
-        <select name="task" id="id_task" class="form-control">
-          <option value="0">---- Выберите задачу ----</option>
-          {% for task in task_list %}
-          <option value="{{ task.id }}" {% if task.id == r_task %}selected='selected'{% endif %}>{{ task }}</option>
-          {% endfor %}
-        </select>
         <button class="btn btn-info form-control"><span class="glyphicon glyphicon-search"></span> Искать</button>
       </form>
       <button class="btn btn-default form-control" id="js-show-search">
@@ -45,7 +39,7 @@
     {% endfor %}
   {% endfor %}
    <div class="clearfix"></div>
-    {% include '__includes/pagination.html' with page_obj=point_list%}
+    {% include '__includes/pagination.html' with page_obj=point_list mobile=1%}
   </div>
 </main>
 <div id="map-wrapper" class="hide">
