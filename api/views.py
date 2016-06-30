@@ -57,13 +57,13 @@ def confirm_address(request):
                 coord_x = float(pos[1])
                 item.coord_x = coord_x
                 item.coord_y = coord_y
-                logger.error(u'confirm_address. coord_x: %s, coord_y: %s' % (coord_x, coord_y))
+                logger.error(u'user=%s confirm_address. coord_x: %s, coord_y: %s' % (request.user, coord_x, coord_y))
                 try:
                     name = api.geocodeName(api_key, coord_x, coord_y)
                 except:
                     pass
                 item.save()
-                logger.error(u'confirm_address. Save complite')
+                logger.error(u'confirm_address. Save complete')
         context = {
             'point': item.id,
             'address': item.name
@@ -156,7 +156,7 @@ def gpspoint_add(request):
                     'point': serializer.instance.id,
                     'address': serializer.instance.name
                 }
-                logger.error(u'GPSPoint add. coord_x: %s, coord_y: %s, name: %s' % (serializer.instance.coord_x, serializer.instance.coord_y, serializer.instance.name))
+                logger.error(u'user=%s GPSPoint add. coord_x: %s, coord_y: %s, name: %s' % (request.user, serializer.instance.coord_x, serializer.instance.coord_y, serializer.instance.name))
                 return Response(context, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
