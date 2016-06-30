@@ -47,7 +47,7 @@ def confirm_address(request):
     """
     address = request.data.get('address')
     point = request.data.get('point')
-    logger.error(u'confirm_address. Address: %s, Point: %s' % (address, point))
+    logger.error(u'user=%s confirm_address. Address: %s, Point: %s' % (request.user, address, point))
     try:
         item = GPSPoint.objects.get(pk=int(point))
         if address:
@@ -149,14 +149,14 @@ def gpspoint_add(request):
     if request.method == 'POST':
         try:
             serializer = GPSPointSerializer(data=request.data)
-            logger.error(u'GPSPoint add. Data: %s' % request.data)
+            logger.error(u'user=%s GPSPoint add. Data: %s' % (request.user, request.data))
             if serializer.is_valid():
                 serializer.save()
                 context = {
                     'point': serializer.instance.id,
                     'address': serializer.instance.name
                 }
-                logger.error(u'GPSPoint add. coord_x: %s, coord_y: %s' % (serializer.instance.coord_x, serializer.instance.coord_y))
+                logger.error(u'GPSPoint add. coord_x: %s, coord_y: %s, name: %s' % (serializer.instance.coord_x, serializer.instance.coord_y, serializer.instance.name))
                 return Response(context, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
