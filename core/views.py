@@ -11,6 +11,32 @@ from core.models import User, Setup
 __author__ = 'alexy'
 
 
+def demo_login(request, usertype=None):
+    error = None
+    if request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('dashboard:index'))
+    else:
+        if request.method == "POST":
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            try:
+                user = authenticate(username=username, password=password)
+                if user is not None:
+                    if user.is_active:
+                        login(request, user)
+                        request.session['demo'] = True
+                        return HttpResponseRedirect(reverse('dashboard:index'))
+                        # return HttpResponseRedirect('/')
+                    else:
+                        error = u'Пользователь заблокирован'
+                else:
+                    error = u'Вы ввели неверный e-mail или пароль'
+            except:
+                error = u'Пользователя с таким e-mail не зарегистрировано в системе. Проверьте правильность ввода даных.'
+        context = {'error': error}
+        return render(request, 'core/demo_login.html', context)
+
+
 def cms_login(request, usertype=None):
     error = None
     if request.user.is_authenticated():
@@ -24,6 +50,7 @@ def cms_login(request, usertype=None):
                 if user is not None:
                     if user.is_active:
                         login(request, user)
+                        request.session['demo'] = False
                         return HttpResponseRedirect(reverse('dashboard:index'))
                         # return HttpResponseRedirect('/')
                     else:
@@ -119,3 +146,14 @@ class UserUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('profile')
+
+    # def get_context_data(self, **kwargs):
+    #     context = super(UserUpdateView, self).get_context_data()
+    #     try:
+    #         self.request.session['demo']
+    #     except:
+    #         self.request.session['demo'] = False
+    #     context.update({
+    #         'is_demo_login': self.request.session['demo']
+    #     })
+    #     return context

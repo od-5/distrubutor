@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Демо вход для клиента| ИПК Контроль расклейки и распространения</title>
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+  <![endif]-->
+  {% load staticfiles %}
+  <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+  <script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
+  <script src="{% static 'js/jquery.form.js' %}"></script>
+  <script src="{% static 'js/jquery.validate.js' %}"></script>
+  <link href="{% static 'css/demo.css' %}" rel="stylesheet">
+</head>
+<body>
+
+{% if error %}
+  <div class="text-center sign-error">
+    <p class="alert alert-warning">{{ error }}</p>
+  </div>
+{% endif %}
+  <header>
+    <div class="container">
+      <p><span>Бизнес</span>, с которым <span>справится</span> даже <span class="number">1</span> <span>человек</span></p>
+      <div class="phone">
+
+        <address>8 800 250 34 50</address>
+      </div>
+      <h1><a href="http://franchise.reklamadoma.com"><img src="{% static 'landing/images/logo.png'  %}" alt="Дружба"></a></h1>
+    </div>
+  </header>
+  <main>
+    <div class="container">
+      <p class="alert alert-info">
+        Демо вход для клиента(рекламодателя) в информационно программный комплекс "Контроль расклейки и распространения"
+        <br>
+        <span class="small">(для просмотра мобильной версии сайта необходимо зайти через телефон или планшет)</span>
+        <br>
+        <strong>Логин: 123456789@mail.ru</strong>
+        <br>
+        <strong>Пароль: 111111</strong>
+      </p>
+    </div>
+    <div class="sign text-center">
+      <p class="sign_text">Добро пожаловать в информационно программный комплекс</p>
+      <p class="sign_title">"Контроль расклейки и распространения"</p>
+      <p class="sign_slogan">"Прозрачная схема взаимодействия - наше главное преимущество!"</p>
+      <form action="" role="form" method="post" id="js-sign-form" class="sign-form">{% csrf_token %}
+        <div class="form-group">
+          <label for="id_username">Введите ваш email</label>
+{#          <input type="email" name="username" id="id_username" readonly value="123456789@mail.ru" class="form-control">#}
+          <input type="email" name="username" id="id_username" readonly value="sale@distr.ru" class="form-control">
+        </div>
+        <div class="form-group add-bottom">
+          <label for="id_password">Введите пароль</label>
+{#          <input type="password" name="password" id="id_password" readonly value="111111" class="form-control">#}
+          <input type="password" name="password" id="id_password" readonly value="111111" class="form-control">
+        </div>
+        <input type="submit" value="Войти" class="btn btn-danger">
+      </form>
+    </div>
+  </main>
+</body>
+</html>

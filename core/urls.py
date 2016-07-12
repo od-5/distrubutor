@@ -12,6 +12,7 @@ urlpatterns = patterns(
     'core.views',
     url(r'^robots\.txt', 'get_robots_txt', name='robots'),
     url(r'^login/$', 'cms_login', name='login'),
+    url(r'^demo/login/$', 'demo_login', name='demo_login'),
     url(r'^login/moderator/$', 'cms_login', {'usertype': 2}, name='login-moderator'),
     url(r'^login/client/$', 'cms_login', {'usertype': 3},  name='login-client'),
     url(r'^login/distributor/$', 'cms_login', {'usertype': 4}, name='login-distributor'),

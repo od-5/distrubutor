@@ -47,6 +47,14 @@ class DashboardView(TemplateView):
             task_qs = sale.distributortask_set.select_related().all()
             order_qs = sale.saleorder_set.all()
             point_qs = GPSPoint.objects.filter(task__sale=sale)
+            # определяем вход по демо ссылке
+            try:
+                self.request.session['demo']
+            except:
+                self.request.session['demo'] = False
+            context.update({
+                'is_demo_login': self.request.session['demo']
+            })
             # ловим значения из формы поиска
             if self.request.GET.get('full_view') == '1':
                 self.request.session['is_mobile'] = False
