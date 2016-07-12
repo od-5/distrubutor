@@ -7,14 +7,16 @@
   <div class="col-lg-4 text-right">
     <div>
       <ul class="nav navbar-nav navbar-right">
-        <li>
+
         {% if is_demo_login %}
-          <a href="#"><span class="glyphicon glyphicon-user"></span> {{ user }} </a>
+          <li><a href="#"><span class="glyphicon glyphicon-user"></span> {{ user }} </a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Выход</a></li>
         {% else %}
-          <a href="{% url 'profile' %}"><span class="glyphicon glyphicon-user"></span> {{ user }} </a>
+          <li><a href="{% url 'profile' %}"><span class="glyphicon glyphicon-user"></span> {{ user }} </a></li>
+          <li><a href="{% url 'logout' %}?next={% url 'dashboard:index' %}"><span class="glyphicon glyphicon-log-out"></span> Выход</a></li>
         {% endif %}
-        </li>
-        <li><a href="{% url 'logout' %}?next={% url 'dashboard:index' %}"><span class="glyphicon glyphicon-log-out"></span> Выход</a></li>
+
+
       </ul>
       <div class="clearfix"></div>
     </div>
