@@ -6088,7 +6088,8 @@ td.visible-print {
 }
 html,
 body {
-  height: 100%;
+  min-height: 100%;
+  height: auto;
 }
 header {
   background-color: #fff;
@@ -6100,6 +6101,13 @@ header p {
   color: #000;
   font: 300 16px/25px "Open Sans";
   text-transform: uppercase;
+}
+@media only screen and (min-device-width: 320px) and (max-device-width: 768px) {
+  header p {
+    width: 100%;
+    margin: 0;
+    float: none;
+  }
 }
 header p span {
   color: #e35f13;
@@ -6115,6 +6123,12 @@ header .phone {
   float: right;
   margin-top: 35px;
 }
+@media only screen and (min-device-width: 320px) and (max-device-width: 768px) {
+  header .phone {
+    margin-top: 0;
+    float: none;
+  }
+}
 header address {
   margin: 0;
   width: 265px;
@@ -6126,8 +6140,21 @@ header h1 {
   margin: 0;
   overflow: hidden;
 }
+@media only screen and (min-device-width: 320px) and (max-device-width: 768px) {
+  header h1 {
+    width: 100%;
+  }
+}
 header .container {
   padding: 30px 0;
+}
+@media only screen and (min-device-width: 320px) and (max-device-width: 768px) {
+  header .container {
+    padding: 20px;
+  }
+}
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+  width: auto;
 }
 .sign {
   margin: 0 auto;
@@ -6136,6 +6163,11 @@ header .container {
   border-radius: 10px;
   border: 5px solid #ccc;
   padding: 20px;
+}
+@media only screen and (min-device-width: 320px) and (max-device-width: 768px) {
+  .sign {
+    width: 90%;
+  }
 }
 .sign_text {
   font-weight: bold;
@@ -6153,12 +6185,22 @@ header .container {
   margin: 0 auto;
   margin-bottom: 20px;
 }
+@media only screen and (min-device-width: 320px) and (max-device-width: 768px) {
+  .alert {
+    width: 100%;
+  }
+}
 main {
   padding: 20px 0;
 }
 form {
   width: 400px;
   margin: 0 auto;
+}
+@media only screen and (min-device-width: 320px) and (max-device-width: 768px) {
+  form {
+    width: 100%;
+  }
 }
 body {
   background: url('../img/bg_open-business.jpg') center top no-repeat;
