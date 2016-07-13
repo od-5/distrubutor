@@ -6139,6 +6139,7 @@ header address {
 header h1 {
   margin: 0;
   overflow: hidden;
+  float: left;
 }
 @media only screen and (min-device-width: 320px) and (max-device-width: 768px) {
   header h1 {
