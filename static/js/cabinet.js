@@ -795,6 +795,9 @@ $(function() {
   });
   // ajax форма редактирования задачи
   $('#js-task-modal-update-form').ajaxForm({
+    beforeSubmit: function(arr, $form, options) {
+      $form.find('input[type=submit]').attr('disabled', 'disabled');
+    },
     success: function(data){
       if (data.success) {
         $.notify('Задача по клиенту обновлена', 'success');
