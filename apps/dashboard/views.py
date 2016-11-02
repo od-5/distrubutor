@@ -23,15 +23,15 @@ class DashboardView(TemplateView):
         elif user.type == 2:
             template = 'dash_moderator.html'
         elif user.type == 3:
-            try:
-                self.request.session['is_mobile']
-            except:
-                mobile_check(self.request)
-            if self.request.session['is_mobile']:
-                template = 'mobile/point_list.html'
-                return template
-            else:
-                template = 'dash_sale.html'
+            # try:
+            #     self.request.session['is_mobile']
+            # except:
+            #     mobile_check(self.request)
+            # if self.request.session['is_mobile']:
+            #     template = 'mobile/point_list.html'
+            #     return template
+            # else:
+            template = 'dash_sale.html'
         elif user.type == 5:
             if user.manager_user.leader:
                 template = 'dash_moderator.html'
