@@ -2,8 +2,7 @@
 from annoying.decorators import ajax_request
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from apps.moderator.forms import ModeratorInfoForm
-from apps.moderator.models import ModeratorInfo
+from .forms import ReviewForm
 from core.models import User
 
 __author__ = 'alexy'
@@ -28,12 +27,20 @@ def moderator_remove(request):
         }
 
 
-def moderatorinfo_update(request):
-    r_moderator = request.POST.get('moderator')
-    user = User.objects.get(id=int(r_moderator))
-    moderatorinfo = ModeratorInfo.objects.get(moderator=user)
+@ajax_request
+def moderator_review_add(request):
     if request.method == 'POST':
-        form = ModeratorInfoForm(request.POST, instance=moderatorinfo)
+        form = ReviewForm(request.POST)
         if form.is_valid():
             form.save()
-    return HttpResponseRedirect(reverse('moderator:change', args=(user.id,)))
+            return {
+                'success': True
+            }
+        else:
+            return {
+                'success': False
+            }
+    else:
+        return {
+                'success': False
+            }

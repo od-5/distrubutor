@@ -1,7 +1,8 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
 from django.contrib.auth.views import logout
-from apps.moderator.views import ModeratorListView, ReviewListView
+from .ajax import moderator_review_add
+from .views import ModeratorListView, ReviewListView
 from core.models import User
 
 __author__ = 'alexy'
@@ -14,7 +15,8 @@ urlpatterns = patterns(
     url(r'^(?P<pk>\d+)/company/$', 'moderator_company_update', name='company'),
     url(r'^(?P<pk>\d+)/action/$', 'moderator_action_update', name='action'),
 
-    url(r'review/add/$', 'review_add', name='review-add'),
+    # url(r'review/add/$', 'review_add', name='review-add'),
+    url(r'review/add/$', moderator_review_add, name='review-add'),
     url(r'review/(?P<pk>\d+)/$', 'review_update', name='review-update'),
     url(r'review/$', ReviewListView.as_view(), name='review-list'),
 

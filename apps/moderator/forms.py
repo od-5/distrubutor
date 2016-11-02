@@ -88,7 +88,7 @@ class ReviewForm(forms.ModelForm):
             'moderator': forms.HiddenInput(attrs={'class': 'form-control'}),
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'mail': forms.EmailInput(attrs={'class': 'form-control'}),
-            'text': forms.Textarea(attrs={'class': 'form-control'}),
+            'text': forms.Textarea(attrs={'class': 'form-control', 'placeholder': u'Текст сообщения'}),
             'rating': forms.Select(attrs={'class': 'form-control'}),
         }
 

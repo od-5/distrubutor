@@ -190,6 +190,7 @@ function init() {
     ymaps.route(
       data_list
     ).then(function (route) {
+      route.options.set('routingMode', 'pedestrian');
       myMap.geoObjects.add(route);
       var points = route.getWayPoints();
       points.options.set('preset', 'islands#redStretchyIcon');

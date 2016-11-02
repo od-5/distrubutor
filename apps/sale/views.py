@@ -485,13 +485,14 @@ def address_export(request):
     i = 8
     material_count = 0
     for point in point_qs:
-        ws.write(i, 0, point.name, style2)
-        ws.write(i, 1, str(point.timestamp), style2)
-        ws.write(i, 2, point.comment, style2)
-        ws.write(i, 3, point.count, style2)
-        i += 1
-        if point.count:
-            material_count += point.count
+        if point.pointphoto_set.all():
+            ws.write(i, 0, point.name, style2)
+            ws.write(i, 1, str(point.timestamp), style2)
+            ws.write(i, 2, point.comment, style2)
+            ws.write(i, 3, point.count, style2)
+            i += 1
+            if point.count:
+                material_count += point.count
     ws.write(i+1, 0, u'Итого указанное кол-во материала', style1)
     ws.write(i+1, 1, material_count, style1)
     # i = 6

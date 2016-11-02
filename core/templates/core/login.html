@@ -17,23 +17,15 @@
   </div>
 {% else %}
   <div class="sign text-center">
-    <div class="sign-wrapper">
-      <div class="sign-wrapper-container">
-        <p class="sign-wrapper-container_text">Добро пожаловать в информационно программный комплекс</p>
-        <p class="sign-wrapper-container_title">"Контроль расклейки и распространения"</p>
-        <p class="sign-wrapper-container_slogan">"Прозрачная схема взаимодействия - наше главное преимущество!"</p>
+    <div class="sign-container">
+      <p class="sign-container_title">Контроль расклейки и распространения</p>
+      <p class="sign-container_text">Добро пожаловать в информационно программный комплекс</p>
+        <p class="sign-container_slogan">"Прозрачная схема взаимодействия - наше главное преимущество!"</p>
         <form action="" role="form" method="post" id="js-sign-form" class="sign-form">{% csrf_token %}
-          <div class="form-group">
-            <label for="id_username">Введите ваш email</label>
-            <input type="email" name="username" id="id_username" class="form-control">
-          </div>
-          <div class="form-group add-bottom">
-            <label for="id_password">Введите пароль</label>
-            <input type="password" name="password" id="id_password" class="form-control">
-          </div>
-          <input type="submit" value="Войти" class="btn btn-danger">
+          <input type="email" name="username" id="id_username" class="form-control sign-form__input add-bottom" placeholder="Введите ваш email">
+          <input type="password" name="password" id="id_password" class="form-control sign-form__input add-bottom" placeholder="Введите пароль">
+          <input type="submit" value="Войти" class="btn btn-warning sign-form__button form-control">
         </form>
-      </div>
     </div>
   </div>
 {% endif %}

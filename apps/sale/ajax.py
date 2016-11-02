@@ -20,18 +20,23 @@ def get_client_coord_list(request):
     order = request.POST.get('order') or None
     date_start = request.POST.get('date_start') or None
     date_end = request.POST.get('date_end') or None
-    first_point = task_qs.first().gpspoint_set.first()
     if order and order != '0':
         task_qs = task_qs.filter(order=int(order))
     if date_start:
         task_qs = task_qs.filter(date__gte=datetime.strptime(date_start, '%d.%m.%Y'))
     if date_end:
         task_qs = task_qs.filter(date__lte=datetime.strptime(date_end, '%d.%m.%Y'))
-    center = [first_point.coord_x, first_point.coord_y]
+    if task_qs and task_qs.first().gpspoint_set.all():
+        center = [task_qs.first().gpspoint_set.first().coord_x, task_qs.first().gpspoint_set.first().coord_y]
+    else:
+        center = [request.user.sale_user.city.coord_y, request.user.sale_user.city.coord_x]
     if task and task != '0':
         task_qs = DistributorTask.objects.select_related().get(pk=int(task))
         qs = task_qs.gpspoint_set.all()
-        center = [qs.first().coord_x, qs.first().coord_y]
+        if qs:
+            center = [qs.first().coord_x, qs.first().coord_y]
+        else:
+            center = [task_qs.sale.city.coord_y, task_qs.sale.city.coord_x]
         if task_qs.define_address:
             for i in qs:
                 address_list.append(i.name)
