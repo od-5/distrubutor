@@ -6181,6 +6181,7 @@ label.error {
 @media only screen and (max-width: 991px) {
   .photo-item__img {
     height: auto;
+    max-width: 100%;
     width: auto;
   }
 }
