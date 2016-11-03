@@ -53,7 +53,7 @@ class DashboardView(TemplateView):
             except:
                 self.request.session['demo'] = False
             context.update({
-                'is_demo_login': self.request.session['demo']
+                'demo': self.request.session['demo']
             })
             # ловим значения из формы поиска
             if self.request.GET.get('full_view') == '1':

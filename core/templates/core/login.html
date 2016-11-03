@@ -20,11 +20,19 @@
     <div class="sign-container">
       <p class="sign-container_title">Контроль расклейки и распространения</p>
       <p class="sign-container_text">Добро пожаловать в информационно программный комплекс</p>
-        <p class="sign-container_slogan">"Прозрачная схема взаимодействия - наше главное преимущество!"</p>
+    {% if demo %}
+      <p class="alert alert-info">
+        <strong>Демо доступ</strong><br>
+      </p>
+    {% else %}
+      <p class="sign-container_slogan">"Прозрачная схема взаимодействия - наше главное преимущество!"</p>
+    {% endif %}
         <form action="" role="form" method="post" id="js-sign-form" class="sign-form">{% csrf_token %}
-          <input type="email" name="username" id="id_username" class="form-control sign-form__input add-bottom" placeholder="Введите ваш email">
-          <input type="password" name="password" id="id_password" class="form-control sign-form__input add-bottom" placeholder="Введите пароль">
+{#          <input type="email" {% if demo %}value="123456789@mail.ru" readonly{% endif %} name="username" id="id_username" class="form-control sign-form__input add-bottom" placeholder="Введите ваш email">#}
+          <input type="email" {% if demo %}value="sale@distr.ru" readonly{% endif %} name="username" id="id_username" class="form-control sign-form__input add-bottom" placeholder="Введите ваш email">
+          <input type="password" {% if demo %}value="111111" readonly{% endif %} name="password" id="id_password" class="form-control sign-form__input add-bottom" placeholder="Введите пароль">
           <input type="submit" value="Войти" class="btn btn-warning sign-form__button form-control">
+
         </form>
     </div>
   </div>

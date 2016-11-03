@@ -1,6 +1,6 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -33,8 +33,17 @@ def demo_login(request, usertype=None):
                     error = u'Вы ввели неверный e-mail или пароль'
             except:
                 error = u'Пользователя с таким e-mail не зарегистрировано в системе. Проверьте правильность ввода даных.'
-        context = {'error': error}
-        return render(request, 'core/demo_login.html', context)
+        context = {
+            'error': error,
+            'demo': True
+        }
+        return render(request, 'core/login.html', context)
+
+
+def logout_view(request):
+    logout(request)
+    request.session['demo'] = False
+    return HttpResponseRedirect(reverse('dashboard:index'))
 
 
 def cms_login(request, usertype=None):
