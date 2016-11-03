@@ -6184,6 +6184,11 @@ label.error {
     width: auto;
   }
 }
+@media only screen and (max-width: 768px) {
+  .photo-item__img {
+    width: 100%;
+  }
+}
 .photo-item__description {
   margin: 20px 0 0;
   height: 70px;

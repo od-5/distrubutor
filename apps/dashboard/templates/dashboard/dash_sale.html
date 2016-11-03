@@ -203,7 +203,7 @@
         <div class="photo-row">
         {% for point in point_list %}
           {% for photo in point.pointphoto_set.all %}
-          <div class="col-md-3 col-xs-12 col-sm-12">
+          <div class="col-md-3 col-xs-12 col-sm-6">
             <div class="photo-item">
               <a href="{{ photo.photo.url }}" rel="group" class="js-gallery photo-item__link" title="{{ photo.name }}, время {{ photo.timestamp|time:'H:i'|default:'Не указано' }}">
                 <img src="{{ photo.image_resize.url }}" alt="{{ photo.name }}, время {{ photo.timestamp|time:'H:i'|default:'Не указано' }}" class="photo-item__img">
