@@ -68,7 +68,7 @@
                 </div>
                 <div class="col-lg-6">
                   <p class="text-info lead">Смена пароля</p>
-                  {% include 'core/__includes/user_password_change_form.html' with user_id=object.id %}
+                  {% include 'core/__includes/user_password_change_form.html' with user_id=object.user.id %}
                 </div>
               </div>
               <div id="sale" class="tab-pane fade">
