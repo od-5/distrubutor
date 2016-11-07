@@ -9,6 +9,10 @@ $(document).ready(function () {
       $('.header-fix').addClass('fixed');
       $('.city-hidden').slideUp();
       $('.header-city a').removeClass('active');
+      $('.header-lang-hidden').slideUp();
+      $('.lang-link-top').removeClass('active');
+      $('.header-enter-hidden').slideUp();
+      $('.enter-link-top').removeClass('active');
     }else{
       $('.header-fix').removeClass('fixed');
     }
@@ -43,7 +47,7 @@ $(document).ready(function () {
   // fancybox
   $('.fancybox').fancybox();
   $(".input[name='phone']").mask("+7 (999) 999-99-99");
-  $('form').each(function(){
+  $('.ticket-form').each(function(){
     $(this).validate({
          rules: {
         name: {
@@ -60,16 +64,21 @@ $(document).ready(function () {
       }
       });
   });
+  $('.ticket-form').ajaxForm({
+    success: function(data){
+      if (data.error) {
+        $('form').resetForm();
+        $.notify(data.error, 'error');
+        console.log(data.error);
+      } else {
+        $('form').resetForm();
+        $('#mask, .window').hide();
+        $.notify(data.success, 'success');
+        console.log('not error');
+      }
+    }
+  });
 
-  // nav
-  $(document).on('click','.nav-icon',function(e){
-    e.preventDefault();
-    $('.header-nav-block').show();
-  });
-  $(document).on('click','.nav-close',function(e){
-    e.preventDefault();
-    $('.header-nav-block').hide();
-  });
   // header hidden
   $(document).on('click','.lang-link-top',function(e){
     e.preventDefault();
@@ -137,6 +146,37 @@ $(document).ready(function () {
       $(this).addClass('comment-vis').hide();
     }
   });
+
+
+
+  //Скрипт всплывающих окон
+  $('.modal').click(function(e) {
+    e.preventDefault();
+    $('#mask, .window').hide();
+    var id = $(this).attr('href');
+    var maskHeight = $(document).height();
+    var maskWidth = $(window).width();
+    $('#mask').css({'height':maskHeight});
+    $('#mask').fadeTo("slow",0.9);
+    var winH = $(window).height();
+    var winW = $(window).width();
+    $(id).css('top',  winH/2-$(id).height()/2);
+    $(id).css('left', winW/2-$(id).width()/2);
+    $(id).fadeIn(1000);
+  });
+  $('.window .close').click(function (e) {
+    e.preventDefault();
+    $('#mask, .window').hide();
+  });
+  $('#mask').click(function () {
+    $(this).hide();
+    $('.window').hide();
+  });
+  //Скрипт всплывающих окон
+  $('.hidden').on('click', function(){
+		$(this).hide();
+		$('.hide').slideDown(400);
+	})
   //  обработка нажатия на город
   $('.city-list').find('a').click(function () {
     var url = $(this).parents('.city-list').data('url');
@@ -192,32 +232,37 @@ $(document).ready(function () {
     });
   });
 
+  // Валидация формы добавления комментария
+  $('.js-form-review-add').each(function(){
+    $(this).validate({
+      rules: {
+        moderator: {
+          required: true
+        },
+        name: {
+          required: true
+        },
+        mail: {
+          required: true,
+          mail: true
+        },
+        text: {
+          required: true
+        },
+        rating: {
+          required: true
+        }
+      },
+      messages: {
+        mail: {
+          required: "Вы не указали ваш e-mail.",
+          email: "e-mail должен иметь формат name@domain.com"
+        }
+      }
+    });
+  });
 
-  //Скрипт всплывающих окон
-  $('.modal').click(function(e) {
-    e.preventDefault();
-    $('#mask, .window').hide();
-    var id = $(this).attr('href');
-    var maskHeight = $(document).height();
-    var maskWidth = $(window).width();
-    $('#mask').css({'height':maskHeight});
-    $('#mask').fadeTo("slow",0.9);
-    var winH = $(window).height();
-    var winW = $(window).width();
-    $(id).css('top',  winH/2-$(id).height()/2);
-    $(id).css('left', winW/2-$(id).width()/2);
-    $(id).fadeIn(1000);
-  });
-  $('.window .close').click(function (e) {
-    e.preventDefault();
-    $('#mask, .window').hide();
-  });
-  $('#mask').click(function () {
-    $(this).hide();
-    $('.window').hide();
-  });
-  //Скрипт всплывающих окон
-	$('a.js-lang-link').click(function(){
+  $('a.js-lang-link').click(function(){
     var url = $(this).parents('.header-lang').data('url');
     console.log(url);
     var csrfmiddlewaretoken = $('.header-lang input[name=csrfmiddlewaretoken]').val();
@@ -236,19 +281,20 @@ $(document).ready(function () {
       }
     });
   });
-	$('.ticket-form').ajaxForm({
-    success: function(data){
-      if (data.error) {
-        $('form').resetForm();
-        $.notify(data.error, 'error');
-        console.log(data.error);
-      } else {
-        $('form').resetForm();
-        $('#mask, .window').hide();
-        $.notify(data.success, 'success');
-        console.log('not error');
-      }
-    }
-  });
 
+});
+
+$(window).load(function () {
+  // text animation
+  $(function () {
+    $('.main-title1').textillate({
+      initialDelay: 0
+    });
+    $('.main-title2').textillate({
+      initialDelay: 900
+    });
+    $('.main-title3').textillate({
+      initialDelay: 2000
+    });
+  });
 });

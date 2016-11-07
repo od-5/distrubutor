@@ -7,13 +7,13 @@
   <meta name="keywords" content="{{ SETUP.meta_keys|default:'' }}">
   <meta name="description" content="{{ SETUP.meta_desc|default:'' }}">
   <meta name="format-detection" content="telephone=no">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-{#  <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />#}
+  <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
   <title>{{ SETUP.meta_title|default:'Заголовок сайта' }}</title>
   <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/all.css' %}" />
+  <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/change.css' %}" />
   <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/jquery.bxslider.css' %}" />
   <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/jquery.fancybox.css' %}" />
-  <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/change.css' %}" />
+  <link media="all" rel="stylesheet" type="text/css" href="{% static 'landing/css/animate.min.css' %}" />
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <script src="{% static 'landing/js/jquery-1.9.1.min.js' %}"></script>
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
@@ -23,8 +23,10 @@
   <script src="{% static 'landing/js/jquery.fancybox.js' %}"></script>
   <script src="{% static 'landing/js/jquery.scrollTo.js' %}"></script>
   <script src="{% static 'landing/js/jquery.maskedinput.js' %}"></script>
-  <script src="{% static 'landing/js/notify-combined.min.js' %}"></script>
+  <script src="{% static 'landing/js/jquery.lettering.js' %}"></script>
+  <script src="{% static 'landing/js/jquery.textillate.js' %}"></script>
   <script src="{% static 'landing/js/tabs.js' %}"></script>
+  <script src="{% static 'landing/js/notify-combined.min.js' %}"></script>
   <!--[if lt IE 9]><script type="text/javascript" src="{% static 'landing/js/html5.js' %}"></script><![endif]-->
   <!--[if lt IE 9]><script type="text/javascript" src="{% static 'landing/js/placeholder.js' %}"></script><![endif]-->
   <script src="{% static 'landing/js/all.js' %}"></script>
@@ -37,15 +39,15 @@
         <div class="holder">
           <a href="" class="city-close">x</a>
           <div class="city-hidden-top">
-          <h3>Введите нужный Вам город</h3>
-          <div class="city-input">
-            <form id="#js-form-set-current-city" action="{% url 'landing:set_current_city_from_input' %}" method="post">
-            <fieldset>
-              <input type="text" name="city" class="input input_city" data-url="{% url 'city:find' %}" placeholder="Ваш город" autocomplete="off">
-            </fieldset>
-            </form>
-          </div>
-          <div class="city-input-text">В этом городе нет пока представительства</div>
+            <h3>Введите нужный Вам город</h3>
+            <div class="city-input">
+              <form id="#js-form-set-current-city" action="{% url 'landing:set_current_city_from_input' %}" method="post">
+                <fieldset>
+                  <input type="text" name="city" class="input input_city" data-url="{% url 'city:find' %}" placeholder="Ваш город">
+                </fieldset>
+              </form>
+            </div>
+            <div class="city-input-text">В этом городе нет пока представительства</div>
           </div>
           <div class="city-tabs">
             <ul class="tabs">
@@ -57,34 +59,37 @@
             </ul>
           </div>
           <div class="city-block">
-          {% for country in country_list %}
-            {% if country.city_set.count %}
-            <div id="tab1_{{ country.id }}"  class="tab-content">
-              <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">
-              {% for city in country.city_set.all %}
-                <li><a>{{ city.name }}</a></li>
-              {% endfor %}
-              </ul>
-            </div>
-            {% endif %}
-          {% endfor %}
+            {% for country in country_list %}
+              {% if country.city_set.count %}
+              <div id="tab1_{{ country.id }}"  class="tab-content">
+                <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">
+                {% for city in country.city_set.all %}
+                  <li><a>{{ city.name }}</a></li>
+                {% endfor %}
+                </ul>
+              </div>
+              {% endif %}
+            {% endfor %}
           </div>
+{#          <div class="city-block">#}
+{#            <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">#}
+{#              {% for city in city_list %}#}
+{#              <li><a>{{ city.name }}</a></li>#}
+{#              {% endfor %}#}
+{#            </ul>#}
+{#          </div>#}
         </div>
       </div>
       <div class="header-fix">
         <div class="holder">
-          <a href="" class="nav-icon"><img src="{% static 'landing/images/nav-icon.png' %}" alt=""></a>
-          <div class="header-nav-block">
-            <a href="" class="nav-close"><img src="{% static 'landing/images/mobile-close.png' %}" alt=""></a>
-            <ul class="header-nav">
-              <li class="scroll"><a href="#block1">О проекте</a></li>
-              <li class="scroll"><a href="#block2">Преимущества</a></li>
-              <li class="scroll"><a href="#block3">Выгоды</a></li>
-              <li class="scroll"><a href="#block4">Онлайн-отчетность</a></li>
-              <li class="scroll"><a href="#block5">Агентства</a></li>
-              <li class="scroll"><a href="#block5">Оставить заявку</a></li>
-            </ul>
-          </div>
+          <ul class="header-nav">
+            <li class="scroll"><a href="#block1">О проекте</a></li>
+            <li class="scroll"><a href="#block2">Преимущества</a></li>
+            <li class="scroll"><a href="#block3">Выгоды</a></li>
+            <li class="scroll"><a href="#block4">Онлайн-отчетность</a></li>
+            <li class="scroll"><a href="#block5">Агентства</a></li>
+            <li class="scroll"><a href="#block5">Оставить заявку</a></li>
+          </ul>
         </div>
       </div>
       <div class="header-top">
@@ -93,7 +98,7 @@
             {% csrf_token %}
             {% get_current_language as LANGUAGE_CODE %}
             <a href="" class="lang-link lang-link-top">
-              <img src="{{ STATIC_URL }}landing/images/flag_{{ LANGUAGE_CODE }}.png" alt=""><span>{{ LANGUAGE_CODE|language_name_local }}</span>
+              <img src="{{ STATIC_URL }}landing/images/flag_{{ LANGUAGE_CODE }}.png" alt="">{{ LANGUAGE_CODE|language_name_local }}
             </a>
             <div class="header-lang-hidden">
             {% get_language_info_list for LANGUAGES as languages %}
@@ -104,10 +109,10 @@
             {% endfor %}
             </div>
           </div>
-          <div class="header-city"><span class="header-city-span">Выберите город:</span> <a href="">{{ current_city.name|default:'Не выбрано' }}</a></div>
+          <div class="header-city">Выберите город: <a href="">{{ current_city.name|default:'Не выбрано' }}</a></div>
           <div class="header-enter">
-            <a href="{% url 'dashboard:index' %}" class="enter-link enter-link-top">
-            <span>{% if user.is_authenticated %}{{ user.email }}{% else %} Войти как...{% endif %}</span>
+            <a href="{% url 'dashboard:index' %}" class="enter-link {% if not user.is_authenticated %}enter-link-top{% endif %}">
+            {% if user.is_authenticated %}{{ user.email }}{% else %} Войти как...{% endif %}
             </a>
             <div class="header-enter-hidden">
               <a href="{% url 'login-client' %}" class="enter-link">Клиент</a>
@@ -119,11 +124,12 @@
       </div>
       <div class="header-main">
         <div class="holder">
-          <div class="header-main-top"><span>Интернет-портал по расклейке и распространению рекламной продукции № 1</span></div>
+          <div class="header-main-top"><span>Интернет-портал по расклейке и <br>
+          распространению рекламной продукции № 1</span></div>
           <h1 class="main-title">
-            <span class="main-title1">Эффективная</span>
-            <span class="main-title2">рекламная кампания</span>
-            <span class="main-title3">за копе<span>й</span>ки</span>
+            <span class="main-title1" data-in-effect="flash">Эффективная</span>
+            <span class="main-title2" data-in-effect="flash">рекламная кампания</span>
+            <span class="main-title3" data-in-effect="flash">за копе<span class="lower">й</span>ки</span>
           </h1>
           <div class="header-main-text">Рекламные плакаты на городских досках объявлений, листовки в почтовых ящиках и не только</div>
           <div class="header-main-button scroll">
@@ -164,7 +170,7 @@
         </div>
       </div>
     </section>
-    <section class="servises" id="block3">
+    <section class="servises" id="block3"> <!-- Изменения в структуре и стилях данной секции -->
       <h2>Наши услуги</h2>
       <div class="servises-bg"></div>
       <div class="serv-column bg-line">
@@ -241,8 +247,8 @@
     <section class="info" id="block5">
       <div class="holder">
         <h2>Выберите исполнителя</h2>
-        <div class="title-min">По распространению листовок по почтовым ящикам или расклейки<br>
-        рекламных объявлений по своему городу <a href="#popup4" class="info-city fancybox">{{ current_city.name|default:'Не указано' }}</a></div>
+        <div class="title-min">По распространению листовок или расклейки<br>
+        рекламных объявлений по своему городу <a href="#popup4" class="info-city fancybox"></a></div>
         {% if moderator_list %}
         <div class="info-slider">
           <div class="info-top">
@@ -252,36 +258,40 @@
           {% for moderator in moderator_list %}
             <li class="info-slide">
               <aside class="info-left">
-                <div class="info-logo">
+								<div class="info-logo">
                 {% if moderator.logotype %}
                   <img src="{{ moderator.logotype.url }}" alt="{{ moderator.company|default:'' }}">
                 {% endif %}
                 </div>
-                <div class="info-form-title">Заполните онлайн-заявку</div>
-                <div class="info-form-text">И получите предложение <br>по рекламе от: <br>
-                <a href="">{{ moderator.company|default:'Не указано' }}</a>
-                </div>
-                <div class="info-form">
-                  <form action="{% url 'ticket:send' %}" class="ticket-form" method="post">
-                    {% csrf_token %}
-                    <fieldset>
-                      <input type="hidden" name="moderator" value="{{ moderator.id }}">
-                      <input type="hidden" name="city" value="{{ current_city.id|default:'' }}">
-                      <input type="text" name="name" class="input required" placeholder="Ваше имя *">
-                      <input type="text" name="mail" class="input required" placeholder="Ваш email *">
-                      <input type="text" name="phone" class="input no-margin required" placeholder="+7 (___) ___ - __ - __">
-                      <input type="hidden" name="theme" value="Заявка - исполнитель {{ moderator.company|default:'Не указано' }}">
-                      <div class="submit-holder">
-                        <button class="submit">Отправить заявку</button>
-                      </div>
-                    </fieldset>
-                  </form>
-                </div>
-              </aside>
+								<div class="submit-holder hidden">
+									<button class="button">Отправить заявку</button>
+								</div>
+								<div class="hide">
+									<div class="info-form-title">Заполните онлайн-заявку</div>
+									<div class="info-form-text">И получите предложение <br>по рекламе от: <br>
+									<a href="">{{ moderator.company|default:'Не указано' }}</a></div>
+									<div class="info-form">
+										<form action="{% url 'ticket:send' %}" class="ticket-form" method="post">
+                      {% csrf_token %}
+											<fieldset>
+                        <input type="hidden" name="moderator" value="{{ moderator.id }}">
+                        <input type="hidden" name="city" value="{{ current_city.id|default:'' }}">
+												<input type="text" name="name" class="input required" placeholder="Ваше имя *">
+												<input type="text" name="mail" class="input required" placeholder="Ваш email *">
+												<input type="text" name="phone" class="input no-margin required" placeholder="+7 (___) ___ - __ - __">
+												<input type="hidden" name="theme" value="Заявка - исполнитель {{ moderator.company|default:'Не указано' }}">
+												<div class="submit-holder">
+													<button class="submit">Отправить заявку</button>
+												</div>
+											</fieldset>
+										</form>
+									</div>
+								</div>
+							</aside>
               <div class="info-right">
                 <div class="info-title">{{ moderator.company|default:'Не указано' }}</div>
                 <dl class="info-list">
-                  {% if moderator.get_rating %}
+                {% if moderator.get_rating %}
                   <dt>Рейтинг:</dt>
                   <dd>
                     <div class="star-block">
@@ -293,7 +303,7 @@
                     </div>
                     -  {{ moderator.get_rating }}
                   </dd>
-                  {% endif %}
+                {% endif %}
                   <dt>Стаж работы:</dt>
                   <dd>{{ moderator.experience|default:'' }}</dd>
                   <dt>Город:</dt>
@@ -302,14 +312,8 @@
                     <b>{{ city.name }}</b>{% if not forloop.last %}, {% endif %}
                   {% endfor %}
                   </dd>
-                  {% if moderator.moderatoraction_set.all %}
-                  <dt>Регион работы:</dt>
-                  <dd>{% for area in moderator.moderatorarea.set.all %}{{ area.name|default:'не указано' }}{% endfor %}<br><br></dd>
-                  {% endif %}
-                  {% if moderator.description %}
                   <dt>Краткое описание:</dt>
                   <dd>{{ moderator.description|linebreaksbr|safe|default:'' }}</dd>
-                  {% endif %}
                   <dt>Контакты:</dt>
                   <dd>{{ moderator.contact|default:'' }}</dd>
                   <dt>Телефон:</dt>
@@ -342,30 +346,45 @@
                   <div class="info-reviews-title">
                     Отзывы <span>{{ moderator.review_set.count }}</span>
                   </div>
-                  {% for review in moderator.review_set.all %}
+                {% for review in moderator.review_set.all %}
                   <div class="review-item">
                     <div class="review-author">{{ review.name|default:'' }}</div>
                     <div class="review-text">
                       {{ review.text|safe|linebreaksbr|default:'' }}
                     </div>
                   </div>
-                  {% empty %}
+                {% empty %}
+{#                  <div class="comment-form">#}
+{#                    <form action="{% url 'moderator:review-add' %}" class="js-form-review-add" method="post">#}
+{#                      <fieldset>#}
+{#                        <input name="moderator" type="hidden" value="{{ moderator.id }}" class="input" placeholder="Ваш имя *">#}
+{#                        <input type="hidden" name="rating" value="">#}
+{#                        <input name="name" type="text" class="input" placeholder="Ваш имя *">#}
+{#                        <input name="mail" type="text" class="input" placeholder="Ваш e-mail *">#}
+{#                        <textarea name="text" cols="30" rows="10" class="textarea required" placeholder="Текст отзыва"></textarea>#}
+{#                        <button class="submit">Оставить отзыв</button>#}
+{#                      </fieldset>#}
+{#                    </form>#}
+{#                  </div>#}
+{#                  <a href="" class="submit comment-button">Оставить отзыв</a>#}
+{#                  <br>#}
                   <div class="review-item">
                     <div class="reviews-text">Нет отзывов</div>
                   </div>
-                  {% endfor %}
+                {% endfor %}
                 </div>
               </div>
             </li>
+          {% empty %}
           {% endfor %}
           </ul>
         </div>
         {% else %}
-        <div class="review-item">
-          <div class="review-text lead">
-            Нет исполнителей по данному городу
+          <div class="review-item">
+            <div class="review-text lead">
+              Нет исполнителей по данному городу
+            </div>
           </div>
-        </div>
         {% endif %}
       </div>
     </section>
@@ -378,9 +397,9 @@
       <div class="footer-nav">
         <div class="holder">
           <ul>
-            <li><a href="{% url 'login-client' %}">Клиентам</a></li>
-            <li><a href="{% url 'login-moderator' %}">Менеджерам</a></li>
-            <li><a href="{% url 'login-manager' %}">Модераторам</a></li>
+            <li class="first"><a href="{% url 'login-client' %}">Клиентам</a></li>
+            <li class="third"><a href="{% url 'login-moderator' %}">Менеджерам</a></li>
+            <li class="second"><a href="{% url 'login-manager' %}">Модераторам</a></li>
           </ul>
         </div>
       </div>
@@ -408,6 +427,7 @@
         </div>
       </div>
     </footer>
+
     <!--   Всплывающие окна  -->
     <div id="popup">
       <div class="video-popup">
@@ -549,32 +569,28 @@
     </div>
     <div id="popup4" class="popup">
       <div class="city-popup">
-        <div class="city-hidden-top">
-          <h3>Введите нужный Вам город</h3>
-          <div class="city-input">
-            <form id="#js-form-set-current-city" action="{% url 'landing:set_current_city_from_input' %}" method="post">
+        <h3>Введите нужный Вам город</h3>
+        <div class="city-input">
+          <form id="#js-form-set-current-city" action="{% url 'landing:set_current_city_from_input' %}" method="post">
             <fieldset>
-              <input type="text" name="city" class="input input_city" data-url="{% url 'city:find' %}" placeholder="Ваш город" autocomplete="off">
+              <input type="text" class="input input_city" data-url="{% url 'city:find' %}" name="city" placeholder="Ваш город">
             </fieldset>
-            </form>
-          </div>
-          <div class="city-input-text">В этом городе нет пока представительства</div>
-          </div>
-          <div class="city-tabs">
-            <ul class="tabs">
-            {% for country in country_list %}
-              {% if country.city_set.count %}
-              <li><a href="#tab2_{{ country.id }}">{{ country.name }}</a></li>
-              {% endif %}
-            {% endfor %}
-{#              <li class="active"><a href="#tab2_1">Россия</a></li>#}
-{#              <li><a href="#tab2_3">Казахстан</a></li>#}
-            </ul>
-          </div>
-          <div class="city-block">
+          </form>
+        </div>
+        <div class="city-input-text">В этом городе нет пока представительства</div>
+        <div class="city-tabs">
+          <ul class="tabs">
           {% for country in country_list %}
+            {% if country.city_set.count %}
+            <li><a href="#tab2_{{ country.id }}">{{ country.name }}</a></li>
+            {% endif %}
+          {% endfor %}
+          </ul>
+        </div>
+        <div class="city-list-holder">
+        {% for country in country_list %}
           {% if country.city_set.all %}
-          <div id="tab2_{{ country.id }}" class="tab-content clearfix">
+          <div id="tab2_{{ country.id }}" class="tab-content">
             <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">
             {% for city in country.city_set.all %}
               <li><a>{{ city.name }}</a></li>
@@ -582,8 +598,8 @@
             </ul>
           </div>
           {% endif %}
-          {% endfor %}
-          </div>
+        {% endfor %}
+        </div>
       </div>
     </div>
     <div id="popup5" class="popup">
