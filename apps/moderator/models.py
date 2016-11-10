@@ -156,7 +156,7 @@ class Order(models.Model):
         app_label = 'moderator'
 
     def __unicode__(self):
-        return u'Счёт на оплату #%s' % self.id
+        return u'Счёт на оплату' % self.id
 
     moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор')
     package = models.ForeignKey(to=Package, verbose_name=u'Платёжный пакет')
