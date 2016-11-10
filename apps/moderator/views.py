@@ -269,9 +269,10 @@ def payment_list(request):
             for i in order_qs:
                 i.delete()
             order = Order.objects.create(moderator=request.user.moderator_user, package=package)
+            print order.id
             form = RobokassaForm(initial={
                 'OutSum': order.package.cost,
-                'InvoiceId': order.id,
+                'InvoiceID': order.id,
                 'Description': order,
                 'Email': request.user.email,
                 # 'IncCurrLabel': '',
