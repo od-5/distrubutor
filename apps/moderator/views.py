@@ -10,8 +10,10 @@ from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
 from django.forms.models import inlineformset_factory, modelformset_factory
+from apps.packages.models import Package
+from apps.robokassa.forms import RobokassaForm
 from .forms import ModeratorForm, ModeratorAreaForm, ModeratorActionForm, ReviewForm
-from .models import Moderator, ModeratorArea, ModeratorAction, Review
+from .models import Moderator, ModeratorArea, ModeratorAction, Review, Order
 from core.forms import UserAddForm, UserUpdateForm
 from core.models import User
 
@@ -104,6 +106,7 @@ def moderator_user_update(request, pk):
 
 def moderator_company_update(request, pk):
     context = {}
+    user = request.user
     moderator_user = User.objects.get(pk=int(pk))
     success_msg = u''
     error_msg = u''
@@ -113,14 +116,14 @@ def moderator_company_update(request, pk):
         moderator = Moderator(user=moderator_user)
         moderator.save()
     if request.method == 'POST':
-        form = ModeratorForm(request.POST, request.FILES, instance=moderator)
+        form = ModeratorForm(request.POST, request.FILES, instance=moderator, user=user)
         if form.is_valid():
             form.save()
             success_msg += u' Изменения успешно сохранены'
         else:
             error_msg = u'Проверьте правильность ввода полей!'
     else:
-        form = ModeratorForm(instance=moderator)
+        form = ModeratorForm(instance=moderator, user=user)
     context.update({
         'form': form,
         'success': success_msg,
@@ -255,3 +258,33 @@ class ReviewListView(ListView):
                     'r_moderator': int(self.request.GET.get('moderator'))
                 })
         return context
+
+
+def payment_list(request):
+    context = {}
+    if request.user.type == 2:
+        if request.GET.get('package') and request.GET.get('package').isdigit():
+            package = get_object_or_None(Package, pk=int(request.GET.get('package')))
+            order_qs = Order.objects.filter(pay=False, moderator=request.user.moderator_user)
+            for i in order_qs:
+                i.delete()
+            order = Order.objects.create(moderator=request.user.moderator_user, package=package)
+            form = RobokassaForm(initial={
+                'OutSum': order.package.cost,
+                'InvoiceId': order.id,
+                'Description': order,
+                'Email': request.user.email,
+                # 'IncCurrLabel': '',
+                # 'Culture': 'ru'
+            })
+            context.update({
+                'order': order,
+                'form': form
+            })
+        package_qs = Package.objects.all()
+        context.update({
+            'package_qs': package_qs,
+            'order_qs': Order.objects.filter(moderator=request.user.moderator_user, pay=True)
+        })
+    print context
+    return render(request, 'moderator/payment_list.html', context)

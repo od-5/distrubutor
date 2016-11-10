@@ -2,6 +2,7 @@
 from PIL import Image
 from django.db import models
 from apps.city.models import City
+from apps.packages.models import Package
 from core.files import upload_to
 from core.models import User
 
@@ -92,6 +93,8 @@ class Moderator(models.Model):
     ok_link = models.URLField(verbose_name=u'Одноклассники', max_length=256, blank=True, null=True)
     vk_link = models.URLField(verbose_name=u'ВКонтакте', max_length=256, blank=True, null=True)
     insta_link = models.URLField(verbose_name=u'Instagram', max_length=256, blank=True, null=True)
+    deny_access = models.BooleanField(default=False, verbose_name=u'Доступ запрёщен')
+    deny_date = models.DateField(blank=True, null=True, verbose_name=u'Дата блокировки')
 
 
 class ModeratorArea(models.Model):
@@ -144,3 +147,18 @@ class Review(models.Model):
     # sale = models.ForeignKey(to=Sale, verbose_name=u'Клиент')
     rating = models.PositiveSmallIntegerField(verbose_name=u'Оценка', choices=RATING_CHOICES, default=5, blank=True, null=True)
     text = models.TextField(verbose_name=u'Текст сообщения', blank=True, null=True)
+
+
+class Order(models.Model):
+    class Meta:
+        verbose_name = u'Счёт'
+        verbose_name_plural = u'Счета'
+        app_label = 'moderator'
+
+    def __unicode__(self):
+        return u'Счёт на оплату #%s' % self.id
+
+    moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор')
+    package = models.ForeignKey(to=Package, verbose_name=u'Платёжный пакет')
+    pay = models.BooleanField(default=False, verbose_name=u'Оплачено')
+    timestamp = models.DateTimeField(auto_now=True)

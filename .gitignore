@@ -1,3 +1,5 @@
+/apps/packages/migrations
+/apps/robokassa/migrations
 /apps/distributor/migrations
 /apps/sale/migrations
 /apps/moderator/migrations

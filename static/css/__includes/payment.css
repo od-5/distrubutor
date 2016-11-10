@@ -1,0 +1,39 @@
+.pay-package {
+  text-align: center;
+}
+.pay-package-item {
+  display: inline-block;
+  vertical-align: top;
+  width: 30%;
+  padding: 30px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  margin: 0 10px 20px;
+  text-align: left;
+}
+.pay-package-item:hover {
+  box-shadow: 0 0 10px #ccc;
+  background-color: #ffffcc;
+}
+.pay-package-item__radio {
+  width: 18px;
+  height: 18px;
+  position: relative;
+  float: left;
+}
+.pay-package-item__radio input {
+  cursor: pointer;
+}
+.pay-package-item__label {
+  display: block;
+  margin: 0 0 0 34px;
+  font-size: 16px;
+  line-height: 19px;
+}
+.detail-view tr:nth-child(even) td {
+  background-color: #fff;
+}
+.detail-view th {
+  text-align: right;
+  width: 160px;
+}

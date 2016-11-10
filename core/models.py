@@ -96,6 +96,17 @@ class User(AbstractBaseUser, PermissionsMixin):
     #
     # def get_change_url(self):
     #     return reverse('cabinet:user-change', args=(self.pk, ))
+    def deny_access(self):
+        if self.type == 1 or self.type == 3:
+            return False
+        elif self.type == 2 and self.moderator_user.deny_access:
+            return True
+        elif self.type == 4 and self.distributor_user.moderator.deny_access:
+            return True
+        elif self.type == 5 and self.manager_user.moderator.moderator_user.deny_access:
+            return True
+        else:
+            return False
 
     def get_full_name(self):
         return u'%s %s %s' % (self.last_name, self.first_name or '', self.patronymic or '')

@@ -23,6 +23,20 @@
           <div class="col-lg-12">
             <form action="" role="form" id="js-form-moderator-update" enctype="multipart/form-data" method="post">
             {% csrf_token %}
+              {% if user.type == 1 %}
+              <div class="form-group">
+                <div class="col-lg-3">{{ form.deny_access.label_tag }}</div>
+                <div class="col-lg-3">{{ form.deny_access }}</div>
+                {{ form.deny_access.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-3">{{ form.deny_date.label_tag }}</div>
+                <div class="col-lg-3">{{ form.deny_date }}</div>
+                {{ form.deny_date.errors }}
+                <div class="clearfix"></div>
+              </div>
+              {% endif %}
               <div class="form-group">
                 <p class="text-info lead">Информация об организации</p>
                   {{ form.user }}

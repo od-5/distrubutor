@@ -26,10 +26,8 @@ INSTALLED_APPS = (
     'apps.distributor',
     'apps.client',
     'apps.ticket',
-    # 'apps.adjustertask',
-    # 'apps.surface',
-    # 'apps.journal',
-
+    'apps.packages',
+    'apps.robokassa',
     'apps.mobile',
     'django_cleanup',
 )

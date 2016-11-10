@@ -1,0 +1,20 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <ol class="breadcrumb">
+        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+        <li><a href="{% url 'moderator:payment-list' %}">Платежи</a></li>
+        <li class="active">Платёж успешно проведён</li>
+      </ol>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead remove-bottom text-center">Платёж успешно проведён</p>
+        </div>
+        <div class="panel-body">
+          <p class="text-success">Платёж успешно проведён</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

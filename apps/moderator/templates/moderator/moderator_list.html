@@ -14,7 +14,7 @@
           <a href="{% url 'moderator:add' %}" class="btn btn-success add-bottom">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить модератора
           </a>
-          <form action="" method="GET" role="form" class="form-inline">
+          <form action="" method="GET" role="form" class="form-inline add-bottom">
             <input type="text" name="email" value="{{ r_email|default:'' }}" class="form-control input-sm" placeholder="e-mail">
             <input type="text" name="last_name" value="{{ r_last_name|default:'' }}" class="form-control input-sm" placeholder="Фамилия">
             <input type="text" name="first_name" value="{{ r_first_name|default:'' }}" class="form-control input-sm" placeholder="Имя">
@@ -31,12 +31,13 @@
                 <th>Отчество</th>
                 <th>Телефон</th>
                 <th>Города</th>
+                <th>Дата блокировки</th>
                 <th>&nbsp;</th>
               </tr>
             </thead>
             <tbody class="js-list">
             {% for object in object_list %}
-              <tr data-id="{{ object.id }}" data-name="{{ object.get_full_name }}" data-model="User" id="id_User_{{ object.id }}">
+              <tr data-id="{{ object.id }}" {% if object.moderator_user.deny_access %}class='danger'{% endif %} data-name="{{ object.get_full_name }}" data-model="User" id="id_User_{{ object.id }}">
                 <td><a href="{% url 'moderator:update' object.id %}"> {{ object.email|default:'' }}</a></td>
                 <td>{{ object.last_name|default:'Не указано' }}</td>
                 <td>{{ object.first_name|default:'Не указано' }}</td>
@@ -48,6 +49,7 @@
                   {% if not forloop.last %}<br> {% endif %}
                 {% endfor %}
                 </td>
+                <td>{{ object.moderator_user.deny_date|default:'--' }}</td>
                 <td>
                   <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-User-{{ object.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
                     <span class="glyphicon glyphicon-remove"></span> Удалить
@@ -56,7 +58,7 @@
               </tr>
             {% empty %}
               <tr>
-                <td colspan="7">
+                <td colspan="8">
                   <p class="alert alert-info text-left">Модераторов не найдено</p>
                 </td>
               </tr>

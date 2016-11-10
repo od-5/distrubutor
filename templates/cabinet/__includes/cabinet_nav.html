@@ -75,6 +75,23 @@
           </li>
         </ul>
       </li>
+      <li class="dropdown">
+        <a href="" class="dropdown-toggle" data-toggle="dropdown">
+          Платёжные пакеты <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <li>
+            <a href="{% url 'package:list' %}">
+              <span class="glyphicon glyphicon-list-alt text-success"></span> Список платёжных пакетов
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'package:add' %}">
+              <span class="glyphicon glyphicon-plus-sign text-success"></span> Добавить новый платёжный пакет
+            </a>
+          </li>
+        </ul>
+      </li>
     {% endif %}
     {% if user.manager_user and not user.manager_user.leader %}{% else %}
       <li class="dropdown">

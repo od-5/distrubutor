@@ -9,32 +9,9 @@ from apps.sale.models import Sale, SaleOrder, SaleMaket
 from apps.city.models import City
 from apps.client.models import Client, ClientContact, Task
 from apps.ticket.models import Ticket
-
+from apps.packages.models import Package
 
 __author__ = 'alexy'
-
-
-# @ajax_request
-# def ymap(request):
-#     request.encoding = 'utf-8'
-#     if request.is_ajax():
-#         query = City.objects.all()
-#         try:
-#             if request.user.type == 2:
-#                 query = query.filter(moderator=request.user)
-#         except:
-#             pass
-#         result = []
-#         for item in query:
-#             result_json = {}
-#             result_json['name'] = u'%s (%s)' % (item.name, item.surface_count())
-#             result_json['coord_x'] = float(item.coord_x)
-#             result_json['coord_y'] = float(item.coord_y)
-#             result.append(result_json)
-#         data = result
-#     else:
-#         data = {'msg': 'fail'}
-#     return data
 
 
 @ajax_request

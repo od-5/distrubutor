@@ -1,0 +1,93 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <ol class="breadcrumb">
+        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+        <li class="active">Платежи</li>
+      </ol>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead remove-bottom text-center">Платежи</p>
+        </div>
+        <div class="panel-body">
+        {% if order %}
+          <p class="lead text-center">2. Проверьте данные</p>
+          <table class="table table-striped table-condensed detail-view">
+            <tbody>
+              <tr class="odd">
+                <th>Полное имя</th>
+                <td>{{ order.moderator.user.get_full_name }}</td>
+              </tr>
+              <tr class="even">
+                <th>E-Mail</th>
+                <td>{{ order.moderator.user.email|default:'' }}</td>
+              </tr>
+              <tr class="odd">
+                <th>Телефон</th>
+                <td>{{ order.moderator.user.phone|default:'' }}</td>
+              </tr>
+              <tr class="even">
+                <th>Выбранный пакет</th>
+                <td>{{ order.package.name|default:'не выбрано' }} ({{ order.package.get_month_display }})</td>
+              </tr>
+              <tr class="odd">
+                <th>Сумма</th>
+                <td>{{ order.package.cost|default:'0' }}</td>
+              </tr>
+            </tbody>
+          </table>
+           <form action="{{ form.target }}" method="POST">
+              <p>{{ form.as_p }}</p>
+              <p><input type="submit" class="btn btn-lg btn-success" value="Перейти к оплате"></p>
+           </form>
+        {% else %}
+          <form action="" method="GET" role="form" class="add-bottom">
+            <div class="pay-package">
+            <p class="lead text-center">1. Выберите пакет подписки</p>
+              {% for package in package_qs %}
+                <div class="pay-package-item">
+                  <div class="pay-package-item__radio">
+                    <input type="radio" id="radio_{{ package.id }}" class="add-bottom" name="package" value="{{ package.id }}">
+                  </div>
+                  <label for="radio_{{ package.id }}" class="pay-package-item__label">{{ package.name|default:'Не указано' }}</label>
+                </div>
+              {% endfor %}
+              <div class="clearfix"></div>
+              <div class="text-center">
+                <button class="btn btn-lg btn-success" type="submit">Выбрать пакет</button>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </form>
+        {% endif %}
+          <table class="table table-hover table-condensed table-bordered table-list">
+            <thead>
+              <tr>
+                <th>Название пакета</th>
+                <th>Сумма</th>
+                <th>Дата платежа</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for order in order_qs %}
+              <tr>
+                <td>{{ order.package.name|default:'не указано' }}</td>
+                <td>{{ order.package.cost|default:'не указано' }}</td>
+                <td>{{ order.timestamp|default:'не указано' }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="3">
+                  <p class="alert alert-info text-left">Платежей не найдено</p>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          {% include '__includes/pagination.html' %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -73,6 +73,10 @@ $(function() {
     defaultDate: 1,
     dateFormat: "dd.mm.yy"
   });
+  $('#js-form-moderator-update').find('#id_deny_date').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
 
 
 });

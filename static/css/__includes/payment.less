@@ -1,0 +1,49 @@
+.pay {
+  &-package {
+    text-align: center;
+    &-item {
+      display: inline-block;
+      vertical-align: top;
+      width: 30%;
+      padding: 30px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      margin: 0 10px 20px;
+      text-align: left;
+      &:hover {
+        box-shadow: 0 0 10px #ccc;
+        background-color: #ffffcc;
+      }
+      &__radio {
+        width: 18px;
+        height: 18px;
+        position: relative;
+        float: left;
+        input {
+          cursor: pointer;
+        }
+      }
+      &__label {
+        display: block;
+        margin: 0 0 0 34px;
+        font-size: 16px;
+        line-height: 19px;
+      }
+    }
+  }
+}
+.detail {
+  &-view {
+    tr {
+      &:nth-child(even) {
+        td {
+          background-color: #fff;
+        }
+      }
+    }
+    th {
+      text-align: right;
+      width: 160px;
+    }
+  }
+}
