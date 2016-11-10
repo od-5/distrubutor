@@ -16,6 +16,7 @@ else:
 print PASSWORD1
 print PASSWORD2
 
+
 class BaseRobokassaForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
@@ -40,7 +41,7 @@ class BaseRobokassaForm(forms.Form):
         return extra
 
     def _get_signature(self):
-        return md5(self._get_signature_string()).hexdigest().upper()
+        return md5(self._get_signature_string()).encode().hexdigest().upper()
 
     def _get_signature_string(self):
         raise NotImplementedError
