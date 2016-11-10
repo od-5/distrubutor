@@ -4,17 +4,8 @@ from hashlib import md5
 from urllib import urlencode
 from django import forms
 from apps.robokassa.conf import LOGIN, TEST_MODE
-from apps.robokassa.conf import STRICT_CHECK, FORM_TARGET, EXTRA_PARAMS
+from apps.robokassa.conf import STRICT_CHECK, FORM_TARGET, EXTRA_PARAMS, PASSWORD1, PASSWORD2
 from apps.robokassa.models import SuccessNotification
-if TEST_MODE:
-    from apps.robokassa.conf import TEST_PASSWORD1 as PASSWORD1
-    from apps.robokassa.conf import TEST_PASSWORD2 as PASSWORD2
-else:
-    from apps.robokassa.conf import PASSWORD1, PASSWORD2
-
-
-print PASSWORD1
-print PASSWORD2
 
 
 class BaseRobokassaForm(forms.Form):
@@ -41,8 +32,9 @@ class BaseRobokassaForm(forms.Form):
         return extra
 
     def _get_signature(self):
-        return md5(self._get_signature_string().encode("ascii")).hexdigest().upper()
-        # return md5(self._get_signature_string().encode()).hexdigest()
+        print md5(self._get_signature_string())
+        # return md5(self._get_signature_string().encode("ascii")).hexdigest().upper()
+        return md5(self._get_signature_string().encode()).hexdigest().upper()
 
     def _get_signature_string(self):
         raise NotImplementedError
