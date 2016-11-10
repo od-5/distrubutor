@@ -41,7 +41,7 @@ class BaseRobokassaForm(forms.Form):
         return extra
 
     def _get_signature(self):
-        return md5(self._get_signature_string()).encode().hexdigest().upper()
+        return md5(self._get_signature_string().encode()).hexdigest().upper()
 
     def _get_signature_string(self):
         raise NotImplementedError
