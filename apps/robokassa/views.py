@@ -15,7 +15,7 @@ def receive_result(request):
     data = request.POST if USE_POST else request.GET
     form = ResultURLForm(data)
     if form.is_valid():
-        id, sum = form.cleaned_data['InvoiceID'], form.cleaned_data['OutSum']
+        id, sum = form.cleaned_data['InvId'], form.cleaned_data['OutSum']
 
         # сохраняем данные об успешном уведомлении в базе, чтобы
         # можно было выполнить дополнительную проверку на странице успешного
@@ -39,14 +39,14 @@ def success(request, template_name='robokassa/success.html', extra_context=None,
     data = request.POST if USE_POST else request.GET
     form = SuccessRedirectForm(data)
     if form.is_valid():
-        id, sum = form.cleaned_data['InvoiceID'], form.cleaned_data['OutSum']
+        id, sum = form.cleaned_data['InvId'], form.cleaned_data['OutSum']
 
         # в случае, когда не используется строгая проверка, действия с заказом
         # можно осуществлять в обработчике сигнала robokassa.signals.success_page_visited
         success_page_visited.send(sender = form, InvId = id, OutSum = sum,
                                   extra = form.extra_params())
 
-        context = {'InvoiceID': id, 'OutSum': sum, 'form': form}
+        context = {'InvId': id, 'OutSum': sum, 'form': form}
         context.update(form.extra_params())
         context.update(extra_context or {})
         return TemplateResponse(request, template_name, context)
@@ -62,7 +62,7 @@ def fail(request, template_name='robokassa/fail.html', extra_context=None,
     data = request.POST if USE_POST else request.GET
     form = FailRedirectForm(data)
     if form.is_valid():
-        id, sum = form.cleaned_data['InvoiceID'], form.cleaned_data['OutSum']
+        id, sum = form.cleaned_data['InvId'], form.cleaned_data['OutSum']
 
         # дополнительные действия с заказом (например, смену его статуса для
         # разблокировки товара на складе) можно осуществить в обработчике
@@ -70,7 +70,7 @@ def fail(request, template_name='robokassa/fail.html', extra_context=None,
         fail_page_visited.send(sender = form, InvId = id, OutSum = sum,
                                extra = form.extra_params())
 
-        context = {'InvoiceID': id, 'OutSum': sum, 'form': form}
+        context = {'InvId': id, 'OutSum': sum, 'form': form}
         context.update(form.extra_params())
         context.update(extra_context or {})
         return TemplateResponse(request, template_name, context)
