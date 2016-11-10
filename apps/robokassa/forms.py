@@ -56,7 +56,7 @@ class RobokassaForm(BaseRobokassaForm):
     OutSum = forms.DecimalField(min_value=0, max_digits=20, decimal_places=2, required=False)
 
     # номер счета в магазине (должен быть уникальным для магазина)
-    InvoiceId = forms.IntegerField(min_value=0, required=False)
+    InvoiceID = forms.IntegerField(min_value=0, required=False)
 
     # описание покупки
     Description = forms.CharField(max_length=100, required=False)
@@ -115,7 +115,7 @@ class RobokassaForm(BaseRobokassaForm):
             if value is None:
                 return ''
             return unicode(value)
-        standard_part = ':'.join([_val('MerchantLogin'), _val('OutSum'), _val('InvoiceId'), PASSWORD1])
+        standard_part = ':'.join([_val('MerchantLogin'), _val('OutSum'), _val('InvoiceID'), PASSWORD1])
         return self._append_extra_part(standard_part, _val)
 
 
