@@ -11,6 +11,7 @@
           <p class="lead remove-bottom text-center">Платежи</p>
         </div>
         <div class="panel-body">
+      {% if user.type == 2 %}
         {% if order %}
           <p class="lead text-center">2. Проверьте данные</p>
           <table class="table table-striped table-condensed detail-view">
@@ -37,7 +38,9 @@
               </tr>
             </tbody>
           </table>
+          <div class="text-center">
           <script language=JavaScript src='https://auth.robokassa.ru/Merchant/PaymentForm/FormMS.js?MerchantLogin={{ form.MerchantLogin.value }}&OutSum={{ form.OutSum.value }}&InvoiceID={{ form.InvoiceID.value }}&Description={{ form.Description.value }}&SignatureValue={{ form.SignatureValue.value }}&isTest=1'></script>
+          </div>
         {% else %}
           <form action="" method="GET" role="form" class="add-bottom">
             <div class="pay-package">
@@ -58,9 +61,13 @@
             </div>
           </form>
         {% endif %}
+      {% endif %}
           <table class="table table-hover table-condensed table-bordered table-list">
             <thead>
               <tr>
+              {% if user.type == 1 %}
+                <th>Модератор</th>
+              {% endif %}
                 <th>Название пакета</th>
                 <th>Сумма</th>
                 <th>Дата платежа</th>
@@ -69,13 +76,16 @@
             <tbody>
             {% for order in order_qs %}
               <tr>
+              {% if user.type == 1 %}
+                <td>{{ order.moderator|default:'не указано' }}</td>
+              {% endif %}
                 <td>{{ order.package.name|default:'не указано' }}</td>
                 <td>{{ order.package.cost|default:'не указано' }}</td>
                 <td>{{ order.timestamp|default:'не указано' }}</td>
               </tr>
             {% empty %}
               <tr>
-                <td colspan="3">
+                <td colspan="{% if user.type == 2 %}3{% else %}4{% endif %}">
                   <p class="alert alert-info text-left">Платежей не найдено</p>
                 </td>
               </tr>

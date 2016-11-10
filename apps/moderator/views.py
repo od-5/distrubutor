@@ -286,5 +286,10 @@ def payment_list(request):
             'package_qs': package_qs,
             'order_qs': Order.objects.filter(moderator=request.user.moderator_user, pay=True)
         })
-    print context
+    elif request.user.type == 1:
+        context.update({
+            'order_qs': Order.objects.filter(pay=True)
+        })
+    else:
+        return HttpResponseRedirect(reverse('dashoard:index'))
     return render(request, 'moderator/payment_list.html', context)
