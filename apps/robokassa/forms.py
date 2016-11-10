@@ -13,6 +13,9 @@ else:
     from apps.robokassa.conf import PASSWORD1, PASSWORD2
 
 
+print PASSWORD1
+print PASSWORD2
+
 class BaseRobokassaForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
