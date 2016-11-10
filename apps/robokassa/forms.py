@@ -137,7 +137,7 @@ class ResultURLForm(BaseRobokassaForm):
 
     def _get_signature_string(self):
         _val = lambda name: unicode(self.cleaned_data[name])
-        standard_part = ':'.join([_val('OutSum'), _val('InvoiceId'), PASSWORD2])
+        standard_part = ':'.join([_val('OutSum'), _val('InvId'), PASSWORD2])
         return self._append_extra_part(standard_part, _val)
 
 
@@ -148,7 +148,7 @@ class _RedirectPageForm(ResultURLForm):
 
     def _get_signature_string(self):
         _val = lambda name: unicode(self.cleaned_data[name])
-        standard_part = ':'.join([_val('OutSum'), _val('InvoiceId'), PASSWORD1])
+        standard_part = ':'.join([_val('OutSum'), _val('InvId'), PASSWORD1])
         return self._append_extra_part(standard_part, _val)
 
 
@@ -160,7 +160,7 @@ class SuccessRedirectForm(_RedirectPageForm):
     def clean(self):
         data = super(SuccessRedirectForm, self).clean()
         if STRICT_CHECK:
-            if not SuccessNotification.objects.filter(InvId=data['InvoiceId']):
+            if not SuccessNotification.objects.filter(InvId=data['InvId']):
                 raise forms.ValidationError(u'От ROBOKASSA не было предварительного уведомления')
         return data
 
