@@ -1,7 +1,17 @@
 body {
-  background-color: #f1f1f1;
+  //background-color: #0577ad;
   overflow-y: scroll;
 }
+//.panel {
+//  &-default {
+//    border: none;
+//  }
+//}
+//.breadcrumb {
+//  a {
+//    color: #eee;
+//  }
+//}
 .add-row, .delete-row {
   color: #333;
   font-size: 12px;
@@ -22,6 +32,65 @@ body {
     color: #cc0000;
   }
 }
+.header {
+  background-color: #fff;
+  margin-bottom: 40px;
+  box-shadow: 0 0 15px #333;
+  &-top {
+    height: 50px;
+    line-height: 50px;
+    background-color: #000;
+    &__text {
+      color: #fff;
+      margin-bottom: 0;
+      span {
+        color: #6c6c6c;
+        &.glyphicon {
+          color: #fff;
+        }
+      }
+    }
+    a {
+      padding-left: 30px;
+      &:hover {
+        color: #6c6c6c;
+        span {
+          color: #6c6c6c;
+        }
+      }
+    }
+  }
+  &-bottom {
+    padding: 25px 0;
+    &-review {
+      &__btn {
+        margin-top: 10px;
+      }
+    }
+  }
+  &-logo {
+    display: block;
+    &:hover {
+      text-decoration: none;
+      opacity: .8;
+    }
+    &__text, &__slogan {
+      margin-bottom: 0;
+    }
+    &__text {
+      font-size: 24px;
+      color: #e35f13;
+      @media only screen and (max-width: 991px) {
+        font-size: 14px;
+      }
+    }
+    &__slogan {
+      color: #000;
+    }
+  }
+}
+
+
 .sale {
   &-task {
     &-link {
