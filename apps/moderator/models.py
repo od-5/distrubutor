@@ -27,7 +27,7 @@ class Moderator(models.Model):
         Метод возвращает True, если у модератора есть неоплаченные счета.
         Если есть неоплаченные счета - новый счёт создать нельзя.
         """
-        if self.order_set.count():
+        if self.order_set.filter(pay=False).count():
             return True
         else:
             return False
