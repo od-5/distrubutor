@@ -67,24 +67,27 @@
               <p class="header-logo__slogan hidden-xs hidden-sm">Информационно-программный комплекс</p>
             </a>
           </div>
-{#          <div class="col-md-5 text-right">#}
-{#            <a href="#js-modal-review" class="js-show-modal-review-btn btn btn-info header-bottom-review__btn">#}
-{#              <span class="glyphicon glyphicon-comment"></span> Оставьте ваш отзыв об исполнителе#}
-{#            </a>#}
+          <div class="col-md-5 text-right">
+            <a class="header-instruction-link">
+              <div class="header-instruction-link__icon">
+                <span class="glyphicon glyphicon glyphicon-play-circle"></span>
+              </div>
+              <div class="header-instruction-link__text">Видеоинструкция</div>
+            </a>
 {#            <a class="header-mobile__menu hidden-md hidden-lg js-show-mobile-menu">#}
 {#              <img src="{% static 'icon/menu-mobile.png' %}" alt="Открыть меню">#}
 {#            </a>#}
-{#          </div>#}
+          </div>
           <div class="clearfix"></div>
         </div>
       </div>
     </div>
     <div class="header-nav">
-      <div class="container">
-        <div class="col-md-12">
+{#      <div class="container">#}
+{#        <div class="col-md-12">#}
           {% include 'cabinet/__includes/cabinet_nav.html' %}
-        </div>
-      </div>
+{#        </div>#}
+{#      </div>#}
     </div>
   </header>
 

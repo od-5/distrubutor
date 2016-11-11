@@ -3644,7 +3644,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 }
 @media (min-width: 768px) {
   .navbar {
-    border-radius: 4px;
+    border-radius: 0;
   }
 }
 @media (min-width: 768px) {
@@ -6297,6 +6297,25 @@ body {
   background-color: #fff;
   margin-bottom: 40px;
   box-shadow: 0 0 15px #333;
+}
+.header-instruction-link {
+  display: inline-block;
+  width: 180px;
+  line-height: 44px;
+  cursor: pointer;
+}
+.header-instruction-link:hover {
+  opacity: 0.8;
+}
+.header-instruction-link__icon {
+  width: 40px;
+  float: left;
+}
+.header-instruction-link__icon span {
+  font-size: 40px;
+}
+.header-instruction-link__text {
+  display: inline-block;
 }
 .header-top {
   height: 50px;

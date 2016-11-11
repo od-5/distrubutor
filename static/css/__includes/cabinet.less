@@ -36,6 +36,27 @@ body {
   background-color: #fff;
   margin-bottom: 40px;
   box-shadow: 0 0 15px #333;
+  &-instruction {
+    &-link {
+      display: inline-block;
+      width: 180px;
+      line-height: 44px;
+      cursor: pointer;
+      &:hover {
+        opacity: 0.8;
+      }
+      &__icon {
+        width: 40px;
+        float: left;
+        span {
+          font-size: 40px;
+        }
+      }
+      &__text {
+        display: inline-block;
+      }
+    }
+  }
   &-top {
     height: 50px;
     line-height: 50px;
