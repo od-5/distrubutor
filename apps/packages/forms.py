@@ -13,4 +13,5 @@ class PackageForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'month': forms.Select(attrs={'class': 'form-control'}),
             'cost': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'discount': forms.TextInput(attrs={'class': 'form-control'}),
         }

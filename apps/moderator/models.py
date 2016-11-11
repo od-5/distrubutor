@@ -22,6 +22,16 @@ class Moderator(models.Model):
         else:
             return self.user.get_full_name()
 
+    def has_unpaid_order(self):
+        """
+        Метод возвращает True, если у модератора есть неоплаченные счета.
+        Если есть неоплаченные счета - новый счёт создать нельзя.
+        """
+        if self.order_set.count():
+            return True
+        else:
+            return False
+
     def get_rating(self):
         qs = self.review_set.filter(rating__isnull=False)
         count = qs.count()

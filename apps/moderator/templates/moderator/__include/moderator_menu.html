@@ -1,8 +1,10 @@
+{% if not user.deny_access %}
 <ol class="breadcrumb">
   <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
   <li><a href="{% url 'moderator:list' %}">Список модераторов</a></li>
   <li class="active">Редактирование модератора</li>
 </ol>
+{% endif %}
 <div class="div add-bottom">
   <a href="{% url 'moderator:update' object.user.id %}" class="btn btn-default">
     <span class="glyphicon glyphicon-edit"></span> Информация о пользователе
@@ -13,7 +15,7 @@
   <a href="{% url 'moderator:action' object.user.id %}" class="btn btn-default">
     <span class="glyphicon glyphicon-folder-open"></span> Виды деятельности
   </a>
-  <a href="{% url 'moderator:payment-list' %}" class="btn btn-default">
-    <span class="glyphicon glyphicon-shopping-cart"></span> Оплата подписки
+  <a href="{% url 'moderator:payment-list' object.user.id %}" class="btn btn-default">
+    <span class="glyphicon glyphicon-shopping-cart"></span> Платежи
   </a>
 </div>

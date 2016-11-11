@@ -23,5 +23,6 @@ urlpatterns = patterns(
     url(r'^area-add/$', 'area_add', name='area-add'),
     url(r'^area/(?P<pk>\d+)/$', 'area_update', name='area-update'),
 
-    url(r'^payment/$', 'payment_list', name='payment-list'),
+    url(r'^(?P<pk>\d+)/payment/$', 'payment_list', name='payment-list'),
+    url(r'^payment/(?P<pk>\d+)/$', 'payment_detail', name='payment-detail'),
 )

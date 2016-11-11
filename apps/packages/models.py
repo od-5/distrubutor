@@ -33,5 +33,6 @@ class Package(models.Model):
     )
 
     name = models.CharField(verbose_name=u'Название', max_length=255)
+    discount = models.CharField(verbose_name=u'Скидка', max_length=255, blank=True, null=True)
     month = models.PositiveIntegerField(default=1, choices=MONTH_CHOICE, verbose_name=u'Количество месяцев')
     cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Стоимость, руб')

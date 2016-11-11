@@ -4,6 +4,8 @@ from annoying.functions import get_object_or_None
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
+import datetime
+from dateutil.relativedelta import relativedelta
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404
@@ -12,6 +14,7 @@ from django.views.generic import ListView
 from django.forms.models import inlineformset_factory, modelformset_factory
 from apps.packages.models import Package
 from apps.robokassa.forms import RobokassaForm
+from apps.robokassa.signals import result_received
 from .forms import ModeratorForm, ModeratorAreaForm, ModeratorActionForm, ReviewForm
 from .models import Moderator, ModeratorArea, ModeratorAction, Review, Order
 from core.forms import UserAddForm, UserUpdateForm
@@ -260,37 +263,73 @@ class ReviewListView(ListView):
         return context
 
 
-def payment_list(request):
+def payment_list(request, pk):
     context = {}
+    moderator = Moderator.objects.select_related().get(user=int(pk))
+    if request.GET.get('package'):
+        print request.GET.get('package')
+        print int(request.GET.get('package'))
+
+        try:
+            package = Package.objects.get(pk=int(request.GET.get('package')))
+            order = Order.objects.create(moderator=moderator, package=package)
+            return HttpResponseRedirect(reverse('moderator:payment-detail', args=(order.id, )))
+        except:
+            pass
+    order_qs = moderator.order_set.all()
+
     if request.user.type == 2:
-        if request.GET.get('package') and request.GET.get('package').isdigit():
-            package = get_object_or_None(Package, pk=int(request.GET.get('package')))
-            order_qs = Order.objects.filter(pay=False, moderator=request.user.moderator_user)
-            for i in order_qs:
-                i.delete()
-            order = Order.objects.create(moderator=request.user.moderator_user, package=package)
-            print order.id
-            form = RobokassaForm(initial={
-                'OutSum': order.package.cost,
-                'InvoiceID': order.id,
-                'Description': order,
-                'Email': request.user.email,
-                # 'IncCurrLabel': '',
-                # 'Culture': 'ru'
-            })
-            context.update({
-                'order': order,
-                'form': form
-            })
-        package_qs = Package.objects.all()
         context.update({
-            'package_qs': package_qs,
-            'order_qs': Order.objects.filter(moderator=request.user.moderator_user, pay=True)
+            'package_list': Package.objects.all(),
         })
-    elif request.user.type == 1:
-        context.update({
-            'order_qs': Order.objects.filter(pay=True)
-        })
-    else:
-        return HttpResponseRedirect(reverse('dashoard:index'))
+    if request.user.type not in [1, 2]:
+        return HttpResponseRedirect(reverse('dashboard:index'))
+    context.update({
+        'order_list': order_qs,
+        'object': moderator
+    })
     return render(request, 'moderator/payment_list.html', context)
+
+
+def payment_detail(request, pk):
+    context = {}
+    order = get_object_or_None(Order, pk=int(pk))
+    if not order.pay:
+        form = RobokassaForm(initial={
+            'OutSum': order.package.cost,
+            'InvoiceID': order.id,
+            'Description': order,
+            # 'Email': order.moderator.user.email,
+            # 'IncCurrLabel': '',
+            # 'Culture': 'ru'
+        })
+        context.update({
+            'form': form
+        })
+    context.update({
+        'order': order,
+        'object': order.moderator
+    })
+    return render(request, 'moderator/payment_detail.html', context)
+
+
+def payment_received(sender, **kwargs):
+    """
+    Обработка сигнала result_received
+    """
+    order = Order.objects.get(id=kwargs['InvId'])
+    order.pay = True
+    order.save()
+    moderator = order.moderator
+    moderator.deny_access = False
+    today = datetime.datetime.today()
+    if moderator.deny_date:
+        if moderator.deny_date < today:
+            moderator.deny_date = today + relativedelta(months=order.package.month)
+        else:
+            moderator.deny_date = moderator.deny_date + relativedelta(months=order.package.month)
+    else:
+        moderator.deny_date = today + relativedelta(months=order.package.month)
+    moderator.save()
+
+result_received.connect(payment_received)

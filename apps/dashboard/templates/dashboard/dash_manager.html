@@ -1,6 +1,20 @@
 {% extends 'cabinet/cabinet_base.html' %}
 {% block content %}
 <div class="container dashboard">
+  {% if user.deny_access %}
+  <div class="col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <p class="lead text-center remove-bottom">Рабочий стол</p>
+      </div>
+      <div class="panel-body">
+        <p class="alert alert-info">
+          Доступ заблокирован. Необходимо внести оплату за подписку
+        </p>
+      </div>
+    </div>
+  </div>
+  {% else %}
   <div class="col-lg-8 remove-padding">
     <div class="col-lg-12">
       <div class="panel panel-default">
@@ -135,5 +149,6 @@
       </div>
     </div>
   </div>
+  {% endif %}
 </div>
 {% endblock %}
