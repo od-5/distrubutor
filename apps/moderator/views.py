@@ -322,7 +322,7 @@ def payment_received(sender, **kwargs):
     order.save()
     moderator = order.moderator
     moderator.deny_access = False
-    today = datetime.datetime.today()
+    today = datetime.datetime.now()
     if moderator.deny_date:
         if moderator.deny_date < today:
             moderator.deny_date = today + relativedelta(months=order.package.month)
