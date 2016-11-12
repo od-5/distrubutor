@@ -6272,6 +6272,9 @@ a.lead {
 body {
   overflow-y: scroll;
 }
+.copyright {
+  color: #999;
+}
 .add-row,
 .delete-row {
   color: #333;
