@@ -11,10 +11,26 @@
           <p class="lead remove-bottom text-center">Менеджеры</p>
         </div>
         <div class="panel-body">
-          <a href="{% url 'manager:add' %}" class="btn btn-success add-bottom">
-            <span class="glyphicon glyphicon-plus-sign"></span> Добавить менеджера
-          </a>
+          <div class="row">
+            <div class="col-lg-6">
+              <a href="{% url 'manager:add' %}" class="btn btn-success add-bottom">
+                <span class="glyphicon glyphicon-plus-sign"></span> Добавить менеджера
+              </a>
+            </div>
+            <div class="col-lg-6">
+              <p class="text-right">Всего менеджеров: <strong>{{ page_obj.paginator.count|default:'0' }}</strong></p>
+            </div>
+            <div class="clearfix"></div>
+          </div>
           <form action="" method="GET" role="form" class="form-inline add-bottom">
+          {% if user.is_leader_manager %}
+            <select name="city" class="form-control input-sm">
+              <option value="0">---- Город ----</option>
+              {% for city in city_list %}
+                <option value="{{ city.id }}" {% if city.id == r_city %}selected="selected"{% endif %}>{{ city.name }}</option>
+              {% endfor %}
+            </select>
+          {% endif %}
             <input type="text" name="email" value="{{ r_email|default:'' }}" class="form-control input-sm" placeholder="e-mail">
             <input type="text" name="last_name" value="{{ r_last_name|default:'' }}" class="form-control input-sm" placeholder="Фамилия">
             <input type="text" name="first_name" value="{{ r_first_name|default:'' }}" class="form-control input-sm" placeholder="Имя">

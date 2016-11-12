@@ -1,7 +1,7 @@
 # coding=utf-8
 from django import forms
 from apps.sale.models import Sale
-from .models import Distributor, DistributorTask, DistributorPayment
+from .models import Distributor, DistributorTask, DistributorPayment, GPSPoint
 
 __author__ = 'alexy'
 
@@ -91,3 +91,18 @@ class DistributorTaskUpdateForm(forms.ModelForm):
             self.fields['distributor'].queryset = user.moderator_user.distributor_set.all()
             self.fields['sale'].queryset = Sale.objects.filter(moderator=user.moderator_user)
             self.fields['area'].queryset = user.moderator_user.moderatorarea_set.all()
+
+
+class GPSPointUpdateForm(forms.ModelForm):
+    class Meta:
+        model = GPSPoint
+        fields = '__all__'
+        widgets = {
+            'task': forms.HiddenInput(),
+            'name': forms.HiddenInput(),
+            'count': forms.NumberInput(attrs={'class': 'form-control', 'step': '1'}),
+            'comment': forms.HiddenInput(),
+            'coord_x': forms.HiddenInput(),
+            'coord_y': forms.HiddenInput(),
+            'timestamp': forms.HiddenInput()
+        }

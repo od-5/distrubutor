@@ -8,6 +8,7 @@
         <li><a href="{% url 'distributor:task-list' %}">Список задач для распространителей</a></li>
         <li class="active">Редактирование задачи</li>
       </ol>
+      {% include 'distributor/__includes/task_menu.html' %}
       <div class="panel panel-default">
         <div class="panel-heading">
           <p class="lead text-center remove-bottom">
@@ -20,190 +21,78 @@
           {% elif error %}
             <p class="alert alert-danger">{{ error }}</p>
           {% endif %}
-          <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#task">Задача</a></li>
-            <li><a data-toggle="tab" href="#task_map">Карта</a></li>
-          </ul>
-          <div class="tab-content">
-            <div id="task" class="tab-pane fade in active">
-              <br>
-              <div class="col-lg-6">
-                <form action="" role="form" id="js-form-distributor-task-update" method="post">
-                  {% csrf_token %}
-                  {{ form.errors }}
-                  <div class="form-group" data-url="{% url 'distributor:get_task_initial' %}">
-                    <div class="col-lg-5">{{ form.sale.label_tag }}</div>
-                    <div class="col-lg-7">
-                      {{ form.sale }}
-                      <strong>{{ object.sale }}</strong>
-                    </div>
-                    {{ form.sale.errors }}
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-lg-5">{{ form.order.label_tag }}</div>
-                    <div class="col-lg-7">{{ form.order }}</div>
-                    {{ form.order.errors }}
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-lg-5">{{ form.distributor.label_tag }}</div>
-                    <div class="col-lg-7">{{ form.distributor }}</div>
-                    {{ form.distributor.errors }}
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-lg-5">{{ form.area.label_tag }}</div>
-                    <div class="col-lg-7">{{ form.area }}</div>
-                    {{ form.area.errors }}
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-lg-5">{{ form.type.label_tag }}</div>
-                    <div class="col-lg-7">{{ form.type }}</div>
-                    {{ form.type.errors }}
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-lg-5">{{ form.material_count.label_tag }}</div>
-                    <div class="col-lg-7">{{ form.material_count }}</div>
-                    {{ form.material_count.errors }}
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-lg-5">{{ form.date.label_tag }}</div>
-                    <div class="col-lg-7">{{ form.date }}</div>
-                    {{ form.date.errors }}
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-lg-5">{{ form.define_address.label_tag }}</div>
-                    <div class="col-lg-7">{{ form.define_address }}</div>
-                    {{ form.define_address.errors }}
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-lg-5">{{ form.comment.label_tag }}</div>
-                    <div class="col-lg-7">{{ form.comment }}</div>
-                    {{ form.comment.errors }}
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-lg-5">{{ form.closed.label_tag }}</div>
-                    <div class="col-lg-7">{{ form.closed }}</div>
-                    {{ form.closed.errors }}
-                    <div class="clearfix"></div>
-                  </div>
-                  <button type="submit" class="btn btn-success">Сохранить</button>
-                </form>
+          <div class="col-lg-6">
+            <form action="" role="form" id="js-form-distributor-task-update" method="post">
+              {% csrf_token %}
+              {{ form.errors }}
+              <div class="form-group" data-url="{% url 'distributor:get_task_initial' %}">
+                <div class="col-lg-5">{{ form.sale.label_tag }}</div>
+                <div class="col-lg-7">
+                  {{ form.sale }}
+                  <strong>{{ object.sale }}</strong>
+                </div>
+                {{ form.sale.errors }}
+                <div class="clearfix"></div>
               </div>
-            </div>
-            <div id="task_map" class="tab-pane fade">
-              <p class="lead">
-                Всего израсходовано материалов: <strong>{{ material_count|default:'не указано' }}</strong>
-              </p>
-              <div id="map" data-task="{{ object.id }}" data-url="{% url 'distributor:get_task_cord_list' %}" style="width:100%; height:500px"></div>
-              <div id="photo_list">
-              {% if point_list %}
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Адрес\Координаты</th>
-                      <th>Время</th>
-{#                      <th>Комментарий</th>#}
-                      <th>Кол-во материала</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody class="js-list">
-                  {% for point in point_list %}
-                    <tr data-id="{{ point.id }}" data-name="контрольную точку {{ point }}" data-model="GPSPoint" id="id_GPSPoint_{{ point.id }}">
-                      <td>{{ point|default:'Не указано' }}</td>
-                      <td>{{ point.timestamp|time:'H:i'|default:'Не указано' }} - {{ point.timestamp|date:'d.m.Y'|default:'Не указано' }}</td>
-{#                      <td>{{ point.comment|default:'Не указано' }}</td>#}
-                      <td>{{ point.count|default:'Не указано' }}</td>
-                      <td>
-                        <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ point.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
-                          <span class="glyphicon glyphicon-remove"></span> Удалить
-                        </a>
-                      </td>
-                    </tr>
-                    <tr id="id_GPSPoint_{{ point.id }}_photo">
-                      <td colspan="5">
-                      {% for photo in point.pointphoto_set.all %}
-                        <a href="{{ photo.photo.url }}" rel="group" class="js-gallery" title="{{ photo.name }}, время {{ photo.timestamp|time:'H:i'|default:'Не указано' }}">
-                          <span class="glyphicon glyphicon-camera"></span>
-                        </a>
-                      {% endfor %}
-                      </td>
-                    </tr>
-                  {% endfor %}
-                  </tbody>
-                </table>
-              {% endif %}
+              <div class="form-group">
+                <div class="col-lg-5">{{ form.order.label_tag }}</div>
+                <div class="col-lg-7">{{ form.order }}</div>
+                {{ form.order.errors }}
+                <div class="clearfix"></div>
               </div>
-            </div>
+              <div class="form-group">
+                <div class="col-lg-5">{{ form.distributor.label_tag }}</div>
+                <div class="col-lg-7">{{ form.distributor }}</div>
+                {{ form.distributor.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">{{ form.area.label_tag }}</div>
+                <div class="col-lg-7">{{ form.area }}</div>
+                {{ form.area.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">{{ form.type.label_tag }}</div>
+                <div class="col-lg-7">{{ form.type }}</div>
+                {{ form.type.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">{{ form.material_count.label_tag }}</div>
+                <div class="col-lg-7">{{ form.material_count }}</div>
+                {{ form.material_count.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">{{ form.date.label_tag }}</div>
+                <div class="col-lg-7">{{ form.date }}</div>
+                {{ form.date.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">{{ form.define_address.label_tag }}</div>
+                <div class="col-lg-7">{{ form.define_address }}</div>
+                {{ form.define_address.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">{{ form.comment.label_tag }}</div>
+                <div class="col-lg-7">{{ form.comment }}</div>
+                {{ form.comment.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-5">{{ form.closed.label_tag }}</div>
+                <div class="col-lg-7">{{ form.closed }}</div>
+                {{ form.closed.errors }}
+                <div class="clearfix"></div>
+              </div>
+              <button type="submit" class="btn btn-success">Сохранить</button>
+            </form>
           </div>
         </div>
       </div>
     </div>
   </div>
-  {% include '__modal/js_ajax_remove_form.html' %}
-{% endblock %}
-{% block bottom_js %}
-<script src="//api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
-<script>
-ymaps.ready(init);
-function init() {
-  var map_id = $('#map');
-  var url = map_id.data('url');
-  var task = map_id.data('task');
-  var data_list = '';
-  var center = '';
-  $.ajax({
-    type: "POST",
-    async: false,
-    url: url,
-    data: {
-      task: task
-    }
-  }).done(function (data) {
-    center = data.center;
-    if (data.coord_list.length){
-      data_list = data.coord_list;
-      for(var i=0;i<data_list.length;i++){
-        console.log(data_list[i])
-      }
-    } else {
-      if (data.address_list.length) {
-        data_list = data.address_list;
-      }
-    }
-  });
-  var myMap = new ymaps.Map("map", {
-      center: center,
-      zoom: 13
-    }, {
-      searchControlProvider: 'yandex#search'
-  });
-  if (data_list.length > 1){
-    ymaps.route(
-      data_list
-    ).then(function (route) {
-      route.options.set('routingMode', 'pedestrian');
-      myMap.geoObjects.add(route);
-      var points = route.getWayPoints();
-      points.options.set('preset', 'islands#redStretchyIcon');
-    }, function (error) {
-      alert('Возникла ошибка: ' + error.message);
-    });
-  } else {
-    myPlacemark = new ymaps.Placemark(myMap.getCenter(), {
-            hintContent: data_list[0],
-            balloonContent: data_list[0]
-        });
-    myMap.geoObjects.add(myPlacemark);
-  }
-}
-</script>
 {% endblock %}

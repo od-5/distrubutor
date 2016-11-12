@@ -1,0 +1,25 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block extra_js %}
+  {{ form.media }}
+{% endblock %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <ol class="breadcrumb">
+        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+        <li><a href="{% url 'forum:list' %}">Форум</a></li>
+        <li><a href="{% url 'forum:topic-list' object.topic.section.id %}">{{ object.topic.section.title|default:'' }}</a></li>
+        <li><a href="{% url 'forum:topic-detail' object.topic.id %}">{{ object.topic.title|default:'' }}</a></li>
+        <li class="active">Удаление сообщения</li>
+      </ol>
+      <div class="panel panel-default">
+        <div class="panel-heading text-center">Удаление сообщения</div>
+        <div class="panel-body">
+          Вы действительно хотите удалить сообщение? <br>
+          <a href="?delete=1" class="btn btn-danger">Удалить</a>
+          <a href="?delete=0" class="btn btn-success">Отменить</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

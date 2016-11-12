@@ -17,6 +17,8 @@ urlpatterns = patterns(
     url(r'^tasks/archive/$', DistributorTaskArchiveView.as_view(), name='task-archive'),
     url(r'^task/add/$', 'distributor_task_add', name='task-add'),
     url(r'^task/(?P<pk>\d+)/$', 'distributor_task_update', name='task-update'),
+    url(r'^task/(?P<pk>\d+)/map/$', 'distributor_task_update_map', name='task-update-map'),
+    url(r'^point/(?P<pk>\d+)/$', 'gps_point_update', name='gpspoint-update'),
 
     # ajax
     url(r'^get_distr_and_area_for_sale/$', get_task_initial, name='get_task_initial'),

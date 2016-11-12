@@ -7,9 +7,9 @@ from django.shortcuts import render
 from django.views.generic import ListView
 from apps.moderator.models import ModeratorAction
 from .task_calendar import get_months
-from .models import Distributor, DistributorTask, DistributorPayment
+from .models import Distributor, DistributorTask, DistributorPayment, GPSPoint
 from .forms import DistributorAddForm, DistributorUpdateForm, DistributorPaymentForm, DistributorTaskForm, \
-    DistributorTaskUpdateForm
+    DistributorTaskUpdateForm, GPSPointUpdateForm
 from core.forms import UserAddForm, UserUpdateForm
 from core.models import User
 
@@ -308,15 +308,6 @@ def distributor_task_update(request, pk):
     context = {}
     user = request.user
     task = DistributorTask.objects.select_related().get(pk=int(pk))
-    if task.gpspoint_set.all():
-        material_count = 0
-        for point in task.gpspoint_set.all():
-            if point.count:
-                material_count += int(point.count)
-        context.update({
-            'material_count': material_count,
-            'point_list': task.gpspoint_set.all()
-        })
     if request.method == 'POST':
         form = DistributorTaskUpdateForm(request.POST, user=user, instance=task)
         if form.is_valid():
@@ -337,3 +328,33 @@ def distributor_task_update(request, pk):
         'object': task
     })
     return render(request, 'distributor/task_update.html', context)
+
+
+def distributor_task_update_map(request, pk):
+    context = {}
+    task = DistributorTask.objects.select_related().get(pk=int(pk))
+    if task.gpspoint_set.all():
+        context.update({
+            'material_count': task.actual_material_count(),
+            'point_list': task.gpspoint_set.all()
+        })
+    context.update({
+        'object': task
+    })
+    return render(request, 'distributor/task_update_map.html', context)
+
+
+def gps_point_update(request, pk):
+    point = GPSPoint.objects.get(pk=int(pk))
+    if request.method == 'POST':
+        form = GPSPointUpdateForm(request.POST, instance=point)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('distributor:task-update-map', args=(point.task.id, )))
+    else:
+        form = GPSPointUpdateForm(instance=point)
+    context = {
+        'point': point,
+        'form': form
+    }
+    return render(request, 'distributor/point_update.html', context)

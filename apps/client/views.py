@@ -32,6 +32,7 @@ class ClientListView(ListView):
         phone = self.request.GET.get('phone')
         contact = self.request.GET.get('contact')
         manager = self.request.GET.get('manager')
+        city = self.request.GET.get('city')
         if user.type == 1:
             qs = Client.objects.all()
         elif user.type == 2:
@@ -43,25 +44,29 @@ class ClientListView(ListView):
                 qs = Client.objects.filter(manager=user.manager_user)
         else:
             qs = None
-        if manager and int(manager) != 0:
-            qs = qs.filter(manager=int(manager))
-        if name:
-            qs = qs.filter(name__icontains=name)
-        if phone or contact:
-            client_id_list = [int(i.id) for i in qs]
-            c_qs = ClientContact.objects.filter(client__in=client_id_list)
-            if phone:
-                c_qs = c_qs.filter(phone=phone)
-            if contact:
-                c_qs = c_qs.filter(name__icontains=contact)
-                # qs = qs.filter(name=self.request.GET.get('name'))
-            client_id_list = [int(i.incomingclient.id) for i in c_qs]
-            qs = qs.filter(id__in=client_id_list)
+        if qs:
+            if city and int(city) != 0:
+                qs = qs.filter(city=int(city))
+            if manager and int(manager) != 0:
+                qs = qs.filter(manager=int(manager))
+            if name:
+                qs = qs.filter(name__icontains=name)
+            if phone or contact:
+                client_id_list = [int(i.id) for i in qs]
+                c_qs = ClientContact.objects.filter(client__in=client_id_list)
+                if phone:
+                    c_qs = c_qs.filter(phone__icontains=phone)
+                if contact:
+                    c_qs = c_qs.filter(name__icontains=contact)
+                    # qs = qs.filter(name=self.request.GET.get('name'))
+                client_id_list = [int(i.incomingclient.id) for i in c_qs]
+                qs = qs.filter(id__in=client_id_list)
 
         return qs
 
     def get_context_data(self, **kwargs):
         context = super(ClientListView, self).get_context_data(**kwargs)
+        user = self.request.user
         if self.request.GET.get('name'):
             context.update({
                 'r_name': self.request.GET.get('name')
@@ -78,13 +83,17 @@ class ClientListView(ListView):
             context.update({
                 'r_manager': int(self.request.GET.get('manager'))
             })
+        if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
+            context.update({
+                'r_city': int(self.request.GET.get('city'))
+            })
         queryset = self.get_queryset()
         manager_client_count = queryset.count()
         manager_task_count = 0
         search_client_name = self.request.GET.get('client_name')
         if search_client_name:
             if self.request.user.type == 5:
-                qs = Client.objects.filter(moderator=self.request.user.manager_user.moderator.moderator_user)
+                qs = Client.objects.filter(moderator=user.manager_user.moderator.moderator_user)
             else:
                 qs = queryset
             search_client_qs = qs.filter(name__icontains=search_client_name)
@@ -98,23 +107,29 @@ class ClientListView(ListView):
             'manager_client_count': manager_client_count,
             'manager_task_count': manager_task_count
         })
-        user = self.request.user
         if user.type == 1:
             manager_qs = Manager.objects.all()
+            city_qs = City.objects.all()
         elif user.type == 2:
             manager_qs = Manager.objects.filter(moderator=user)
+            city_qs = user.moderator_user.city.all()
         elif user.type == 5:
-            current_manager = user.manager_user
             context.update({
-                'current_manager': current_manager
+                'current_manager': user.manager_user
             })
-            manager_qs = Manager.objects.filter(moderator=current_manager.moderator.moderator_user)
+            if user.manager_user.leader:
+                city_qs = user.manager_user.moderator.moderator_user.city.all()
+            else:
+                city_qs = None
+            manager_qs = Manager.objects.filter(moderator=user.manager_user.moderator.moderator_user)
         else:
             manager_qs = None
+            city_qs = None
         import_form = ClientImportForm()
         context.update({
             'import_form': import_form,
-            'manager_list': manager_qs
+            'manager_list': manager_qs,
+            'city_list': city_qs
         })
         return context
 

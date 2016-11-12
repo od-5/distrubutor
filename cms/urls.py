@@ -14,6 +14,7 @@ urlpatterns = patterns(
     url(r'^administrator/', include('apps.administrator.urls', namespace='administrator'),),
     url(r'^moderator/', include('apps.moderator.urls', namespace='moderator'),),
     url(r'^city/', include('apps.city.urls', namespace='city'),),
+    url(r'^forum/', include('apps.forum.urls', namespace='forum'),),
     url(r'^package/', include('apps.packages.urls', namespace='package'),),
     url(r'^sale/', include('apps.sale.urls', namespace='sale'),),
     url(r'^distributor/', include('apps.distributor.urls', namespace='distributor'),),

@@ -22,6 +22,7 @@ INSTALLED_APPS = (
     'apps.moderator',
     'apps.manager',
     'apps.city',
+    'apps.forum',
     'apps.sale',
     'apps.distributor',
     'apps.client',

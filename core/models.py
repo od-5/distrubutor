@@ -96,6 +96,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     #
     # def get_change_url(self):
     #     return reverse('cabinet:user-change', args=(self.pk, ))
+    def is_leader_manager(self):
+        if self.type == 1 or self.type == 2:
+            return True
+        if self.type == 5:
+            if self.manager_user.leader:
+                return True
+        return False
+
     def deny_access(self):
         if self.type == 1 or self.type == 3:
             return False

@@ -1,0 +1,33 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block extra_js %}
+  {{ form.media }}
+{% endblock %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <ol class="breadcrumb">
+        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+        <li><a href="{% url 'forum:list' %}">Форум</a></li>
+        <li><a href="{% url 'forum:topic-list' object.topic.section.id %}">{{ object.topic.section.title|default:'' }}</a></li>
+        <li><a href="{% url 'forum:topic-detail' object.topic.id %}">{{ object.topic.title|default:'' }}</a></li>
+        <li class="active">Редактирование сообщения</li>
+      </ol>
+      <div class="panel panel-default">
+        <div class="panel-heading text-center">Редактирование сообщения</div>
+        <div class="panel-body">
+          <form action="" class="js-forum-comment-update-form" method="post" role="form">
+            {% csrf_token %}
+            <div class="col-lg-12">
+              <div class="form-group">
+              {% for field in form %}
+                {{ field }}
+              {% endfor %}
+              </div>
+              <button type="submit" class="btn btn-success">Сохранить изменить</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
+from apps.city.models import City
 from core.forms import UserAddForm, UserUpdateForm
 from core.models import User
 from .models import Manager
@@ -34,20 +35,39 @@ class ManagerListView(ListView):
         else:
             qs = None
         if qs:
+            if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
+                qs = qs.filter(moderator__moderator_user__city=self.request.GET.get('city'))
             if self.request.GET.get('email'):
-                qs = qs.filter(user__email=self.request.GET.get('email'))
+                qs = qs.filter(user__email__icontains=self.request.GET.get('email'))
             if self.request.GET.get('last_name'):
-                qs = qs.filter(user__last_name=self.request.GET.get('last_name'))
-            if self.request.GET.get('email'):
-                qs = qs.filter(user__first_name=self.request.GET.get('first_name'))
+                qs = qs.filter(user__last_name__icontains=self.request.GET.get('last_name'))
+            if self.request.GET.get('first_name'):
+                qs = qs.filter(user__first_name__icontains=self.request.GET.get('first_name'))
             if self.request.GET.get('patronymic'):
-                qs = qs.filter(user__patronymic=self.request.GET.get('patronymic'))
+                qs = qs.filter(user__patronymic__icontains=self.request.GET.get('patronymic'))
             if self.request.GET.get('phone'):
-                qs = qs.filter(user__phone=self.request.GET.get('phone'))
+                qs = qs.filter(user__phone__icontains=self.request.GET.get('phone'))
         return qs
 
     def get_context_data(self, **kwargs):
         context = super(ManagerListView, self).get_context_data()
+        user = self.request.user
+        if user.type == 1:
+            context.update({
+                'city_list': City.objects.all()
+            })
+        elif user.type == 2:
+            context.update({
+                'city_list': user.moderator_user.city.all()
+            })
+        elif user.type == 5 and user.is_leader_manager():
+            context.update({
+                'city_list': user.manager_user.moderator.moderator_user.city.all()
+            })
+        if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
+            context.update({
+                'r_city': int(self.request.GET.get('city'))
+            })
         context.update({
             'r_email': self.request.GET.get('email'),
             'r_last_name': self.request.GET.get('last_name'),

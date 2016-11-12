@@ -78,6 +78,17 @@ class DistributorTask(models.Model):
     def get_type_display(self):
         return self.type.name
 
+    def actual_material_count(self):
+        """
+        Подсчёт фактически реализованных материалов. Учитываются только те GPS точки
+        к которым сделаны фотографии
+        """
+        material_count = 0
+        for point in self.gpspoint_set.filter(count__isnull=False):
+            if point.pointphoto_set.all():
+                material_count += int(point.count)
+        return material_count
+
     def total_cost(self):
         payment = DistributorPayment.objects.get(distributor=self.distributor, type=self.type)
         try:
@@ -156,7 +167,7 @@ class GPSPoint(models.Model):
     name = models.CharField(max_length=150, verbose_name=u'Название', blank=True, null=True)
     count = models.PositiveIntegerField(verbose_name=u'Кол-во материала', blank=True, null=True)
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
-    coord_x = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=u'Ширина')
+    coord_x = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=u'Широта')
     coord_y = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=u'Долгота')
     timestamp = models.DateTimeField(default=datetime.datetime.now(), verbose_name=u'Временная метка')
 

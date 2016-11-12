@@ -15,6 +15,15 @@
 {#            <span class="glyphicon glyphicon-plus-sign"></span> Добавить нового клиента#}
 {#          </a>#}
           <div class="row">
+            <div class="col-lg-6">
+              <p>Количество клиентов: <strong>{{ manager_client_count|default:'0' }}</strong></p>
+            </div>
+            <div class="col-lg-6">
+              <p class="text-right">Количество задач: <strong>{{ manager_task_count|default:'0' }}</strong></p>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="row">
             <div class="col-lg-7">
               <form action="" method="GET" role="form" class="form-inline add-bottom">
                 <a href="{% url 'client:add' %}" class="btn btn-success">
@@ -60,9 +69,15 @@
             {% endif %}
           {% endif %}
 
-          <form action="" method="GET" role="form" class="form-inline add-bottom">
-            {% if not user.manager_user and not user.manager_user.leader %}
-            <select name="manager" class="form-control input-sm">
+          <form action="" method="GET" role="form" id="js-search-form" class="form-inline add-bottom">
+            {% if user.is_leader_manager %}
+            <select name="city" id="id_city" class="form-control input-sm">
+              <option value="0">---- Город ----</option>
+              {% for city in city_list %}
+                <option value="{{ city.id }}" {% if city.id == r_city %}selected="selected"{% endif %}>{{ city.name }}</option>
+              {% endfor %}
+            </select>
+            <select name="manager" id="id_manager" class="form-control input-sm">
               <option value="0">---- Менеджер ----</option>
               {% for manager in manager_list %}
                 <option value="{{ manager.id }}" {% if manager.id == r_manager %}selected="selected"{% endif %}>{{ manager }}</option>
