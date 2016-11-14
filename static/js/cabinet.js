@@ -696,6 +696,14 @@ $(function() {
     }
   });
   $('#js-task-modal-add-form').ajaxForm({
+    beforeSubmit: function(arr, $form, options) {
+      //alert('hay');
+      $form.find('input[type=submit]').attr('disabled', 'disabled');
+        // The array of form data takes the following form:
+        // [ { name: 'username', value: 'jresig' }, { name: 'password', value: 'secret' } ]
+
+        // return false to cancel submit
+    },
     success: function(data){
       if (data.success) {
         $.notify('Задача по клиенту добавлена', 'success');
@@ -1053,7 +1061,13 @@ $(function() {
     }
   });
 
-  $(".js-gallery").fancybox();
+  $(".js-gallery").fancybox({
+    helpers: {
+      overlay: {
+        locked: false
+      }
+    }
+  });
 
   // Показать/скрыть календарь работ для распространителя
   $('.js-calendar-heading').click(function(){
@@ -1136,5 +1150,38 @@ $(function() {
       }
     }
   });
+
+//  Удаление фотографий на странице редактирования контрольной точки
+  $('.js-photo-remove-btn').click(function(){
+    var photo_id = $(this).data('id');
+    console.log(photo_id);
+    $(this).parents('#js-photo-container').find('.photo-delete-block').slideToggle();
+
+  });
+  $('.js-photo-remove-reset').click(function(){
+    $('.photo-delete-block').slideUp()
+  });
+  $('.js-photo-remove-confirm').click(function(){
+    var url = $(this).data('url');
+    var photo_id = $(this).data('id');
+    var container = $(this).parents('#js-photo-container');
+    $.ajax({
+      type: "GET",
+      data: {
+        photo_id: photo_id
+      },
+      url: url
+    }).done(function (data) {
+      if(data.success){
+        container.remove();
+        $.notify('Фотография удалена', 'success');
+      } else {
+        $.notify('Произошла ошибка. Обновите страницу и попробуйте ещё раз', 'error');
+      }
+    });
+    container.find('.photo-delete-block').slideUp();
+  });
+
+
 
 });

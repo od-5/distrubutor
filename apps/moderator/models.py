@@ -170,5 +170,6 @@ class Order(models.Model):
 
     moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор')
     package = models.ForeignKey(to=Package, verbose_name=u'Платёжный пакет')
+    cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Сумма оплаты', default=0)
     pay = models.BooleanField(default=False, verbose_name=u'Оплачено')
     timestamp = models.DateTimeField(auto_now=True)

@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from apps.moderator.models import ModeratorArea
 from apps.sale.models import Sale
 from .forms import DistributorPaymentForm
-from .models import Distributor, DistributorPayment, DistributorTask
+from .models import Distributor, DistributorPayment, DistributorTask, PointPhoto
 
 __author__ = 'alexy'
 
@@ -137,3 +137,20 @@ def get_current_location(request):
         'data_list': data_list,
         'center': center
     }
+
+
+@ajax_request
+def ajax_remove_photo(request):
+    """
+    ajax удаление фотографий
+    """
+    try:
+        photo = PointPhoto.objects.get(pk=int(request.GET.get('photo_id')))
+        photo.delete()
+        return {
+            'success': True
+        }
+    except:
+        return {
+            'success': False
+        }

@@ -266,13 +266,12 @@ class ReviewListView(ListView):
 def payment_list(request, pk):
     context = {}
     moderator = Moderator.objects.select_related().get(user=int(pk))
-    if request.GET.get('package'):
-        print request.GET.get('package')
-        print int(request.GET.get('package'))
+    if request.GET.get('package') and moderator.city.count():
 
         try:
             package = Package.objects.get(pk=int(request.GET.get('package')))
-            order = Order.objects.create(moderator=moderator, package=package)
+            total_sum = package.cost * moderator.city.count()
+            order = Order.objects.create(moderator=moderator, cost=total_sum, package=package)
             return HttpResponseRedirect(reverse('moderator:payment-detail', args=(order.id, )))
         except:
             pass
@@ -296,7 +295,7 @@ def payment_detail(request, pk):
     order = get_object_or_None(Order, pk=int(pk))
     if not order.pay:
         form = RobokassaForm(initial={
-            'OutSum': order.package.cost,
+            'OutSum': order.cost,
             'InvoiceID': order.id,
             'Description': order,
             # 'Email': order.moderator.user.email,

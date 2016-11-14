@@ -55,7 +55,8 @@
                   <td colspan="6">
                   {% for photo in point.pointphoto_set.all %}
                     <a href="{{ photo.photo.url }}" rel="group" class="js-gallery" title="{{ photo.name }}, время {{ photo.timestamp|time:'H:i'|default:'Не указано' }}">
-                      <span class="glyphicon glyphicon-camera"></span>
+{#                      <span class="glyphicon glyphicon-camera"></span>#}
+                      <img src="{{ photo.image_resize.url }}" alt="">
                     </a>
                   {% endfor %}
                   </td>

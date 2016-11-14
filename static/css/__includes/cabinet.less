@@ -253,8 +253,33 @@ body {
   &-right {
     float: right;
   }
+  &-tile {
+    font-size: 30px;
+  }
+}
+.photo {
+  &-delete {
+    &-block {
+      display: none;
+      position: absolute;
+      background: rgba(255,255,255,0.9);
+      -webkit-box-shadow: 0 0 10px #999;
+      -moz-box-shadow: 0 0 10px #999;
+      box-shadow: 0 0 10px #999;
+      top: 0;
+      height: 100%;
+      text-align: center;
+      padding-top: 40px;
+    }
+  }
 }
 #photo_list {
+  .js-gallery {
+    img {
+      width: 100px;
+      height: 100px;
+    }
+  }
   .glyphicon {
     &-camera {
       font-size: 50px;
