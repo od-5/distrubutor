@@ -1,0 +1,84 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block content %}
+  <div class="container">
+    <div class="col-lg-12">
+      <ol class="breadcrumb">
+        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+        <li><a href="{% url 'order:list' %}">Платежи</a></li>
+        <li class="active">Детализация счёта {{ object }}</li>
+      </ol>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="lead remove-bottom text-center">Детализация счёта {{ object }}</p>
+        </div>
+        <div class="panel-body">
+          <div class="col-md-6">
+            <p>Данные о плательщике</p>
+            <table class="table table-striped table-condensed detail-view">
+              <tbody>
+                <tr class="odd">
+                  <th>Полное имя</th>
+                  <td>{{ object.moderator.user.get_full_name }}</td>
+                </tr>
+                <tr class="even">
+                  <th>E-Mail</th>
+                  <td>{{ object.moderator.user.email|default:'' }}</td>
+                </tr>
+                <tr class="odd">
+                  <th>Телефон</th>
+                  <td>{{ object.moderator.user.phone|default:'' }}</td>
+                </tr>
+                <tr class="even">
+                  <th>Выбранный пакет</th>
+                  <td>{{ object.package.name|default:'не выбрано' }} ({{ object.package.get_month_display }})</td>
+                </tr>
+                <tr class="odd">
+                  <th>Сумма</th>
+                  <td>{{ object.cost|default:'0' }}</td>
+                </tr>
+                <tr class="odd">
+                  <th>Дата создания(оплаты)</th>
+                  <td>{{ object.timestamp|default:'' }}</td>
+                </tr>
+              </tbody>
+            </table>
+            {% if order.pay %}
+            <div class="order-paied">
+              Счёт оплачен
+            </div>
+            {% endif %}
+          </div>
+          <div class="col-md-6">
+            <p>Получатель платежа</p>
+            <table class="table table-striped table-condensed detail-view">
+              <tr>
+                <th>ИП</th>
+                <td>Лунев Валерий Александрович</td>
+              </tr>
+              <tr>
+                <th>ИНН</th>
+                <td>344107104109</td>
+              </tr>
+              <tr>
+                <th>ОГРН</th>
+                <td>309345903700027</td>
+              </tr>
+              <tr>
+                <th>дата</th>
+                <td>06.02.2009 г</td>
+              </tr>
+            </table>
+            <div class="text-right">
+              <a href="https://money.yandex.ru" target="_blank">
+               <img src="https://money.yandex.ru/img/yamoney_logo120x60.gif"
+                alt="Я принимаю Яндекс.Деньги"
+                title="Я принимаю Яндекс.Деньги" border="0" width="120" height="60"/>
+              </a>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

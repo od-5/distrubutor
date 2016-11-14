@@ -27,6 +27,12 @@
   <div class="col-md-12">
     <ul class="nav navbar-nav">
       <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+      {% if user.type == 1 %}
+      <li><a href="{% url 'order:list'%}">Платежи</a></li>
+      {% endif %}
+      {% if user.type == 2 %}
+      <li><a href="{% url 'moderator:payment-list' user.pk %}">Платежи</a></li>
+      {% endif %}
       <li class="dropdown">
         <a href="" class="dropdown-toggle" data-toggle="dropdown">CRM <span class="caret"></span></a>
         <ul class="dropdown-menu">

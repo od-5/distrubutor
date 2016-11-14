@@ -23,6 +23,7 @@ urlpatterns = patterns(
     url(r'^client/', include('apps.client.urls', namespace='client'),),
     url(r'^mobile/', include('apps.mobile.urls', namespace='mobile'),),
     url(r'^payment/', include('apps.robokassa.urls', namespace='payment'),),
+    url(r'^order/', include('apps.order.urls', namespace='order'),),
     url(r'', include('core.urls')),
     url(r'', include('landing.urls', namespace='landing')),
     (r'^i18n/', include('django.conf.urls.i18n')),
