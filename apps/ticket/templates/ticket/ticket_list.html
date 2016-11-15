@@ -41,6 +41,7 @@
               <option value="0" {% if r_type == 0 %}selected="selected"{% endif %}>Новая заявка</option>
               <option value="1" {% if r_type == 1 %}selected="selected"{% endif %}>В обработке</option>
               <option value="2" {% if r_type == 2 %}selected="selected"{% endif %}>Отклонена</option>
+              <option value="3" {% if r_type == 3 %}selected="selected"{% endif %}>Продажа</option>
             </select>
             <input type="text" name="name" class="form-control input-sm" placeholder="Имя" value="{{ r_name|default:'' }}">
             <input type="text" name="phone" class="form-control input-sm" placeholder="Телефон" value="{{ r_phone|default:'' }}">

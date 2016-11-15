@@ -23,6 +23,7 @@ class Ticket(Common):
         (0, u'Новая заявка'),
         (1, u'В обработке'),
         (2, u'Отклонена'),
+        (3, u'Продажа'),
     )
 
     city = models.ForeignKey(to=City, verbose_name=u'Город', blank=True, null=True)
