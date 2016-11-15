@@ -52,3 +52,10 @@ class Ticket(Common):
         verbose_name=u'Комментарий',
         blank=True,
         null=True)
+    price = models.DecimalField(
+        max_digits=9,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        verbose_name=u'Сумма'
+    )

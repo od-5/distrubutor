@@ -86,5 +86,14 @@ $(function() {
     defaultDate: 1,
     dateFormat: "dd.mm.yy"
   });
+  var ticket_filter_form = $('.js-ticket-filter-form');
+  ticket_filter_form.find('#id_date_s').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
+  ticket_filter_form.find('#id_date_e').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
 
 });
