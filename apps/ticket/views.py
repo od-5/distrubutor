@@ -42,7 +42,7 @@ class TicketListView(ListView):
             qs = qs.filter(phone=self.request.GET.get('phone'))
         if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
             qs = qs.filter(city__id=int(self.request.GET.get('city')))
-        if self.request.GET.get('type'):
+        if self.request.GET.get('type') and self.request.GET.get('type').isdigit():
             qs = qs.filter(type=int(self.request.GET.get('type')))
         r_date_s = self.request.GET.get('date_s')
         r_date_e = self.request.GET.get('date_e')
@@ -70,7 +70,7 @@ class TicketListView(ListView):
             context.update({
                 'r_city': int(self.request.GET.get('city'))
             })
-        if self.request.GET.get('type'):
+        if self.request.GET.get('type') and self.request.GET.get('type').isdigit():
             context.update({
                 'r_type': int(self.request.GET.get('type'))
             })
