@@ -1,7 +1,9 @@
 {% if not user.deny_access %}
 <ol class="breadcrumb">
   <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+  {% if user.type == 1 %}
   <li><a href="{% url 'moderator:list' %}">Список модераторов</a></li>
+  {% endif %}
   <li class="active">Редактирование модератора</li>
 </ol>
 {% endif %}
