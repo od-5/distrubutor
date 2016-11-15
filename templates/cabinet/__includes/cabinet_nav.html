@@ -39,6 +39,7 @@
         {% if user.manager_user and not user.manager_user.leader %}{% else %}
           <li><a href="{% url 'manager:list' %}"><span class="glyphicon glyphicon-list-alt text-success"></span> Список менеджеров</a></li>
           <li><a href="{% url 'manager:add' %}"><span class="glyphicon glyphicon-plus-sign text-success"></span> Добавить нового менеджера</a></li>
+          <li><a href="{% url 'manager:report' %}"><span class="glyphicon glyphicon-random text-success"></span> Отчёт по менеджерам</a></li>
           <li class="divider"></li>
         {% endif %}
           <li><a href="{% url 'client:list' %}"><span class="glyphicon glyphicon-list-alt text-success"></span> Журнал клиентов</a></li>
