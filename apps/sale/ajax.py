@@ -88,3 +88,16 @@ def payment_add(request):
             'error': True
         }
 
+
+@ajax_request
+@csrf_exempt
+def get_material_residue(request):
+    if request.GET.get('order'):
+        saleorder = SaleOrder.objects.get(pk=int(request.GET.get('order')))
+        return {
+            'count': saleorder.material_residue()
+        }
+    else:
+        return {
+            'count': False
+        }

@@ -77,6 +77,14 @@ $(function() {
     defaultDate: 1,
     dateFormat: "dd.mm.yy"
   });
-
+  var manager_report_form = $('.js-manager-report-form');
+  manager_report_form.find('#id_date_s').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
+  manager_report_form.find('#id_date_e').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
 
 });

@@ -36,6 +36,11 @@ $(function() {
   });
   // форма добавления оплаты
   $('.js-payment-add-btn').fancybox({
+    helpers: {
+      overlay: {
+        locked: false
+      }
+    },
     afterClose: function () {
       $('.js-modal-payment-add-form').resetForm();
     },
@@ -67,6 +72,11 @@ $(function() {
   // ajax удаление объектов
   var fancy_initial = function(){
     $('.js-ajax-remove-btn').fancybox({
+      helpers: {
+        overlay: {
+          locked: false
+        }
+      },
       afterClose: function () {
         $('.js-ajax-remove-item-form').resetForm();
       },
@@ -92,6 +102,7 @@ $(function() {
         if ($('tr').is('#id_'+data.model+'_'+data.id+'_photo')){
           $('#id_'+data.model+'_'+data.id+'_photo').remove();
         }
+
         $.fancybox.close();
       } else {
         $.notify('Произошла ошибка. Объект не удалён', 'error');
@@ -520,6 +531,11 @@ $(function() {
   var reassign_manager_form = $('#js-form-reassign-manager');
   var reassign_fancy_initial = function() {
     $('.js-reassign-manager').fancybox({
+      helpers: {
+        overlay: {
+          locked: false
+        }
+      },
       afterClose: function () {
         reassign_manager_form.resetForm();
       },
@@ -586,6 +602,11 @@ $(function() {
 
   // модальное окно показа списка контактных лиц клиента
   $('.js-show-client-contact').fancybox({
+      helpers: {
+        overlay: {
+          locked: false
+        }
+      },
       afterClose: function () {
         $('#js-client-contact-list').html('');
       },
@@ -664,6 +685,11 @@ $(function() {
 
   // CRM  модальное окно формы создания задачи по клиенту
   $('.js-new-task-btn').fancybox({
+    helpers: {
+      overlay: {
+        locked: false
+      }
+    },
     beforeLoad: function () {
       var item_id = '#' + this.element[0].id;
       var item = $(item_id);
@@ -760,6 +786,11 @@ $(function() {
 
   // CRM модальное окно формы редактирования задачи по клиенту
   $('.js-change-task-btn').fancybox({
+    helpers: {
+      overlay: {
+        locked: false
+      }
+    },
     afterClose: function () {
       validator.resetForm();
       sale_modal_validator.resetForm();
@@ -953,6 +984,7 @@ $(function() {
           order.append($("<option value selected='selected'>---------</option>"));
           for (var k = 0; k < order_list.length; k++) {
             order.append($("<option/>", {
+              material: order_list[k]['material_residue'],
               value: order_list[k]['id'],
               text: order_list[k]['name']
             }));
@@ -973,7 +1005,28 @@ $(function() {
       order.parents('.form-group').addClass('hide');
     }
   });
-
+  d_t_a_form.find('#id_order').change(function(){
+    var url = $(this).parents('.col-lg-7').data('url');
+    console.log($(this).val());
+    var order = $(this).val();
+    if($(this).val()){
+      $.ajax({
+        type: "GET",
+        url: url,
+        data: {
+          order: order
+        }
+      }).done(function (data) {
+        if(data.count){
+          $('#js-order-material-residue').text('По заказу осталось распространить листовок: ' + data.count)
+        } else {
+          $('#js-order-material-residue').text('')
+        }
+      });
+    } else {
+      $('#js-order-material-residue').text('')
+    }
+  });
   // валидация формы редактирования задачи для распространителя
   var d_t_u_form = $('#js-form-distributor-task-update');
   d_t_u_form.validate({
@@ -1046,7 +1099,7 @@ $(function() {
           order.find('option').remove();
           order.append($("<option value selected='selected'>---------</option>"));
           for (var k = 0; k < order_list.length; k++) {
-            area.append($("<option/>", {
+            order.append($("<option/>", {
               value: order_list[k]['id'],
               text: order_list[k]['name']
             }));
@@ -1181,7 +1234,12 @@ $(function() {
     });
     container.find('.photo-delete-block').slideUp();
   });
-
+  // выбор всех менеджеров на странице отчёта
+  var table_report = $('.js-table-report');
+  table_report.find('#js-select-all');
+  table_report.find('#js-select-all').on('click', function(){
+    table_report.find('tbody input[type=checkbox]').prop('checked', $(this).prop('checked'));
+  });
 
 
 });

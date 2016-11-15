@@ -3,6 +3,11 @@ body {
   height: 100%;
   width: 100%;
 }
+#wrapper {
+  height: 100% !important;
+  height: auto;
+  margin-bottom: -30px;
+}
 a,
 h2 {
   -webkit-transition: color 0.5s ease;

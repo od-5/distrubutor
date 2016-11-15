@@ -6089,6 +6089,11 @@ body {
   height: 100%;
   width: 100%;
 }
+#wrapper {
+  height: 100% !important;
+  height: auto;
+  margin-bottom: -30px;
+}
 a,
 h2 {
   -webkit-transition: color 0.5s ease;
@@ -6486,6 +6491,15 @@ body {
   display: block;
   height: 50px;
   padding: 0 10px;
+}
+.gpspoint-photo-container {
+  overflow: hidden;
+  overflow-x: scroll;
+  white-space: nowrap;
+}
+.gpspoint-photo-container .js-gallery {
+  display: inline-block;
+  vertical-align: top;
 }
 .sign {
   background-color: #fff;

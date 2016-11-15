@@ -62,8 +62,10 @@ class DistributorTaskForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user")
         super(DistributorTaskForm, self).__init__(*args, **kwargs)
-        if user.type == 2:
-            self.fields['distributor'].queryset = user.moderator_user.distributor_set.all()
+        if user.type == 1:
+            self.fields['distributor'].queryset = Distributor.objects.filter(user__is_active=True)
+        elif user.type == 2:
+            self.fields['distributor'].queryset = user.moderator_user.distributor_set.filter(user__is_active=True)
             self.fields['sale'].queryset = Sale.objects.filter(moderator=user.moderator_user)
             self.fields['area'].queryset = user.moderator_user.moderatorarea_set.all()
 
@@ -87,8 +89,10 @@ class DistributorTaskUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user")
         super(DistributorTaskUpdateForm, self).__init__(*args, **kwargs)
-        if user.type == 2:
-            self.fields['distributor'].queryset = user.moderator_user.distributor_set.all()
+        if user.type == 1:
+            self.fields['distributor'].queryset = Distributor.objects.filter(user__is_active=True)
+        elif user.type == 2:
+            self.fields['distributor'].queryset = user.moderator_user.distributor_set.filter(user__is_active=True)
             self.fields['sale'].queryset = Sale.objects.filter(moderator=user.moderator_user)
             self.fields['area'].queryset = user.moderator_user.moderatorarea_set.all()
 

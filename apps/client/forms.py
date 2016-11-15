@@ -1,5 +1,6 @@
 # coding=utf-8
 from django import forms
+from apps.manager.models import Manager
 from core.models import User
 from .models import Client, Task, ClientContact
 
@@ -29,25 +30,19 @@ class ClientAddForm(forms.ModelForm):
         # self.request = kwargs.pop("request")
         user = kwargs.pop("user")
         super(ClientAddForm, self).__init__(*args, **kwargs)
-        if user.type == 2:
+        if user.type == 1:
+            self.fields['manager'].queryset = Manager.objects.filter(user__is_active=True)
+        elif user.type == 2:
             self.fields['city'].queryset = user.moderator_user.city.all()
-            self.fields['manager'].queryset = user.manager_set.all()
+            self.fields['manager'].queryset = user.manager_set.filter(user__is_active=True)
             self.fields['moderator'].initial = user.moderator_user
             self.fields['moderator'].widget = forms.HiddenInput()
         elif user.type == 5:
             self.fields['city'].queryset = user.manager_user.moderator.moderator_user.city.all()
-            self.fields['manager'].queryset = user.manager_user.moderator.manager_set.all()
+            self.fields['manager'].queryset = user.manager_user.moderator.manager_set.filter(user__is_active=True)
             self.fields['manager'].initial = user.manager_user
             self.fields['moderator'].initial = user.manager_user.moderator.moderator_user
             self.fields['moderator'].widget = forms.HiddenInput()
-
-    def clean_name(self):
-        data = self.cleaned_data
-        try:
-            Client.objects.get(name=data['name'])
-        except Client.DoesNotExist:
-            return data['name']
-        raise forms.ValidationError(u'Клиент с таким названием уже есть в системе')
 
 
 class ClientUpdateForm(forms.ModelForm):
@@ -68,14 +63,16 @@ class ClientUpdateForm(forms.ModelForm):
         # self.request = kwargs.pop("request")
         user = kwargs.pop("user")
         super(ClientUpdateForm, self).__init__(*args, **kwargs)
-        if user.type == 2:
+        if user.type == 1:
+            self.fields['manager'].queryset = Manager.objects.filter(user__is_active=True)
+        elif user.type == 2:
             self.fields['city'].queryset = user.moderator_user.city.all()
-            self.fields['manager'].queryset = user.manager_set.all()
+            self.fields['manager'].queryset = user.manager_set.filter(user__is_active=True)
             self.fields['moderator'].initial = user.moderator_user
             # self.fields['moderator'].widget = forms.HiddenInput()
         elif user.type == 5:
             self.fields['city'].queryset = user.manager_user.moderator.moderator_user.city.all()
-            self.fields['manager'].queryset = user.manager_user.moderator.manager_set.all()
+            self.fields['manager'].queryset = user.manager_user.moderator.manager_set.filter(user__is_active=True)
             # self.fields['manager'].initial = user.manager_user
             self.fields['moderator'].initial = user.manager_user.moderator.moderator_user
             # self.fields['moderator'].widget = forms.HiddenInput()
@@ -112,10 +109,12 @@ class TaskForm(forms.ModelForm):
         # self.request = kwargs.pop("request")
         user = kwargs.pop("user")
         super(TaskForm, self).__init__(*args, **kwargs)
-        if user.type == 2:
-            self.fields['manager'].queryset = user.manager_set.all()
+        if user.type == 1:
+            self.fields['manager'].queryset = Manager.objects.filter(user__is_active=True)
+        elif user.type == 2:
+            self.fields['manager'].queryset = user.manager_set.filter(user__is_active=True)
             self.fields['client'].queryset = user.moderator_user.client_set.all()
         elif user.type == 5:
             self.fields['client'].queryset = user.manager_user.moderator.moderator_user.client_set.all()
-            self.fields['manager'].queryset = user.manager_user.moderator.manager_set.all()
+            self.fields['manager'].queryset = user.manager_user.moderator.manager_set.filter(user__is_active=True)
             self.fields['manager'].initial = user.manager_user

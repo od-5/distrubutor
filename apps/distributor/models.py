@@ -80,13 +80,12 @@ class DistributorTask(models.Model):
 
     def actual_material_count(self):
         """
-        Подсчёт фактически реализованных материалов. Учитываются только те GPS точки
-        к которым сделаны фотографии
+        Подсчёт фактически реализованных материалов.
         """
         material_count = 0
         for point in self.gpspoint_set.filter(count__isnull=False):
-            if point.pointphoto_set.all():
-                material_count += int(point.count)
+            # if point.pointphoto_set.all():
+            material_count += int(point.count)
         return material_count
 
     def total_cost(self):

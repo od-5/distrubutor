@@ -5,7 +5,7 @@ from core.models import User
 
 __author__ = 'alexy'
 
-
+# todo: проверить на использование  - если формы нигде не используются - удалить.
 class UserProfileForm(ModelForm):
     class Meta:
         model = User

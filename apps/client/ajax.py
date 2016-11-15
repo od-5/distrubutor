@@ -48,7 +48,7 @@ def reassign_manager(request):
 def get_available_manager_list(request):
     manager_list = []
     current_manager = Manager.objects.get(pk=int(request.GET.get('manager')))
-    manager_qs = Manager.objects.filter(moderator=current_manager.moderator.id)
+    manager_qs = Manager.objects.filter(moderator=current_manager.moderator.id, user__is_active=True)
     for manager in manager_qs:
         manager_list.append({
             'id': manager.id,

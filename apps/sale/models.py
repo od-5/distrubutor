@@ -54,6 +54,12 @@ class SaleOrder(models.Model):
         else:
             return u'Заказ  %s - <дата окончания не указана> ' % self.date_start
 
+    def material_residue(self):
+        count = self.count
+        for task in self.distributortask_set.all():
+            count -= task.actual_material_count()
+        return count
+
     def current_payment(self):
         """
         Показывает текущую сумму поступлений по покупке

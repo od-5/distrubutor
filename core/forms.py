@@ -46,13 +46,14 @@ class UserAddForm(forms.ModelForm):
 class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ('email', 'last_name', 'first_name', 'patronymic', 'phone')
+        fields = ('email', 'last_name', 'first_name', 'patronymic', 'phone', 'is_active')
         widgets = {
             'email': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'patronymic': forms.TextInput(attrs={'class': 'form-control'}),
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'is_active': forms.CheckboxInput(),
         }
 
 

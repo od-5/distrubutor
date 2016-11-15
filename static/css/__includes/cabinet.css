@@ -216,3 +216,12 @@ body {
   height: 50px;
   padding: 0 10px;
 }
+.gpspoint-photo-container {
+  overflow: hidden;
+  overflow-x: scroll;
+  white-space: nowrap;
+}
+.gpspoint-photo-container .js-gallery {
+  display: inline-block;
+  vertical-align: top;
+}

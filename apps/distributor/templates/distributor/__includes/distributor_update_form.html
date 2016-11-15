@@ -58,6 +58,16 @@
     {{ u_form.phone.errors }}
     <div class="clearfix"></div>
   </div>
+   <div class="form-group">
+    <div class="col-lg-5">
+      {{ u_form.is_active.label_tag }}
+    </div>
+    <div class="col-lg-7">
+      {{ u_form.is_active }}
+    </div>
+    {{ u_form.is_active.errors }}
+    <div class="clearfix"></div>
+  </div>
   <div class="text-center">
     <button type="submit" class="btn btn-default">Сохранить</button>
   </div>

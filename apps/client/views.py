@@ -108,10 +108,10 @@ class ClientListView(ListView):
             'manager_task_count': manager_task_count
         })
         if user.type == 1:
-            manager_qs = Manager.objects.all()
+            manager_qs = Manager.objects.filter(user__is_active=True)
             city_qs = City.objects.all()
         elif user.type == 2:
-            manager_qs = Manager.objects.filter(moderator=user)
+            manager_qs = Manager.objects.filter(moderator=user, user__is_active=True)
             city_qs = user.moderator_user.city.all()
         elif user.type == 5:
             context.update({
@@ -121,7 +121,7 @@ class ClientListView(ListView):
                 city_qs = user.manager_user.moderator.moderator_user.city.all()
             else:
                 city_qs = None
-            manager_qs = Manager.objects.filter(moderator=user.manager_user.moderator.moderator_user)
+            manager_qs = Manager.objects.filter(moderator=user.manager_user.moderator.moderator_user, user__is_active=True)
         else:
             manager_qs = None
             city_qs = None

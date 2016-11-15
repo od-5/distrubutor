@@ -68,7 +68,7 @@
                 <div class="clearfix"></div>
                 {{ form.patronymic.errors }}
               </div>
-              <div class="form-group add-bottom">
+              <div class="form-group">
                 <div class="col-lg-5">
                   {{ form.phone.label_tag }}
                 </div>
@@ -77,6 +77,16 @@
                 </div>
                 <div class="clearfix"></div>
                 {{ form.phone.errors }}
+              </div>
+              <div class="form-group add-bottom">
+                <div class="col-lg-5">
+                  {{ form.is_active.label_tag }}
+                </div>
+                <div class="col-lg-7">
+                  {{ form.is_active }}
+                </div>
+                <div class="clearfix"></div>
+                {{ form.is_active.errors }}
               </div>
               <button type="submit" class="btn btn-default">Сохранить изменения</button>
             </form>

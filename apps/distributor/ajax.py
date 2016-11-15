@@ -39,13 +39,14 @@ def get_task_initial(request):
     order_list = []
     if r_sale:
         sale = Sale.objects.get(pk=int(r_sale))
-        distributor_qs = Distributor.objects.filter(moderator=sale.moderator)
+        distributor_qs = Distributor.objects.select_related().filter(moderator=sale.moderator, user__is_active=True)
         area_qs = ModeratorArea.objects.filter(moderator=sale.moderator, city=sale.city)
         order_qs = sale.saleorder_set.filter(closed=False)
         for order in order_qs:
             order_list.append({
                 'id': order.id,
-                'name': order.__unicode__()
+                'name': order.__unicode__(),
+                'material_residue': order.material_residue()
             })
         for distributor in distributor_qs:
             distributor_list.append({
