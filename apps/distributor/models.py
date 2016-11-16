@@ -88,6 +88,14 @@ class DistributorTask(models.Model):
             material_count += int(point.count)
         return material_count
 
+    def actual_cost(self):
+        payment = DistributorPayment.objects.get(distributor=self.distributor, type=self.type)
+        print payment.cost
+        try:
+            return payment.cost * self.actual_material_count()
+        except:
+            return 0
+
     def total_cost(self):
         payment = DistributorPayment.objects.get(distributor=self.distributor, type=self.type)
         try:

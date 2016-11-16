@@ -95,5 +95,14 @@ $(function() {
     defaultDate: 1,
     dateFormat: "dd.mm.yy"
   });
+  var distributor_report_form = $('.js-distributor-report-form');
+  distributor_report_form.find('#id_date_s').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
+  distributor_report_form.find('#id_date_e').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
 
 });

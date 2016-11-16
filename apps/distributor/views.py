@@ -1,11 +1,14 @@
 # coding=utf-8
 import datetime
+from annoying.functions import get_object_or_None
 from django.core.urlresolvers import reverse
 from django.forms import HiddenInput, inlineformset_factory
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views.generic import ListView
-from apps.moderator.models import ModeratorAction
+import xlwt
+from apps.city.models import City
+from apps.moderator.models import ModeratorAction, Moderator
 from .task_calendar import get_months
 from .models import Distributor, DistributorTask, DistributorPayment, GPSPoint
 from .forms import DistributorAddForm, DistributorUpdateForm, DistributorPaymentForm, DistributorTaskForm, \
@@ -358,3 +361,237 @@ def gps_point_update(request, pk):
         'form': form
     }
     return render(request, 'distributor/point_update.html', context)
+
+
+def distributor_report(request):
+    context = {}
+    user = request.user
+    if user.type == 1:
+        qs = Distributor.objects.select_related().all()
+        moderator_qs = Moderator.objects.all()
+        context.update({
+            'moderator_list': moderator_qs
+        })
+    elif user.type == 2:
+        qs = Distributor.objects.select_related().filter(moderator=user.moderator_user)
+    elif user.type == 5:
+        qs = Distributor.objects.select_related().filter(moderator=user.manager_user.moderator.moderator_user)
+    else:
+        qs = None
+    r_email = request.GET.get('email')
+    r_last_name = request.GET.get('last_name')
+    r_moderator = request.GET.get('moderator')
+    r_date_s = request.GET.get('date_s')
+    r_date_e = request.GET.get('date_e')
+    if user.type == 1 and not r_moderator:
+        qs = None
+    context.update({
+        'r_date_s': r_date_s,
+        'r_date_e': r_date_e
+    })
+    if r_email:
+        qs = qs.filter(user__email__icontains=r_email)
+        context.update({
+            'r_email': r_email
+        })
+    if r_last_name:
+        qs = qs.filter(user__last_name__icontains=r_last_name)
+        context.update({
+            'r_last_name': r_last_name
+        })
+    if r_moderator and r_moderator.isdigit():
+        if int(r_moderator) != 0:
+            qs = qs.filter(moderator=int(r_moderator))
+        context.update({
+            'r_moderator': int(r_moderator)
+        })
+    if qs:
+        for distributor in qs:
+            d_task_qs = distributor.distributortask_set.all()
+            if r_date_s:
+                d_task_qs = d_task_qs.filter(date__gte=datetime.datetime.strptime(r_date_s, '%d.%m.%Y'))
+            if r_date_e:
+                d_task_qs = d_task_qs.filter(date__lte=datetime.datetime.strptime(r_date_e, '%d.%m.%Y'))
+            distributor.task_count = d_task_qs.count()
+            distributor.actual_material_count = distributor.actual_cost = distributor.total_cost = 0
+            for task in d_task_qs:
+                distributor.actual_material_count += task.actual_material_count()
+                distributor.actual_cost += task.actual_cost()
+                distributor.total_cost += task.total_cost()
+    context.update({
+        'object_list': qs
+    })
+    return render(request, 'distributor/distributor_report.html', context)
+
+
+def distributor_report_excel(request):
+    """
+    Экспорт отчёта по выбранным распространителям в xls файл
+    :param request:
+    :return:
+    """
+    distributor_qs = None
+    date_from = request.POST.get('date_from')
+    date_to = request.POST.get('date_to')
+    if request.POST.getlist('chk_group[]'):
+        distributor_list = [int(i) for i in request.POST.getlist('chk_group[]')]
+        distributor_qs = Distributor.objects.filter(pk__in=distributor_list)
+    font0 = xlwt.Font()
+    font0.name = 'Calibri'
+    font0.height = 220
+
+    borders = xlwt.Borders()
+    borders.left = xlwt.Borders.THIN
+    borders.right = xlwt.Borders.THIN
+    borders.top = xlwt.Borders.THIN
+    borders.bottom = xlwt.Borders.THIN
+
+    style0 = xlwt.XFStyle()
+    style0.font = font0
+
+    style1 = xlwt.XFStyle()
+    style1.font = font0
+    style1.borders = borders
+
+    wb = xlwt.Workbook()
+    ws = wb.add_sheet(u'Распространители')
+    ws.write(0, 0, u'Отчёт по распространителям:', style0)
+    ws.write(1, 0, u'Выбранный период:', style0)
+    ws.write(1, 1, u'%s' % date_from, style0)
+    ws.write(1, 2, u'%s' % date_to, style0)
+
+    ws.write(3, 0, u'ФИО', style1)
+    ws.write(3, 1, u'Исполнитель', style1)
+    ws.write(3, 2, u'Задачи', style1)
+    ws.write(3, 3, u'Количество реализованного материала', style1)
+    ws.write(3, 4, u'Стоимость работ', style1)
+    ws.write(3, 5, u'Сумма к выплате', style1)
+    total_task = actual_material_count = total_cost = actual_cost = 0
+    i = 4
+    if distributor_qs:
+        for distributor in distributor_qs:
+            task_qs = distributor.distributortask_set.all()
+            if date_from:
+                task_qs = task_qs.filter(date__gte=datetime.datetime.strptime(date_from, '%d.%m.%Y'))
+            if date_to:
+                task_qs = task_qs.filter(date__lte=datetime.datetime.strptime(date_to, '%d.%m.%Y'))
+            distributor.task_count = task_qs.count()
+            distributor.stand_count = 0
+            distributor.actual_cost = distributor.total_cost = distributor.actual_material_count = 0
+            for task in task_qs:
+                distributor.actual_cost += task.actual_cost()
+                distributor.total_cost += task.total_cost()
+                distributor.actual_material_count += task.actual_material_count()
+            total_task += distributor.task_count
+            total_cost += distributor.total_cost
+            actual_material_count += distributor.actual_material_count
+            actual_cost += distributor.actual_cost
+
+            ws.write(i, 0, distributor.__unicode__(), style1)
+            ws.write(i, 1, distributor.moderator.__unicode__(), style1)
+            ws.write(i, 2, distributor.task_count, style1)
+            ws.write(i, 3, distributor.actual_material_count, style1)
+            ws.write(i, 4, distributor.total_cost, style1)
+            ws.write(i, 5, distributor.actual_cost, style1)
+            i += 1
+        ws.write(i, 0, u'Итого', style0)
+        ws.write(i, 2, total_task, style0)
+        ws.write(i, 3, actual_material_count, style0)
+        ws.write(i, 4, total_cost, style0)
+        ws.write(i, 5, actual_cost, style0)
+
+    ws.col(0).width = 10000
+    ws.col(1).width = 10000
+    ws.col(2).width = 4000
+    ws.col(3).width = 13000
+    ws.col(4).width = 5000
+    ws.col(5).width = 5000
+    for count in range(i+1):
+        ws.row(count).height = 400
+
+    fname = 'distributor_report.xls'
+    response = HttpResponse(content_type="application/ms-excel")
+    response['Content-Disposition'] = 'attachment; filename=%s' % fname
+    wb.save(response)
+    return response
+
+
+def distributor_detail_report_excel(request, pk):
+    """
+    Экспорт детального отчёта по выбранному распространителю в xls файл
+    :param request:
+    :return:
+    """
+    distributor = get_object_or_None(Distributor, pk=int(pk))
+    date_from = request.GET.get('date_from')
+    date_to = request.GET.get('date_to')
+    font0 = xlwt.Font()
+    font0.name = 'Calibri'
+    font0.height = 220
+
+    borders = xlwt.Borders()
+    borders.left = xlwt.Borders.THIN
+    borders.right = xlwt.Borders.THIN
+    borders.top = xlwt.Borders.THIN
+    borders.bottom = xlwt.Borders.THIN
+
+    style0 = xlwt.XFStyle()
+    style0.font = font0
+
+    style1 = xlwt.XFStyle()
+    style1.font = font0
+    style1.borders = borders
+
+    wb = xlwt.Workbook()
+    ws = wb.add_sheet(u'Отчёт')
+    if distributor:
+        ws.write(0, 0, u'Отчёт по распространителю:', style0)
+        ws.write(0, 1, distributor.__unicode__(), style0)
+
+        ws.write(1, 0, u'Выбранный период:', style0)
+        ws.write(1, 1, u'%s' % date_from or '', style0)
+        ws.write(1, 2, u'%s' % date_to or '', style0)
+
+        ws.write(3, 0, u'Дата', style1)
+        ws.write(3, 1, u'Тип задачи', style1)
+        ws.write(3, 2, u'Количество реализованного материала', style1)
+        ws.write(3, 3, u'Стоимость работ', style1)
+        ws.write(3, 4, u'Сумма к выплате', style1)
+        actual_material_count = total_cost = actual_cost = 0
+        i = 4
+        task_qs = distributor.distributortask_set.all()
+        if date_from:
+            task_qs = task_qs.filter(date__gte=datetime.datetime.strptime(date_from, '%d.%m.%Y'))
+        if date_to:
+            task_qs = task_qs.filter(date__lte=datetime.datetime.strptime(date_to, '%d.%m.%Y'))
+        for task in task_qs:
+            actual_material_count += task.actual_material_count()
+            total_cost += task.total_cost()
+            actual_cost += task.actual_cost()
+
+            ws.write(i, 0, task.date.strftime('%d.%m.%Y'), style1)
+            ws.write(i, 1, task.type.name, style1)
+            ws.write(i, 2, task.actual_material_count(), style1)
+            ws.write(i, 3, task.total_cost(), style1)
+            ws.write(i, 4, task.actual_cost(), style1)
+            i += 1
+        ws.write(i, 0, u'Итого', style0)
+        ws.write(i, 1, task_qs.count(), style0)
+        ws.write(i, 2, actual_material_count, style0)
+        ws.write(i, 3, total_cost, style0)
+        ws.write(i, 4, actual_cost, style0)
+
+        ws.col(0).width = 8000
+        ws.col(1).width = 8000
+        ws.col(2).width = 15000
+        ws.col(3).width = 6000
+        ws.col(4).width = 6000
+        ws.col(5).width = 6000
+        for count in range(i+1):
+            ws.row(count).height = 400
+
+    fname = 'distributor_report_detail_report.xls'
+    response = HttpResponse(content_type="application/ms-excel")
+    response['Content-Disposition'] = 'attachment; filename=%s' % fname
+    wb.save(response)
+    return response

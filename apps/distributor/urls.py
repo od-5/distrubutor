@@ -12,7 +12,10 @@ urlpatterns = patterns(
     url(r'^add/$', 'distributor_add', name='add'),
     url(r'^(?P<pk>\d+)/$', 'distributor_update', name='update'),
     url(r'^payment_update/$', distributor_payment_update, name='payment-update'),
-
+    # report
+    url(r'^report/$', 'distributor_report', name='report'),
+    url(r'^report/excel/$', 'distributor_report_excel', name='report-excel'),
+    url(r'^report/detail/(?P<pk>\d+)/$', 'distributor_detail_report_excel', name='report-detail'),
     # tasks
     url(r'^tasks/$', DistributorTaskListView.as_view(), name='task-list'),
     url(r'^tasks/archive/$', DistributorTaskArchiveView.as_view(), name='task-archive'),
