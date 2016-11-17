@@ -72,6 +72,7 @@ class DistributorTask(models.Model):
         verbose_name = u'Задача для распространителя'
         verbose_name_plural = u'Задачи для распространителей'
         app_label = 'distributor'
+        ordering = ['-date', ]
 
     def __unicode__(self):
         return u'%s, %s' % (self.get_type_display(), self.date)
