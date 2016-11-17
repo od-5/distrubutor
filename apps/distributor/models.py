@@ -1,6 +1,7 @@
 # coding=utf-8
 from PIL import Image
 from os import path as op
+from annoying.functions import get_object_or_None
 from django.db import models
 from django.conf import settings
 from imagekit.models import ImageSpecField
@@ -89,18 +90,20 @@ class DistributorTask(models.Model):
         return material_count
 
     def actual_cost(self):
-        payment = DistributorPayment.objects.get(distributor=self.distributor, type=self.type)
-        print payment.cost
-        try:
+        payment = get_object_or_None(DistributorPayment, distributor=self.distributor, type=self.type)
+        # payment = DistributorPayment.objects.get(distributor=self.distributor, type=self.type)
+        # print payment.cost
+        if payment:
             return payment.cost * self.actual_material_count()
-        except:
+        else:
             return 0
 
     def total_cost(self):
-        payment = DistributorPayment.objects.get(distributor=self.distributor, type=self.type)
-        try:
+        # payment = DistributorPayment.objects.get(distributor=self.distributor, type=self.type)
+        payment = get_object_or_None(DistributorPayment, distributor=self.distributor, type=self.type)
+        if payment:
             return payment.cost * self.material_count
-        except:
+        else:
             return 0
 
     def get_area_name(self):
