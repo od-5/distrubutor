@@ -1,0 +1,79 @@
+<header class="header">
+  <div class="header-top">
+    <div class="container">
+      <div>
+        <div class="col-md-6 col-xs-12 col-sm-12 ">
+          <p class="header-top__text"><span class="hidden-xs">Информационный отдел:</span> {{ PHONE|default:'8 (800) 234 37 37' }}</p>
+        </div>
+        <div class="col-md-6 text-right hidden-xs hidden-sm">
+{#          {% if demo %}#}
+{#          <a href="{% url 'dashboard:index' %}" class="header-top__text">#}
+{#          {% else %}#}
+{#          <a href="{% url 'profile' %}" class="header-top__text">#}
+{#          {% endif %}#}
+{#            <span class="glyphicon glyphicon-user"></span> {{ user.email|default:'Anonymous' }}#}
+{#          </a>#}
+{#          <a href="{% url 'logout' %}?next={% url 'dashboard:index' %}" class="header-top__text">#}
+{#            <span class="glyphicon glyphicon-log-out"></span> Выход#}
+{#          </a>#}
+          <ul class="nav navbar-nav navbar-right header-top__nav">
+            <li class="dropdown">
+              <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                <span class="glyphicon glyphicon-user"></span> {{ user.email|default:'Anonymous' }}<span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  {% if demo %}
+                  <a href="{% url 'dashboard:index' %}">
+                  {% else %}
+                  <a href="{% url 'profile' %}">
+                  {% endif %}
+                    Профиль
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'logout' %}?next={% url 'dashboard:index' %}" class="header-top__text">Выход</a>
+                </li>
+
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="header-navbar">
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <a class="navbar-brand" href="{% url 'dashboard:index' %}">
+              Контроль расклейки и распространения<br>
+              <span class="navbar-brand__small hidden-xs hidden-sm">информационно-программный комплекс</span>
+            </a>
+          </div>
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            {% include 'cabinet/__includes/cabinet_nav.html' %}
+          </div><!-- /.navbar-collapse -->
+        </div>
+      </div><!-- /.container -->
+    </nav>
+  </div>
+{#  <div class="header-bottom">#}
+{#    <div class="container">#}
+{#      <div class="col-md-12">#}
+{#        <a href="{% url 'dashboard:index' %}" class="header-logo">#}
+{#          <p class="header-logo__text"><span class="text-primary">Контроль расклейки и распространения</span></p>#}
+{#          <p class="header-logo__slogan hidden-xs hidden-sm">Информационно-программный комплекс</p>#}
+{#        </a>#}
+{#      </div>#}
+{#      <div class="clearfix"></div>#}
+{#    </div>#}
+{#  </div>#}
+{#  <div class="header-nav">#}
+{#        {% include 'cabinet/__includes/cabinet_nav.html' %}#}
+{#  </div>#}
+</header>

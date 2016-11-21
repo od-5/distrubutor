@@ -36,76 +36,17 @@
 <body>
 <div id="wrapper">
 {% block header %}
-  <header class="header">
-    <div class="header-top hidden-xs hidden-sm">
-      <div class="container">
-        <div>
-          <div class="col-md-6">
-            <p class="header-top__text"><span>Информационный отдел:</span> {{ PHONE|default:'8 (800) 234 37 37' }}</p>
-          </div>
-          <div class="col-md-6 text-right">
-            {% if demo %}
-            <a href="{% url 'dashboard:index' %}" class="header-top__text">
-            {% else %}
-            <a href="{% url 'profile' %}" class="header-top__text">
-            {% endif %}
-              <span class="glyphicon glyphicon-user"></span> {{ user.email|default:'Anonymous' }}
-            </a>
-            <a href="{% url 'logout' %}?next={% url 'dashboard:index' %}" class="header-top__text">
-              <span class="glyphicon glyphicon-log-out"></span> Выход
-            </a>
-          </div>
-          <div class="clearfix"></div>
-        </div>
-      </div>
-    </div>
-    <div class="header-bottom">
-      <div class="container">
-        <div class="col-md-12">
-          <a href="{% url 'dashboard:index' %}" class="header-logo">
-            <p class="header-logo__text"><span class="text-primary">Контроль расклейки и распространения</span></p>
-            <p class="header-logo__slogan hidden-xs hidden-sm">Информационно-программный комплекс</p>
-          </a>
-        </div>
-{#          <div class="col-md-5 text-right">#}
-{#            <a class="header-instruction-link">#}
-{#              <div class="header-instruction-link__icon">#}
-{#                <span class="glyphicon glyphicon glyphicon-play-circle"></span>#}
-{#              </div>#}
-{#              <div class="header-instruction-link__text">Видеоинструкция</div>#}
-{#            </a>#}
-{#          </div>#}
-        <div class="clearfix"></div>
-      </div>
-    </div>
-    <div class="header-nav">
-{#      <div class="container">#}
-{#        <div class="col-md-12">#}
-          {% include 'cabinet/__includes/cabinet_nav.html' %}
-{#        </div>#}
-{#      </div>#}
-    </div>
-  </header>
+  {% include 'cabinet/__includes/cabinet_header.html' %}
 
-{#  <header>#}
-{#    <div class="container">#}
-{#      <div class="col-lg-12">#}
-{#        {% include 'cabinet/__includes/cabinet_nav.html' %}#}
-{#      </div>#}
-{#      <div class="clearfix"></div>#}
-{#    </div>#}
-{#  </header>#}
+
 {% endblock %}
 
   {% block content %}
   {% endblock %}
 </div>
 <footer class="footer">
-<div class="container">
-  <div class="col-md-12">
-    <p class="copyright text-center">Все права защищены &copy; 20014-2016</p>
+    <p class="remove-bottom">Все права защищены &copy; 20014-2016</p>
   </div>
-</div>
 </footer>
   {% block footer %}
   {% endblock %}

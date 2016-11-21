@@ -1,9 +1,6 @@
 body {
   overflow-y: scroll;
 }
-.copyright {
-  color: #999;
-}
 .add-row,
 .delete-row {
   color: #333;
@@ -24,83 +21,6 @@ body {
 }
 .delete-row span {
   color: #cc0000;
-}
-.header {
-  background-color: #fff;
-  margin-bottom: 40px;
-  box-shadow: 0 0 15px #333;
-}
-.header-instruction-link {
-  display: inline-block;
-  width: 180px;
-  line-height: 44px;
-  cursor: pointer;
-}
-.header-instruction-link:hover {
-  opacity: 0.8;
-}
-.header-instruction-link__icon {
-  width: 40px;
-  float: left;
-}
-.header-instruction-link__icon span {
-  font-size: 40px;
-}
-.header-instruction-link__text {
-  display: inline-block;
-}
-.header-top {
-  height: 50px;
-  line-height: 50px;
-  background-color: #000;
-}
-.header-top__text {
-  color: #fff;
-  margin-bottom: 0;
-}
-.header-top__text span {
-  color: #6c6c6c;
-}
-.header-top__text span.glyphicon {
-  color: #fff;
-}
-.header-top a {
-  padding-left: 30px;
-}
-.header-top a:hover {
-  color: #6c6c6c;
-}
-.header-top a:hover span {
-  color: #6c6c6c;
-}
-.header-bottom {
-  padding: 25px 0;
-}
-.header-bottom-review__btn {
-  margin-top: 10px;
-}
-.header-logo {
-  display: block;
-}
-.header-logo:hover {
-  text-decoration: none;
-  opacity: .8;
-}
-.header-logo__text,
-.header-logo__slogan {
-  margin-bottom: 0;
-}
-.header-logo__text {
-  font-size: 24px;
-  color: #e35f13;
-}
-@media only screen and (max-width: 991px) {
-  .header-logo__text {
-    font-size: 14px;
-  }
-}
-.header-logo__slogan {
-  color: #000;
 }
 .sale-task-link-active {
   font-weight: bold;

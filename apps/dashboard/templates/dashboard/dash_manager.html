@@ -2,90 +2,96 @@
 {% block content %}
 <div class="container dashboard">
   {% if user.deny_access %}
-  <div class="col-lg-12">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <p class="lead text-center remove-bottom">Рабочий стол</p>
-      </div>
-      <div class="panel-body">
-        <p class="alert alert-info">
-          Доступ заблокирован. Необходимо внести оплату за подписку
-        </p>
-      </div>
+  <div class="dashboard-panel">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <p class="dashboard-panel__title">Рабочий стол</p>
+      <p class="alert alert-info">
+        Доступ заблокирован. Необходимо внести оплату за подписку
+      </p>
     </div>
+    <div class="clearfix"></div>
   </div>
   {% else %}
-  <div class="col-lg-8 remove-padding">
-    <div class="col-lg-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <p class="text-center remove-bottom">CRM - система управления клиентами</p>
-        </div>
-        <div class="panel-body">
-          <div class="col-lg-3">
-            <a href="{% url 'client:list' %}" class="dashboard__link">
-              <img src="{{ STATIC_URL }}icon/incoming_list.png" alt="Список клиентов" class="dashboard__link_icon">
-              <span class="dashboard__link_text">Список клиентов</span>
-            </a>
-          </div>
-          <div class="col-lg-3">
-            <a href="{% url 'client:add' %}" class="dashboard__link">
-              <img src="{{ STATIC_URL }}icon/incoming_add.png" alt="Добавить нового клиента" class="dashboard__link_icon">
-              <span class="dashboard__link_text">Добавить нового клиента</span>
-            </a>
-          </div>
-          <div class="col-lg-3">
-            <a href="{% url 'client:task-list' %}" class="dashboard__link">
-              <img src="{{ STATIC_URL }}icon/incoming_task_list.png" alt="Журнал задач по клиентам" class="dashboard__link_icon">
-              <span class="dashboard__link_text">Журнал задач по клиентам</span>
-            </a>
-          </div>
-          <div class="col-lg-3">
-            <a href="{% url 'client:task-list' %}" class="dashboard__link">
-              <img src="{{ STATIC_URL }}icon/incoming_task_add.png" alt="Добавить новую задачу по клиенту" class="dashboard__link_icon">
-              <span class="dashboard__link_text">Добавить новую задачу по клиенту</span>
-            </a>
-          </div>
-          <div class="clearfix"></div>
-        </div>
+  <div class="row">
+  <div class="col-md-8 remove-padding">
+    <div class="dashboard-panel">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <p class="dashboard-panel__title">CRM - система управления клиентами</p>
       </div>
+      <div class="col-md-3 col-sm-4 col-xs-6">
+        <a href="{% url 'client:list' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/incoming_list.png" alt="Список клиентов">
+          </div>
+          <span class="dashboard-panel__link_text">Список клиентов</span>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-4 col-xs-6">
+        <a href="{% url 'client:add' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/incoming_add.png" alt="Добавить нового клиента">
+          </div>
+          <span class="dashboard-panel__link_text">Добавить нового клиента</span>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-4 col-xs-6">
+        <a href="{% url 'client:task-list' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/incoming_task_list.png" alt="Журнал задач по клиентам">
+          </div>
+          <span class="dashboard-panel__link_text">Журнал задач по клиентам</span>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-4 col-xs-6">
+        <a href="{% url 'client:task-add' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/incoming_task_add.png" alt="Добавить новую задачу по клиенту">
+          </div>
+          <span class="dashboard-panel__link_text">Добавить новую задачу по клиенту</span>
+        </a>
+      </div>
+      <div class="clearfix"></div>
     </div>
-    <div class="col-lg-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <p class="text-center remove-bottom">Продажи</p>
-        </div>
-        <div class="panel-body">
-          <div class="col-lg-3">
-            <a href="{% url 'sale:list' %}" class="dashboard__link">
-              <img src="{{ STATIC_URL }}icon/client_list.png" alt="Список продаж" class="dashboard__link_icon">
-              <span class="dashboard__link_text">Список продаж</span>
-            </a>
-          </div>
-          <div class="col-lg-3">
-            <a href="{% url 'sale:add' %}" class="dashboard__link">
-              <img src="{{ STATIC_URL }}icon/client_add.png" alt="Добавить новую продажу" class="dashboard__link_icon">
-              <span class="dashboard__link_text">Добавить новую продажу</span>
-            </a>
-          </div>
-          <div class="col-lg-3">
-            <a href="{% url 'sale:journal' %}" class="dashboard__link">
-              <img src="{{ STATIC_URL }}icon/journal_list.png" alt="Журнал продаж" class="dashboard__link_icon">
-              <span class="dashboard__link_text">Журнал продаж</span>
-            </a>
-          </div>
-          <div class="col-lg-3">
-            <a href="{% url 'profile' %}" class="dashboard__link">
-              <img src="{{ STATIC_URL }}icon/moderator_list.png" alt="Данные менеджера" class="dashboard__link_icon">
-              <span class="dashboard__link_text">Данные менеджера</span>
-            </a>
-          </div>
-          <div class="clearfix"></div>
-        </div>
+    <div class="dashboard-panel">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <p class="dashboard-panel__title">Продажи</p>
       </div>
+      <div class="col-md-3 col-sm-4 col-xs-6">
+        <a href="{% url 'sale:list' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/client_list.png" alt="Список продаж">
+          </div>
+          <span class="dashboard-panel__link_text">Список продаж</span>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-4 col-xs-6">
+        <a href="{% url 'sale:add' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/client_add.png" alt="Добавить новую продажу">
+          </div>
+          <span class="dashboard-panel__link_text">Добавить новую продажу</span>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-4 col-xs-6">
+        <a href="{% url 'sale:journal' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/journal_list.png" alt="Журнал продаж">
+          </div>
+          <span class="dashboard-panel__link_text">Журнал продаж</span>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-4 col-xs-6">
+        <a href="{% url 'profile' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/moderator.png" alt="Данные менеджера">
+          </div>
+          <span class="dashboard-panel__link_text">Данные менеджера</span>
+        </a>
+      </div>
+      <div class="clearfix"></div>
     </div>
   </div>
-  <div class="col-lg-4">
+  <div class="col-md-4">
     <div class="panel panel-info">
       <div class="panel-heading">
         <p class="text-center remove-bottom">Информация о менеджере</p>
@@ -148,6 +154,7 @@
         </table>
       </div>
     </div>
+  </div>
   </div>
   {% endif %}
 </div>

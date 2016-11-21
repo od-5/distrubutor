@@ -133,7 +133,7 @@ def manager_update(request, pk):
     success_msg = u''
     error_msg = u''
     if request.method == 'POST':
-        u_form = UserUpdateForm(request.POST, instance=user)
+        u_form = UserUpdateForm(request.POST, instance=manager.user)
         m_form = ManagerForm(request.POST, instance=manager)
         if u_form.is_valid() and m_form.is_valid():
             u_form.save()

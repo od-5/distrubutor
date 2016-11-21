@@ -4,9 +4,10 @@ body {
   width: 100%;
 }
 #wrapper {
-  height: 100% !important;
+  min-height: 100%;
   height: auto;
-  margin-bottom: -30px;
+  margin-bottom: -68px;
+  padding-bottom: 100px;
 }
 a,
 h2 {
@@ -25,6 +26,63 @@ img {
   -ms-transition: opacity 0.5s ease;
   -o-transition: opacity 0.5s ease;
   transition: opacity 0.5s ease;
+}
+.dropdown-menu {
+  padding: 0;
+  min-width: 100%;
+}
+.dropdown-menu li {
+  text-align: left;
+}
+.dropdown-menu li a {
+  line-height: 50px;
+}
+.dropdown-menu li a {
+  line-height: 50px !important;
+}
+.dropdown-menu .divider {
+  margin: 0;
+}
+.navbar {
+  border: none;
+}
+@media only screen and (min-width: 768px) and (max-width: 992px) {
+  .navbar-header {
+    float: none;
+    width: 100%;
+    text-align: center;
+  }
+}
+.navbar-brand {
+  height: 74px;
+  background-color: #057ab0;
+}
+@media only screen and (min-width: 992px) {
+  .navbar-brand {
+    box-shadow: 12px 0 15px -4px #333, -12px 0 8px -4px #333;
+  }
+}
+@media only screen and (min-width: 768px) and (max-width: 992px) {
+  .navbar-brand {
+    line-height: 50px;
+    float: none;
+  }
+}
+@media only screen and (max-width: 992px) {
+  .navbar-brand {
+    height: 50px;
+    font-size: 16px;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .navbar-brand {
+    font-size: 14px;
+    padding: 5px 0;
+  }
+}
+.navbar-brand__small {
+  font-size: 10px;
+  letter-spacing: 0.4em;
 }
 td.incomingtask-comment {
   word-break: break-all;
@@ -187,4 +245,17 @@ a.lead {
 }
 #ui-datepicker-div {
   z-index: 8031!important;
+}
+.forum-notify {
+  position: absolute;
+  left: 40%;
+  bottom: -3px;
+  background-image: url('../icon/forum-notify.png');
+  background-repeat: no-repeat;
+  width: 28px;
+  height: 34px;
+  line-height: 34px;
+  text-align: center;
+  padding-top: 4px;
+  font-weight: bold;
 }
