@@ -217,7 +217,7 @@
       </div>
     {% endif %}
       <div class="col-md-2 col-sm-4 col-xs-6">
-        <a href="{% url 'moderator:company' %}" class="dashboard-panel__link dashboard-panel__link_conf">
+        <a href="{% url 'moderator:company' user.id %}" class="dashboard-panel__link dashboard-panel__link_conf">
           <div  class="dashboard-panel__link-icon">
             <img src="{{ STATIC_URL }}icon/site_blocks.png" alt="Информация на сайте">
           </div>
