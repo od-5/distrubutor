@@ -7,7 +7,7 @@
   {% if user.deny_access %}
     <div class="dashboard-panel">
       <div class="col-md-12 col-sm-12 col-xs-12">
-        <p class="dashboard-panel__title">Рабочий стол</p>
+{#        <p class="dashboard-panel__title">Рабочий стол</p>#}
       {% if user.type == 5 %}
         <p class="alert alert-info">
           Доступ заблокирован. Необходимо внести оплату за подписку
@@ -19,16 +19,6 @@
         </p>
       {% endif %}
       </div>
-      {% if user.type == 2 %}
-      <div class="col-md-2 col-sm-4 col-xs-6">
-        <a href="{% url 'moderator:update' user.id %}" class="dashboard-panel__link dashboard-panel__link_conf">
-          <div  class="dashboard-panel__link-icon">
-            <img src="{{ STATIC_URL }}icon/moderator.png" alt="Данные модератора">
-          </div>
-          <span class="dashboard-panel__link_text">Данные модератора</span>
-        </a>
-      </div>
-      {% endif %}
       <div class="clearfix"></div>
     </div>
   {% else %}
