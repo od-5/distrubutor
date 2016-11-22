@@ -33,7 +33,19 @@
       {% if user.type == 2 %}
       <li><a href="{% url 'moderator:update' user.id %}">Данные модератора</a></li>
       {% endif %}
-      <li><a href="{% url 'city:list' %}">Список городов</a></li>
+      {% if user.is_leader_manager %}
+        {% if user.type == 2 or user.type == 5 %}
+          {% if user.type == 2 and user.moderator_user.city.count == 1 %}
+          <li><a href="{% url 'city:update' user.moderator_user.city.first.id %}">Районы города</a></li>
+          {% elif user.type == 5 and user.manager_user.moderator.moderator_user.city.count == 1 %}
+          <li><a href="{% url 'city:update' user.manager_user.moderator.moderator_user.city.first.id %}">Районы города</a></li>
+          {% else %}
+          <li><a href="{% url 'city:list' %}">Список городов</a></li>
+          {% endif %}
+        {% else %}
+        <li><a href="{% url 'city:list' %}">Список городов</a></li>
+        {% endif %}
+      {% endif %}
       {% if user.type == 1 %}
       <li><a href="{% url 'city:add' %}">Добавить новый город</a></li>
       {% endif %}
