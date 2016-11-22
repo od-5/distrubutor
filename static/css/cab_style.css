@@ -6759,6 +6759,7 @@ label.error {
 }
 .dashboard-modal-nav .dropdown-menu li a:hover {
   background-color: transparent;
+  color: #fff;
 }
 .dashboard-modal-nav .dropdown-menu .divider {
   display: none;
