@@ -8,6 +8,7 @@
 </ol>
 {% endif %}
 <div class="div add-bottom">
+  {% if user.type != 5 %}
   <a href="{% url 'moderator:update' object.user.id %}" class="btn btn-default">
     <span class="glyphicon glyphicon-edit"></span> Информация о пользователе
   </a>
@@ -20,4 +21,5 @@
   <a href="{% url 'moderator:payment-list' object.user.id %}" class="btn btn-default">
     <span class="glyphicon glyphicon-shopping-cart"></span> Платежи
   </a>
+  {% endif %}
 </div>

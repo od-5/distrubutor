@@ -10,6 +10,22 @@ $(function() {
 
   $.validator.messages.required = "* поле обязательно для заполнения";
 
+  // Мобильные меню
+  // Закрыть меню
+  $('.js-dashboard-modal-close').click(function(){
+    $('.dashboard-modal-profile').fadeOut();
+    $('.dashboard-modal-menu').fadeOut();
+  });
+  // Открыть меню пользователя
+  $('.js-dashboard-mobile-profile__btn').click(function(){
+    $('.dashboard-modal-profile').fadeIn();
+  });
+  // Открыть меню навигации
+  $('.js-dashboard-mobile-menu__btn').click(function(){
+    $('.dashboard-modal-menu').fadeIn();
+  });
+
+
   // показать\спрятать кнопку добавления оплаты
   $('.saleorder-tr').hover(
     function(){

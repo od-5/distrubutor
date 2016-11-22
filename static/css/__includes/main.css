@@ -3,11 +3,24 @@ body {
   height: 100%;
   width: 100%;
 }
+body {
+  min-width: 320px;
+}
+@media only screen and (max-width: 991px) {
+  .desktop-only {
+    display: none;
+  }
+}
 #wrapper {
   min-height: 100%;
   height: auto;
   margin-bottom: -68px;
   padding-bottom: 100px;
+}
+@media only screen and (max-width: 360px) {
+  .container {
+    padding: 0;
+  }
 }
 a,
 h2 {
@@ -35,10 +48,7 @@ img {
   text-align: left;
 }
 .dropdown-menu li a {
-  line-height: 50px;
-}
-.dropdown-menu li a {
-  line-height: 50px !important;
+  line-height: 30px !important;
 }
 .dropdown-menu .divider {
   margin: 0;
@@ -46,7 +56,7 @@ img {
 .navbar {
   border: none;
 }
-@media only screen and (min-width: 768px) and (max-width: 992px) {
+@media only screen and (max-width: 991px) {
   .navbar-header {
     float: none;
     width: 100%;
@@ -56,19 +66,19 @@ img {
 .navbar-brand {
   height: 74px;
   background-color: #057ab0;
+  font-weight: bold;
 }
 @media only screen and (min-width: 992px) {
   .navbar-brand {
     box-shadow: 12px 0 15px -4px #333, -12px 0 8px -4px #333;
   }
 }
-@media only screen and (min-width: 768px) and (max-width: 992px) {
+@media only screen and (min-width: 768px) and (max-width: 991px) {
   .navbar-brand {
-    line-height: 50px;
     float: none;
   }
 }
-@media only screen and (max-width: 992px) {
+@media only screen and (max-width: 991px) {
   .navbar-brand {
     height: 50px;
     font-size: 16px;
@@ -83,6 +93,11 @@ img {
 .navbar-brand__small {
   font-size: 10px;
   letter-spacing: 0.4em;
+}
+@media only screen and (max-width: 1200px) {
+  .navbar-brand__small {
+    display: none;
+  }
 }
 td.incomingtask-comment {
   word-break: break-all;

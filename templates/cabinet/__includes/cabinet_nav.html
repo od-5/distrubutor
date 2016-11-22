@@ -1,5 +1,5 @@
 {% if user.type != 3 and not user.deny_access %}
-<ul class="nav navbar-nav navbar-right">
+<ul class="{{ nav_class }}">
   <li><a href="{% url 'dashboard:index' %}">Главная</a></li>
   {% if user.type == 1 %}
 
@@ -18,7 +18,7 @@
   {% if user.type == 2 %}
   <li><a href="{% url 'moderator:payment-list' user.pk %}">Платежи</a></li>
   {% endif %}
-  {% if user.type == 1 or user.type == 2 %}
+  {% if user.is_leader_manager %}
   <li class="dropdown">
     <a href="" class="dropdown-toggle" data-toggle="dropdown">Настройки <span class="caret"></span></a>
     <ul class="dropdown-menu">
@@ -38,6 +38,9 @@
       <li><a href="{% url 'city:add' %}">Добавить новый город</a></li>
       {% endif %}
       <li><a href="{% url 'ticket:list' %}">Заявки с сайта</a></li>
+      {% if user.type == 5 %}
+        <li><a href="{% url 'moderator:company' user.manager_user.moderator.id %}">Информация на сайте</a></li>
+      {% endif %}
     </ul>
   </li>
   {% endif %}
@@ -45,16 +48,16 @@
     <a href="" class="dropdown-toggle" data-toggle="dropdown">CRM <span class="caret"></span></a>
     <ul class="dropdown-menu">
     {% if user.manager_user and not user.manager_user.leader %}{% else %}
-      <li><a href="{% url 'manager:list' %}"><span class="glyphicon glyphicon-list-alt text-success"></span> Список менеджеров</a></li>
-      <li><a href="{% url 'manager:add' %}"><span class="glyphicon glyphicon-plus-sign text-success"></span> Добавить нового менеджера</a></li>
-      <li><a href="{% url 'manager:report' %}"><span class="glyphicon glyphicon-random text-success"></span> Отчёт по менеджерам</a></li>
+      <li><a href="{% url 'manager:list' %}">Список менеджеров</a></li>
+      <li><a href="{% url 'manager:add' %}">Добавить нового менеджера</a></li>
+      <li><a href="{% url 'manager:report' %}">Отчёт по менеджерам</a></li>
       <li class="divider"></li>
     {% endif %}
-      <li><a href="{% url 'client:list' %}"><span class="glyphicon glyphicon-list-alt text-success"></span> Журнал клиентов</a></li>
-      <li><a href="{% url 'client:add' %}"><span class="glyphicon glyphicon-plus-sign text-success"></span> Добавить нового клиента</a></li>
+      <li><a href="{% url 'client:list' %}">Журнал клиентов</a></li>
+      <li><a href="{% url 'client:add' %}">Добавить нового клиента</a></li>
       <li class="divider"></li>
-      <li><a href="{% url 'client:task-list' %}"><span class="glyphicon glyphicon-list-alt text-success"></span> Журнал задач по клиентам</a></li>
-      <li><a href="{% url 'client:task-add' %}"><span class="glyphicon glyphicon-plus-sign text-success"></span> Добавить новую задачу по клиенту</a></li>
+      <li><a href="{% url 'client:task-list' %}">Журнал задач по клиентам</a></li>
+      <li><a href="{% url 'client:task-add' %}">Добавить новую задачу по клиенту</a></li>
     </ul>
   </li>
   <li class="dropdown">
@@ -62,22 +65,10 @@
       Продажи <span class="caret"></span>
     </a>
     <ul class="dropdown-menu">
-      <li>
-        <a href="{% url 'sale:list' %}">
-          <span class="glyphicon glyphicon-list-alt text-success"></span> Список продаж
-        </a>
-      </li>
-      <li>
-        <a href="{% url 'sale:add' %}">
-          <span class="glyphicon glyphicon-plus-sign text-success"></span> Добавить новую продажу
-        </a>
-      </li>
+      <li><a href="{% url 'sale:list' %}">Список продаж</a></li>
+      <li><a href="{% url 'sale:add' %}">Добавить новую продажу</a></li>
       <li class="divider"></li>
-      <li>
-        <a href="{% url 'sale:journal' %}">
-          <span class="glyphicon glyphicon-list-alt text-success"></span> Журнал продаж
-        </a>
-      </li>
+      <li><a href="{% url 'sale:journal' %}">Журнал продаж</a></li>
     </ul>
   </li>
   {% if user.manager_user and not user.manager_user.leader %}{% else %}
@@ -87,36 +78,14 @@
     </a>
     <ul class="dropdown-menu">
       <li>
-        <a href="{% url 'distributor:list' %}">
-          <span class="glyphicon glyphicon-list-alt text-success"></span> Список распространителей
-        </a>
-      </li>
+        <a href="{% url 'distributor:list' %}">Список распространителей</a></li>
       <li>
-        <a href="{% url 'distributor:add' %}">
-          <span class="glyphicon glyphicon-plus-sign text-success"></span> Добавить нового распространителя
-        </a>
-      </li>
-      <li>
-        <a href="{% url 'distributor:report' %}">
-          <span class="glyphicon glyphicon-random text-success"></span> Отчёт по распространителям
-        </a>
-      </li>
+        <a href="{% url 'distributor:add' %}">Добавить нового распространителя</a></li>
+      <li><a href="{% url 'distributor:report' %}">Отчёт по распространителям</a></li>
       <li class="divider"></li>
-      <li>
-        <a href="{% url 'distributor:task-list' %}">
-          <span class="glyphicon glyphicon-list-alt text-success"></span> Список задач для распространителей
-        </a>
-      </li>
-      <li>
-        <a href="{% url 'distributor:task-add' %}">
-          <span class="glyphicon glyphicon-plus-sign text-success"></span> Добавить новую задачу для распространителя
-        </a>
-      </li>
-      <li>
-        <a href="{% url 'distributor:task-archive' %}">
-          <span class="glyphicon glyphicon-calendar text-success"></span> Архив задач
-        </a>
-      </li>
+      <li><a href="{% url 'distributor:task-list' %}">Список задач для распространителей</a></li>
+      <li><a href="{% url 'distributor:task-add' %}">Добавить новую задачу для распространителя</a></li>
+      <li><a href="{% url 'distributor:task-archive' %}">Архив задач</a></li>
     </ul>
   </li>
   {% endif %}
