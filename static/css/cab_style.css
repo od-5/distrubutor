@@ -6708,6 +6708,7 @@ label.error {
   top: 0;
   background-color: #057ab0;
   overflow-y: scroll;
+  z-index: 900;
 }
 .dashboard-modal .row {
   margin: 0;
