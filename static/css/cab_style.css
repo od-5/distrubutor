@@ -6168,6 +6168,8 @@ img {
   .navbar-brand {
     height: 50px;
     font-size: 16px;
+    display: block;
+    width: 100%;
   }
 }
 @media only screen and (max-width: 767px) {
