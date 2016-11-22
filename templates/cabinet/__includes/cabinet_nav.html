@@ -120,14 +120,20 @@
     </ul>
   </li>
   {% endif %}
-  <li><a href="{% url 'forum:list' %}">Форум</a></li>
+
   {% if NOTIFICATION_LIST %}
-  <li>
-    <a href="{% url 'forum:topic-notify' %}">Новые темы
+  <li class="dropdown">
+    <a href="" class="dropdown-toggle" data-toggle="dropdown">
+      Форум <span class="caret"></span>
       <div class="forum-notify">+ {{ NOTIFICATION_LIST.count|default:'0' }}</div>
     </a>
+    <ul class="dropdown-menu">
+      <li><a href="{% url 'forum:list' %}">Список тем</a></li>
+      <li><a href="{% url 'forum:topic-notify' %}">Новые темы</a></li>
+    </ul>
   </li>
+  {% else %}
+  <li><a href="{% url 'forum:list' %}">Форум</a></li>
   {% endif %}
 </ul>
 {% endif %}
-{#  <div class="clearfix"></div>#}
