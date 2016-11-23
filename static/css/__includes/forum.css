@@ -1,0 +1,20 @@
+.forum-notify {
+  position: absolute;
+  left: 40%;
+  bottom: -3px;
+  background-image: url('../icon/forum-notify.png');
+  background-repeat: no-repeat;
+  width: 28px;
+  height: 34px;
+  line-height: 34px;
+  text-align: center;
+  padding-top: 4px;
+  font-weight: bold;
+  z-index: 10000;
+}
+@media only screen and (max-width: 991px) {
+  .forum-notify {
+    left: 60px;
+    bottom: -15px;
+  }
+}

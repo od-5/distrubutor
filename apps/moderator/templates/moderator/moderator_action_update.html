@@ -1,4 +1,8 @@
 {% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Виды деятельности модератора {{ object }} | {{ block.super }}{% endblock %}
 {% block extra_js %}
 <script type="text/javascript">
   $(function() {
@@ -11,65 +15,60 @@
 </script>
 {% endblock %}
 {% block content %}
+  {% include 'moderator/__include/moderator_breadcrumb.html' %}
   <div class="container">
-    <div class="col-lg-12">
-      {% include 'moderator/__include/moderator_menu.html' %}
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <p class="lead text-center remove-bottom">Виды деятельности модератора {{ object.user.email }}</p>
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">Виды деятельности модератора {{ object }}</span>
         </div>
-        <div class="panel-body">
-          <div class="col-lg-12">
-              {% if error %}
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        {% include 'moderator/__include/moderator_menu.html' %}
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="panel-content">
+              {% if error or success %}
+              <div class="col-md-12">
+                {% if error %}
                 <div class="alert alert-danger">
                   {{ error }}
                 </div>
-              {%  endif %}
-              {% if success %}
+                {%  endif %}
+                {% if success %}
                 <div class="alert alert-success">
                   {{ success }}
                 </div>
-              {% endif %}
-          </div>
-          <div class="col-lg-12">
-            <form action="" role="form" id="js-form-moderator-action" method="post">
-              <div class="col-lg-6">
-              {% csrf_token %}
-              {{ formset.management_form }}
-              {% for form in formset %}
-                {{ form.id }}
-                {{ form.moderator }}
-                <div class="form-group">
-                  <div class="col-lg-3">{{ form.name.label_tag }}</div>
-                  <div class="col-lg-7">{{ form.name }}</div>
-                  {{ form.name.errors }}
-                  <div class="clearfix"></div>
-                  {% if form.instance.pk %}
-                  <div class="col-lg-10 text-right">{{ form.DELETE.label_tag }}</div>
-                  <div class="col-lg-2">{{ form.DELETE }}</div>
-                  <div class="clearfix"></div>
-                  {% endif %}
-                </div>
-              {% endfor %}
-{#                    {% for form in formset %}#}
-{##}
-{#                      <div class="form-group">#}
-{#                      {% if form.errors %}#}
-{#                        <div class="div alert alert-danger">#}
-{#                          {{ form.errors }}#}
-{#                        </div>#}
-{#                      {% endif %}#}
-{#                        {{ form.moderator }}#}
-{#                        {{ form.moderator.errors }}#}
-{#                        <div class="col-lg-5">{{ form.name.label_tag }}</div>#}
-{#                        <div class="col-lg-7">{{ form.name }}</div>#}
-{#                        {{ form.name.errors }}#}
-{#                        <div class="clearfix"></div>#}
-{#                      </div>#}
-{#                    {% endfor %}#}
-              <input type="submit" value="Сохранить" class="btn btn-success">
+                {% endif %}
               </div>
-            </form>
+              {% endif %}
+              <form action="" role="form" class="form" id="js-form-moderator-action" method="post">
+                <div class="col-lg-6">
+                {% csrf_token %}
+                {{ formset.management_form }}
+                {% for form in formset %}
+                  {{ form.id }}
+                  {{ form.moderator }}
+                  <div class="form-group">
+                    <div class="col-lg-3">{{ form.name.label_tag }}</div>
+                    <div class="col-lg-7">{{ form.name }}</div>
+                    {{ form.name.errors }}
+                    <div class="clearfix"></div>
+                    {% if form.instance.pk %}
+                    <div class="col-lg-10 text-right">{{ form.DELETE.label_tag }}</div>
+                    <div class="col-lg-2">{{ form.DELETE }}</div>
+                    <div class="clearfix"></div>
+                    {% endif %}
+                  </div>
+                {% endfor %}
+                  <input type="submit" value="Сохранить" class="btn btn-save">
+                </div>
+                <div class="clearfix"></div>
+              </form>
+            </div>
           </div>
         </div>
       </div>

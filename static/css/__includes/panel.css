@@ -1,0 +1,10 @@
+.panel {
+  border: none;
+  margin-bottom: 0;
+}
+.panel-content {
+  padding: 50px 10px;
+}
+.panel-default .panel-body {
+  padding: 0;
+}

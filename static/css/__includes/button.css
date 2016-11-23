@@ -1,0 +1,22 @@
+.btn-search,
+.btn-save {
+  background-color: #0e99db;
+  width: 100%;
+  border-radius: 0;
+  height: 36px;
+  color: #fff;
+  text-transform: uppercase;
+}
+.btn-right {
+  float: right;
+}
+.btn-tile {
+  font-size: 30px;
+}
+.btn-add {
+  background-color: #fff;
+  border-radius: 21px;
+  font-size: 16px;
+  padding: 0 35px;
+  line-height: 45px;
+}

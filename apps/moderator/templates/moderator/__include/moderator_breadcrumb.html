@@ -1,0 +1,19 @@
+{% if not user.deny_access %}
+<div class="breadcrumb-container">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <ol class="breadcrumb">
+          <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+          {% if user.type == 1 %}
+          <li><a href="{% url 'moderator:list' %}">Список модераторов</a></li>
+          {% endif %}
+          <li class="active">Редактирование модератора</li>
+        </ol>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</div>
+
+{% endif %}

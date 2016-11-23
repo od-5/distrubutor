@@ -1,96 +1,89 @@
 {% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Редактирование модератора {{ object.user.email }} | {{ block.super }}{% endblock %}
 {% block content %}
+  {% include 'moderator/__include/moderator_breadcrumb.html' %}
   <div class="container">
-    <div class="col-lg-12">
-      {% include 'moderator/__include/moderator_menu.html' %}
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <p class="lead text-center remove-bottom">Редактирование модератора {{ object.user.email }}</p>
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">Редактирование модератора {{ object.user.email }}</span>
         </div>
-        <div class="panel-body">
-          <div class="col-lg-12">
-              {% if error %}
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        {% include 'moderator/__include/moderator_menu.html' %}
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="panel-content">
+              {% if error or success %}
+              <div class="col-md-12">
+                {% if error %}
                 <div class="alert alert-danger">
                   {{ error }}
                 </div>
-              {%  endif %}
-              {% if success %}
+                {%  endif %}
+                {% if success %}
                 <div class="alert alert-success">
                   {{ success }}
                 </div>
+                {% endif %}
+              </div>
               {% endif %}
-          </div>
-          <div class="col-lg-6">
-            <form action="" role="form" id="js-form-user-update" method="post">
-            {% csrf_token %}
-              <div class="form-group">
-                <p class="text-info lead">Информация о пользователе</p>
-                <div class="col-lg-5">
-                  {{ form.email.label_tag }}
+              <form action="" role="form" class="form add-bottom" id="js-form-user-update" method="post">
+              {% csrf_token %}
+                <div class="col-md-6">
+                  <p class="text-info lead">Контактная информация</p>
+                  <div class="form-group">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                    {{ form.email.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.phone.label_tag }}
+                    {{ form.phone }}
+                    {{ form.phone.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.is_active.label_tag }}
+                    {{ form.is_active }}
+                    {{ form.is_active.errors }}
+                  </div>
                 </div>
-                <div class="col-lg-7">
-                  {{ form.email }}
-                </div>
-                <div class="clearfix"></div>
-                  {{ form.email.errors }}
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">
-                  {{ form.last_name.label_tag }}
-                </div>
-                <div class="col-lg-7">
-                  {{ form.last_name }}
-                </div>
-                <div class="clearfix"></div>
-                  {{ form.last_name.errors }}
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">
-                  {{ form.first_name.label_tag }}
-                </div>
-                <div class="col-lg-7">
-                  {{ form.first_name }}
-                </div>
-                <div class="clearfix"></div>
-                  {{ form.first_name.errors }}
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">
-                  {{ form.patronymic.label_tag }}
-                </div>
-                <div class="col-lg-7">
-                  {{ form.patronymic }}
+                <div class="col-md-6">
+                  <p class="text-info lead">Личные данные</p>
+                  <div class="form-group">
+                    {{ form.last_name.label_tag }}
+                    {{ form.last_name }}
+                    {{ form.last_name.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.first_name.label_tag }}
+                    {{ form.first_name }}
+                    {{ form.first_name.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.patronymic.label_tag }}
+                    {{ form.patronymic }}
+                    {{ form.patronymic.errors }}
+                  </div>
                 </div>
                 <div class="clearfix"></div>
-                  {{ form.patronymic.errors }}
-              </div>
-              <div class="form-group add-bottom">
-                <div class="col-lg-5">
-                  {{ form.phone.label_tag }}
-                </div>
-                <div class="col-lg-7">
-                  {{ form.phone }}
+                <div class="col-md-6">
+                  <button type="submit" class="btn btn-save">Сохранить изменения</button>
                 </div>
                 <div class="clearfix"></div>
-                  {{ form.phone.errors }}
-              </div>
-              <div class="form-group add-bottom">
-                <div class="col-lg-5">
-                  {{ form.is_active.label_tag }}
-                </div>
-                <div class="col-lg-7">
-                  {{ form.is_active }}
-                </div>
-                <div class="clearfix"></div>
-                  {{ form.is_active.errors }}
+              </form>
+              <div class="col-md-6">
+                <p class="text-info lead">Смена пароля</p>
+                {% include 'core/__includes/user_password_change_form.html' with user_id=object.user.id %}
               </div>
               <div class="clearfix"></div>
-              <button type="submit" class="btn btn-default">Сохранить изменения</button>
-            </form>
-          </div>
-          <div class="col-lg-6">
-            <p class="text-info lead">Смена пароля</p>
-            {% include 'core/__includes/user_password_change_form.html' with user_id=object.user.id %}
+            </div>
           </div>
         </div>
       </div>

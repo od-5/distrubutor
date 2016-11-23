@@ -31,9 +31,6 @@ body {
 .js-toggle-body {
   display: none;
 }
-.form-horizontal .control-label {
-  text-align: left;
-}
 .nav-mobile li {
   display: inline-block;
 }
@@ -43,13 +40,6 @@ body {
 .nav-mobile li:last-child {
   text-align: right;
   float: right;
-}
-.table tbody tr td {
-  background-color: #f6f7f8;
-}
-.table tbody tr td.name {
-  background-color: #fff;
-  width: 320px;
 }
 .glyphlink .glyphicon {
   color: #5cb85c;
@@ -98,12 +88,6 @@ body {
   max-height: 300px;
   overflow-y: scroll;
   overflow-x: hidden;
-}
-.btn-right {
-  float: right;
-}
-.btn-tile {
-  font-size: 30px;
 }
 .photo-delete-block {
   display: none;

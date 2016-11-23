@@ -1,31 +1,31 @@
 <div class="col-lg-12">
   <div class="text-center">
-    <ul class="pagination {% if mobile %}pagination-lg{% else %}pagination-sm{% endif %}">
+    <ul class="pagination">
       {% if page_obj.has_previous %}
       <li>
-        <a href="{{ URL_WITH_FILTER|default:'?' }}page=1" aria-label="Previous">
+        <a href="{{ URL_WITH_FILTER|default:'?' }}page=1" class="pagination-first" aria-label="Previous">
           <span class="glyphicon glyphicon-fast-backward"></span>
         </a>
       </li>
       <li>
-        <a href="{{ URL_WITH_FILTER|default:'?' }}page={{ page_obj.previous_page_number }}" aria-label="Previous">
+        <a href="{{ URL_WITH_FILTER|default:'?' }}page={{ page_obj.previous_page_number }}" class="pagination-prev" aria-label="Previous">
           <span class="glyphicon glyphicon-backward"></span>
         </a>
       </li>
       {% else %}
       <li  class="disabled">
-        <a href="{{ URL_WITH_FILTER|default:'?' }}page=1" aria-label="Previous">
+        <a href="{{ URL_WITH_FILTER|default:'?' }}page=1" class="pagination-first" aria-label="Previous">
           <span class="glyphicon glyphicon-fast-backward"></span>
         </a>
       </li>
       <li class="disabled">
-        <a aria-label="Previous">
+        <a aria-label="Previous" class="pagination-prev">
           <span class="glyphicon glyphicon-backward"></span>
         </a>
       </li>
       {% endif %}
       <li class="disabled">
-        <a>{{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</a>
+        <a class="pagination-current">{{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</a>
       </li>
 {#      {% for i in page_obj.paginator.page_range %}#}
 {#      <li {% if i == page_obj.number %}class="active"{% endif %}><a href="{{ URL_WITH_FILTER }}page={{ i }}">{{ i }}</a></li>#}
@@ -33,23 +33,23 @@
 {#      {% endfor %}#}
       {% if page_obj.has_next %}
       <li>
-        <a href="{{ URL_WITH_FILTER }}page={{ page_obj.next_page_number }}" aria-label="Next">
+        <a href="{{ URL_WITH_FILTER }}page={{ page_obj.next_page_number }}" class="pagination-next" aria-label="Next">
           <span class="glyphicon glyphicon-forward"></span>
         </a>
       </li>
       <li>
-        <a href="{{ URL_WITH_FILTER }}page={{ page_obj.paginator.num_pages }}" aria-label="Next">
+        <a href="{{ URL_WITH_FILTER }}page={{ page_obj.paginator.num_pages }}" class="pagination-last" aria-label="Next">
           <span class="glyphicon glyphicon-fast-forward"></span>
         </a>
       </li>
       {% else %}
       <li class="disabled">
-        <a aria-label="Next">
+        <a aria-label="Next" class="pagination-next">
           <span class="glyphicon glyphicon-forward"></span>
         </a>
       </li>
       <li class="disabled">
-        <a href="{{ URL_WITH_FILTER }}page={{ page_obj.paginator.num_pages }}" aria-label="Next">
+        <a href="{{ URL_WITH_FILTER }}page={{ page_obj.paginator.num_pages }}" class="pagination-last" aria-label="Next">
           <span class="glyphicon glyphicon-fast-forward"></span>
         </a>
       </li>
