@@ -1,60 +1,94 @@
 {% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Отзывы с сайта | {{ block.super }}{% endblock %}
 {% block content %}
-  <div class="container">
-    <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
-        <li class="active">Список отзывов</li>
-      </ol>
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <p class="lead remove-bottom text-center">Отзывы с сайта</p>
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li class="active">Отзывы с сайта</li>
+          </ol>
         </div>
-        <div class="panel-body">
-        {% if user.type == 1 %}
-          <form action="" method="GET" role="form" class="form-inline add-bottom">
-            <select name="moderator" id="" class="form-control input-sm">
-              <option value="0">---- Модератор ------</option>
-            {% for item in moderator_list %}
-              <option value="{{ item.id }}" {% if item.id == r_moderator %}selected="selected"{% endif %}>{{ item }}</option>
-            {% endfor %}
-            </select>
-            <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
-          </form>
-        {% endif %}
-          <table class="table table-hover table-condensed table-bordered table-list">
-            <thead>
-              <tr>
-                <th>e-mail</th>
-                <th>Имя</th>
-                <th>Текст</th>
-                <th>&nbsp;</th>
-              </tr>
-            </thead>
-            <tbody class="js-list">
-            {% for object in review_list %}
-              <tr data-id="{{ object.id }}" data-name="{{ object.name }}" data-model="Review" id="id_Review_{{ object.id }}">
-                <td><a href="{% url 'moderator:review-update' object.id %}"> {{ object.mail|default:'' }}</a></td>
-                <td>{{ object.name|default:'Не указано' }}</td>
-                <td>{{ object.text|safe|truncatechars:100|default:'Не указано' }}</td>
-                <td class="text-right">
-                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Review-{{ object.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
-                    <span class="glyphicon glyphicon-remove"></span> Удалить
-                  </a>
-                </td>
-              </tr>
-            {% empty %}
-              <tr>
-                <td colspan="4">
-                  <p class="alert alert-info text-left">Отзывов не найдено</p>
-                </td>
-              </tr>
-            {% endfor %}
-            </tbody>
-          </table>
-          {% include '__includes/pagination.html' %}
-        </div>
+        <div class="clearfix"></div>
       </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">Отзывы с сайта</span><span class="page-top__count"> / {{ page_obj.paginator.count|default:'0' }}</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+          {% if user.type == 1 %}
+            <form action="" method="GET" role="form" class="form form-search">
+              <div class="col-md-12">
+                <div class="five-col-2">
+                  <select name="moderator" id="" class="form-control input-sm">
+                    <option value="0">---- Модератор ------</option>
+                  {% for item in moderator_list %}
+                    <option value="{{ item.id }}" {% if item.id == r_moderator %}selected="selected"{% endif %}>{{ item }}</option>
+                  {% endfor %}
+                  </select>
+                </div>
+                <div class="five-col-2">
+                  <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
+                </div>
+                <div class="clearfix"></div>
+              </div>
+              <div class="clearfix"></div>
+            </form>
+          {% endif %}
+            <div class="col-md-12">
+              <div class="table-container">
+                <table class="table table-list">
+                  <thead>
+                    <tr>
+                      <th>e-mail</th>
+                      <th>Имя</th>
+                      <th>Текст</th>
+                      <th>&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody class="js-list">
+                  {% for object in review_list %}
+                    <tr data-id="{{ object.id }}" data-name="{{ object.name }}" data-model="Review" id="id_Review_{{ object.id }}">
+                      <td><a href="{% url 'moderator:review-update' object.id %}"> {{ object.mail|default:'' }}</a></td>
+                      <td>{{ object.name|default:'Не указано' }}</td>
+                      <td>{{ object.text|safe|truncatechars:100|default:'Не указано' }}</td>
+                      <td class="text-right">
+                        <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Review-{{ object.id }}" class="text-danger js-ajax-remove-btn">
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                      </td>
+                    </tr>
+                  {% empty %}
+                    <tr>
+                      <td colspan="4">
+                        <p class="alert alert-info text-left">Отзывов не найдено</p>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+        {% include '__includes/pagination.html' %}
+      </div>
+      <div class="clearfix"></div>
     </div>
   </div>
   {% include '__modal/js_ajax_remove_form.html' %}

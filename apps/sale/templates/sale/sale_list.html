@@ -1,81 +1,120 @@
 {% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Список продаж | {{ block.super }}{% endblock %}
 {% block content %}
-  <div class="container">
-    <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
-        <li class="active">Список продаж</li>
-      </ol>
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <p class="lead remove-bottom text-center">Список продаж</p>
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li class="active">Список продаж</li>
+          </ol>
         </div>
-        <div class="panel-body">
-          <a href="{% url 'sale:add' %}" class="btn btn-success">
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-6">
+          <span class="page-top__title">Список продаж</span><span class="page-top__count"> / {{ page_obj.paginator.count|default:'0' }}</span>
+        </div>
+        <div class="col-md-6">
+          <a href="{% url 'sale:add' %}" class="btn btn-add page-top__btn" title="Добавить новую продажу">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую продажу
           </a>
-          <form action="" class="client-search-form form-inline add-bottom" role="form" method="GET">
-            <select name="city" class="form-control input-sm">
-              <option value="0">---- Город ----</option>
-              {% for city in city_list %}
-                <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
-              {% endfor %}
-            </select>
-            {% if not user.manager_user and not user.manager_user.leader %}
-            <select name="manager" class="form-control input-sm">
-              <option value="0">---- Менеджер ----</option>
-              {% for manager in manager_list %}
-                <option value="{{ manager.id }}" {% if manager.id == manager_id %}selected="selected"{% endif %}>{{ manager }}</option>
-              {% endfor %}
-            </select>
-            {% endif %}
-            <input type="text" name="email" class="form-control input-sm" placeholder="email" value="{{ r_email|default:'' }}">
-            <input type="text" name="legal_name" class="form-control input-sm" placeholder="Юридическое название" value="{{ r_legal_name|default:'' }}">
-            <button type="submit" class="btn btn-info btn-sm">
-              <span class="glyphicon glyphicon-search"></span> Искать
-            </button>
-          </form>
-          <table class="table table-hover table-condensed table-bordered table-list">
-            <thead>
-              <tr>
-                <th>Юридические наименование</th>
-                <th>Фактичесское наименование</th>
-                <th>Город</th>
-                <th>Менеджер</th>
-                <th>Пользователь</th>
-                <th>Руководитель</th>
-                <th>Должность руководителя</th>
-                <th>&nbsp;</th>
-              </tr>
-            </thead>
-            <tbody class="js-list">
-            {% if object_list %}
-              {% for object in object_list %}
-              <tr data-id="{{ object.id }}" data-name="{{ object.legal_name }}" data-model="Sale" id="id_Sale_{{ object.id }}">
-                <td><a href="{% url 'sale:update' object.id %}">{{ object.legal_name|default:'Не указано' }}</a></td>
-                <td>{{ object.actual_name|default:'Не указано' }}</td>
-                <td>{{ object.city|default:'Не указано' }}</td>
-                <td>{{ object.manager|default:'Не указано' }}</td>
-                <td>{{ object.user|default:'Не указано' }}</td>
-                <td>{{ object.leader|default:'Не указано' }}</td>
-                <td>{{ object.leader_function|default:'Не указано' }}</td>
-                <td>
-                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
-                    <span class="glyphicon glyphicon-remove"></span> Удалить
-                  </a>
-                </td>
-              </tr>
-              {% endfor %}
-            {% else %}
-              <tr>
-                <td colspan="8"><p class="alert alert-info text-left">Клиентов нет</p></td>
-              </tr>
-            {% endif %}
-            </tbody>
-          </table>
-          {% include '__includes/pagination.html' %}
         </div>
+        <div class="clearfix"></div>
       </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <form action="" class="form form-filter" role="form" method="GET">
+              <div class="col-md-12">
+                <div class="five-col-2">
+                  <select name="city" class="form-control">
+                    <option value="0">---- Город ----</option>
+                    {% for city in city_list %}
+                      <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                {% if not user.manager_user and not user.manager_user.leader %}
+                <div class="five-col-2">
+                  <select name="manager" class="form-control">
+                    <option value="0">---- Менеджер ----</option>
+                    {% for manager in manager_list %}
+                      <option value="{{ manager.id }}" {% if manager.id == manager_id %}selected="selected"{% endif %}>{{ manager }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                {% endif %}
+                <div class="five-col-1">
+                  <input type="text" name="email" class="form-control" placeholder="email" value="{{ r_email|default:'' }}">
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="legal_name" class="form-control" placeholder="Юридическое название" value="{{ r_legal_name|default:'' }}">
+                </div>
+                <div class="five-col-1">
+                  <input type="submit" class="btn btn-search" value="Искать продажу">
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            </form>
+            <div class="col-md-12">
+              <div class="table-container">
+                <table class="table table-list">
+                  <thead>
+                    <tr>
+                      <th>Юридические наименование</th>
+                      <th>Фактичесское наименование</th>
+                      <th>Город</th>
+                      <th>Менеджер</th>
+                      <th>Пользователь</th>
+                      <th>Руководитель</th>
+                      <th>Должность руководителя</th>
+                      <th>&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody class="js-list">
+                  {% if object_list %}
+                    {% for object in object_list %}
+                    <tr data-id="{{ object.id }}" data-name="{{ object.legal_name }}" data-model="Sale" id="id_Sale_{{ object.id }}">
+                      <td><a href="{% url 'sale:update' object.id %}">{{ object.legal_name|default:'Не указано' }}</a></td>
+                      <td>{{ object.actual_name|default:'Не указано' }}</td>
+                      <td>{{ object.city|default:'Не указано' }}</td>
+                      <td>{{ object.manager|default:'Не указано' }}</td>
+                      <td>{{ object.user|default:'Не указано' }}</td>
+                      <td>{{ object.leader|default:'Не указано' }}</td>
+                      <td>{{ object.leader_function|default:'Не указано' }}</td>
+                      <td>
+                        <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="text-danger js-ajax-remove-btn">
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  {% else %}
+                    <tr>
+                      <td colspan="8"><p class="alert alert-info text-left">Клиентов нет</p></td>
+                    </tr>
+                  {% endif %}
+                  </tbody>
+                </table>
+                </div>
+            </div>
+          <div class="clearfix"></div>
+          </div>
+        </div>
+        {% include '__includes/pagination.html' %}
+      </div>
+      <div class="clearfix"></div>
     </div>
   </div>
 {% include '__modal/js_ajax_remove_form.html' %}

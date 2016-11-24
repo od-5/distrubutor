@@ -1,147 +1,185 @@
 {% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Редактирование {{ object }} | {{ block.super }}{% endblock %}
 {% block content %}
+  {% include 'sale/__include/sale_breadcrumb.html' %}
   <div class="container">
-    <div class="col-lg-12">
-      {% include 'sale/__include/sale_menu.html' %}
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <p class="lead text-center remove-bottom">
-            Редактирование {{ object }}
-          </p>
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">Редактирование {{ object }}</span>
         </div>
-        <div class="panel-body">
-          <div class="col-lg-12">
-            <ul class="nav nav-tabs">
-              <li class="active"><a data-toggle="tab" href="#user">Информация о пользователе</a></li>
-              <li><a data-toggle="tab" href="#sale">Информация об организации</a></li>
-            </ul>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        {% include 'sale/__include/sale_menu.html' %}
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <p class="lead text-center remove-bottom">
+              Редактирование {{ object }}
+            </p>
+          </div>
+          <div class="panel-body">
+            <div class="panel-content">
+              <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#user">Информация о пользователе</a></li>
+                <li><a data-toggle="tab" href="#sale">Информация об организации</a></li>
+              </ul>
 
-            <div class="tab-content">
-              <div id="user" class="tab-pane fade in active">
-                {% if error %}
-                  <div class="alert alert-danger">
-                    {{ error }}
+              <div class="tab-content">
+                <div id="user" class="tab-pane fade in active">
+                  {% if error %}
+                    <div class="alert alert-danger">
+                      {{ error }}
+                    </div>
+                  {%  endif %}
+                  {% if success %}
+                    <div class="alert alert-success">
+                      {{ success }}
+                    </div>
+                  {% endif %}
+                  <div class="col-md-6">
+                    <form action="" role="form" class="form" id="js-form-user-update" method="post">
+                      {% csrf_token %}
+                      <p class="lead text-info">ФИО представителя</p>
+                      {{ user_form.errors }}
+                      <div class="form-group">
+                        {{ user_form.email.label_tag }}
+                        {{ user_form.email }}
+                        {{ user_form.email.errors }}
+                      </div>
+                      <div class="form-group">
+                        {{ user_form.last_name.label_tag }}
+                        {{ user_form.last_name }}
+                        {{ user_form.last_name.errors }}
+                      </div>
+                      <div class="form-group">
+                        {{ user_form.first_name.label_tag }}
+                        {{ user_form.first_name }}
+                        {{ user_form.first_name.errors }}
+                      </div>
+                      <div class="form-group">
+                        {{ user_form.patronymic.label_tag }}
+                        {{ user_form.patronymic }}
+                        {{ user_form.patronymic.errors }}
+                      </div>
+                      <div class="form-group">
+                        {{ user_form.phone.label_tag }}
+                        {{ user_form.phone }}
+                        {{ user_form.phone.errors }}
+                      </div>
+                      <div class="form-group">
+                        {{ user_form.is_active.label_tag }}
+                        {{ user_form.is_active }}
+                        {{ user_form.is_active.errors }}
+                      </div>
+                      <button type="submit" class="btn btn-save">Сохранить</button>
+                    </form>
                   </div>
-                {%  endif %}
-                {% if success %}
-                  <div class="alert alert-success">
-                    {{ success }}
+                  <div class="col-md-6">
+                    <p class="text-info lead">Смена пароля</p>
+                    {% include 'core/__includes/user_password_change_form.html' with user_id=object.user.id %}
                   </div>
-                {% endif %}
-                <div class="col-lg-6">
-                  <form action="" role="form" id="js-form-user-update" method="post">
-                    {% csrf_token %}
-                    <p class="lead text-center">ФИО представителя</p>
-                    {{ user_form.errors }}
-                    <div class="form-group">
-                      <div class="col-lg-5">{{ user_form.email.label_tag }}</div>
-                      <div class="col-lg-7">{{ user_form.email }}</div>
-                      {{ user_form.email.errors }}
-                      <div class="clearfix"></div>
-                    </div>
-                    <div class="form-group">
-                      <div class="col-lg-5">{{ user_form.last_name.label_tag }}</div>
-                      <div class="col-lg-7">{{ user_form.last_name }}</div>
-                      {{ user_form.last_name.errors }}
-                      <div class="clearfix"></div>
-                    </div>
-                    <div class="form-group">
-                      <div class="col-lg-5">{{ user_form.first_name.label_tag }}</div>
-                      <div class="col-lg-7">{{ user_form.first_name }}</div>
-                      {{ user_form.first_name.errors }}
-                      <div class="clearfix"></div>
-                    </div>
-                    <div class="form-group">
-                      <div class="col-lg-5">{{ user_form.patronymic.label_tag }}</div>
-                      <div class="col-lg-7">{{ user_form.patronymic }}</div>
-                      {{ user_form.patronymic.errors }}
-                      <div class="clearfix"></div>
-                    </div>
-                    <div class="form-group">
-                      <div class="col-lg-5">{{ user_form.phone.label_tag }}</div>
-                      <div class="col-lg-7">{{ user_form.phone }}</div>
-                      {{ user_form.phone.errors }}
-                      <div class="clearfix"></div>
-                    </div>
-                    <div class="form-group">
-                      <div class="col-lg-5">{{ user_form.is_active.label_tag }}</div>
-                      <div class="col-lg-7">{{ user_form.is_active }}</div>
-                      {{ user_form.is_active.errors }}
-                      <div class="clearfix"></div>
-                    </div>
-                    <button type="submit" class="btn btn-default">Сохранить</button>
-                  </form>
+                  <div class="clearfix"></div>
                 </div>
-                <div class="col-lg-6">
-                  <p class="text-info lead">Смена пароля</p>
-                  {% include 'core/__includes/user_password_change_form.html' with user_id=object.user.id %}
-                </div>
-              </div>
-              <div id="sale" class="tab-pane fade">
-
+                <div id="sale" class="tab-pane fade">
                   <form action="{% url 'sale:sale_update' %}" id="js-form-sale-update" method="post" role="form">
                     {% csrf_token %}
-                    <p class="lead text-center">Реквизиты организации</p>
+                    <p class="lead text-info">Реквизиты организации</p>
                     {{ sale_form.user }}
-                    <div class="col-lg-6">
+                    <div class="col-md-6">
                       {% if user.type == 1 %}
                       <div class="form-group">
-                        <div class="col-lg-5">{{ sale_form.moderator.label_tag }}</div>
-                        <div class="col-lg-7">{{ sale_form.moderator }}</div>
+                        {{ sale_form.moderator.label_tag }}
+                        {{ sale_form.moderator }}
                         {{ sale_form.moderator.errors }}
-                        <div class="clearfix"></div>
                       </div>
                       {% else %}
                         {{ sale_form.moderator }}
                         {{ sale_form.moderator.errors }}
                       {% endif %}
                       <div class="form-group">
-                        <div class="col-lg-5">{{ sale_form.city.label_tag }}</div>
-                        <div class="col-lg-7">{{ sale_form.city }}</div>
+                        {{ sale_form.city.label_tag }}
+                        {{ sale_form.city }}
                         {{ sale_form.city.errors }}
-                        <div class="clearfix"></div>
                       </div>
                       <div class="form-group">
-                        <div class="col-lg-5">{{ sale_form.manager.label_tag }}</div>
-                        <div class="col-lg-7">{{ sale_form.manager }}</div>
+                        {{ sale_form.manager.label_tag }}
+                        {{ sale_form.manager }}
                         {{ sale_form.manager.errors }}
-                        <div class="clearfix"></div>
                       </div>
                       <div class="form-group">
-                        <div class="col-lg-5">{{ sale_form.legal_name.label_tag }}</div>
-                        <div class="col-lg-7">{{ sale_form.legal_name }}</div>
+                        {{ sale_form.legal_name.label_tag }}
+                        {{ sale_form.legal_name }}
                         {{ sale_form.legal_name.errors }}
-                        <div class="clearfix"></div>
                       </div>
                       <div class="form-group">
-                        <div class="col-lg-5">{{ sale_form.actual_name.label_tag }}</div>
-                        <div class="col-lg-7">{{ sale_form.actual_name }}</div>
+                        {{ sale_form.actual_name.label_tag }}
+                        {{ sale_form.actual_name }}
                         {{ sale_form.actual_name.errors }}
-                        <div class="clearfix"></div>
                       </div>
                       <div class="form-group">
-                        <div class="col-lg-5">{{ sale_form.legal_address.label_tag }}</div>
-                        <div class="col-lg-7">{{ sale_form.legal_address }}</div>
+                        {{ sale_form.legal_address.label_tag }}
+                        {{ sale_form.legal_address }}
                         {{ sale_form.legal_address.errors }}
-                        <div class="clearfix"></div>
                       </div>
                       <div class="form-group">
-                        <div class="col-lg-5">{{ sale_form.leader.label_tag }}</div>
-                        <div class="col-lg-7">{{ sale_form.leader }}</div>
+                        {{ sale_form.leader.label_tag }}
+                        {{ sale_form.leader }}
                         {{ sale_form.leader.errors }}
-                        <div class="clearfix"></div>
                       </div>
                       <div class="form-group">
-                        <div class="col-lg-5">{{ sale_form.leader_function.label_tag }}</div>
-                        <div class="col-lg-7">{{ sale_form.leader_function }}</div>
+                        {{ sale_form.leader_function.label_tag }}
+                        {{ sale_form.leader_function }}
                         {{ sale_form.leader_function.errors }}
-                        <div class="clearfix"></div>
                       </div>
                       <div class="form-group">
-                        <div class="col-lg-5">{{ sale_form.work_basis.label_tag }}</div>
-                        <div class="col-lg-7">{{ sale_form.work_basis }}</div>
+                        {{ sale_form.work_basis.label_tag }}
+                        {{ sale_form.work_basis }}
                         {{ sale_form.work_basis.errors }}
                         <div class="clearfix"></div>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        {{ sale_form.inn.label_tag }}
+                        {{ sale_form.inn }}
+                        {{ sale_form.inn.errors }}
+                      </div>
+                      <div class="form-group">
+                        {{ sale_form.kpp.label_tag }}
+                        {{ sale_form.kpp }}
+                        {{ sale_form.kpp.errors }}
+                      </div>
+                      <div class="form-group">
+                        {{ sale_form.ogrn.label_tag }}
+                        {{ sale_form.ogrn }}
+                        {{ sale_form.ogrn.errors }}
+                      </div>
+                      <div class="form-group">
+                        {{ sale_form.bank.label_tag }}
+                        {{ sale_form.bank }}
+                        {{ sale_form.bank.errors }}
+                      </div>
+                      <div class="form-group">
+                        {{ sale_form.bik.label_tag }}
+                        {{ sale_form.bik }}
+                        {{ sale_form.bik.errors }}
+                      </div>
+                      <div class="form-group">
+                        {{ sale_form.account.label_tag }}
+                        {{ sale_form.account }}
+                        {{ sale_form.account.errors }}
+                        <div class="clearfix"></div>
+                      </div>
+                      <div class="form-group">
+                        {{ sale_form.account_cor.label_tag }}
+                        {{ sale_form.account_cor }}
+                        {{ sale_form.account_cor.errors }}
                       </div>
                       <div class="form-group">
                         {% load widget_tweaks %}
@@ -156,60 +194,19 @@
                         </p>
                       </div>
                     </div>
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <div class="col-lg-5">{{ sale_form.inn.label_tag }}</div>
-                        <div class="col-lg-7">{{ sale_form.inn }}</div>
-                        {{ sale_form.inn.errors }}
-                        <div class="clearfix"></div>
-                      </div>
-                      <div class="form-group">
-                        <div class="col-lg-5">{{ sale_form.kpp.label_tag }}</div>
-                        <div class="col-lg-7">{{ sale_form.kpp }}</div>
-                        {{ sale_form.kpp.errors }}
-                        <div class="clearfix"></div>
-                      </div>
-                      <div class="form-group">
-                        <div class="col-lg-5">{{ sale_form.ogrn.label_tag }}</div>
-                        <div class="col-lg-7">{{ sale_form.ogrn }}</div>
-                        {{ sale_form.ogrn.errors }}
-                        <div class="clearfix"></div>
-                      </div>
-                      <div class="form-group">
-                        <div class="col-lg-5">{{ sale_form.bank.label_tag }}</div>
-                        <div class="col-lg-7">{{ sale_form.bank }}</div>
-                        {{ sale_form.bank.errors }}
-                        <div class="clearfix"></div>
-                      </div>
-                      <div class="form-group">
-                        <div class="col-lg-5">{{ sale_form.bik.label_tag }}</div>
-                        <div class="col-lg-7">{{ sale_form.bik }}</div>
-                        {{ sale_form.bik.errors }}
-                        <div class="clearfix"></div>
-                      </div>
-                      <div class="form-group">
-                        <div class="col-lg-5">{{ sale_form.account.label_tag }}</div>
-                        <div class="col-lg-7">{{ sale_form.account }}</div>
-                        {{ sale_form.account.errors }}
-                        <div class="clearfix"></div>
-                      </div>
-                      <div class="form-group">
-                        <div class="col-lg-5">{{ sale_form.account_cor.label_tag }}</div>
-                        <div class="col-lg-7">{{ sale_form.account_cor }}</div>
-                        {{ sale_form.account_cor.errors }}
-                        <div class="clearfix"></div>
-                      </div>
+                    <div class="clearfix"></div>
+                    <div class="col-md-6">
+                      <button type="submit" class="btn btn-save">Сохранить</button>
                     </div>
                     <div class="clearfix"></div>
-                    <div class="text-center">
-                      <button type="submit" class="btn btn-success">Сохранить</button>
-                    </div>
                   </form>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <div class="clearfix"></div>
     </div>
   </div>
 {% endblock %}
