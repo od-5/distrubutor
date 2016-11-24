@@ -523,8 +523,8 @@ def distributor_detail_report_excel(request, pk):
     :return:
     """
     distributor = get_object_or_None(Distributor, pk=int(pk))
-    date_from = request.GET.get('date_from')
-    date_to = request.GET.get('date_to')
+    date_from = request.GET.get('date_from') or ''
+    date_to = request.GET.get('date_to') or ''
     font0 = xlwt.Font()
     font0.name = 'Calibri'
     font0.height = 220

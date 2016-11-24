@@ -40,7 +40,7 @@ class TopicAddForm(forms.ModelForm):
         widgets = {
             'section': forms.HiddenInput(),
             'author': forms.HiddenInput(),
-            'city': forms.CheckboxSelectMultiple(attrs={'class': 'form-control'}),
+            'city': forms.CheckboxSelectMultiple(),
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'all_city': forms.CheckboxInput(),
             'superviser': forms.CheckboxInput(),
@@ -63,7 +63,7 @@ class TopicUpdateForm(forms.ModelForm):
         widgets = {
             'section': forms.HiddenInput(),
             'author': forms.HiddenInput(),
-            'city': forms.CheckboxSelectMultiple(attrs={'class': 'form-control'}),
+            'city': forms.CheckboxSelectMultiple(),
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'all_city': forms.CheckboxInput(),
             'moderator': forms.CheckboxInput(),

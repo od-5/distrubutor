@@ -1,49 +1,73 @@
 {% extends 'cabinet/cabinet_base.html' %}
-{% block title %}Форум{% endblock %}
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Форум | {{ block.super }}{% endblock %}
 {% block content %}
-  <div class="container">
-    <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
-        <li class="active">Форум</li>
-      </ol>
-    {% if user.type == 1 %}
-      <a href="{% url 'forum:section-add' %}" class="btn btn-success add-bottom">
-        <span class="glyphicon glyphicon-plus-sign"></span> Добавить раздел
-      </a>
-    {% endif %}
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <p class="lead remove-bottom text-center">Форум</p>
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li class="active">Форум</li>
+          </ol>
         </div>
-        <div class="panel-body">
-        {% if object_list %}
-          <table class="table">
-            <tbody>
-            {% for section in object_list %}
-              <tr>
-                <td style="width:60px;">
-                  {% if user.type == 1 %}
-                  <a href="{{ section.get_update_url|default:'' }}" class="btn btn-sm btn-info">
-                    <span class="glyphicon glyphicon-edit"></span>
-                  </a>
-                  {% else %}
-                  <span class="glyphicon glyphicon-folder-close"></span>
-                  {% endif %}
-                </td>
-                <td>
-                  <a href="{{ section.get_topic_list_url|default:'#'}}" title="{{ section.description|truncatewords:'20'|striptags|default:'' }}"><strong>{{ section.title|default:'не указано' }}</strong></a><br>
-                  <span class="small">{{ section.description|default:'Не указано' }}</span>
-                </td>
-              </tr>
-            {% endfor %}
-            </tbody>
-          </table>
-        {% else %}
-          <p class="alert alert-info">Разделов нет</p>
-        {% endif %}
-        </div>
+        <div class="clearfix"></div>
       </div>
     </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-6">
+          <span class="page-top__title">Форум</span>
+        </div>
+        {% if user.type == 1 %}
+        <div class="col-md-6">
+          <a href="{% url 'forum:section-add' %}" class="btn btn-add page-top__btn" title="Добавить раздел">
+            <span class="glyphicon glyphicon-plus-sign"></span> Добавить раздел
+          </a>
+        </div>
+        {% endif %}
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="panel-content">
+            {% if object_list %}
+              <table class="table table-list">
+                <tbody>
+                {% for section in object_list %}
+                  <tr>
+                    <td style="width:60px;">
+                      {% if user.type == 1 %}
+                      <a href="{{ section.get_update_url|default:'' }}" class="btn btn-sm btn-info">
+                        <span class="glyphicon glyphicon-edit"></span>
+                      </a>
+                      {% else %}
+                      <span class="glyphicon glyphicon-folder-close"></span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      <a href="{{ section.get_topic_list_url|default:'#'}}" title="{{ section.description|truncatewords:'20'|striptags|default:'' }}"><strong>{{ section.title|default:'не указано' }}</strong></a><br>
+                      <span class="small">{{ section.description|default:'Не указано' }}</span>
+                    </td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            {% else %}
+              <p class="alert alert-info">Разделов нет</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
   </div>
 {% endblock %}

@@ -1,54 +1,81 @@
 {% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}{{ topic.title|default:'не указано' }} | {{ block.super }}{% endblock %}
 {% block extra_js %}
   {{ form.media }}
 {% endblock %}
 {% block content %}
-  <div class="container">
-    <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
-        <li><a href="{% url 'forum:list' %}">Форум</a></li>
-        <li><a href="{% url 'forum:topic-list' object.section.id %}">{{ object.section.title|default:'' }}</a></li>
-        <li class="active">{{ object.title|default:'не указано' }}</li>
-      </ol>
-    {% if user.type == 1 or user == object.author %}
-      <a href="{{ object.get_update_url|default:'' }}" class="btn btn-info btn-sm add-bottom"><span class="glyphicon glyphicon-edit"></span> редактировать</a>
-    {% endif %}
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <div class="col-lg-9">
-            <p class="lead remove-bottom">{{ object.title|default:'Не указано' }}</p>
-          </div>
-          <div class="col-lg-3">
-            <p class="small remove-bottom text-right"><strong>{{ object.author }}</strong> <br>{{ object.created }}</p>
-          </div>
-          <div class="clearfix"></div>
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li><a href="{% url 'forum:list' %}">Форум</a></li>
+            <li><a href="{% url 'forum:topic-list' object.section.id %}">{{ object.section.title|default:'' }}</a></li>
+            <li class="active">{{ object.title|default:'не указано' }}</li>
+          </ol>
         </div>
-        <div class="panel-body">
-          <div class="col-lg-12">
-            <div class="forum-comment">
-              <div class="forum-comment__text">
-                {{ object.text|safe|default:'' }}
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-6">
+          <span class="page-top__title">Форум</span>
+        </div>
+        {% if user.type == 1 or user == object.author %}
+        <div class="col-md-6 text-right">
+          <a href="{{ object.get_update_url|default:'' }}" class="btn btn-info btn-sm add-bottom"><span class="glyphicon glyphicon-edit"></span> редактировать</a>
+        </div>
+        {% endif %}
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <div class="col-md-3">
+              <p class="small remove-bottom"><strong>{{ object.author }}</strong> <br>{{ object.created }}</p>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <div class="col-md-12">
+              <div class="forum-comment">
+                <div class="forum-comment__text">
+                  <p class="lead">
+                  {{ object.title|default:'не указано' }}
+                  </p>
+                  {{ object.text|safe|default:'' }}
+                </div>
               </div>
             </div>
+            <div class="clearfix"></div>
           </div>
-          <div class="clearfix"></div>
         </div>
-      </div>
-      {% for comment in object.comment_set.all %}
+        <br>
+        {% for comment in object.comment_set.all %}
         <div class="panel panel-info" id="{{ comment.id }}">
           <div class="panel-heading">
             <div class="col-lg-6">
-              <a name="#{{ comment.id }}"></a><strong>{{ comment.author|default:'anonymous' }}</strong>
+              <a name="#{{ comment.id }}"></a><strong class="small">{{ comment.author|default:'anonymous' }}</strong><br>
+              <span class="small">{{ comment.created|default:'' }}</span>
             </div>
             <div class="col-lg-6 text-right">
             {% if user.type == 1 or comment.author == user %}
               <div>
-              <a href="{{ comment.get_update_url|default:'' }}" class="text-success" title="Редактировать"><span class="glyphicon glyphicon-edit"></span> редактировать</a>
-              <a href="{{ comment.get_delete_url|default:'' }}" class="text-danger" title="Удалить"><span class="glyphicon glyphicon-remove-circle"></span> удалить</a>
+                <a href="{{ comment.get_delete_url|default:'' }}" title="Удалить">Удалить</a> /
+                <a href="{{ comment.get_update_url|default:'' }}" title="Редактировать">Редактировать</a>
               </div>
             {% endif %}
-              {{ comment.created|default:'' }}
+
             </div>
 
             <div class="clearfix"></div>
@@ -60,23 +87,40 @@
             <div class="clearfix"></div>
           </div>
         </div>
-      {% endfor %}
-      <div class="panel panel-default">
-        <div class="panel-heading text-center">Новое сообщение</div>
-        <div class="panel-body">
-          <form action="" class="js-forum-comment-add-form" method="post" role="form">
-            {% csrf_token %}
-            <div class="col-lg-12">
-              <div class="form-group">
-              {% for field in form %}
-                {{ field }}
-              {% endfor %}
+        <br>
+        {% endfor %}
+        <div class="col-md-12">
+          <div class="lead text-info">Новое сообщение</div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row">
+          <div class="col-md-9">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="panel-content">
+                  <form action="" class="form js-forum-comment-add-form" method="post" role="form">
+                    {% csrf_token %}
+                    <div class="col-md-12">
+                      <div class="form-group">
+                      {% for field in form %}
+                        {{ field }}
+                      {% endfor %}
+                      </div>
+
+                    </div>
+                    <div class="col-md-6 col-md-offset-3">
+                      <button type="submit" class="btn btn-save">Отправить</button>
+                    </div>
+                    <div class="clearfix"></div>
+                  </form>
+                </div>
               </div>
-              <button type="submit" class="btn btn-success">Отправить</button>
             </div>
-          </form>
+          </div>
+          <div class="clearfix"></div>
         </div>
       </div>
+      <div class="clearfix"></div>
     </div>
   </div>
 {% endblock %}

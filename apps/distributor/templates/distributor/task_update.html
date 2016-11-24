@@ -1,101 +1,121 @@
 {% extends 'cabinet/cabinet_base.html' %}
-
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Редактирование задачи | {{ block.super }}{% endblock %}
 {% block content %}
-  <div class="container">
-    <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
-        <li><a href="{% url 'distributor:task-list' %}">Список задач для распространителей</a></li>
-        <li class="active">Редактирование задачи</li>
-      </ol>
-      {% include 'distributor/__includes/task_menu.html' %}
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <p class="lead text-center remove-bottom">
-            Редактирование задачи {{ object }}
-          </p>
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li><a href="{% url 'distributor:task-list' %}">Список задач для распространителей</a></li>
+            <li class="active">Редактирование задачи</li>
+          </ol>
         </div>
-        <div class="panel-body">
-          {% if success %}
-            <p class="alert alert-success">{{ success }}</p>
-          {% elif error %}
-            <p class="alert alert-danger">{{ error }}</p>
-          {% endif %}
-          <div class="col-lg-6">
-            <form action="" role="form" id="js-form-distributor-task-update" method="post">
-              {% csrf_token %}
-              {{ form.errors }}
-              <div class="form-group" data-url="{% url 'distributor:get_task_initial' %}">
-                <div class="col-lg-5">{{ form.sale.label_tag }}</div>
-                <div class="col-lg-7">
-                  {{ form.sale }}
-                  <strong>{{ object.sale }}</strong>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">Архив задач</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        {% include 'distributor/__includes/task_menu.html' %}
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="panel-content">
+              {% if success or error %}
+              <div class="col-md-12">
+                {% if success %}
+                <p class="alert alert-success">{{ success }}</p>
+                {% elif error %}
+                <p class="alert alert-danger">{{ error }}</p>
+                {% endif %}
+              </div>
+              <div class="clearfix"></div>
+              {% endif %}
+              <form action="" role="form" class="form" id="js-form-distributor-task-update" method="post">
+                {% csrf_token %}
+                    {{ form.errors }}
+                <div class="col-md-6">
+                  <div class="form-group" data-url="{% url 'distributor:get_task_initial' %}">
+                    {{ form.sale.label_tag }}
+                    {{ form.sale }}
+                    <input type="text" value="{{ object.sale }}" disabled="disabled" class="form-control">
+                    {{ form.sale.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.order.label_tag }}
+                    {{ form.order }}
+                    {{ form.order.errors }}
+                    <div class="text-info">
+                      По заказу осталось распространить листовок: {{ object.order.material_residue|default:'0' }}
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    {{ form.distributor.label_tag }}
+                    {{ form.distributor }}
+                    {{ form.distributor.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.area.label_tag }}
+                    {{ form.area }}
+                    {{ form.area.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.type.label_tag }}
+                    {{ form.type }}
+                    {{ form.type.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.define_address.label_tag }}
+                    {{ form.define_address }}
+                    {{ form.define_address.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.closed.label_tag }}
+                    {{ form.closed }}
+                    {{ form.closed.errors }}
+                  </div>
                 </div>
-                {{ form.sale.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ form.order.label_tag }}</div>
-                <div class="col-lg-7">{{ form.order }}</div>
-                {{ form.order.errors }}
-                <div class="col-lg-12">
-                  По заказу осталось распространить листовок: {{ object.order.material_residue|default:'0' }}
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.material_count.label_tag }}
+                    {{ form.material_count }}
+                    {{ form.material_count.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.date.label_tag }}
+                    {{ form.date }}
+                    {{ form.date.errors }}
+                    <div>&nbsp;</div>
+                  </div>
+                  <div class="form-group">
+                    {{ form.comment.label_tag }}
+                    {{ form.comment }}
+                    {{ form.comment.errors }}
+                  </div>
                 </div>
                 <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ form.distributor.label_tag }}</div>
-                <div class="col-lg-7">{{ form.distributor }}</div>
-                {{ form.distributor.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ form.area.label_tag }}</div>
-                <div class="col-lg-7">{{ form.area }}</div>
-                {{ form.area.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ form.type.label_tag }}</div>
-                <div class="col-lg-7">{{ form.type }}</div>
-                {{ form.type.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ form.material_count.label_tag }}</div>
-                <div class="col-lg-7">{{ form.material_count }}</div>
-                {{ form.material_count.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ form.date.label_tag }}</div>
-                <div class="col-lg-7">{{ form.date }}</div>
-                {{ form.date.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ form.define_address.label_tag }}</div>
-                <div class="col-lg-7">{{ form.define_address }}</div>
-                {{ form.define_address.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ form.comment.label_tag }}</div>
-                <div class="col-lg-7">{{ form.comment }}</div>
-                {{ form.comment.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ form.closed.label_tag }}</div>
-                <div class="col-lg-7">{{ form.closed }}</div>
-                {{ form.closed.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <button type="submit" class="btn btn-success">Сохранить</button>
-            </form>
+                <div class="col-md-6">
+                  <input type="submit" class="btn btn-save" value="Сохранить изменения">
+                </div>
+                <div class="clerfix"></div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
+      <div class="clearfix"></div>
     </div>
   </div>
 {% endblock %}

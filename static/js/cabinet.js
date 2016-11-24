@@ -1022,7 +1022,7 @@ $(function() {
     }
   });
   d_t_a_form.find('#id_order').change(function(){
-    var url = $(this).parents('.col-lg-7').data('url');
+    var url = $(this).parents('.form-group').data('url');
     console.log($(this).val());
     var order = $(this).val();
     if($(this).val()){
