@@ -5,7 +5,11 @@
         <ol class="breadcrumb">
           <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
           <li><a href="{% url 'city:list' %}">Список городов</a></li>
+          {% if object %}
           <li class="active">Редактирование города</li>
+          {% else %}
+          <li class="active">Добавление города</li>
+          {% endif %}
         </ol>
       </div>
       <div class="clearfix"></div>

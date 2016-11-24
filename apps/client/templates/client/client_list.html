@@ -1,169 +1,208 @@
 {% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Журнал клиентов | {{ block.super }}{% endblock %}
 {% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li class="active">Журнал клиентов</li>
+          </ol>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
   <div class="container">
-    <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
-        <li class="active">Журнал клиентов</li>
-      </ol>
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <p class="lead remove-bottom text-center">Журнал клиентов</p>
-        </div>
-        <div class="panel-body">
-{#          <a href="{% url 'client:add' %}" class="btn btn-success add-bottom">#}
-{#            <span class="glyphicon glyphicon-plus-sign"></span> Добавить нового клиента#}
-{#          </a>#}
-          <div class="row">
-            <div class="col-lg-6">
-              <p>Количество клиентов: <strong>{{ manager_client_count|default:'0' }}</strong></p>
-            </div>
-            <div class="col-lg-6">
-              <p class="text-right">Количество задач: <strong>{{ manager_task_count|default:'0' }}</strong></p>
-            </div>
-            <div class="clearfix"></div>
-          </div>
-          <div class="row">
-            <div class="col-lg-7">
-              <form action="" method="GET" role="form" class="form-inline add-bottom">
-                <a href="{% url 'client:add' %}" class="btn btn-success">
-                  <span class="glyphicon glyphicon-plus-sign"></span> Добавить нового клиента
-                </a>
-                <input type="text" name="client_name" value="{{ r_client_name }}" class="form-control" placeholder="Название клиента">
-                <button type="submit" class="btn btn-info"> <span class="glyphicon glyphicon-search"></span> Проверить наличие</button>
-              </form>
-            </div>
-            {% if user.type == 5 %}
-            <div class="col-lg-5 text-right">
-              <form action="{% url 'client:client_list_import' %}" method="POST" enctype="multipart/form-data" class="form-inline" role="form">{% csrf_token %}
-                {{ import_form.file }}
-                <input type="submit" value="Загрузить" class="js-show-loader btn btn-info form-control">
-              </form>
-            </div>
-            {% endif %}
-            <div class="clearfix"></div>
-          </div>
-          {% if search_client_list %}
-          <table class="table table-bordered" style="font-size:12px;">
-            <thead>
-              <tr>
-                <th>Название</th>
-                <th>Деятельность</th>
-                <th>Менеджер</th>
-                <th>Город</th>
-              </tr>
-            </thead>
-            {% for object in search_client_list %}
-              <tr>
-                <td>{{ object.name|default:'' }}</td>
-                <td class="break-all">{{ object.kind_of_activity|default:'Не указано' }}</td>
-                <td>{{ object.manager|default:'Не указано' }}</td>
-                <td>{{ object.city|default:'Не указано' }}</td>
-              </tr>
-            {% endfor %}
-            </tbody>
-          </table>
-          {% else %}
-            {% if r_client_name %}
-            <p class="alert alert-info">Клиента {{ r_client_name }} в системе нет</p>
-            {% endif %}
-          {% endif %}
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-6">
+          <span class="page-top__title">Журнал клиентов</span>
+          <span class="page-top__count"> / {{ manager_client_count|default:'0' }} </span>
+          <span class="page-top__count"> / задачи {{ manager_task_count|default:'0' }}</span>
 
-          <form action="" method="GET" role="form" id="js-search-form" class="form-inline add-bottom">
-            {% if user.is_leader_manager %}
-            <select name="city" id="id_city" class="form-control input-sm">
-              <option value="0">---- Город ----</option>
-              {% for city in city_list %}
-                <option value="{{ city.id }}" {% if city.id == r_city %}selected="selected"{% endif %}>{{ city.name }}</option>
-              {% endfor %}
-            </select>
-            <select name="manager" id="id_manager" class="form-control input-sm">
-              <option value="0">---- Менеджер ----</option>
-              {% for manager in manager_list %}
-                <option value="{{ manager.id }}" {% if manager.id == r_manager %}selected="selected"{% endif %}>{{ manager }}</option>
-              {% endfor %}
-            </select>
-            {% endif %}
-            <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
-            <input type="text" name="phone" value="{{ r_phone|default:'' }}" class="form-control input-sm" placeholder="телефон контактного лица">
-            <input type="text" name="contact" value="{{ r_contact|default:'' }}" class="form-control input-sm" placeholder="фамилия контактного лица">
-            <button type="submit" class="btn btn-info btn-sm"> <span class="glyphicon glyphicon-search"></span> Искать</button>
-          </form>
-          <table class="table table-hover table-condensed table-bordered table-list">
-            <thead>
-              <tr>
-                <th>Название</th>
-                <th>Деятельность</th>
-                <th>Модератор</th>
-                <th>Менеджер</th>
-                <th>Город</th>
-                <th>&nbsp;</th>
-                <th>&nbsp;</th>
-              </tr>
-            </thead>
-            <tbody class="js-list">
-            {% for object in object_list %}
-              <tr data-id="{{ object.id }}" data-name="{{ object.name }}" data-model="Client" id="id_Client_{{ object.id }}">
-                <td>
-                  <a href="{% url 'client:update' object.id %}"> {{ object.name|default:'' }}</a>
-                  <br>
-                  {% if user.type != 5 %}
-                  <a href="#js-new-task-modal" data-url="{% url 'client:get_client_info' %}" id="add-task-btn-{{ object.id }}" class="btn btn-success btn-sm js-new-task-btn">
-                    <span class="glyphicon glyphicon-plus-sign"></span> Назначить задачу
-                  </a>
-                  {% endif %}
-                </td>
-                <td>{{ object.kind_of_activity|default:'Не указано' }}</td>
-                <td>{{ object.moderator|default:'Не указано' }}</td>
-                <td data-manager-id="{{ object.manager.id }}" data-manager-name="{{ object.manager }}" data-url="{% url 'client:get_available_manager_list' %}">
-                  <span class="js-manager-name">{{ object.manager|default:'Не указано' }}</span>
-                  {% if user.type == 5 %}
-                    {% if user.manager_user.leader %}
-                  <br>
-                  <a href="#reassign-manager" id="js-reassign-manager-{{ object.id }}" class="js-reassign-manager btn btn-warning btn-sm">
-                    <span class="glyphicon glyphicon-refresh"></span> переназначить
-                  </a>
-                    {% endif %}
-                  {% elif user.type == 1 or user.type == 2 %}
-                  <br>
-                  <a href="#reassign-manager" id="js-reassign-manager-{{ object.id }}" class="js-reassign-manager btn btn-warning btn-sm">
-                    <span class="glyphicon glyphicon-refresh"></span> переназначить
-                  </a>
-                  {% endif %}
-                </td>
-                <td>{{ object.city|default:'Не указано' }}</td>
-                <td>
-                  {% if user.type != 5 %}
-                  <br>
-                  {% endif %}
-                  <a href="#client-contact" data-url="{% url 'client:get_contact_list' %}" data-client="{{ object.id }}" id="js-client-{{ object.id }}-button" class="btn btn-info btn-sm js-show-client-contact">
-                    <span class="glyphicon glyphicon-search"></span> Контактные лица
-                  </a>
-                </td>
-                <td>
-                  {% if user.type == 5 %}
-                  <a href="#js-new-task-modal" data-url="{% url 'client:get_client_info' %}" id="add-task-btn-{{ object.id }}" class="btn btn-success btn-sm js-new-task-btn">
-                    <span class="glyphicon glyphicon-plus-sign"></span> Назначить задачу
-                  </a>
-                  {% else %}
-                  <br>
-                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Client-{{ object.id }}" class="btn btn-danger btn-sm js-ajax-remove-btn">
-                    <span class="glyphicon glyphicon-remove"></span> Удалить
-                  </a>
-                  {% endif %}
-                </td>
-              </tr>
-            {% empty %}
-              <tr>
-                <td colspan="7">
-                  <p class="alert alert-info text-left">Клиентов не найдено</p>
-                </td>
-              </tr>
-            {% endfor %}
-            </tbody>
-          </table>
-          {% include '__includes/pagination.html' %}
         </div>
+        <div class="col-md-6">
+          <a href="{% url 'client:add' %}" class="btn btn-add page-top__btn"  title="Добавить менеджера">
+            <span class="glyphicon glyphicon-plus-sign"></span> Добавить клиента
+          </a>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <form action="" method="GET" role="form" id="js-search-form" class="form form-filter add-bottom">
+              <div class="col-md-12">
+                {% if user.is_leader_manager %}
+                <div class="five-col-2">
+                  <select name="city" id="id_city" class="form-control input-sm">
+                    <option value="0">---- Город ----</option>
+                    {% for city in city_list %}
+                      <option value="{{ city.id }}" {% if city.id == r_city %}selected="selected"{% endif %}>{{ city.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="five-col-2">
+                  <select name="manager" id="id_manager" class="form-control input-sm">
+                    <option value="0">---- Менеджер ----</option>
+                    {% for manager in manager_list %}
+                      <option value="{{ manager.id }}" {% if manager.id == r_manager %}selected="selected"{% endif %}>{{ manager }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                {% endif %}
+                <div class="five-col-1">
+                  <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="phone" value="{{ r_phone|default:'' }}" class="form-control input-sm" placeholder="телефон контактного лица">
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="contact" value="{{ r_contact|default:'' }}" class="form-control input-sm" placeholder="фамилия контактного лица">
+                </div>
+                <div class="five-col-2">
+                  <button type="submit" class="btn btn-search"> <span class="glyphicon glyphicon-search"></span> Искать</button>
+                </div>
+                <div class="clearfix"></div>
+              </div>
+              <div class="clearfix"></div>
+            </form>
+
+            <div class="col-md-12">
+              <div class="col-md-5">
+                <form action="" method="GET" role="form" class="form form-search add-bottom">
+                  <input type="text" name="client_name" value="{{ r_client_name }}" class="form-control add-bottom" placeholder="Название клиента">
+                  <button type="submit" class="btn btn-search"> <span class="glyphicon glyphicon-search"></span> Проверить наличие</button>
+                </form>
+              </div>
+              {% if user.type == 5 %}
+              <div class="col-md-5 col-md-offset-2 text-right">
+                <form action="{% url 'client:client_list_import' %}" method="POST" enctype="multipart/form-data" class="form form-search" role="form">{% csrf_token %}
+                  {{ import_form.file }}
+                  <input type="submit" value="Загрузить" class="js-show-loader btn btn-search">
+                </form>
+              </div>
+              {% endif %}
+              <div class="clearfix"></div>
+              {% if search_client_list %}
+              <div class="col-md-12">
+                <table class="table table-bordered" style="font-size:12px;">
+                  <thead>
+                    <tr>
+                      <th>Название</th>
+                      <th>Деятельность</th>
+                      <th>Менеджер</th>
+                      <th>Город</th>
+                    </tr>
+                  </thead>
+                  {% for object in search_client_list %}
+                    <tr>
+                      <td>{{ object.name|default:'' }}</td>
+                      <td class="break-all">{{ object.kind_of_activity|default:'Не указано' }}</td>
+                      <td>{{ object.manager|default:'Не указано' }}</td>
+                      <td>{{ object.city|default:'Не указано' }}</td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              {% else %}
+                {% if r_client_name %}
+                <div class="col-md-12">
+                <p class="alert alert-info">Клиента {{ r_client_name }} в системе нет</p>
+                </div>
+                {% endif %}
+              {% endif %}
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-md-12">
+              <div class="table-container">
+                <table class="table table-hover table-condensed table-bordered table-list">
+                  <thead>
+                    <tr>
+                      <th>Название</th>
+                      <th>Деятельность</th>
+                      <th>Модератор</th>
+                      <th>Менеджер</th>
+                      <th>Город</th>
+                      <th>&nbsp;</th>
+                      <th>&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody class="js-list">
+                  {% for object in object_list %}
+                    <tr data-id="{{ object.id }}" data-name="{{ object.name }}" data-model="Client" id="id_Client_{{ object.id }}">
+                      <td>
+                        <a href="{% url 'client:update' object.id %}"> {{ object.name|default:'' }}</a>
+                        <br>
+                        {% if user.type != 5 %}
+                        <a href="#js-new-task-modal" data-url="{% url 'client:get_client_info' %}" id="add-task-btn-{{ object.id }}" class="btn btn-success btn-sm js-new-task-btn">
+                          <span class="glyphicon glyphicon-plus-sign"></span> Назначить задачу
+                        </a>
+                        {% endif %}
+                      </td>
+                      <td>{{ object.kind_of_activity|default:'Не указано' }}</td>
+                      <td>{{ object.moderator|default:'Не указано' }}</td>
+                      <td data-manager-id="{{ object.manager.id }}" data-manager-name="{{ object.manager }}" data-url="{% url 'client:get_available_manager_list' %}">
+                        <span class="js-manager-name">{{ object.manager|default:'Не указано' }}</span>
+                        {% if user.type == 5 %}
+                          {% if user.manager_user.leader %}
+                        <br>
+                        <a href="#reassign-manager" id="js-reassign-manager-{{ object.id }}" class="js-reassign-manager btn btn-warning btn-sm">
+                          <span class="glyphicon glyphicon-refresh"></span> переназначить
+                        </a>
+                          {% endif %}
+                        {% elif user.type == 1 or user.type == 2 %}
+                        <br>
+                        <a href="#reassign-manager" id="js-reassign-manager-{{ object.id }}" class="js-reassign-manager btn btn-warning btn-sm">
+                          <span class="glyphicon glyphicon-refresh"></span> переназначить
+                        </a>
+                        {% endif %}
+                      </td>
+                      <td>{{ object.city|default:'Не указано' }}</td>
+                      <td>
+                        {% if user.type != 5 %}
+                        <br>
+                        {% endif %}
+                        <a href="#client-contact" data-url="{% url 'client:get_contact_list' %}" data-client="{{ object.id }}" id="js-client-{{ object.id }}-button" class="btn btn-info btn-sm js-show-client-contact">
+                          <span class="glyphicon glyphicon-search"></span> Контактные лица
+                        </a>
+                      </td>
+                      <td>
+                        {% if user.type == 5 %}
+                        <a href="#js-new-task-modal" data-url="{% url 'client:get_client_info' %}" id="add-task-btn-{{ object.id }}" class="btn btn-success btn-sm js-new-task-btn">
+                          <span class="glyphicon glyphicon-plus-sign"></span> Назначить задачу
+                        </a>
+                        {% else %}
+                        <br>
+                        <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Client-{{ object.id }}" class="text-danger btn-sm js-ajax-remove-btn">
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% empty %}
+                    <tr>
+                      <td colspan="7">
+                        <p class="alert alert-info text-left">Клиентов не найдено</p>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+        {% include '__includes/pagination.html' %}
       </div>
     </div>
   </div>

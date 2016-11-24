@@ -1,91 +1,122 @@
 {% extends 'cabinet/cabinet_base.html' %}
-
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Города | {{ block.super }}{% endblock %}
 {% block content %}
-  <div class="container">
-    <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
-        <li class="active">Список городов</li>
-      </ol>
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <p class="lead remove-bottom text-center">Города</p>
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li class="active">Список городов</li>
+          </ol>
         </div>
-        <div class="panel-body">
-          {% if user.type == 1 %}
-          <a href="{% url 'city:add' %}" class="btn btn-success add-bottom">
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-6">
+          <span class="page-top__title">Города</span><span class="page-top__count"> / {{ object_list.count|default:'0' }}</span>
+        </div>
+        {% if user.type == 1 %}
+        <div class="col-md-6">
+          <a href="{% url 'city:add' %}" class="btn btn-add page-top__btn" title="Добавить город">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить город
           </a>
-          {% endif %}
-
-          <div class="panel panel-success">
-            <div class="panel-heading js-show-map">Посмотреть города на карте <span class="caret"></span></div>
-            <div class="panel-body js-map">
-              <div id="YMapsID" style="height: 500px;"></div>
-            </div>
-          </div>
-
-
-          <form action="" method="GET" role="form" class="form-inline add-bottom">
-          {% if user.type == 1 %}
-            <select name="country" id="city_filter" class="form-control input-sm">
-              <option value="0">Город</option>
-              {% for country in country_list %}
-                <option value="{{ country.id }}" {% if country.id == r_country %}selected="selected"{% endif %}>{{ country.name }}</option>
-              {% endfor %}
-            </select>
-          {% endif %}
-            <select name="city" id="city_filter" class="form-control input-sm">
-              <option value="0">Город</option>
-              {% for city in object_list %}
-                <option value="{{ city.id }}" {% if city.id == r_city %}selected="selected"{% endif %}>{{ city }}</option>
-              {% endfor %}
-            </select>
-            {% if user.type == 1 %}
-            <input type="text" name="moderator" class="form-control input-sm" value="{{ r_moderator|default:'' }}" placeholder="e-mail">
-            {% endif %}
-            <button type="submit" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span> Искать</button>
-          </form>
-
-          <div class="city-list">
-            <table class="table table-hover table-condensed table-bordered table-list">
-              <thead>
-                <tr>
-                  <th>Название</th>
-                  <th>{% if user.type == 1 %}Модераторы{% endif %}</th>
-                  <th>&nbsp;</th>
-                </tr>
-              </thead>
-              <tbody class="js-list">
-              {% for object in object_list %}
-                <tr data-id="{{ object.id }}" data-name="{{ object.name }}" data-model="City" id="id_City_{{ object.id }}">
-                  <td><a href="{% url 'city:update' object.pk %}">{{ object.name|default:'' }}</a></td>
-                  <td>
-                  {% if user.type == 1 %}
-                    {% for moderator in object.moderator_set.all %}
-                      {{ moderator }}{% if not forloop.last %}, {% endif %}
+        </div>
+        {% endif %}
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <form action="" method="GET" role="form" class="form form-filter add-bottom">
+              <div class="col-md-12">
+                {% if user.type == 1 %}
+                <div class="five-col-1">
+                  <select name="country" id="city_filter" class="form-control">
+                    <option value="0">Страна</option>
+                    {% for country in country_list %}
+                      <option value="{{ country.id }}" {% if country.id == r_country %}selected="selected"{% endif %}>{{ country.name }}</option>
                     {% endfor %}
-                  {% endif %}
-                  </td>
-                  <td class="text-right">
-                  {% if user.type == 1 %}
-                    <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
-                      <span class="glyphicon glyphicon-remove"></span> Удалить
-                    </a>
-                  {% else %}
-                      &nbsp;
-                  {% endif %}
-                  </td>
-                </tr>
-              {% empty %}
-                <tr>
-                  <td colspan="2">
-                    <p class="alert alert-info text-left">Городов не найдено</p>
-                  </td>
-                </tr>
-              {% endfor %}
-              </tbody>
-            </table>
+                  </select>
+                </div>
+                {% endif %}
+                <div class="five-col-1">
+                  <select name="city" id="city_filter" class="form-control">
+                    <option value="0">Город</option>
+                    {% for city in object_list %}
+                      <option value="{{ city.id }}" {% if city.id == r_city %}selected="selected"{% endif %}>{{ city }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                {% if user.type == 1 %}
+                <div class="five-col-1">
+                  <input type="text" name="moderator" class="form-control" value="{{ r_moderator|default:'' }}" placeholder="e-mail">
+                </div>
+                {% endif %}
+                <div class="five-col-1">
+                  <button type="submit" class="btn btn-search">Искать</button>
+                </div>
+                <div class="clearfix"></div>
+              </div>
+              <div class="clearfix"></div>
+            </form>
+            <div class="col-md-12">
+              <div class="panel panel-success">
+                <div class="panel-heading js-show-map">Посмотреть города на карте <span class="caret"></span></div>
+                <div class="panel-body js-map">
+                  <div id="YMapsID" style="height: 500px;"></div>
+                </div>
+              </div>
+              <div class="table-container">
+                <table class="table table-list">
+                  <thead>
+                    <tr>
+                      <th>Название</th>
+                      <th>{% if user.type == 1 %}Модераторы{% endif %}</th>
+                      <th>&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody class="js-list">
+                  {% for object in object_list %}
+                    <tr data-id="{{ object.id }}" data-name="{{ object.name }}" data-model="City" id="id_City_{{ object.id }}">
+                      <td><a href="{% url 'city:update' object.pk %}">{{ object.name|default:'' }}</a></td>
+                      <td>
+                      {% if user.type == 1 %}
+                        {% for moderator in object.moderator_set.all %}
+                          {{ moderator }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                      </td>
+                      <td class="text-right">
+                      {% if user.type == 1 %}
+                        <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="text-danger js-ajax-remove-btn">
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                      {% else %}
+                          &nbsp;
+                      {% endif %}
+                      </td>
+                    </tr>
+                  {% empty %}
+                    <tr>
+                      <td colspan="3">
+                        <p class="alert alert-info text-left">Городов не найдено</p>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </div>

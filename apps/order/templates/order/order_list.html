@@ -1,59 +1,83 @@
 {% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Платежи | {{ block.super }}{% endblock %}
 {% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li class="active">Платежи</li>
+          </ol>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
   <div class="container">
-    <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
-        <li class="active">Платежи</li>
-      </ol>
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <p class="lead remove-bottom text-center">Список платежей</p>
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">Платежи</span>
         </div>
-        <div class="panel-body">
-          <table class="table table-hover table-condensed table-bordered table-list">
-            <thead>
-              <tr>
-                <th>Модератор</th>
-                <th colspan="2">Название пакета</th>
-                <th>Сумма</th>
-                <th>Дата платежа</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody class="js-list">
-            {% for order in object_list %}
-              <tr data-id="{{ order.id }}" {% if not order.pay %}class='danger'{% endif %} data-name="{{ order }}" data-model="Order" id="id_Order_{{ order.id }}">
-              {% if user.type == 1 %}
-                <td>{{ order.moderator|default:'не указано' }}</td>
-              {% endif %}
-                <td>
-                  {{ order.package.name|default:'не указано' }}
-                </td>
-                <td>
-                  <a href="{% url 'order:detail' order.id %}" class="btn btn-sm btn-info">Детализация счёта</a>
-                </td>
-                <td>{{ order.cost|default:'не указано' }}</td>
-                <td>{{ order.timestamp|default:'не указано' }}</td>
-                <td>
-                {% if not order.pay %}
-                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Order-{{ order.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
-                    <span class="glyphicon glyphicon-remove"></span> Удалить
-                  </a>
-                {% endif %}
-                </td>
-              </tr>
-            {% empty %}
-              <tr>
-                <td colspan="{% if user.type == 2 %}5{% else %}6{% endif %}">
-                  <p class="alert alert-info text-left">Платежей не найдено</p>
-                </td>
-              </tr>
-            {% endfor %}
-            </tbody>
-          </table>
-          {% include '__includes/pagination.html' %}
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="col-md-12">
+              <div class="table-container">
+                <table class="table table-list">
+                  <thead>
+                    <tr>
+                      <th>Модератор</th>
+                      <th colspan="2">Название пакета</th>
+                      <th>Сумма</th>
+                      <th>Дата платежа</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody class="js-list">
+                  {% for order in object_list %}
+                    <tr data-id="{{ order.id }}" {% if not order.pay %}class='danger'{% endif %} data-name="{{ order }}" data-model="Order" id="id_Order_{{ order.id }}">
+                    {% if user.type == 1 %}
+                      <td>{{ order.moderator|default:'не указано' }}</td>
+                    {% endif %}
+                      <td>
+                        {{ order.package.name|default:'не указано' }}
+                      </td>
+                      <td>
+                        <a href="{% url 'order:detail' order.id %}" class="btn btn-sm btn-info">Детализация счёта</a>
+                      </td>
+                      <td>{{ order.cost|default:'не указано' }}</td>
+                      <td>{{ order.timestamp|default:'не указано' }}</td>
+                      <td>
+                      {% if not order.pay %}
+                        <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Order-{{ order.id }}" class="text-danger js-ajax-remove-btn">
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                      {% endif %}
+                      </td>
+                    </tr>
+                  {% empty %}
+                    <tr>
+                      <td colspan="{% if user.type == 2 %}5{% else %}6{% endif %}">
+                        <p class="alert alert-info text-left">Платежей не найдено</p>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
+        {% include '__includes/pagination.html' %}
       </div>
     </div>
   </div>

@@ -1,134 +1,153 @@
 {% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Журнал задач по клиентам | {{ block.super }}{% endblock %}
 {% block content %}
-  <div class="container">
-    <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
-        <li class="active">Журнал задач по клиентам</li>
-      </ol>
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <p class="lead remove-bottom text-center">Задачи по клиентам</p>
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li class="active">Журнал задач по клиентам</li>
+          </ol>
         </div>
-        <div class="panel-body">
-          {% if error %}
-          <p class="alert alert-danger">
-            Продажа не может быть создана: клиент с таким email уже зарегистрирован в системе.
-          </p>
-          {% endif %}
-          <a href="{% url 'client:task-add' %}" class="btn btn-success add-bottom">
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-6">
+          <span class="page-top__title">Задачи по клиентам</span><span class="page-top__count"> / {{ object_list.paginator.count|default:'0' }}</span>
+        </div>
+        <div class="col-md-6">
+          <a href="{% url 'client:task-add' %}" class="btn btn-add page-top__btn" title="Добавить новую задачу по клиенту">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую задачу по клиенту
           </a>
-          <form action="" method="GET" role="form" id="js-form-task-search" class="add-bottom">
-            <table class="table table-condensed search-form-table">
-              <tbody>
-              <tr>
-                <td>
-                  <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control input-sm" placeholder="Название">
-                </td>
-                <td>
-                  <input type="text" name="date_s" id="id_date_s" value="{{ r_date_s|default:'' }}" class="form-control input-sm" placeholder="Дата от">
-                </td>
-                <td>
-                  <input type="text" name="date_e" id="id_date_e" value="{{ r_date_e|default:'' }}" class="form-control input-sm" placeholder="Дата до">
-                </td>
-                <td>
-                  <select name="type"  class="form-control input-sm">
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <form action="" method="GET" role="form" id="js-form-task-search" class="form form-filter">
+              <div class="col-md-12">
+                <div class="five-col-1">
+                  <input type="text" name="name" value="{{ r_name|default:'' }}" class="form-control" placeholder="Название">
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="date_s" id="id_date_s" value="{{ r_date_s|default:'' }}" class="form-control" placeholder="Дата от">
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="date_e" id="id_date_e" value="{{ r_date_e|default:'' }}" class="form-control" placeholder="Дата до">
+                </div>
+                <div class="five-col-2">
+                  <select name="type"  class="form-control">
                     <option value="">Тип задачи</option>
                     <option value="0" {% if r_type == 0 %}selected="selected"{% endif %}>Назначена встреча</option>
                     <option value="1" {% if r_type == 1 %}selected="selected"{% endif %}>Назначен звонок</option>
                     <option value="2" {% if r_type == 2 %}selected="selected"{% endif %}>Продажа</option>
                     <option value="3" {% if r_type == 3 %}selected="selected"{% endif %}>Отказ</option>
                   </select>
-                </td>
-                <td>
-                  <select name="status"  class="form-control input-sm">
+                </div>
+                <div class="five-col-1">
+                  <select name="status"  class="form-control">
                     <option value="">Статус</option>
                     <option value="0" {% if r_status == 0 %}selected="selected"{% endif %}>План</option>
                     <option value="1" {% if r_status == 1 %}selected="selected"{% endif %}>Сделано</option>
                   </select>
-                </td>
-                <td>
-                  {% if not user.manager_user and not user.manager_user.leader %}
-                  <select name="manager" class="form-control input-sm">
-                    <option value="0">---- Менеджер ----</option>
-                    {% for manager in manager_list %}
-                      <option value="{{ manager.id }}" {% if manager.id == r_manager %}selected="selected"{% endif %}>{{ manager }}</option>
-                    {% endfor %}
-                  </select>
-                  {% endif %}
-                </td>
-                <td>
-                  <button type="submit" class="btn btn-info btn-sm">
+                </div>
+                {% if not user.manager_user and not user.manager_user.leader %}
+                <div class="five-col-1">
+                <select name="manager" class="form-control">
+                  <option value="0">---- Менеджер ----</option>
+                  {% for manager in manager_list %}
+                    <option value="{{ manager.id }}" {% if manager.id == r_manager %}selected="selected"{% endif %}>{{ manager }}</option>
+                  {% endfor %}
+                </select>
+                </div>
+                {% endif %}
+                <div class="five-col-2">
+                  <button type="submit" class="btn btn-search">
                     <span class="glyphicon glyphicon-search"></span> Искать
                   </button>
-                </td>
-                <td>
+                </div>
+                <div class="five-col-1">
                 {% if show_all %}
-                  <a href="?all=0" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-calendar"></span> Показать задачи на сегодня</a>
+                  <a href="?all=0" class="btn btn-success"><span class="glyphicon glyphicon-calendar"></span> Показать задачи на сегодня</a>
                 {% else %}
-                  <a href="?all=1" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-list-alt"></span> Показать все задачи</a>
+                  <a href="?all=1" class="btn btn-success"><span class="glyphicon glyphicon-list-alt"></span> Показать все задачи</a>
                 {% endif %}
-                </td>
-              </tr>
-              </tbody>
-            </table>
-          </form>
-          <table class="table table-hover table-condensed table-bordered table-list">
-            <thead>
-              <tr>
-                <th>Дата</th>
-                <th>Менеджер</th>
-                <th>Название клиента</th>
-                <th>Вид деятельности</th>
-                <th>Контактное лица</th>
-                <th>Тип задачи</th>
-                <th>Комментарий</th>
-                <th>Статус</th>
-                <th>&nbsp;</th>
-                <th>&nbsp;</th>
-              </tr>
-            </thead>
-            <tbody class="js-list">
-            {% for object in object_list %}
-              <tr data-id="{{ object.id }}" data-name="{{ object.get_type_display }}" data-model="Task" id="id_Task_{{ object.id }}">
-{#                <td><a href="{% url 'incoming:task_update' object.id %}"> {{ object.name|default:'' }}</a></td>#}
-                <td>{{ object.date|default:'Не указано' }}</td>
-                <td>{{ object.manager|default:'Не указано' }}</td>
-                <td>{{ object.client.name|default:'Не указано' }}</td>
-                <td>{{ object.client.kind_of_activity|default:'Не указано' }}</td>
-                <td class="task-contact">
-                  {{ object.clientcontact.name|default:'Не указано' }}<br>
-                  {{ object.clientcontact.phone }}<br>
-                  {{ object.clientcontact.email }}
-                </td>
-                <td><a href="{% url 'client:task-update' object.id %}"> {{ object.get_type_display|default:'' }}</a></td>
-                <td class="task-comment">{{ object.comment|linebreaksbr|default:'Не указано' }}</td>
-                <td>{{ object.get_status_display|default:'Не указано' }}</td>
-                <td>
-                  <a href="#js-change-task-modal" id="change-task-btn-{{ object.id }}" data-url="{% url 'client:get_task_info' %}" class="btn btn-info btn-sm js-change-task-btn">
-                    <span class="glyphicon glyphicon-edit"></span> назначить новую задачу
-                  </a>
-                </td>
-                <td>
-                  {% if user.type != 5 %}
-                  <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Task-{{ object.id }}" class="btn btn-danger btn-sm js-ajax-remove-btn">
-                    <span class="glyphicon glyphicon-remove"></span> Удалить
-                  </a>
-                  {% endif %}
-                </td>
-              </tr>
-            {% empty %}
-              <tr>
-                <td colspan="10">
-                  <p class="alert alert-info text-left">Задач по клиентам не найдено</p>
-                </td>
-              </tr>
-            {% endfor %}
-            </tbody>
-          </table>
-          {% include '__includes/pagination.html' with page_obj=object_list%}
+                </div>
+                <div class="clearfix"></div>
+              </div>
+              <div class="clearfix"></div>
+            </form>
+            <div class="col-md-12">
+              <div class="table-container">
+                <table class="table table-list">
+                  <thead>
+                    <tr>
+                      <th>Дата</th>
+                      <th>Менеджер</th>
+                      <th>Название клиента</th>
+                      <th>Вид деятельности</th>
+                      <th>Контактное лица</th>
+                      <th>Тип задачи</th>
+                      <th>Комментарий</th>
+                      <th>Статус</th>
+                      <th>&nbsp;</th>
+                      <th>&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody class="js-list">
+                  {% for object in object_list %}
+                    <tr data-id="{{ object.id }}" data-name="{{ object.get_type_display }}" data-model="Task" id="id_Task_{{ object.id }}">
+      {#                <td><a href="{% url 'incoming:task_update' object.id %}"> {{ object.name|default:'' }}</a></td>#}
+                      <td>{{ object.date|default:'Не указано' }}</td>
+                      <td>{{ object.manager|default:'Не указано' }}</td>
+                      <td>{{ object.client.name|default:'Не указано' }}</td>
+                      <td>{{ object.client.kind_of_activity|default:'Не указано' }}</td>
+                      <td class="task-contact">
+                        {{ object.clientcontact.name|default:'Не указано' }}<br>
+                        {{ object.clientcontact.phone }}<br>
+                        {{ object.clientcontact.email }}
+                      </td>
+                      <td><a href="{% url 'client:task-update' object.id %}"> {{ object.get_type_display|default:'' }}</a></td>
+                      <td class="task-comment">{{ object.comment|linebreaksbr|default:'Не указано' }}</td>
+                      <td>{{ object.get_status_display|default:'Не указано' }}</td>
+                      <td>
+                        <a href="#js-change-task-modal" id="change-task-btn-{{ object.id }}" data-url="{% url 'client:get_task_info' %}" class="btn btn-info btn-sm js-change-task-btn">
+                          <span class="glyphicon glyphicon-edit"></span> назначить новую задачу
+                        </a>
+                      </td>
+                      <td>
+                        {% if user.type != 5 %}
+                        <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Task-{{ object.id }}" class="text-danger btn-sm js-ajax-remove-btn">
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% empty %}
+                    <tr>
+                      <td colspan="10">
+                        <p class="alert alert-info text-left">Задач по клиентам не найдено</p>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
+        {% include '__includes/pagination.html' with page_obj=object_list%}
       </div>
     </div>
   </div>

@@ -1,66 +1,85 @@
 {% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Добавление задачи по клиенту | {{ block.super }}{% endblock %}
 {% block content %}
-  <div class="container">
-    <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
-        <li><a href="{% url 'client:task-list' %}">Журнал задач по клиентам</a></li>
-        <li class="active">Добавление новой задачи по клиенту</li>
-      </ol>
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <p class="lead text-center remove-bottom">
-            Добавление задачи по клиенту
-          </p>
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li><a href="{% url 'client:task-list' %}">Журнал задач по клиентам</a></li>
+            <li class="active">Добавление новой задачи по клиенту</li>
+          </ol>
         </div>
-        <div class="panel-body">
-          <div class="col-lg-6">
-            <form action="" role="form" id="js-form-task-add" method="post">
-              {% csrf_token %}
-              <div class="form-group" data-url="{% url 'client:get_contact_list' %}">
-                <div class="col-lg-5"> {{ form.client.label_tag }} </div>
-                <div class="col-lg-7"> {{ form.client }} </div>
-                {{ form.client.errors }}
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">Добавление задачи по клиенту</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="panel-content">
+              <form action="" role="form" class="form" id="js-form-task-add" method="post">
+                {% csrf_token %}
+                <div class="col-md-6">
+                  <div class="form-group" data-url="{% url 'client:get_contact_list' %}">
+                    {{ form.client.label_tag }}
+                    {{ form.client }}
+                    {{ form.client.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.manager.label_tag }}
+                    {{ form.manager }}
+                    {{ form.manager.errors }}
+                  </div>
+                  <div class="form-group hide">
+                    {{ form.clientcontact.label_tag }}
+                    {{ form.clientcontact }}
+                    {{ form.clientcontact.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.type.label_tag }}
+                    {{ form.type }}
+                    {{ form.type.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.date.label_tag }}
+                    {{ form.date }}
+                    {{ form.date.errors }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.comment.label_tag }}
+                    {{ form.comment }}
+                    {{ form.comment.errors }}
+                  </div>
+                </div>
+                {{ form.status }}
                 <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5"> {{ form.manager.label_tag }} </div>
-                <div class="col-lg-7"> {{ form.manager }} </div>
-                {{ form.manager.errors }}
+                <div class="col-md-6 ">
+                  <button type="submit" class="btn btn-save">Создать задачу</button>
+                </div>
                 <div class="clearfix"></div>
-              </div>
-              <div class="form-group hide">
-                <div class="col-lg-5"> {{ form.clientcontact.label_tag }} </div>
-                <div class="col-lg-7"> {{ form.clientcontact }} </div>
-                {{ form.clientcontact.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5"> {{ form.type.label_tag }} </div>
-                <div class="col-lg-7"> {{ form.type }} </div>
-                {{ form.type.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5"> {{ form.date.label_tag }} </div>
-                <div class="col-lg-7"> {{ form.date }} </div>
-                {{ form.date.errors }}
-                <div class="clearfix"></div>
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5"> {{ form.comment.label_tag }} </div>
-                <div class="col-lg-7"> {{ form.comment }} </div>
-                {{ form.comment.errors }}
-                <div class="clearfix"></div>
-              </div>
-              {{ form.status }}
-              <div class="text-center">
-                <button type="submit" class="btn btn-success">Сохранить</button>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
       </div>
+      <div class="clearfix"></div>
     </div>
   </div>
 {% endblock %}

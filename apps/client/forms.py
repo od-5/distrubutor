@@ -8,7 +8,7 @@ __author__ = 'alexy'
 
 
 class ClientImportForm(forms.Form):
-    file = forms.FileField(label=u'Выберите файл', widget=forms.FileInput(attrs={'class': 'btn btn-default form-control'}))
+    file = forms.FileField(label=u'Выберите файл', widget=forms.FileInput(attrs={'class': 'btn btn-default add-bottom form-control'}))
 
 
 class ClientAddForm(forms.ModelForm):
@@ -83,7 +83,7 @@ class ClientContactForm(forms.ModelForm):
         model = ClientContact
         fields = '__all__'
         widgets = {
-            'client': forms.Select(attrs={'class': 'form-control'}),
+            'client': forms.HiddenInput(),
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'function': forms.TextInput(attrs={'class': 'form-control'}),
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
