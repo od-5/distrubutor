@@ -111,7 +111,7 @@ def get_material_residue(request):
 def send_sms_notify(request):
     if request.POST and request.POST.get('sale'):
         sale = get_object_or_None(Sale, pk=int(request.POST.get('sale')))
-        if sale:
+        if sale and sale.user.phone:
             phone = sale.user.phone
             password = sale.password or ''
             message = u"Доступ в ваш персональный кабинет фотоотчета http://reklamadoma.com/dashboard/ Логин: %s пароль: %s"  % (sale.user.email, password)
