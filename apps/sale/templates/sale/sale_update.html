@@ -8,8 +8,14 @@
   <div class="container">
     <div class="row">
       <div class="page-top">
-        <div class="col-md-12">
+        <div class="col-md-8">
           <span class="page-top__title">Редактирование {{ object }}</span>
+        </div>
+        <div class="col-md-4 text-right">
+          <form action="{% url 'sale:sms-send' %}" id="js-sale-send-sms" method="post">{% csrf_token %}
+            <input type="hidden" name="sale" value="{{ object.id }}">
+            <input type="submit" class="btn btn-add" value="Отправить логин и пароль в СМС">
+          </form>
         </div>
         <div class="clearfix"></div>
       </div>
@@ -18,11 +24,6 @@
       <div class="col-md-12">
         {% include 'sale/__include/sale_menu.html' %}
         <div class="panel panel-default">
-          <div class="panel-heading">
-            <p class="lead text-center remove-bottom">
-              Редактирование {{ object }}
-            </p>
-          </div>
           <div class="panel-body">
             <div class="panel-content">
               <ul class="nav nav-tabs">

@@ -89,6 +89,13 @@ def password_change(request):
         if password1 and password2 and password1 == password2:
             user.set_password(password1)
             user.save()
+            if user.type == 3:
+                try:
+                    sale = user.sale_user
+                    sale.password = password1
+                    sale.save()
+                except:
+                    pass
             return {
                 'success': u'Ваш пароль был успешно изменён'
             }

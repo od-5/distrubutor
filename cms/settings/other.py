@@ -3,6 +3,7 @@ import os, socket
 from .base import BASE_DIR
 
 YANDEX_MAPS_API_KEY = 'AO7kF1UBAAAA-akFCwIAR7_VYsSjwJ9g-dDEVHElLxuBQi8AAAAAAAAAAAAQMK4N7NYtvg4ALgMZ8-GRO_cQqQ=='
+SMS_RU_API_KEY = 'D075A0B5-6EA1-CC9B-DB3F-8DBC636BFDEA'
 
 if socket.gethostname() == 'r420':
     DATABASES = {

@@ -42,6 +42,7 @@ def sale_add(request):
             new_user.save()
             sale = sale_form.save(commit=False)
             sale.user = new_user
+            sale.password = request.POST.get('password1')
             sale.save()
             return HttpResponseRedirect(reverse('sale:update', args=(sale.id, )))
         else:
@@ -68,6 +69,7 @@ def sale_view(request, pk):
         # sale_form = SaleAddForm(request.POST, user=user, instance=sale)
         # if user_form.is_valid() and sale_form.is_valid():
         if user_form.is_valid():
+            user_form.save()
             context.update({
                 'success': u'Изменения успешно сохранены'
             })

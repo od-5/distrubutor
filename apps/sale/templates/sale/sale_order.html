@@ -92,6 +92,7 @@
                   <thead>
                     <tr>
                       <th>Название</th>
+                      <th></th>
                       <th>Дата начала</th>
                       <th>Дата окончания</th>
                       <th>Кол-во материалов</th>
@@ -106,6 +107,12 @@
                   {% for order in order_list %}
                     <tr data-id="{{ order.id }}" data-name="{{ order }}" {% if order.closed %}class="info" {% endif %}data-model="SaleOrder" id="id_SaleOrder_{{ order.id }}">
                       <td><a href="{% url 'sale:order-update' order.id %}">{{ order|default:'Не указано' }}</a></td>
+                      <td>
+                        <form action="{% url 'sale:email-send' %}" class="js-sale-send-email" method="post">{% csrf_token %}
+                          <input type="hidden" name="saleorder" value="{{ object.id }}">
+                          <input type="submit" class="btn btn-info btn-sm" value="email уведомление о выполнении">
+                        </form>
+                      </td>
                       <td>{{ order.date_start|default:'Не указано' }}</td>
                       <td>{{ order.date_end|default:'Не указано' }}</td>
                       <td>{{ order.count|default:'0' }}</td>

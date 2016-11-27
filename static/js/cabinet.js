@@ -1257,5 +1257,27 @@ $(function() {
     table_report.find('tbody input[type=checkbox]').prop('checked', $(this).prop('checked'));
   });
 
+  // отправка смс уедомления
+  $('#js-sale-send-sms').ajaxForm({
+    success: function(data){
+      if (data.success) {
+        $.notify('СМС с логином и паролем успешно отправлено клиенту', 'success');
+      } else {
+        $.notify('СМС не может быть отправлено', 'error');
+      }
+    }
+  });
+
+  // отправка email уедомления
+  $('.js-sale-send-email').ajaxForm({
+    success: function(data){
+      if (data.success) {
+        $.notify('Email уведоление о выполнении заказа успешно отправлено клиенту', 'success');
+      } else {
+        $.notify('Email уведоление не может быть отправлено', 'error');
+      }
+    }
+  });
+
 
 });

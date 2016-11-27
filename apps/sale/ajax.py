@@ -1,9 +1,13 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
 from datetime import datetime
+from django.conf import settings
+from django.core.mail import send_mail
+from annoying.functions import get_object_or_None
 from django.views.decorators.csrf import csrf_exempt
 from apps.distributor.models import DistributorTask
 from apps.sale.models import SaleOrder, Sale, SaleOrderPayment
+from apps.sms.views import send_sms
 
 __author__ = 'alexy'
 
@@ -101,3 +105,62 @@ def get_material_residue(request):
         return {
             'count': False
         }
+
+
+@ajax_request
+def send_sms_notify(request):
+    if request.POST and request.POST.get('sale'):
+        sale = get_object_or_None(Sale, pk=int(request.POST.get('sale')))
+        if sale:
+            phone = sale.user.phone
+            password = sale.password or ''
+            message = u"Доступ в ваш персональный кабинет фотоотчета http://reklamadoma.com/dashboard/ Логин: %s пароль: %s"  % (sale.user.email, password)
+            # print message.encode('utf-8')
+            result = send_sms(phone, message)
+            if result and int(result[0]) == 100:
+                success = True
+            else:
+                success = False
+            # success = message
+        else:
+            success = False
+        # success = True
+    else:
+        success = False
+    return {
+        'success': success
+    }
+
+
+@ajax_request
+def send_email_notify(request):
+    if request.POST and request.POST.get('saleorder'):
+        saleorder = get_object_or_None(SaleOrder, pk=int(request.POST.get('saleorder')))
+        if saleorder:
+            email = saleorder.sale.user.email
+            password = saleorder.sale.password or ''
+
+            # print message.encode('utf-8')
+            try:
+                welcome_text = u'Здравствуйте, %s!' % saleorder.sale.user
+                text = u'Ваш %s выполнен. Для его просмотра Вам необходимо зайти на http://reklamadoma.com/dashboard/, после чего ввести логин %s и пароль %s' % (saleorder, email, password)
+                mail_title_msg = u'Уведомление о выполнении заказа на reklamadoma.com'
+                bottom_text = u'Видеоинструкция для клиентов\nhttps://www.youtube.com/watch?v=rg_mxj_riUw \nОтслеживайте выполнение заказа в онлайн-режиме!!!'
+                message = u'%s\n%s\n%s' % (welcome_text, text, bottom_text)
+                if email:
+                    send_mail(
+                        mail_title_msg,
+                        message,
+                        settings.DEFAULT_FROM_EMAIL,
+                        [email, ]
+                    )
+                success = True
+            except:
+                success = False
+        else:
+            success = False
+    else:
+        success = False
+    return {
+        'success': success
+    }

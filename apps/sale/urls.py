@@ -2,7 +2,7 @@
 from django.conf.urls import patterns, url
 from .models import Sale
 from .views import SaleListView, JournalListView
-from .ajax import get_client_coord_list, payment_add, get_material_residue
+from .ajax import get_client_coord_list, payment_add, get_material_residue, send_sms_notify, send_email_notify
 
 __author__ = 'alexy'
 
@@ -28,5 +28,8 @@ urlpatterns = patterns(
     #
     # url(r'^export/(?P<pk>\d+)/$', 'client_excel_export', name='excel_export'),
     url(r'(?P<pk>\d+)/payment/$', 'saleorderpayment_list', name='payment-list'),
-    url(r'payment/add/$', payment_add, name='payment-add')
+    url(r'payment/add/$', payment_add, name='payment-add'),
+
+    url(r'send/sms/$', send_sms_notify, name='sms-send'),
+    url(r'send/email/$', send_email_notify, name='email-send'),
 )

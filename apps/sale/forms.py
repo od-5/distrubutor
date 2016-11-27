@@ -12,7 +12,7 @@ class SaleAddForm(forms.ModelForm):
     """
     class Meta:
         model = Sale
-        exclude = ['user', ]
+        exclude = ['user', 'password']
         widgets = {
             'moderator': forms.Select(attrs={'class': 'form-control'}),
             'city': forms.Select(attrs={'class': 'form-control'}),
@@ -60,7 +60,7 @@ class SaleUpdateForm(forms.ModelForm):
     """
     class Meta:
         model = Sale
-        exclude = []
+        exclude = ['password', ]
         widgets = {
             'user': forms.HiddenInput(),
             'moderator': forms.Select(attrs={'class': 'form-control'}),
