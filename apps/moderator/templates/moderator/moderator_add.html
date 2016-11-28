@@ -1,68 +1,89 @@
 {% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Добавление нового модератора | {{ block.super }}{% endblock %}
 {% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="col-md-12">
+        <ol class="breadcrumb">
+          <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+          <li><a href="{% url 'moderator:list' %}">Список модераторов</a></li>
+          <li class="active">Добавление модератора</li>
+        </ol>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
   <div class="container">
-    <div class="col-lg-12">
-      <ol class="breadcrumb">
-        <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
-        <li><a href="{% url 'moderator:list' %}">Список модераторов</a></li>
-        <li class="active">Добавление модератора</li>
-      </ol>
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <p class="lead text-center remove-bottom">Добавление модератора</p>
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">Добавление нового модератора</span>
         </div>
-        <div class="panel-body">
-          <div class="col-lg-6">
-            <form action="" role="form" method="post" id="js-form-user-add" >
-              {% csrf_token %}
-              <div class="form-group">
-                <div class="col-lg-5">{{ form.email.label_tag }}</div>
-                <div class="col-lg-7">{{ form.email }}</div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="panel-content">
+              <form action="" role="form" method="post" id="js-form-user-add" >
+                {% csrf_token %}
+                <div class="col-md-6">
+                  <p class="lead text-info">Контактная информация</p>
+                  <div class="form-group">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                    {{ form.email.errors }}
+                  </div>
+                  <div class="form-group add-bottom">
+                    {{ form.phone.label_tag }}
+                    {{ form.phone }}
+                    {{ form.phone.errors }}
+                  </div>
+                  <p class="lead text-info">Пароль для входа в аккаунт</p>
+                  <div class="form-group">
+                    {{ form.password1.label_tag }}
+                    {{ form.password1 }}
+                    {{ form.password1.errors }}
+                  </div>
+                  <div class="form-group add-bottom">
+                    {{ form.password2.label_tag }}
+                    {{ form.password2 }}
+                    {{ form.password2.errors }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <p class="lead text-info">Личные данные</p>
+                  <div class="form-group">
+                    {{ form.last_name.label_tag }}
+                    {{ form.last_name }}
+                    {{ form.last_name.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.first_name.label_tag }}
+                    {{ form.first_name }}
+                    {{ form.first_name.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.patronymic.label_tag }}
+                    {{ form.patronymic }}
+                    {{ form.patronymic.errors }}
+                  </div>
+                </div>
                 <div class="clearfix"></div>
-                {{ form.email.errors }}
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ form.password1.label_tag }}</div>
-                <div class="col-lg-7">{{ form.password1 }}</div>
-                <div class="clearfix"></div>
-                {{ form.password1.errors }}
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ form.password2.label_tag }}</div>
-                <div class="col-lg-7">{{ form.password2 }}</div>
-                <div class="clearfix"></div>
-                {{ form.password2.errors }}
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ form.last_name.label_tag }}</div>
-                <div class="col-lg-7">{{ form.last_name }}</div>
-                <div class="clearfix"></div>
-                {{ form.last_name.errors }}
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ form.first_name.label_tag }}</div>
-                <div class="col-lg-7">{{ form.first_name }}</div>
-                <div class="clearfix"></div>
-                {{ form.first_name.errors }}
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ form.patronymic.label_tag }}</div>
-                <div class="col-lg-7">{{ form.patronymic }}</div>
-                <div class="clearfix"></div>
-                {{ form.patronymic.errors }}
-              </div>
-              <div class="form-group">
-                <div class="col-lg-5">{{ form.phone.label_tag }}</div>
-                <div class="col-lg-7">{{ form.phone }}</div>
-                <div class="clearfix"></div>
-                {{ form.phone.errors }}
-              </div>
-
-              <button type="submit" class="btn btn-default">Сохранить</button>
-            </form>
+                <div class="col-md-6">
+                  <input type="submit" class="btn btn-save" value="Добавить модератора">
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
+      <div class="clearfix"></div>
     </div>
   </div>
 {% endblock %}

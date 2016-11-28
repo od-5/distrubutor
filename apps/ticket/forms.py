@@ -21,7 +21,7 @@ class TicketChangeForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'mail': forms.EmailInput(attrs={'class': 'form-control'}),
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
-            'text': forms.Textarea(attrs={'class': 'form-control'}),
+            # 'text': forms.Textarea(attrs={'class': 'form-control'}),
             'type': forms.Select(attrs={'class': 'form-control'}),
             'price': forms.NumberInput(attrs={'class': 'form-control', 'step': 0.01}),
             'comment': forms.Textarea(attrs={'class': 'form-control'}),
