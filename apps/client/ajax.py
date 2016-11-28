@@ -207,7 +207,8 @@ def ajax_sale_add(request):
             moderator=client.moderator,
             legal_name=client.name,
             actual_name=client.name,
-            legal_address=client.actual_address
+            legal_address=client.actual_address,
+            password=r_password
         )
         sale.save()
         task.status = 1
