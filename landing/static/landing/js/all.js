@@ -5,7 +5,7 @@ $(document).ready(function () {
     $(this).addClass(some_id);
   });
   $(window).scroll( function(){
-    if ($(this).scrollTop() > 50){
+    if ($(this).scrollTop() > 250){
       $('.header-fix').addClass('fixed');
       $('.city-hidden').slideUp();
       $('.header-city a').removeClass('active');
