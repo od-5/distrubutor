@@ -506,6 +506,7 @@ dd a {
 	.city-list {
 		width: auto;
 		max-height: 200px;
+		overflow-y: scroll;
 	}
 	.city-list li {
 		float: none;
