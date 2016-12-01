@@ -52,6 +52,13 @@
                     {{ form.deny_date }}
                     {{ form.deny_date.errors }}
                   </div>
+                  {% else %}
+                  {{ form.deny_access }}
+                  <div class="form-group">
+                    {{ form.deny_date.label_tag }}
+                    <input type="text" class="form-control" value="{{ object.deny_date }}" readonly="readonly">
+                    {{ form.deny_date }}
+                  </div>
                   {% endif %}
 
                   <div class="form-group">
