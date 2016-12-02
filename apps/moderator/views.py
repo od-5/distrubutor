@@ -3,6 +3,7 @@ from annoying.decorators import ajax_request
 from annoying.functions import get_object_or_None
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.template.loader import render_to_string
 from apps.administrator.decorators import administrator_required
 from django.core.mail import send_mail
 import datetime
@@ -316,6 +317,20 @@ def payment_detail(request, pk):
         context.update({
             'form': form
         })
+    email = order.moderator.user.email
+    subject = u'Пошаговая инструкция reklamadoma.com'
+    # msg_plain = render_to_string('email.txt', {'name': name})
+    msg_html = render_to_string('moderator/mail.html')
+    try:
+        send_mail(
+            subject,
+            msg_html,
+            settings.DEFAULT_FROM_EMAIL,
+            [email, ],
+            html_message=msg_html,
+        )
+    except:
+        pass
     context.update({
         'order': order,
         'object': order.moderator
@@ -341,6 +356,22 @@ def payment_received(sender, **kwargs):
     else:
         moderator.deny_date = today + relativedelta(months=order.package.month)
     # todo: сделать проверку - если оплата первая (количество оплат = 1), то отправлять письмо на почту.
+
+    # email = moderator.user.email
+    # subject = u'Пошаговая инструкция reklamadoma.com'
+    # # msg_plain = render_to_string('email.txt', {'name': name})
+    # msg_html = render_to_string('moderator/mail.html')
+    # try:
+    #     send_mail(
+    #         subject,
+    #         msg_html,
+    #         settings.DEFAULT_FROM_EMAIL,
+    #         [email, ],
+    #         html_message=msg_html,
+    #     )
+    # except:
+    #     pass
+
     moderator.save()
 
 result_received.connect(payment_received)
