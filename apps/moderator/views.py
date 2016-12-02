@@ -88,6 +88,7 @@ def moderator_user_update(request, pk):
         moderator = Moderator.objects.get(user=moderator_user)
     except:
         moderator = Moderator(user=moderator_user)
+        moderator.deny_access = True
         moderator.save()
     if request.method == 'POST':
         form = UserUpdateForm(request.POST, instance=moderator_user)

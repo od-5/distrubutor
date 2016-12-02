@@ -107,8 +107,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     def deny_access(self):
         if self.type == 1 or self.type == 3:
             return False
-        elif self.type == 2 and self.moderator_user.deny_access:
-            return True
+        elif self.type == 2:
+            if self.moderator_user.deny_access or not self.moderator_user:
+                return True
+            else:
+                return False
         elif self.type == 4 and self.distributor_user.moderator.deny_access:
             return True
         elif self.type == 5 and self.manager_user.moderator.moderator_user.deny_access:
