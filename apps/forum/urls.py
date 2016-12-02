@@ -1,12 +1,13 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
+from django.contrib.auth.decorators import login_required
 from .views import SectionListView
 
 __author__ = 'alexy'
 
 urlpatterns = patterns(
     'apps.forum.views',
-    url(r'^$', SectionListView.as_view(), name='list'),
+    url(r'^$', login_required(SectionListView.as_view()), name='list'),
     url(r'^add/$', 'section_add', name='section-add'),
     url(r'^(?P<pk>\d+)/update/$', 'section_update', name='section-update'),
     url(r'^(?P<pk>\d+)/$', 'topic_list', name='topic-list'),

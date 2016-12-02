@@ -1,5 +1,6 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
+from django.contrib.auth.decorators import login_required
 from apps.client.data_import import client_list_import
 from .views import ClientListView
 from .ajax import reassign_manager, get_available_manager_list, get_contact_list, get_task_info, ajax_task_add, \
@@ -9,7 +10,7 @@ __author__ = 'alexy'
 
 urlpatterns = patterns(
     'apps.client.views',
-    url(r'^$', ClientListView.as_view(), name='list'),
+    url(r'^$', login_required(ClientListView.as_view()), name='list'),
     url(r'^add/$', 'client_add', name='add'),
     url(r'^(?P<pk>\d+)/$', 'client_update', name='update'),
     url(r'^(?P<pk>\d+)/manager/history/$', 'clientmanager_history', name='history'),

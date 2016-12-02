@@ -89,6 +89,11 @@ def password_change(request):
         if password1 and password2 and password1 == password2:
             user.set_password(password1)
             user.save()
+            if user == request.user:
+                user = authenticate(email=user.email, password=password1)
+                if user is not None:
+                    if user.is_active:
+                        login(request, user)
             if user.type == 3:
                 try:
                     sale = user.sale_user

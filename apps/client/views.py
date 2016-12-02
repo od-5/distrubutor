@@ -2,6 +2,7 @@
 import datetime
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django import forms
+from django.contrib.auth.decorators import login_required
 import xlwt
 from datetime import date, datetime
 from annoying.decorators import ajax_request
@@ -134,6 +135,7 @@ class ClientListView(ListView):
         return context
 
 
+@login_required
 def client_add(request):
     context = {}
     user = request.user
@@ -160,6 +162,7 @@ def client_add(request):
     return render(request, 'client/client_add.html', context)
 
 
+@login_required
 def client_update(request, pk):
     context = {}
     client = Client.objects.get(pk=int(pk))
@@ -192,6 +195,7 @@ def client_update(request, pk):
     return render(request, 'client/client_update.html', context)
 
 
+@login_required
 def clientmanager_history(request, pk):
     client = Client.objects.get(pk=int(pk))
     context = {
@@ -201,6 +205,7 @@ def clientmanager_history(request, pk):
     return render(request, 'client/clientmanager_history.html', context)
 
 
+@login_required
 def clientcontact_list(request, pk):
     client = Client.objects.get(pk=int(pk))
     context = {
@@ -210,6 +215,7 @@ def clientcontact_list(request, pk):
     return render(request, 'client/clientcontact_list.html', context)
 
 
+@login_required
 def clientcontact_add(request, pk):
     success_msg = None
     error_msg = None
@@ -237,6 +243,7 @@ def clientcontact_add(request, pk):
     return render(request, 'client/clientcontact_add.html', context)
 
 
+@login_required
 def clientcontact_update(request, pk):
     context = {}
     success_msg = None
@@ -262,6 +269,7 @@ def clientcontact_update(request, pk):
     return render(request, 'client/clientcontact_update.html', context)
 
 
+@login_required
 def task_list(request):
     context = {}
     if request.GET.get('error') and int(request.GET.get('error')) == 1:
@@ -358,6 +366,7 @@ def task_list(request):
     return render(request, 'client/task_list.html', context)
 
 
+@login_required
 def task_add(request):
     context = {}
     user = request.user
@@ -379,6 +388,7 @@ def task_add(request):
     return render(request, 'client/task_add.html', context)
 
 
+@login_required
 def task_update(request, pk):
     context = {}
     object = Task.objects.get(pk=int(pk))

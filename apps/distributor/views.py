@@ -6,6 +6,7 @@ from django.forms import HiddenInput, inlineformset_factory
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views.generic import ListView
+from django.contrib.auth.decorators import login_required
 import xlwt
 from apps.city.models import City
 from apps.moderator.models import ModeratorAction, Moderator
@@ -64,6 +65,7 @@ class DistributorListView(ListView):
         return context
 
 
+@login_required
 def distributor_add(request):
     context = {}
     user = request.user
@@ -92,6 +94,7 @@ def distributor_add(request):
     return render(request, 'distributor/distributor_add.html', context)
 
 
+@login_required
 def distributor_update(request, pk):
     context = {}
     distributor = Distributor.objects.get(pk=int(pk))
@@ -285,6 +288,7 @@ class DistributorTaskArchiveView(ListView):
         return context
 
 
+@login_required
 def distributor_task_add(request):
     context = {}
     user = request.user
@@ -307,6 +311,7 @@ def distributor_task_add(request):
     return render(request, 'distributor/task_add.html', context)
 
 
+@login_required
 def distributor_task_update(request, pk):
     context = {}
     user = request.user
@@ -333,6 +338,7 @@ def distributor_task_update(request, pk):
     return render(request, 'distributor/task_update.html', context)
 
 
+@login_required
 def distributor_task_update_map(request, pk):
     context = {}
     task = DistributorTask.objects.select_related().get(pk=int(pk))
@@ -347,6 +353,7 @@ def distributor_task_update_map(request, pk):
     return render(request, 'distributor/task_update_map.html', context)
 
 
+@login_required
 def gps_point_update(request, pk):
     point = GPSPoint.objects.get(pk=int(pk))
     if request.method == 'POST':
@@ -363,6 +370,7 @@ def gps_point_update(request, pk):
     return render(request, 'distributor/point_update.html', context)
 
 
+@login_required
 def distributor_report(request):
     context = {}
     user = request.user

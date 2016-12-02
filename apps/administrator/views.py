@@ -1,5 +1,6 @@
 # coding=utf-8
 from django.contrib.auth.decorators import login_required
+from .decorators import administrator_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -41,7 +42,7 @@ class AdministratorListView(ListView):
         return context
 
 
-@login_required()
+@administrator_required
 def administrator_add(request):
     context = {}
     if request.method == "POST":
@@ -66,7 +67,7 @@ def administrator_add(request):
     return render(request, 'administrator/administrator_add.html', context)
 
 
-@login_required()
+@administrator_required
 def administrator_update(request, pk):
     context = {}
     user = User.objects.get(pk=int(pk))

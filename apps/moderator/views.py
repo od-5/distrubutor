@@ -3,6 +3,7 @@ from annoying.decorators import ajax_request
 from annoying.functions import get_object_or_None
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from apps.administrator.decorators import administrator_required
 from django.core.mail import send_mail
 import datetime
 from dateutil.relativedelta import relativedelta
@@ -54,7 +55,7 @@ class ModeratorListView(ListView):
         return context
 
 
-@login_required()
+@administrator_required
 def moderator_add(request):
     context = {}
     if request.method == "POST":
@@ -79,6 +80,7 @@ def moderator_add(request):
     return render(request, 'moderator/moderator_add.html', context)
 
 
+@login_required()
 def moderator_user_update(request, pk):
     context = {}
     moderator_user = User.objects.get(pk=int(pk))
@@ -108,6 +110,7 @@ def moderator_user_update(request, pk):
     return render(request, 'moderator/moderator_user_update.html', context)
 
 
+@login_required()
 def moderator_company_update(request, pk):
     context = {}
     user = request.user
@@ -137,6 +140,7 @@ def moderator_company_update(request, pk):
     return render(request, 'moderator/moderator_update.html', context)
 
 
+@login_required()
 def moderator_action_update(request, pk):
     context = {}
     moderator_user = User.objects.get(pk=int(pk))
@@ -167,6 +171,7 @@ def moderator_action_update(request, pk):
     return render(request, 'moderator/moderator_action_update.html', context)
 
 
+@login_required()
 def area_add(request):
     if request.method == 'POST':
         form = ModeratorAreaForm(request.POST)
@@ -179,6 +184,7 @@ def area_add(request):
         return HttpResponseRedirect(reverse('city:list'))
 
 
+@login_required()
 def area_update(request, pk):
     context = {}
     area = ModeratorArea.objects.get(pk=int(pk))
@@ -202,6 +208,7 @@ def area_update(request, pk):
 
 
 @csrf_exempt
+@login_required()
 def review_add(request):
     if request.method == 'POST':
         form = ReviewForm(request.POST)
@@ -210,6 +217,7 @@ def review_add(request):
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 
+@login_required()
 def review_update(request, pk):
     context = {}
     review = get_object_or_404(Review, pk=int(pk))
@@ -264,6 +272,7 @@ class ReviewListView(ListView):
         return context
 
 
+@login_required()
 def payment_list(request, pk):
     context = {}
     moderator = Moderator.objects.select_related().get(user=int(pk))
@@ -291,6 +300,7 @@ def payment_list(request, pk):
     return render(request, 'moderator/payment_list.html', context)
 
 
+@login_required()
 def payment_detail(request, pk):
     context = {}
     order = get_object_or_None(Order, pk=int(pk))
@@ -330,6 +340,7 @@ def payment_received(sender, **kwargs):
             moderator.deny_date = moderator.deny_date + relativedelta(months=order.package.month)
     else:
         moderator.deny_date = today + relativedelta(months=order.package.month)
+    # todo: сделать проверку - если оплата первая (количество оплат = 1), то отправлять письмо на почту.
     moderator.save()
 
 result_received.connect(payment_received)

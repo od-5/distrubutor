@@ -3,7 +3,7 @@ import datetime
 import os
 import zipfile
 import StringIO
-
+from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.core.mail import send_mail
 import xlwt
@@ -30,6 +30,7 @@ from .models import Sale, SaleOrder, SaleMaket
 __author__ = 'alexy'
 
 
+@login_required
 def sale_add(request):
     context = {}
     user = request.user
@@ -59,6 +60,7 @@ def sale_add(request):
     return render(request, 'sale/sale_add.html', context)
 
 
+@login_required
 def sale_view(request, pk):
     context = {}
     user = request.user
@@ -275,6 +277,7 @@ class JournalListView(ListView):
         return context
 
 
+@login_required
 def sale_order(request, pk):
     context = {}
     error = u''
@@ -319,6 +322,7 @@ def sale_order(request, pk):
     return render(request, 'sale/sale_order.html', context)
 
 
+@login_required
 def sale_order_update(request, pk):
     context = {}
     order = SaleOrder.objects.get(pk=int(pk))
@@ -343,6 +347,7 @@ def sale_order_update(request, pk):
     return render(request, 'sale/sale_order_update.html', context)
 
 
+@login_required
 def saleorderpayment_list(request, pk):
     context = {}
     sale = Sale.objects.get(pk=int(pk))
@@ -365,6 +370,7 @@ def saleorderpayment_list(request, pk):
     return render(request, 'sale/saleorderpayment_list.html', context)
 
 
+@login_required
 def sale_maket(request, pk):
     context = {}
     sale = Sale.objects.get(pk=int(pk))
@@ -408,6 +414,7 @@ def sale_maket(request, pk):
     return render(request, 'sale/sale_maket.html', context)
 
 
+@login_required
 def sale_maket_update(request, pk):
     context = {}
     maket = SaleMaket.objects.get(pk=int(pk))

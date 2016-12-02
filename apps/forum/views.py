@@ -2,10 +2,12 @@
 from annoying.functions import get_object_or_None
 from django.conf import settings
 from django.core.mail import send_mail
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView
+from apps.administrator.decorators import administrator_required
 from .models import Section, Topic, Comment, Notification
 from .forms import SectionAddForm, TopicAddForm, CommentAddForm, SectionUpdateForm, TopicUpdateForm, CommentUpdateForm
 from core.models import User
@@ -18,6 +20,7 @@ class SectionListView(ListView):
     template_name = 'forum/section_list.html'
 
 
+@administrator_required
 def section_add(request):
     user = request.user
     if request.method == 'POST':
@@ -33,6 +36,7 @@ def section_add(request):
     return render(request, 'forum/section_add.html', context)
 
 
+@administrator_required
 def section_update(request, pk):
     section = Section.objects.get(pk=int(pk))
     if request.method == 'POST':
@@ -48,6 +52,7 @@ def section_update(request, pk):
     return render(request, 'forum/section_update.html', context)
 
 
+@login_required
 def topic_list(request, pk):
     user = request.user
     context = {}
@@ -74,6 +79,7 @@ def topic_list(request, pk):
     return render(request, 'forum/topic_list.html', context)
 
 
+@login_required
 def topic_add(request):
     user = request.user
     try:
@@ -95,6 +101,7 @@ def topic_add(request):
     return render(request, 'forum/topic_add.html', context)
 
 
+@login_required
 def topic_update(request, pk):
     topic = Topic.objects.get(pk=int(pk))
     if request.method == 'POST':
@@ -112,6 +119,7 @@ def topic_update(request, pk):
     return render(request, 'forum/topic_update.html', context)
 
 
+@login_required
 def topic_detail(request, pk):
     user = request.user
     context = {}
@@ -134,6 +142,7 @@ def topic_detail(request, pk):
     return render(request, 'forum/topic_detail.html', context)
 
 
+@login_required
 def topic_notify(request):
     user = request.user
     qs = Notification.objects.filter(user=user)
@@ -143,6 +152,7 @@ def topic_notify(request):
     return render(request, 'forum/topic_notify.html', context)
 
 
+@login_required
 def comment_update(request, pk):
     context = {}
     comment = Comment.objects.get(pk=int(pk))
@@ -161,6 +171,7 @@ def comment_update(request, pk):
     return render(request, 'forum/comment_update.html', context)
 
 
+@login_required
 def comment_delete(request, pk):
     context = {}
     comment = Comment.objects.get(pk=int(pk))

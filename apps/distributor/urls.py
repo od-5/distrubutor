@@ -1,4 +1,5 @@
 # coding=utf-8
+from django.contrib.auth.decorators import login_required
 from django.conf.urls import patterns, url
 from .ajax import distributor_payment_update, get_task_initial, get_task_cord_list, get_current_location, \
     ajax_remove_photo
@@ -8,7 +9,7 @@ __author__ = 'alexy'
 
 urlpatterns = patterns(
     'apps.distributor.views',
-    url(r'^$', DistributorListView.as_view(), name='list'),
+    url(r'^$', login_required(DistributorListView.as_view()), name='list'),
     url(r'^add/$', 'distributor_add', name='add'),
     url(r'^(?P<pk>\d+)/$', 'distributor_update', name='update'),
     url(r'^payment_update/$', distributor_payment_update, name='payment-update'),
@@ -17,8 +18,8 @@ urlpatterns = patterns(
     url(r'^report/excel/$', 'distributor_report_excel', name='report-excel'),
     url(r'^report/detail/(?P<pk>\d+)/$', 'distributor_detail_report_excel', name='report-detail'),
     # tasks
-    url(r'^tasks/$', DistributorTaskListView.as_view(), name='task-list'),
-    url(r'^tasks/archive/$', DistributorTaskArchiveView.as_view(), name='task-archive'),
+    url(r'^tasks/$', login_required(DistributorTaskListView.as_view()), name='task-list'),
+    url(r'^tasks/archive/$', login_required(DistributorTaskArchiveView.as_view()), name='task-archive'),
     url(r'^task/add/$', 'distributor_task_add', name='task-add'),
     url(r'^task/(?P<pk>\d+)/$', 'distributor_task_update', name='task-update'),
     url(r'^task/(?P<pk>\d+)/map/$', 'distributor_task_update_map', name='task-update-map'),

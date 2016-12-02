@@ -5,18 +5,17 @@ from django.http import HttpResponseRedirect
 __author__ = 'alexy'
 
 
-def blocked(f):
+def administrator_required(f):
     """
     Декоратор, который проверяет - авторизировался ли пользователь
-    и разрешён ли ему доступ к функционалу системы
+    и является ли он админинстратором
     """
-    def wrapped_f(request):
+    def wrapped_f(request, *args, **kwargs):
         user = request.user
         if user.is_authenticated():
-            if user.deny_access():
-                # fixme: сделать редирект на рабочий стол
+            if user.type != 1:
                 return HttpResponseRedirect(reverse('dashboard:index'))
-            return f(request)
+            return f(request, *args, **kwargs)
         else:
             return HttpResponseRedirect(reverse('login'))
     return wrapped_f
