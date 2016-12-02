@@ -342,22 +342,21 @@ def payment_received(sender, **kwargs):
     else:
         moderator.deny_date = today + relativedelta(months=order.package.month)
     # todo: сделать проверку - если оплата первая (количество оплат = 1), то отправлять письмо на почту.
-
-    email = moderator.user.email
-    subject = u'Пошаговая инструкция reklamadoma.com'
-    # msg_plain = render_to_string('email.txt', {'name': name})
-    msg_html = render_to_string('moderator/mail.html')
-    try:
-        send_mail(
-            subject,
-            msg_html,
-            settings.DEFAULT_FROM_EMAIL,
-            [email, ],
-            html_message=msg_html,
-        )
-    except:
-        pass
-
+    if moderator.order_set.count() == 1:
+        email = moderator.user.email
+        subject = u'Пошаговая инструкция reklamadoma.com'
+        # msg_plain = render_to_string('email.txt', {'name': name})
+        msg_html = render_to_string('moderator/mail.html')
+        try:
+            send_mail(
+                subject,
+                msg_html,
+                settings.DEFAULT_FROM_EMAIL,
+                [email, ],
+                html_message=msg_html,
+            )
+        except:
+            pass
     moderator.save()
 
 result_received.connect(payment_received)
