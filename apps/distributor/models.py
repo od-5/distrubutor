@@ -101,11 +101,14 @@ class DistributorTask(models.Model):
 
     def total_cost(self):
         # payment = DistributorPayment.objects.get(distributor=self.distributor, type=self.type)
+        cost = 0
         payment = get_object_or_None(DistributorPayment, distributor=self.distributor, type=self.type)
         if payment:
-            return payment.cost * self.material_count
-        else:
-            return 0
+            try:
+                cost = payment.cost * self.material_count
+            except:
+                cost = 0
+        return cost
 
     def get_area_name(self):
         return self.area.name
