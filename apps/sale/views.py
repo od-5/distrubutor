@@ -80,7 +80,7 @@ def sale_view(request, pk):
                 'error': u'Проверьте правильность ввода полей'
             })
     else:
-        user_form = UserAddForm(instance=sale.user)
+        user_form = UserUpdateForm(instance=sale.user)
         sale_form = SaleUpdateForm(user=user, instance=sale)
     context.update({
         'object': sale,

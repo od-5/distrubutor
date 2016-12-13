@@ -46,7 +46,7 @@ class UserAddForm(forms.ModelForm):
 class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ('email', 'last_name', 'first_name', 'patronymic', 'phone', 'is_active')
+        fields = ('email', 'last_name', 'first_name', 'patronymic', 'phone', 'is_active',)
         widgets = {
             'email': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
