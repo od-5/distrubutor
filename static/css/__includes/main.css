@@ -53,8 +53,9 @@ img {
 .page-top {
   padding: 50px 0;
 }
-@media only screen and (max-width: 991px) {
+@media only screen and (max-width: 767px) {
   .page-top {
+    text-align: center;
     padding: 0 0 20px;
   }
 }
@@ -62,7 +63,7 @@ img {
 .page-top__count {
   font-size: 36px;
 }
-@media only screen and (max-width: 991px) {
+@media only screen and (max-width: 768px) {
   .page-top__title,
   .page-top__count {
     font-size: 18px;
@@ -74,9 +75,15 @@ img {
 .page-top__count {
   color: #057ab0;
 }
-@media only screen and (min-width: 992px) {
+@media only screen and (min-width: 768px) {
   .page-top__btn {
     float: right;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .page-top__btn {
+    width: 100%;
+    margin-top: 20px;
   }
 }
 .dropdown-menu {
@@ -178,12 +185,35 @@ h2 {
 .pagination {
   margin: 0;
 }
+@media only screen and (max-width: 767px) {
+  .pagination {
+    display: table-row;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .pagination-wrapper {
+    display: table;
+    width: 100%;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .pagination li {
+    display: table-cell;
+  }
+}
 .pagination a {
   border: none !important;
   -webkit-border-radius: 0 !important;
   -moz-border-radius: 0 !important;
   border-radius: 0 !important;
   padding: 15px 40px !important;
+}
+@media only screen and (max-width: 767px) {
+  .pagination a {
+    padding: 10px 0 !important;
+    display: block;
+    float: none !important;
+  }
 }
 .pagination-current {
   background-color: #e9f9fd !important;
@@ -198,6 +228,9 @@ h2 {
 }
 .bold {
   font-weight: bold;
+}
+.add-top {
+  margin-top: 20px;
 }
 .add-bottom {
   margin-bottom: 20px;

@@ -41,7 +41,7 @@
               </div>
               <div class="clearfix"></div>
               <div id="map" data-task="{{ object.id }}" data-url="{% url 'distributor:get_task_cord_list' %}" style="width:100%; height:500px"></div>
-              <div id="photo_list">
+              <div id="photo_list" style="overflow: scroll">
               {% if point_list %}
                 <table class="table">
                   <thead>

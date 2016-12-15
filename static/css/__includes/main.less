@@ -52,12 +52,13 @@ img {
 .page {
   &-top {
     padding: 50px 0;
-    @media only screen and (max-width: 991px) {
+    @media only screen and (max-width: 767px) {
+      text-align: center;
       padding: 0 0 20px;
     }
     &__title, &__count {
       font-size: 36px;
-      @media only screen and (max-width: 991px) {
+      @media only screen and (max-width: 768px) {
         font-size: 18px;
       }
     }
@@ -68,8 +69,12 @@ img {
       color: #057ab0;
     }
     &__btn {
-      @media only screen and (min-width: 992px) {
+      @media only screen and (min-width: 768px) {
         float: right;
+      }
+      @media only screen and (max-width: 767px) {
+        width: 100%;
+        margin-top: 20px;
       }
     }
   }
@@ -168,12 +173,33 @@ td {
 }
 .pagination {
   margin: 0;
+  @media only screen and (max-width: 767px) {
+    display: table-row;
+  }
+  &-wrapper {
+    @media only screen and (max-width: 767px) {
+      display: table;
+      width: 100%;
+    }
+  }
+  li {
+    @media only screen and (max-width: 767px) {
+      display: table-cell;
+    }
+  }
   a {
     border: none !important;
     -webkit-border-radius: 0 !important;
     -moz-border-radius: 0 !important;
     border-radius: 0 !important;
     padding: 15px 40px !important;
+    @media only screen and (max-width: 991px) {
+    }
+    @media only screen and (max-width: 767px) {
+      padding: 10px 0 !important;
+      display: block;
+      float: none !important;
+    }
   }
   &-current {
     background-color: #e9f9fd !important;
@@ -189,6 +215,9 @@ td {
   font-weight: bold;
 }
 .add {
+  &-top {
+    margin-top: 20px;
+  }
   &-bottom {
     margin-bottom: 20px;
   }

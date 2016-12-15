@@ -78,44 +78,46 @@
                   </div>
                   {% if object.distributortask_set.all %}
                   <div class="col-md-12">
-                    <table class="table table-list">
-                      <thead>
-                        <tr>
-                          <th></th>
-                          <th>Город</th>
-                          <th>Район</th>
-                          <th>Тип задачи</th>
-                          <th>Дата задачи</th>
-                          <th>кол-во рекламных материалов, шт</th>
-                          <th>Стоимость работы, руб</th>
-                          <th>&nbsp;</th>
-                        </tr>
-                      </thead>
-                      <tbody class="js-list">
-                      {% for task in object.distributortask_set.all %}
-                        <tr data-id="{{ task.id }}" data-name="{{ task }}" data-model="DistributorTask" id="id_DistributorTask_{{ task.id }}">
-                          <td><a href="{% url 'distributor:task-update' task.id %}" class="btn btn-sm btn-info"><span class="glyphicon glyphicon-edit"></span> редактировать</a></td>
-                          <td>{{ task.sale.city|default:'Не указано' }}</td>
-                          <td>{{ task.area|default:'Не указано' }}</td>
-                          <td>{{ task.get_type_display|default:'Не указано' }}</td>
-                          <td>{{ task.date|default:'Не указано' }}</td>
-                          <td>{{ task.material_count|default:'Не указано' }}</td>
-                          <td>{{ task.total_cost|default:'Не указано' }}</td>
-                          <td>
-                            <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ task.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
-                              <span class="glyphicon glyphicon-remove"></span> Удалить
-                            </a>
-                          </td>
-                        </tr>
-                      {% empty %}
-                        <tr>
-                          <td colspan="8">
-                            <p class="alert alert-info text-left">Задач не найдено</p>
-                          </td>
-                        </tr>
-                      {% endfor %}
-                      </tbody>
-                    </table>
+                    <div class="table-container">
+                      <table class="table table-list">
+                        <thead>
+                          <tr>
+                            <th></th>
+                            <th>Город</th>
+                            <th>Район</th>
+                            <th>Тип задачи</th>
+                            <th>Дата задачи</th>
+                            <th>кол-во рекламных материалов, шт</th>
+                            <th>Стоимость работы, руб</th>
+                            <th>&nbsp;</th>
+                          </tr>
+                        </thead>
+                        <tbody class="js-list">
+                        {% for task in object.distributortask_set.all %}
+                          <tr data-id="{{ task.id }}" data-name="{{ task }}" data-model="DistributorTask" id="id_DistributorTask_{{ task.id }}">
+                            <td><a href="{% url 'distributor:task-update' task.id %}" class="btn btn-sm btn-info"><span class="glyphicon glyphicon-edit"></span> редактировать</a></td>
+                            <td>{{ task.sale.city|default:'Не указано' }}</td>
+                            <td>{{ task.area|default:'Не указано' }}</td>
+                            <td>{{ task.get_type_display|default:'Не указано' }}</td>
+                            <td>{{ task.date|default:'Не указано' }}</td>
+                            <td>{{ task.material_count|default:'Не указано' }}</td>
+                            <td>{{ task.total_cost|default:'Не указано' }}</td>
+                            <td>
+                              <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ task.id }}" class="text-danger js-ajax-remove-btn">
+                                <span class="glyphicon glyphicon-remove"></span>
+                              </a>
+                            </td>
+                          </tr>
+                        {% empty %}
+                          <tr>
+                            <td colspan="8">
+                              <p class="alert alert-info text-left">Задач не найдено</p>
+                            </td>
+                          </tr>
+                        {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                   <div class="clearfix"></div>
                   {% endif %}

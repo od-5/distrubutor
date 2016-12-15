@@ -185,3 +185,19 @@ def comment_delete(request, pk):
         'object': comment,
     })
     return render(request, 'forum/comment_delete.html', context)
+
+
+@login_required
+def topic_delete(request, pk):
+    context = {}
+    topic = Topic.objects.get(pk=int(pk))
+    url = topic.section.get_topic_list_url()
+    delete = request.GET.get('delete')
+    if delete:
+        if int(delete) == 1:
+            topic.delete()
+        return HttpResponseRedirect(url)
+    context.update({
+        'object': topic,
+    })
+    return render(request, 'forum/topic_delete.html', context)

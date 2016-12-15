@@ -10,6 +10,12 @@ $(function() {
 
   $.validator.messages.required = "* поле обязательно для заполнения";
 
+
+  // Показать\скрыть поиск
+  $('#js-show-filter-btn').click(function(){
+    $('.form-filter').slideToggle();
+    $('#js-show-filter-btn').find('span').toggleClass('hide');
+  });
   // Мобильные меню
   // Закрыть меню
   $('.js-dashboard-modal-close').click(function(){

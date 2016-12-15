@@ -1,11 +1,11 @@
-<div class="div add-bottom">
-  <a href="{% url 'client:update' object.id %}" class="btn btn-default">
+<div>
+  <a href="{% url 'client:update' object.id %}" class="btn btn-default add-bottom">
     <span class="glyphicon glyphicon-edit"></span> Данные клиента
   </a>
-  <a href="{% url 'client:contact-list' object.id %}" class="btn btn-default">
+  <a href="{% url 'client:contact-list' object.id %}" class="btn btn-default add-bottom">
     <span class="glyphicon glyphicon-user"></span> Контактные лица
   </a>
-  <a href="{% url 'client:history' object.id %}" class="btn btn-default">
+  <a href="{% url 'client:history' object.id %}" class="btn btn-default add-bottom">
     <span class="glyphicon glyphicon-briefcase"></span> Менеджер - история
   </a>
 </div>

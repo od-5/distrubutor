@@ -15,6 +15,7 @@ urlpatterns = patterns(
     url(r'^topic/new/$', 'topic_notify', name='topic-notify'),
     url(r'^topic/(?P<pk>\d+)/$', 'topic_detail', name='topic-detail'),
     url(r'^topic/(?P<pk>\d+)/update/$', 'topic_update', name='topic-update'),
+    url(r'^topic/(?P<pk>\d+)/delete/$', 'topic_delete', name='topic-delete'),
     url(r'^comment/(?P<pk>\d+)/update/$', 'comment_update', name='comment-update'),
     url(r'^comment/(?P<pk>\d+)/delete/$', 'comment_delete', name='comment-delete'),
 

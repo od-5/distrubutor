@@ -2,7 +2,7 @@
 {% block viewport %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% endblock %}
-{% block title %}{{ topic.title|default:'не указано' }} | {{ block.super }}{% endblock %}
+{% block title %}{{ object.title|default:'не указано' }} | {{ block.super }}{% endblock %}
 {% block extra_js %}
   {{ form.media }}
 {% endblock %}
@@ -30,7 +30,11 @@
         </div>
         {% if user.type == 1 or user == object.author %}
         <div class="col-md-6 text-right">
-          <a href="{{ object.get_update_url|default:'' }}" class="btn btn-info btn-sm add-bottom"><span class="glyphicon glyphicon-edit"></span> редактировать</a>
+{#          <a href="{{ object.get_update_url|default:'' }}" class="btn btn-add page-top__btn"><span class="glyphicon glyphicon-edit"></span> Удалить</a>#}
+{#          <a href="{{ object.get_update_url|default:'' }}" class="btn btn-add page-top__btn"><span class="glyphicon glyphicon-edit"></span> Редактировать</a>#}
+            <a href="{% url 'forum:topic-add' %}?section={{ object.section.id }}" class="btn btn-add page-top__btn" title="Добавить тему">
+            <span class="glyphicon glyphicon-plus-sign"></span> Добавить тему
+          </a>
         </div>
         {% endif %}
         <div class="clearfix"></div>
@@ -38,21 +42,30 @@
     </div>
     <div class="row">
       <div class="col-md-12">
-
-        <div class="panel panel-info">
+        <div class="panel panel-default panel-default_topic">
           <div class="panel-heading">
-            <div class="col-md-3">
-              <p class="small remove-bottom"><strong>{{ object.author }}</strong> <br>{{ object.created }}</p>
+            <div class="col-md-1 col-sm-1 col-xs-2">
+              <img src="{{ STATIC_URL }}icon/forum/folder.png" alt="">
             </div>
+            <div class="col-md-8 col-sm-8 col-xs-10">
+              <span class="forum__text">{{ object.author.get_full_name|default:'Не указано' }}</span><br>
+              <span class="forum__text">{{ object.created|date:'j F Yг. g:i:s' }}</span>
+            </div>
+          {% if user.type == 1 or object.author == user %}
+            <div class="col-md-3 col-sm-3 col-xs-12">
+              <div class="form-comment__control">
+                <a href="{{ object.get_delete_url|default:'' }}" title="Удалить">Удалить</a> /
+                <a href="{{ object.get_update_url|default:'' }}" title="Редактировать">Редактировать</a>
+              </div>
+            </div>
+          {% endif %}
             <div class="clearfix"></div>
           </div>
           <div class="panel-body">
             <div class="col-md-12">
               <div class="forum-comment">
+                <p class="forum-comment__title">{{ object.title|default:'не указано' }}</p>
                 <div class="forum-comment__text">
-                  <p class="lead">
-                  {{ object.title|default:'не указано' }}
-                  </p>
                   {{ object.text|safe|default:'' }}
                 </div>
               </div>
@@ -60,45 +73,55 @@
             <div class="clearfix"></div>
           </div>
         </div>
-        <br>
         {% for comment in object.comment_set.all %}
-        <div class="panel panel-info" id="{{ comment.id }}">
-          <div class="panel-heading">
-            <div class="col-lg-6">
-              <a name="#{{ comment.id }}"></a><strong class="small">{{ comment.author|default:'anonymous' }}</strong><br>
-              <span class="small">{{ comment.created|default:'' }}</span>
-            </div>
-            <div class="col-lg-6 text-right">
-            {% if user.type == 1 or comment.author == user %}
-              <div>
-                <a href="{{ comment.get_delete_url|default:'' }}" title="Удалить">Удалить</a> /
-                <a href="{{ comment.get_update_url|default:'' }}" title="Редактировать">Редактировать</a>
-              </div>
-            {% endif %}
-
-            </div>
-
-            <div class="clearfix"></div>
-          </div>
-          <div class="panel-body">
-            <div class="col-lg-12">
-              {{ comment.text|safe|default:'' }}
-            </div>
-            <div class="clearfix"></div>
-          </div>
-        </div>
-        <br>
-        {% endfor %}
-        <div class="col-md-12">
-          <div class="lead text-info">Новое сообщение</div>
-        </div>
-        <div class="clearfix"></div>
         <div class="row">
-          <div class="col-md-9">
+          <div class="col-md-1 col-sm-1 col-xs-1">
+            <img src="{{ STATIC_URL }}icon/forum/comment.png" alt="">
+          </div>
+          <div class="col-md-11 col-sm-11 col-xs-11 ">
+            <div class="panel panel-default panel-default_topic" id="{{ comment.id }}">
+              <div class="panel-body">
+                <div class="forum-comment-top">
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <a name="#{{ comment.id }}" class="forum__link">{{ comment.author.get_full_name|default:'anonymous' }}</a>
+                    <span class="forum__text">{{ comment.created|default:'' }}</span>
+                  </div>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                  {% if user.type == 1 or comment.author == user %}
+                    <div class="forum-comment__control">
+                      <a href="{{ comment.get_delete_url|default:'' }}" title="Удалить">Удалить</a> /
+                      <a href="{{ comment.get_update_url|default:'' }}" title="Редактировать">Редактировать</a>
+                    </div>
+                  {% endif %}
+
+                  </div>
+
+                  <div class="clearfix"></div>
+                </div>
+                <div class="col-md-12">
+                  <div class="forum-comment__text">
+                    {{ comment.text|safe|default:'' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+        {% endfor %}
+        <div class="row">
+          <div class="col-md-12">
+            <div class="lead">Новое сообщение</div>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
             <div class="panel panel-default">
               <div class="panel-body">
                 <div class="panel-content">
-                  <form action="" class="form js-forum-comment-add-form" method="post" role="form">
+                  <form action="" class="form js-forum-comment-add-form text-center" method="post" role="form">
                     {% csrf_token %}
                     <div class="col-md-12">
                       <div class="form-group">
@@ -106,9 +129,8 @@
                         {{ field }}
                       {% endfor %}
                       </div>
-
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-sm-6 col-sm-offset-3">
                       <button type="submit" class="btn btn-save">Отправить</button>
                     </div>
                     <div class="clearfix"></div>

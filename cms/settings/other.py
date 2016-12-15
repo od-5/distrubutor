@@ -58,7 +58,7 @@ CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.j
 CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_CONFIGS = {
     'default': {
-        'width': 700,
+        'width': '100%',
         'toolbar': 'Custom',
         'toolbar_Custom': [
             ['FontSize', 'TextColor'],

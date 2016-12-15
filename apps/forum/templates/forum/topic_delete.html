@@ -2,7 +2,10 @@
 {% block viewport %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% endblock %}
-{% block title %}Добавление раздела | {{ block.super }}{% endblock %}
+{% block title %}Удаление темы | {{ block.super }}{% endblock %}
+{% block extra_js %}
+  {{ form.media }}
+{% endblock %}
 {% block content %}
   <div class="breadcrumb-container">
     <div class="container">
@@ -11,7 +14,8 @@
           <ol class="breadcrumb">
             <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
             <li><a href="{% url 'forum:list' %}">Форум</a></li>
-            <li class="active">Добавление раздела</li>
+            <li><a href="{% url 'forum:topic-list' object.section.id %}">{{ object.section.title|default:'' }}</a></li>
+            <li class="active">Удаление темы</li>
           </ol>
         </div>
         <div class="clearfix"></div>
@@ -22,7 +26,7 @@
     <div class="row">
       <div class="page-top">
         <div class="col-md-12">
-          <span class="page-top__title">Добавление раздела</span>
+          <span class="page-top__title">Удаление темы</span>
         </div>
         <div class="clearfix"></div>
       </div>
@@ -32,27 +36,16 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <div class="panel-content">
-              <form action="" role="form" method="post" class="form js-forum-section-add" >
-                {% csrf_token %}
-                <div class="col-md-6">
-                {% for field in form %}
-                  <div class="form-group">
-                    {{ field.label_tag }}
-                    {{ field }}
-                    {{ field.errors }}
-                  </div>
-                {% endfor %}
-                </div>
-                <div class="col-md-6">
-                  <button type="submit" class="btn btn-save">Создать раздел</button>
-                </div>
-                <div class="clearfix"></div>
-              </form>
+              <div class="col-md-12 text-center">
+                <p class="lead">Вы действительно хотите удалить тему?</p>
+                <a href="?delete=1" class="btn btn-danger">Удалить</a>
+                <a href="?delete=0" class="btn btn-success">Отменить</a>
+              </div>
+              <div class="clearfix"></div>
             </div>
           </div>
         </div>
       </div>
-      <div class="clearfix"></div>
     </div>
   </div>
 {% endblock %}

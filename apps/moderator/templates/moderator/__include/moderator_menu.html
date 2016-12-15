@@ -1,15 +1,15 @@
-<div class="div add-bottom">
+<div>
   {% if user.type != 5 %}
-  <a href="{% url 'moderator:update' object.user.id %}" class="btn btn-default">
+  <a href="{% url 'moderator:update' object.user.id %}" class="btn btn-default add-bottom">
     <span class="glyphicon glyphicon-edit"></span> Информация о пользователе
   </a>
-  <a href="{% url 'moderator:company' object.user.id %}" class="btn btn-default">
+  <a href="{% url 'moderator:company' object.user.id %}" class="btn btn-default add-bottom">
     <span class="glyphicon glyphicon-check"></span> Информация об организации
   </a>
-  <a href="{% url 'moderator:action' object.user.id %}" class="btn btn-default">
+  <a href="{% url 'moderator:action' object.user.id %}" class="btn btn-default add-bottom">
     <span class="glyphicon glyphicon-folder-open"></span> Виды деятельности
   </a>
-  <a href="{% url 'moderator:payment-list' object.user.id %}" class="btn btn-default">
+  <a href="{% url 'moderator:payment-list' object.user.id %}" class="btn btn-default add-bottom">
     <span class="glyphicon glyphicon-shopping-cart"></span> Платежи
   </a>
   {% endif %}

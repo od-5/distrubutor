@@ -35,6 +35,10 @@
       <div class="col-md-12">
         <div class="panel panel-default">
           <div class="panel-body">
+            <button class="btn btn-show-filter" id="js-show-filter-btn">
+              <span>Развернуть поиск <strong>+</strong></span>
+              <span class="hide">Свернуть поиск <strong>-</strong></span>
+            </button>
             <form action="" method="GET" role="form" id="js-form-task-search" class="form form-filter">
               <div class="col-md-12">
                 <div class="five-col-1">
@@ -73,15 +77,15 @@
                 </div>
                 {% endif %}
                 <div class="five-col-2">
-                  <button type="submit" class="btn btn-search">
+                  <button type="submit" class="btn btn-search add-bottom">
                     <span class="glyphicon glyphicon-search"></span> Искать
                   </button>
                 </div>
                 <div class="five-col-1">
                 {% if show_all %}
-                  <a href="?all=0" class="btn btn-success"><span class="glyphicon glyphicon-calendar"></span> Показать задачи на сегодня</a>
+                  <a href="?all=0" class="btn btn-green"><span class="glyphicon glyphicon-calendar"></span> задачи на сегодня</a>
                 {% else %}
-                  <a href="?all=1" class="btn btn-success"><span class="glyphicon glyphicon-list-alt"></span> Показать все задачи</a>
+                  <a href="?all=1" class="btn btn-green"><span class="glyphicon glyphicon-list-alt"></span> Все задачи</a>
                 {% endif %}
                 </div>
                 <div class="clearfix"></div>

@@ -108,8 +108,14 @@ class Topic(ForumBase):
     def get_absolute_url(self):
         return reverse('forum:topic-detail', args=(self.pk, ))
 
+    def get_delete_url(self):
+        return reverse('forum:topic-delete', args=(self.pk, ))
+
     def get_update_url(self):
         return reverse('forum:topic-update', args=(self.pk, ))
+
+    def get_comment_count(self):
+        return self.comment_set.count()
 
     # todo: на будущее - проверка модератором, закрытите темы.
     section = models.ForeignKey(to=Section, verbose_name=u'Раздел')

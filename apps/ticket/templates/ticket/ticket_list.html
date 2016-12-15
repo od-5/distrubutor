@@ -22,6 +22,10 @@
       <div class="col-md-12">
         <div class="panel panel-default">
           <div class="panel-body">
+            <button class="btn btn-show-filter" id="js-show-filter-btn">
+              <span>Развернуть поиск <strong>+</strong></span>
+              <span class="hide">Свернуть поиск <strong>-</strong></span>
+            </button>
             <form action="" class="js-ticket-filter-form form form-filter add-bottom" method="GET">
               <div class="col-md-12">
                 <div class="five-col-2">
@@ -61,10 +65,10 @@
               <div class="clearfix"></div>
             </form>
             <div class="col-md-12">
-              <div class="col-md-8">
+              <div class="col-md-8 col-xs-12">
                 <div id="ticket-chart" style="height:300px; width: 100%;"></div>
               </div>
-              <div class="col-md-4">
+              <div class="col-md-4 col-xs-12">
                 <p>Всего заявок: {{ total_count|default:0 }}</p>
                 <p>Новые заявки: {{ new_count|default:0 }}</p>
                 <p>В обработке: {{ action_count|default:0 }}</p>
@@ -128,6 +132,11 @@
   <script src="{{ STATIC_URL }}js/echarts-all.js"></script>
   <script>
     var myChart = echarts.init(document.getElementById('ticket-chart'));
+    var chart_width = 500;
+    if ($(window).width() < 500) {
+      chart_width = 300;
+    }
+    console.log(chart_width);
     var option = {
       title : {
         show: false,
@@ -156,8 +165,8 @@
         {
           name:'Заявки с сайта',
           type:'funnel',
-          width: 500,
-          funnelAlign: 'center',
+          width: chart_width,
+          funnelAlign: 'left',
           legendHoverLink: false,
           gap: 1,
           data:[

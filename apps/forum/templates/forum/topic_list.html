@@ -21,10 +21,10 @@
   <div class="container">
     <div class="row">
       <div class="page-top">
-        <div class="col-md-6">
-          <span class="page-top__title">{{ object.title|default:'Не указано' }}</span><span class="page-top__count"> / {{ page_obj.paginator.count|default:'0' }}</span>
+        <div class="col-md-6 col-sm-6">
+          <span class="page-top__title">{{ object.title|default:'Не указано' }}</span><span class="page-top__count"> / {{ object_list.count|default:'0' }}</span>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 col-sm-6">
           <a href="{% url 'forum:topic-add' %}?section={{ object.id }}" class="btn btn-add page-top__btn" title="Добавить тему">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить тему
           </a>
@@ -34,48 +34,72 @@
     </div>
     <div class="row">
       <div class="col-md-12">
-        <div class="panel panel-default">
+        <div class="panel panel-default panel-default_forum">
           <div class="panel-body">
             <div class="panel-content">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th colspan="2" style="width:50%">Название</th>
-                    <th class="text-center">Сообщений</th>
-                    <th class="text-center">Последнее сообщение</th>
-                    {% if user.type == 1 %}<th></th>{% endif %}
-                  </tr>
-                </thead>
-                <tbody class="js-list">
-                {% for topic in object_list %}
-                  <tr data-id="{{ topic.id }}" data-name="{{ topic }}" data-model="Topic" id="id_Topic_{{ topic.id }}">
-                    <td><span class="glyphicon glyphicon-folder-close"></span></td>
-                    <td>
-                      <a href="{{ topic.get_absolute_url }}" title><strong>{{ topic.title|default:'не указано' }}</strong></a><br>
-                      <span class="small">{{ topic.author|default:'не указан' }} {{ topic.created|default:'' }}</span>
-                    </td>
-                    <td class="text-center">{{ topic.comment_set.count|default:'0' }}</td>
-                    <td class="text-center">
-                      {% if topic.get_last_comment %}
-                      <a href="{{ topic.get_last_comment.get_comment_link }}">
-                        {{ topic.get_last_comment.author.get_full_name|default:'Нет сообщений' }}
-                      </a><br>
-                      <span class="small">{{ topic.get_last_comment.created|default:'' }}</span>
-                      {% else %}
-                      <span class="small">нет сообщений</span>
-                      {% endif %}
-                    </td>
-                  {% if user.type == 1 %}
-                    <td>
-                      <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ topic.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
-                        <span class="glyphicon glyphicon-remove"></span> Удалить
-                      </a>
-                    </td>
-                  {% endif %}
-                  </tr>
-                {% endfor %}
-                </tbody>
-              </table>
+              {% for topic in object_list %}
+              <div class="forum-row">
+                <div class="col-md-1 col-sm-1 col-xs-2">
+                  <img src="{{ STATIC_URL }}icon/forum/folder.png" alt="">
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-10">
+                  <a href="{{ topic.get_absolute_url|default:'#'}}" title="{{ topic.title|default:'не указано' }}" class="forum__link">
+                    {{ topic.title|default:'не указано' }}
+                  </a>
+                  <span class="forum__text">{{ topic.author.get_full_name|default:'Не указано' }} {{ topic.created|date:'j F Yг. g:i:s' }}</span>
+                </div>
+                <div class="col-md-3 col-sm-3 hidden-xs">
+                  <span class="forum__text">Количество сообщений: {{ topic.get_comment_count|default:'0' }}</span>
+                </div>
+                <div class="col-md-4 col-sm-4 hidden-xs">
+                  <a href="{{ topic.get_last_comment.get_comment_link|default:'' }}" class="forum__link">{{ topic.get_last_comment.author.get_full_name|default:'Сообщений нет' }}</a>
+                  <span class="forum__text">{{ topic.get_last_comment.created|date:'j F Yг. g:i:s' }}</span>
+                </div>
+                <div class="clearfix"></div>
+              </div>
+            {% empty %}
+              <p class="alert alert-info">В этом разделе ещё нет тем</p>
+            {% endfor %}
+
+{#              <table class="table">#}
+{#                <thead>#}
+{#                  <tr>#}
+{#                    <th colspan="2" style="width:50%">Название</th>#}
+{#                    <th class="text-center">Сообщений</th>#}
+{#                    <th class="text-center">Последнее сообщение</th>#}
+{#                    {% if user.type == 1 %}<th></th>{% endif %}#}
+{#                  </tr>#}
+{#                </thead>#}
+{#                <tbody class="js-list">#}
+{#                {% for topic in object_list %}#}
+{#                  <tr data-id="{{ topic.id }}" data-name="{{ topic }}" data-model="Topic" id="id_Topic_{{ topic.id }}">#}
+{#                    <td><span class="glyphicon glyphicon-folder-close"></span></td>#}
+{#                    <td>#}
+{#                      <a href="{{ topic.get_absolute_url }}" title><strong>{{ topic.title|default:'не указано' }}</strong></a><br>#}
+{#                      <span class="small">{{ topic.author|default:'не указан' }} {{ topic.created|default:'' }}</span>#}
+{#                    </td>#}
+{#                    <td class="text-center">{{ topic.comment_set.count|default:'0' }}</td>#}
+{#                    <td class="text-center">#}
+{#                      {% if topic.get_last_comment %}#}
+{#                      <a href="{{ topic.get_last_comment.get_comment_link }}">#}
+{#                        {{ topic.get_last_comment.author.get_full_name|default:'Нет сообщений' }}#}
+{#                      </a><br>#}
+{#                      <span class="small">{{ topic.get_last_comment.created|default:'' }}</span>#}
+{#                      {% else %}#}
+{#                      <span class="small">нет сообщений</span>#}
+{#                      {% endif %}#}
+{#                    </td>#}
+{#                  {% if user.type == 1 %}#}
+{#                    <td>#}
+{#                      <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ topic.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">#}
+{#                        <span class="glyphicon glyphicon-remove"></span> Удалить#}
+{#                      </a>#}
+{#                    </td>#}
+{#                  {% endif %}#}
+{#                  </tr>#}
+{#                {% endfor %}#}
+{#                </tbody>#}
+{#              </table>#}
             </div>
   {#          {% include '__includes/pagination.html' %}#}
           </div>
