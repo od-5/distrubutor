@@ -6,8 +6,13 @@
   width: 320px;
 }
 .table-container {
-  padding: 63px 10px;
+  padding: 63px 0;
   overflow-x: scroll;
+}
+@media only screen and (max-width: 767px) {
+  .table-container {
+    padding: 10px 0;
+  }
 }
 .table-list {
   padding: 0 12px;

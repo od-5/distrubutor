@@ -13,8 +13,11 @@
 }
 .table {
   &-container {
-    padding: 63px 10px;
+    padding: 63px 0;
     overflow-x: scroll;
+    @media only screen and (max-width: 767px) {
+      padding: 10px 0;
+    }
   }
   &-list {
     padding: 0 12px;

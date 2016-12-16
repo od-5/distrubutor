@@ -48,10 +48,11 @@
                       {% csrf_token %}
                       <p class="lead text-info">ФИО представителя</p>
                       {{ user_form.errors }}
-                      <div class="form-group">
+                      <div class="form-group alert alert-info">
                         {{ user_form.email.label_tag }}
                         {{ user_form.email }}
                         {{ user_form.email.errors }}
+                        <p class=" small">email для входа в кабинет клиента. Может быть ненастоящим.</p>
                       </div>
                       <div class="form-group">
                         {{ user_form.last_name.label_tag }}
@@ -103,6 +104,18 @@
                         {{ sale_form.moderator }}
                         {{ sale_form.moderator.errors }}
                       {% endif %}
+                      <div class="form-group alert alert-info">
+                        {{ sale_form.sender_email.label_tag }}
+                        {{ sale_form.sender_email }}
+                        {{ sale_form.sender_email.errors }}
+                          <p class="small">Сюда будут отправляться уведомления о выполнении заказов</p>
+                      </div>
+                      <div class="form-group alert alert-info">
+                        {{ sale_form.phone_sms.label_tag }}
+                        {{ sale_form.phone_sms }}
+                        {{ sale_form.phone_sms.errors }}
+                        <p class="small">На этот номер будут отправляться СМС уведомления о выполнении заказов. Номер должен быть формата <strong>79999999999</strong></p>
+                      </div>
                       <div class="form-group">
                         {{ sale_form.city.label_tag }}
                         {{ sale_form.city }}

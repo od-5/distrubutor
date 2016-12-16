@@ -6200,6 +6200,11 @@ body {
   background-color: #c4ecf5;
   margin-bottom: 50px;
 }
+@media only screen and (max-width: 360px) {
+  .breadcrumb-container {
+    margin-bottom: 20px;
+  }
+}
 .breadcrumb a {
   color: #318396;
 }
@@ -6220,6 +6225,11 @@ img {
   -ms-transition: opacity 0.5s ease;
   -o-transition: opacity 0.5s ease;
   transition: opacity 0.5s ease;
+}
+@media only screen and (max-width: 767px) {
+  .page-info {
+    text-align: left !important;
+  }
 }
 .page-top {
   padding: 50px 0;
@@ -6775,6 +6785,7 @@ body {
   border-radius: 0;
   color: #fff;
   height: 36px;
+  line-height: 36px;
   text-transform: uppercase;
   padding: 0;
 }
@@ -6872,8 +6883,13 @@ body {
   width: 320px;
 }
 .table-container {
-  padding: 63px 10px;
+  padding: 63px 0;
   overflow-x: scroll;
+}
+@media only screen and (max-width: 767px) {
+  .table-container {
+    padding: 10px 0;
+  }
 }
 .table-list {
   padding: 0 12px;
@@ -6923,7 +6939,7 @@ label.error {
 }
 .form .form-control {
   border: 1px solid #d2e7f0;
-  background-color: transparent;
+  background-color: #fff;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
@@ -6947,6 +6963,7 @@ label.error {
 .form-filter .form-control {
   height: 36px;
   margin-bottom: 20px;
+  background-color: transparent;
 }
 .form-filter .form-control:hover,
 .form-filter .form-control:active {

@@ -27,6 +27,9 @@ body {
   &-container {
     background-color: #c4ecf5;
     margin-bottom: 50px;
+    @media only screen and (max-width: 360px) {
+      margin-bottom: 20px;
+    }
   }
   a {
     color: #318396;
@@ -50,6 +53,11 @@ img {
   transition: opacity 0.5s ease;
 }
 .page {
+  &-info {
+    @media only screen and (max-width: 767px) {
+      text-align: left !important;
+    }
+  }
   &-top {
     padding: 50px 0;
     @media only screen and (max-width: 767px) {

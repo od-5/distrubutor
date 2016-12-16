@@ -23,6 +23,8 @@ class Sale(models.Model):
     moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор', related_name='sale_moderator')
     city = models.ForeignKey(to=City, verbose_name=u'Город', related_name='sale_city')
     manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер', blank=True, null=True, related_name='sale_manager')
+    sender_email = models.EmailField(verbose_name=u'Email для получения уведомлений', blank=True, null=True, max_length=100)
+    phone_sms = models.CharField(verbose_name=u'Телефон для смс уведомлений', blank=True, null=True, max_length=20)
     password = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'пароль')
     legal_name = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Юридическое название')
     actual_name = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Фактичексое название')

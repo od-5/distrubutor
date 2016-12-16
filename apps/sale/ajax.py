@@ -111,10 +111,11 @@ def get_material_residue(request):
 def send_sms_notify(request):
     if request.POST and request.POST.get('sale'):
         sale = get_object_or_None(Sale, pk=int(request.POST.get('sale')))
-        if sale and sale.user.phone:
-            phone = sale.user.phone
+        if sale and sale.phone_sms:
+            phone = sale.phone_sms
             password = sale.password or ''
-            message = u"Доступ в ваш персональный кабинет фотоотчета http://reklamadoma.com/dashboard/ Логин: %s пароль: %s"  % (sale.user.email, password)
+            message = u"Доступ в ваш персональный кабинет фотоотчета http://reklamadoma.com/dashboard/ Логин: %s пароль: %s"  % \
+                      (sale.user.email, password)
             # print message.encode('utf-8')
             result = send_sms(phone, message)
             if result and int(result[0]) == 100:
@@ -138,6 +139,7 @@ def send_email_notify(request):
         saleorder = get_object_or_None(SaleOrder, pk=int(request.POST.get('saleorder')))
         if saleorder:
             email = saleorder.sale.user.email
+            sender_email = saleorder.sale.sender_email
             password = saleorder.sale.password or ''
 
             # print message.encode('utf-8')
@@ -152,7 +154,7 @@ def send_email_notify(request):
                         mail_title_msg,
                         message,
                         settings.DEFAULT_FROM_EMAIL,
-                        [email, ]
+                        [sender_email, ]
                     )
                 success = True
             except:

@@ -29,6 +29,11 @@ body {
   background-color: #c4ecf5;
   margin-bottom: 50px;
 }
+@media only screen and (max-width: 360px) {
+  .breadcrumb-container {
+    margin-bottom: 20px;
+  }
+}
 .breadcrumb a {
   color: #318396;
 }
@@ -49,6 +54,11 @@ img {
   -ms-transition: opacity 0.5s ease;
   -o-transition: opacity 0.5s ease;
   transition: opacity 0.5s ease;
+}
+@media only screen and (max-width: 767px) {
+  .page-info {
+    text-align: left !important;
+  }
 }
 .page-top {
   padding: 50px 0;
