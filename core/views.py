@@ -58,6 +58,7 @@ def cms_login(request, usertype=None):
                 user = authenticate(username=username, password=password)
                 if user is not None:
                     if user.is_active:
+                        # todo: если пользователь - менеджер, проверить - активен ли его модератор. Если нет - не логинить
                         login(request, user)
                         request.session['demo'] = False
                         return HttpResponseRedirect(reverse('dashboard:index'))

@@ -1,3 +1,4 @@
+/cms/settings/local_settings.py
 /apps/forum/migrations
 /apps/packages/migrations
 /apps/robokassa/migrations

@@ -21,7 +21,9 @@
     <div class="row">
       <div class="page-top">
         <div class="col-md-12">
-          <span class="page-top__title">Платежи</span>
+          <span class="page-top__title">Платежи </span>
+          <span class="page-top__count"> / {{ page_obj.paginator.count|default:'0' }}</span>
+          <span class="page-top__count"> / {{ total_sum|default:'0' }}руб.</span>
         </div>
         <div class="clearfix"></div>
       </div>

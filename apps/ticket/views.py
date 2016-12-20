@@ -32,7 +32,10 @@ class TicketListView(ListView):
         if user.type == 1:
             qs = Ticket.objects.all()
         elif user.type == 2:
-            qs = Ticket.objects.filter(moderator=user.moderator_user)
+            if user.moderator_user.ticket_forward:
+                qs = Ticket.objects.filter(pk=-1)
+            else:
+                qs = Ticket.objects.filter(moderator=user.moderator_user)
         elif user.type == 5:
             qs = Ticket.objects.filter(moderator=user.manager_user.moderator.moderator_user)
         else:

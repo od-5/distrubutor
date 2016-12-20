@@ -12,6 +12,12 @@
       text-align: left;
       height: 100px;
       overflow: hidden;
+      @media only screen and (max-width: 767px) {
+        width: 100%;
+        display: block;
+        margin: 5px 0;
+        height: auto;
+      }
       &:hover {
         box-shadow: 0 0 10px #ccc;
         background-color: #ffffcc;

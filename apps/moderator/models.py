@@ -105,6 +105,8 @@ class Moderator(models.Model):
     insta_link = models.URLField(verbose_name=u'Instagram', max_length=256, blank=True, null=True)
     deny_access = models.BooleanField(default=False, verbose_name=u'Доступ запрёщен')
     deny_date = models.DateField(blank=True, null=True, verbose_name=u'Дата блокировки')
+    site_visible = models.BooleanField(default=False, verbose_name=u'Не отображать на сайте')
+    ticket_forward = models.BooleanField(default=False, verbose_name=u'Перенаправлять заявки на рекламное агенство')
 
 
 class ModeratorArea(models.Model):

@@ -6480,6 +6480,13 @@ a.lead {
 body {
   overflow-y: scroll;
 }
+.notification-line {
+  height: 38px;
+  line-height: 38px;
+  font-size: 20px;
+  text-align: center;
+  background: #FFFFCC;
+}
 .add-row,
 .delete-row {
   color: #333;
@@ -7202,6 +7209,14 @@ label.error {
   text-align: left;
   height: 100px;
   overflow: hidden;
+}
+@media only screen and (max-width: 767px) {
+  .pay-package-item {
+    width: 100%;
+    display: block;
+    margin: 5px 0;
+    height: auto;
+  }
 }
 .pay-package-item:hover {
   box-shadow: 0 0 10px #ccc;

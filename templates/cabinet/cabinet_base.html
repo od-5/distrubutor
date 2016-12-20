@@ -35,12 +35,16 @@
 </head>
 <body>
 <div id="wrapper">
+{% if DENY_NOTIFY %}
+  <div class="notification-line">
+    {{ DENY_NOTIFY }}
+  </div>
+{% endif %}
 {% block header %}
   {% include 'cabinet/__includes/cabinet_header.html' %}
 
 
 {% endblock %}
-
   {% block content %}
   {% endblock %}
 </div>

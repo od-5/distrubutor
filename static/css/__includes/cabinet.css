@@ -1,6 +1,13 @@
 body {
   overflow-y: scroll;
 }
+.notification-line {
+  height: 38px;
+  line-height: 38px;
+  font-size: 20px;
+  text-align: center;
+  background: #FFFFCC;
+}
 .add-row,
 .delete-row {
   color: #333;

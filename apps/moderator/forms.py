@@ -12,7 +12,9 @@ class ModeratorForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'user': forms.HiddenInput(attrs={'class': 'form-control'}),
+            'ticket_forward': forms.CheckboxInput(),
             'deny_access': forms.CheckboxInput(),
+            'site_visible': forms.CheckboxInput(),
             'deny_date': forms.DateInput(attrs={'class': 'form-control'}),
             'city': forms.CheckboxSelectMultiple(),
             'company': forms.TextInput(attrs={'class': 'form-control'}),
@@ -39,6 +41,8 @@ class ModeratorForm(forms.ModelForm):
         if user.type != 1:
             self.fields['deny_access'].widget = forms.HiddenInput()
             self.fields['deny_date'].widget = forms.HiddenInput()
+            self.fields['site_visible'].widget = forms.HiddenInput()
+            self.fields['ticket_forward'].widget = forms.HiddenInput()
 
     def clean_fb_link(self):
         fb_link = self.cleaned_data.get("fb_link")

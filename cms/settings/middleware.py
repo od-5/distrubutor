@@ -22,4 +22,5 @@ TEMPLATE_CONTEXT_PROCESSORS = TCP + (
     # 'core.context.site_setup',
     'core.context.paginator_link',
     'apps.forum.context.forum_notification',
+    'apps.moderator.context.deny_notification',
 )
