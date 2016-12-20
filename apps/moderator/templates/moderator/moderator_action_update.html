@@ -46,20 +46,28 @@
               </div>
               {% endif %}
               <form action="" role="form" class="form" id="js-form-moderator-action" method="post">
-                <div class="col-lg-6">
+                <div class="col-md-10">
                 {% csrf_token %}
                 {{ formset.management_form }}
                 {% for form in formset %}
                   {{ form.id }}
                   {{ form.moderator }}
                   <div class="form-group">
-                    <div class="col-lg-3">{{ form.name.label_tag }}</div>
-                    <div class="col-lg-7">{{ form.name }}</div>
-                    {{ form.name.errors }}
+{#                    <div class="col-md-3">{{ form.name.label_tag }}</div>#}
+                    <div class="col-md-6">
+                      {{ form.name.label_tag }}
+                      {{ form.name }}
+                      {{ form.name.errors }}
+                    </div>
+                    <div class="col-md-5">
+                      {{ form.cost.label_tag }}
+                      {{ form.cost }}
+                      {{ form.cost.errorss }}
+                    </div>
                     <div class="clearfix"></div>
                     {% if form.instance.pk %}
-                    <div class="col-lg-10 text-right">{{ form.DELETE.label_tag }}</div>
-                    <div class="col-lg-2">{{ form.DELETE }}</div>
+                    <div class="col-md-10 text-right">{{ form.DELETE.label_tag }}</div>
+                    <div class="col-md-2">{{ form.DELETE }}</div>
                     <div class="clearfix"></div>
                     {% endif %}
                   </div>

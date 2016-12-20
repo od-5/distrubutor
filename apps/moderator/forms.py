@@ -86,7 +86,8 @@ class ModeratorActionForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'moderator': forms.TextInput(attrs={'class': 'form-control'}),
-            'name': forms.TextInput(attrs={'class': 'form-control'})
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'cost': forms.NumberInput(attrs={'class': 'form-control', 'step': 0.01})
         }
 
 

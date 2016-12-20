@@ -134,6 +134,7 @@ class ModeratorAction(models.Model):
 
     moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор')
     name = models.CharField(verbose_name=u'Название', max_length=256)
+    cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Олата, руб/шт', default=0)
 
 
 class Review(models.Model):

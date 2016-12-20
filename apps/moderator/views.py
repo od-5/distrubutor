@@ -152,7 +152,13 @@ def moderator_action_update(request, pk):
     except:
         moderator = Moderator(user=moderator_user)
         moderator.save()
-    moderatoraction_formset = inlineformset_factory(Moderator, ModeratorAction, form=ModeratorActionForm, can_delete=True, extra=1)
+    if moderator.moderatoraction_set.count() > 0:
+        extra_count = 0
+    else:
+        extra_count = 1
+    moderatoraction_formset = inlineformset_factory(
+        Moderator, ModeratorAction, form=ModeratorActionForm,
+        can_delete=True, extra=extra_count)
     if request.method == 'POST':
         formset = moderatoraction_formset(request.POST, instance=moderator)
         if formset.is_valid():
