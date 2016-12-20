@@ -128,6 +128,7 @@ class DashboardView(TemplateView):
         return context
 
 
+# todo: старый код. Аккуратно выпилить вместе с приложением apps.mobile
 def mobile_check(request):
     try:
         request.session['is_mobile']

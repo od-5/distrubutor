@@ -105,6 +105,7 @@
             </div>
           </div>
           <div class="header-city"><span class="header-city-span">Выберите город:</span> <a href="">{{ current_city.name|default:'Не выбрано' }}</a></div>
+          <div class="header-contact scroll"><a href="#block5">Контактные данные</a></div>
           <div class="header-enter">
             <a href="{% url 'dashboard:index' %}" class="enter-link enter-link-top">
             <span>{% if user.is_authenticated %}{{ user.email }}{% else %} Войти как...{% endif %}</span>

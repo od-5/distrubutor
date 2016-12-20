@@ -347,19 +347,31 @@ def payment_received(sender, **kwargs):
             moderator.deny_date = moderator.deny_date + relativedelta(months=order.package.month)
     else:
         moderator.deny_date = today + relativedelta(months=order.package.month)
-    # todo: сделать проверку - если оплата первая (количество оплат = 1), то отправлять письмо на почту.
     if moderator.order_set.count() == 1:
+        # todo: нужно сделать другой способ отправки, что то навроде постановки писем в очередь и
+        # их последующая отправка. django-mailer и django-mailer-2 не подходят, так как не умеют отправлять
+        # свёрстанные письма. Думаем над альтернативой.
         email = moderator.user.email
-        subject = u'Пошаговая инструкция reklamadoma.com'
         # msg_plain = render_to_string('email.txt', {'name': name})
         msg_html = render_to_string('moderator/mail.html')
+        second_msg_html = render_to_string('moderator/second_mail.html')
         try:
             send_mail(
-                subject,
+                u'Пошаговая инструкция reklamadoma.com',
                 msg_html,
                 settings.DEFAULT_FROM_EMAIL,
                 [email, ],
                 html_message=msg_html,
+            )
+        except:
+            pass
+        try:
+            send_mail(
+                u'Видеоинструкции по работе в программе Контроль распространения и расклейки',
+                msg_html,
+                settings.DEFAULT_FROM_EMAIL,
+                [email, ],
+                html_message=second_msg_html,
             )
         except:
             pass

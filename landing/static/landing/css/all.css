@@ -264,6 +264,21 @@ article p {
     background: url(../images/arrow-white.png) 100% 9px no-repeat;
 }
 .header-city a:hover {text-decoration: underline;}
+.header-contact {
+    float: left;
+    padding: 13px 0 0 53px;
+}
+.header-contact a {
+    color: #FFFF99;
+    background-color: transparent;
+    font-weight: bold;
+    text-decoration: none;
+}
+.header-contact a:hover {
+    text-decoration: underline;
+    background-color: transparent;
+    color: #fff;
+}
 .header-enter {
     position: relative;
     float: right;
