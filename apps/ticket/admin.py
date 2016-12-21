@@ -58,7 +58,7 @@ class SaleAdmin(admin.ModelAdmin):
     search_fields = ['mail', ]
     date_hierarchy = 'created'
     readonly_fields = ('city', 'moderator')
-    fields = ('city', 'moderator', 'name', 'mail', 'phone', 'agency_manager', 'type', 'comment')
+    fields = ('city', 'moderator', 'name', 'mail', 'phone', 'agency_manager', 'type', 'ptice', 'comment')
     form = SaleAdminForm
 
 
