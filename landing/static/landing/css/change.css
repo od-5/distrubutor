@@ -404,7 +404,11 @@ dd a {
 }
 @media screen and (max-width: 767px) {
 	.header-contact {
-		padding-left: 30px;
+		padding: 0;
+		position: absolute;
+		top: 60px;
+		width: 100%;
+		text-align: center;
 	}
 	.icons-block {padding: 55px 0 24px;}
 	.icons-block-item {
