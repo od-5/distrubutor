@@ -19,6 +19,7 @@ INSTALLED_APPS = (
     'landing',
     'apps.dashboard',
     'apps.administrator',
+    'apps.agency',
     'apps.moderator',
     'apps.manager',
     'apps.city',

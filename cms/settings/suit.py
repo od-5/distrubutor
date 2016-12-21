@@ -23,10 +23,9 @@ SUIT_CONFIG = {
     'MENU': (
         'sites',
         {'label': u'Перейти на сайт', 'icon': 'icon-eye-open', 'url': '/'},
-        {'label': u'Пользователи', 'icon': 'icon-user', 'models': ('core.user',)},
-        {'label': u'Города', 'models': ('city.city',)},
-        {'label': u'Страны', 'models': ('city.country',)},
-        {'label': u'Распространители', 'app': 'distributor',},
-        {'label': u'Отзывы', 'app': 'moderator',},
+        {'label': u'Новые заявки с сайта', 'icon': 'icon-list-alt', 'models': ('ticket.ticket',)},
+        {'label': u'Заявки в обработке', 'icon': 'icon-list-alt', 'models': ('ticket.managerticket',)},
+        {'label': u'Продажи', 'icon': 'icon-list-alt', 'models': ('ticket.sale',)},
+
     ),
 }

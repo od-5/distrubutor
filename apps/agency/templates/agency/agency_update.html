@@ -2,25 +2,13 @@
 {% block viewport %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% endblock %}
-{% block title %}Добавление нового администратора | {{ block.super }}{% endblock %}
+{% block title %}Редактирование сотрудника рекламного агентства {{ object }} | {{ block.super }}{% endblock %}
 {% block content %}
-  <div class="breadcrumb-container">
-    <div class="container">
-      <div class="col-md-12">
-        <ol class="breadcrumb">
-          <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
-          <li><a href="{% url 'administrator:list' %}">Список администраторов</a></li>
-          <li class="active">Добавление администратора</li>
-        </ol>
-      </div>
-      <div class="clearfix"></div>
-    </div>
-  </div>
   <div class="container">
     <div class="row">
       <div class="page-top">
         <div class="col-md-12">
-          <span class="page-top__title">Добавление нового администратора</span>
+          <span class="page-top__title">Редактирование сотрудника рекламного агентства {{ object }}</span>
         </div>
         <div class="clearfix"></div>
       </div>
@@ -30,34 +18,40 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <div class="panel-content">
-              <form action="" class="form" role="form" method="post" id="js-form-user-add" >
+              <div class="col-md-12">
+                  {% if error %}
+                    <div class="alert alert-danger">
+                      {{ error }}
+                    </div>
+                  {%  endif %}
+                  {% if success %}
+                    <div class="alert alert-success">
+                      {{ success }}
+                    </div>
+                  {% endif %}
+              </div>
+              <form action="" role="form" class="form add-bottom" id="js-form-user-update" method="post">
                 {% csrf_token %}
                 <div class="col-md-6">
-                  <p class="lead text-info">Контактная информация</p>
+                  <p class="text-info lead">Контактная информация</p>
                   <div class="form-group">
                     {{ form.email.label_tag }}
                     {{ form.email }}
                     {{ form.email.errors }}
                   </div>
-                  <div class="form-group add-bottom">
+                  <div class="form-group">
                     {{ form.phone.label_tag }}
                     {{ form.phone }}
                     {{ form.phone.errors }}
                   </div>
-                  <p class="lead text-info">Пароль для входа в аккаунт</p>
-                  <div class="form-group">
-                    {{ form.password1.label_tag }}
-                    {{ form.password1 }}
-                    {{ form.password1.errors }}
-                  </div>
-                  <div class="form-group">
-                    {{ form.password2.label_tag }}
-                    {{ form.password2 }}
-                    {{ form.password2.errors }}
+                  <div class="form-group add-bottom">
+                    {{ form.is_active.label_tag }}
+                    {{ form.is_active }}
+                    {{ form.is_active.errors }}
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <p class="lead text-info">Личные данные</p>
+                  <p class="text-info lead">Личные данные</p>
                   <div class="form-group">
                     {{ form.last_name.label_tag }}
                     {{ form.last_name }}
@@ -76,10 +70,15 @@
                 </div>
                 <div class="clearfix"></div>
                 <div class="col-md-6">
-                  <input type="submit" class="btn btn-save" value="Добавить администратора">
+                  <input type="submit" class="btn btn-save" value="Сохранить изменения">
                 </div>
                 <div class="clearfix"></div>
               </form>
+              <div class="col-md-6">
+                <p class="text-info lead">Смена пароля</p>
+                {% include 'core/__includes/user_password_change_form.html' with user_id=object.id %}
+              </div>
+              <div class="clearfix"></div>
             </div>
           </div>
         </div>

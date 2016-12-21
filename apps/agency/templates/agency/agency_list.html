@@ -1,0 +1,85 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Список сотрудников рекламного агентства | {{ block.super }}{% endblock %}
+{% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li class="active">Список сотрудников рекламного агентства</li>
+          </ol>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-8">
+          <span class="page-top__title">Сотрудники рекламного агентства</span><span class="page-top__count"> / {{ page_obj.paginator.count|default:'0' }}</span>
+        </div>
+        <div class="col-md-4">
+          <a href="{% url 'agency:add' %}" class="btn btn-add page-top__btn" title="Добавить модератора">
+            <span class="glyphicon glyphicon-plus-sign"></span> Добавить сотрудника
+          </a>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="col-md-12">
+              <div class="table-container">
+                <table class="table table-list">
+                  <thead>
+                    <tr>
+                      <th>e-mail</th>
+                      <th>Фамлия</th>
+                      <th>Имя</th>
+                      <th>Отчество</th>
+                      <th>Телефон</th>
+                      <th>&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody class="js-list">
+                  {% for object in object_list %}
+                    <tr data-id="{{ object.id }}" data-name="{{ object.get_full_name }}" data-model="User" id="id_User_{{ object.id }}">
+                      <td><a href="{% url 'administrator:update' object.pk %}" class="js-administrator-email"> {{ object.email|default:'' }}</a></td>
+                      <td>{{ object.last_name|default:'Не указано' }}</td>
+                      <td>{{ object.first_name|default:'Не указано' }}</td>
+                      <td>{{ object.patronymic|default:'Не указано' }}</td>
+                      <td>{{ object.phone|default:'Не указано' }}</td>
+                      <td>
+                        <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-User-{{ object.id }}" class="text-danger js-ajax-remove-btn">
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                      </td>
+                    </tr>
+                  {% empty %}
+                    <tr>
+                      <td colspan="6">
+                        <p class="alert alert-info text-left">Сотрудников рекламного агентства не найдено</p>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+        {% include '__includes/pagination.html' %}
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+  {% include '__modal/js_ajax_remove_form.html' %}
+{% endblock %}

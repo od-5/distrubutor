@@ -12,6 +12,7 @@ urlpatterns = patterns(
     url(r'^api_v1/', include('api.urls', namespace='api')),
     url(r'^dashboard/', include('apps.dashboard.urls', namespace='dashboard'),),
     url(r'^administrator/', include('apps.administrator.urls', namespace='administrator'),),
+    url(r'^agency/', include('apps.agency.urls', namespace='agency'),),
     url(r'^moderator/', include('apps.moderator.urls', namespace='moderator'),),
     url(r'^city/', include('apps.city.urls', namespace='city'),),
     url(r'^forum/', include('apps.forum.urls', namespace='forum'),),

@@ -65,6 +65,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         (3, u'Клиент'),
         (4, u'Распространитель'),
         (5, u'Менеджер'),
+        (6, u'Рекламное агенство'),
     )
 
     email = models.EmailField(_('email address'), unique=True)
