@@ -1,0 +1,158 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Журнал продаж | {{ block.super }}{% endblock %}
+{% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li class="active">Журнал продаж</li>
+          </ol>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">Журнал продаж</span><span class="page-top__count"> / {{ page_obj.paginator.count|default:'0' }}</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <button class="btn btn-show-filter" id="js-show-filter-btn">
+              <span>Развернуть поиск <strong>+</strong></span>
+              <span class="hide">Свернуть поиск <strong>-</strong></span>
+            </button>
+            <form action="" class="form form-filter" id="js-client-search-form" role="form" method="GET">
+              <div class="col-md-12">
+                {% if user.type == 1 %}
+                <div class="five-col-2">
+                  <select name="city" class="form-control input-sm">
+                    <option value="0">-- Город --</option>
+                    {% for city in city_list %}
+                      <option value="{{ city.id }}" {% if city.id == city_id %}selected="selected"{% endif %}>{{ city }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                {% endif %}
+                {% if not user.manager_user and not user.manager_user.leader %}
+                <div class="five-col-2">
+                  <select name="manager" class="form-control input-sm">
+                    <option value="0">-- Менеджер --</option>
+                    {% for manager in manager_list %}
+                      <option value="{{ manager.id }}" {% if manager.id == manager_id %}selected="selected"{% endif %}>{{ manager }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                {% endif %}
+                <div class="five-col-1">
+                  <input type="text" name="legal_name" class="form-control input-sm" value="{{ r_legal_name|default:'' }}" placeholder="Юридическое название">
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="date_start" id="id_date_start" class="form-control input-sm" value="{{ r_date_start|default:'' }}" placeholder="Начальная дата">
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="date_end" id="id_date_end" class="form-control input-sm" value="{{ r_date_end|default:'' }}" placeholder="Конечная дата">
+                </div>
+                <div class="five-col-2">
+                  <select name="payment" id="" class="form-control input-sm">
+                    <option value="">-- Поступления --</option>
+                    <option value="0" {% if r_payment == 0 %}selected="selected"{% endif %}>Нет поступлений</option>
+                    <option value="1" {% if r_payment == 1 %}selected="selected"{% endif %}>Полная оплата</option>
+                    <option value="2" {% if r_payment == 2 %}selected="selected"{% endif %}>Частичная оплата</option>
+                    <option value="3" {% if r_payment == 3 %}selected="selected"{% endif %}>Частичная и полная оплата</option>
+                  </select>
+                </div>
+                <div class="five-col-2">
+                  <input type="submit" class="btn btn-search" value="Искать продажи">
+                </div>
+                <div class="clearfix"></div>
+              </div>
+              <div class="clearfix"></div>
+            </form>
+            <div class="col-md-12">
+              <div class="table-container">
+                <div class="row">
+                  <div class="col-md-6">
+                    <p class="text-info page-info">Всего заказов на сумму: {{ total_sum|default:'0' }} руб.</p>
+                  </div>
+                  <div class="col-md-6">
+                    <p class="text-right text-info page-info">
+                      Общая сумма поступлений: <strong>{{ payments_sum|default:'0' }}</strong> руб
+                    </p>
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+                <table class="table table-list">
+                  <thead>
+                    <tr>
+                      <th>Название</th>
+                      <th>Юридическое наименование</th>
+                      <th>Город</th>
+                      <th>Менеджер</th>
+                      <th>Кол-во материалов</th>
+                      <th>Стоимость 1 шт, руб</th>
+                      <th>Наценка, %</th>
+                      <th>Скидка, %</th>
+                      <th>Итого, руб</th>
+                      <th>Поступления, руб</th>
+                      <th>&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody class="js-list">
+                  {% if object_list %}
+                    {% for object in object_list %}
+                    <tr data-id="{{ object.id }}" class="saleorder-tr{% if object.full_payment %} success{% elif object.has_payment %} info{% endif %}" data-name="{{ object }}" data-model="SaleOrder" id="id_SaleOrder_{{ object.id }}">
+                      <td><a href="{% url 'sale:order-update' object.id %}">{{ object|default:'Не указано' }}</a></td>
+                      <td>{{ object.sale.legal_name|default:'Не указано' }}</td>
+                      <td>{{ object.sale.city|default:'Не указано' }}</td>
+                      <td>{{ object.sale.manager|default:'Не указано' }}</td>
+                      <td>{{ object.count|default:'0' }}</td>
+                      <td>{{ object.cost|default:'0' }}</td>
+                      <td>{{ object.add_cost|default:'0' }}</td>
+                      <td>{{ object.discount|default:'0' }}</td>
+                      <td>{{ object.total_sum|default:'0' }}</td>
+                      <td style="width: 120px;">
+                        {{ object.current_payment|default:'0' }}
+                        <a href="#js-modal-payment-add" id="js-payment-btn-{{ object.id }}" class="btn btn-sm btn-info js-payment-add-btn hide" data-sale="{{ object.sale.id }}" data-saleorder="{{ object.id }}">
+                          <span class="glyphicon glyphicon-plus-sign"></span> Добавить
+                        </a>
+                      </td>
+                      <td>
+                        <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="text-danger js-ajax-remove-btn">
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  {% else %}
+                    <tr>
+                      <td colspan="10"><p class="alert alert-info text-left">Клиентов нет</p></td>
+                    </tr>
+                  {% endif %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+        {% include '__includes/pagination.html' %}
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+{% include '__modal/js_ajax_remove_form.html' %}
+{% include 'sale/__modal/payment_modal.html' %}
+{% endblock %}

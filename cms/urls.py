@@ -1,0 +1,42 @@
+# coding=utf-8
+from django.conf import settings
+from django.conf.urls.static import static
+from django.conf.urls import patterns, include, url
+from django.contrib import admin
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+import debug_toolbar
+
+
+urlpatterns = patterns(
+    '',
+    url(r'^api_v1/', include('api.urls', namespace='api')),
+    url(r'^dashboard/', include('apps.dashboard.urls', namespace='dashboard'),),
+    url(r'^administrator/', include('apps.administrator.urls', namespace='administrator'),),
+    url(r'^moderator/', include('apps.moderator.urls', namespace='moderator'),),
+    url(r'^city/', include('apps.city.urls', namespace='city'),),
+    url(r'^forum/', include('apps.forum.urls', namespace='forum'),),
+    url(r'^package/', include('apps.packages.urls', namespace='package'),),
+    url(r'^sale/', include('apps.sale.urls', namespace='sale'),),
+    url(r'^distributor/', include('apps.distributor.urls', namespace='distributor'),),
+    url(r'^ticket/', include('apps.ticket.urls', namespace='ticket'),),
+    url(r'^manager/', include('apps.manager.urls', namespace='manager'),),
+    url(r'^client/', include('apps.client.urls', namespace='client'),),
+    url(r'^mobile/', include('apps.mobile.urls', namespace='mobile'),),
+    url(r'^payment/', include('apps.robokassa.urls', namespace='payment'),),
+    url(r'^order/', include('apps.order.urls', namespace='order'),),
+    url(r'', include('core.urls')),
+    url(r'', include('landing.urls', namespace='landing')),
+    (r'^i18n/', include('django.conf.urls.i18n')),
+
+    url(r'^ckeditor/', include('ckeditor.urls')),
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += staticfiles_urlpatterns()
+    urlpatterns += patterns(
+        '',
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    )

@@ -1,0 +1,54 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Результаты загрузки | {{ block.super }}{% endblock %}
+{% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li><a href="{% url 'client:list' %}">Журнал клиентов</a></li>
+            <li class="active">Результаты загрузки</li>
+          </ol>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">Результат загрузки</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="panel-container">
+              <p class="lead">Успешно загружено: <span>{{ success_count }}</span></p>
+              <p class="lead">Ошибки: <span>{{ error_count }}</span></p>
+            {% for error in error_list %}
+              <p class="alert alert-warning">
+                {{ error }}
+              </p>
+            {% endfor %}
+            {% for success in success_list %}
+              <p class="alert alert-success">
+                {{ success }}
+              </p>
+            {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+{% endblock %}

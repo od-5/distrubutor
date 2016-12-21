@@ -1,0 +1,337 @@
+html, body {
+  height: 100%;
+  width: 100%;
+}
+body {
+  min-width: 320px;
+}
+.desktop-only {
+  @media only screen and (max-width: 991px) {
+    display: none;
+  }
+}
+#wrapper {
+  //height: 100% !important;
+  min-height: 100%;
+  height: auto;
+  margin-bottom: -68px;
+  padding-bottom: 100px;
+}
+.container {
+  @media only screen and (max-width: 360px) {
+    padding: 0;
+  }
+}
+.breadcrumb {
+  margin-bottom: 0;
+  &-container {
+    background-color: #c4ecf5;
+    margin-bottom: 50px;
+    @media only screen and (max-width: 360px) {
+      margin-bottom: 20px;
+    }
+  }
+  a {
+    color: #318396;
+  }
+}
+a, h2 {
+  -webkit-transition: color 0.5s ease;
+  -moz-transition: color 0.5s ease;
+  -ms-transition: color 0.5s ease;
+  -o-transition: color 0.5s ease;
+  transition: color 0.5s ease;
+}
+.break-all {
+  word-break: break-all;
+}
+img {
+  -webkit-transition: opacity 0.5s ease;
+  -moz-transition: opacity 0.5s ease;
+  -ms-transition: opacity 0.5s ease;
+  -o-transition: opacity 0.5s ease;
+  transition: opacity 0.5s ease;
+}
+.page {
+  &-info {
+    @media only screen and (max-width: 767px) {
+      text-align: left !important;
+    }
+  }
+  &-top {
+    padding: 50px 0;
+    @media only screen and (max-width: 767px) {
+      text-align: center;
+      padding: 0 0 20px;
+    }
+    &__title, &__count {
+      font-size: 36px;
+      @media only screen and (max-width: 768px) {
+        font-size: 18px;
+      }
+    }
+    &__title {
+      color: #333;
+    }
+    &__count {
+      color: #057ab0;
+    }
+    &__btn {
+      @media only screen and (min-width: 768px) {
+        float: right;
+      }
+      @media only screen and (max-width: 767px) {
+        width: 100%;
+        margin-top: 20px;
+      }
+    }
+  }
+}
+.dropdown-menu {
+  padding: 0;
+  min-width: 100%;
+  li {
+    text-align: left;
+    a {
+      line-height: 30px !important;
+    }
+  }
+  .divider {
+    margin: 0;
+  }
+}
+.navbar {
+  border: none;
+  &-header {
+    @media only screen and (max-width: 991px) {
+      float: none;
+      width: 100%;
+      text-align: center;
+    }
+  }
+  &-brand {
+    height: 74px;
+    background-color: #057ab0;
+    font-weight: bold;
+    @media only screen and (min-width: 992px) {
+      box-shadow: 12px 0 15px -4px #333,
+                  -12px 0 8px -4px #333;
+    }
+    @media only screen and (min-width: 768px) and (max-width: 991px) {
+      //line-height: 50px;
+      float: none;
+    }
+    @media only screen and (max-width: 991px) {
+      height: 50px;
+      font-size: 16px;
+      display: block;
+      width: 100%;
+    }
+    @media only screen and (max-width: 767px) {
+      font-size: 14px;
+      padding: 5px 0;
+    }
+    &__small {
+      font-size: 10px;
+      letter-spacing: 0.4em;
+
+      @media only screen and (max-width: 1200px) {
+        display: none;
+      }
+    }
+  }
+}
+td {
+  &.incomingtask {
+    &-comment {
+      word-break: break-all;
+    }
+    &-contact {
+      word-break: break-all;
+    }
+  }
+}
+.btn, p, h2 {
+  -webkit-transition: background-color 0.5s ease;
+  -moz-transition: background-color 0.5s ease;
+  -ms-transition: background-color 0.5s ease;
+  -o-transition: background-color 0.5s ease;
+  transition: background-color 0.5s ease;
+}
+.remove-bottom {
+  margin-bottom: 0;
+}
+.content {
+  padding-bottom: 100px;
+  background-color: #fff;
+}
+
+#scrollup {
+  position: fixed;
+  opacity: 0.8;
+  padding: 15px 10px 10px;
+  background: #aaa;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  right: 10px;
+  bottom: 10px;
+  display: none;
+  cursor: pointer;
+}
+.pagination {
+  margin: 0;
+  @media only screen and (max-width: 767px) {
+    display: table-row;
+  }
+  &-wrapper {
+    @media only screen and (max-width: 767px) {
+      display: table;
+      width: 100%;
+    }
+  }
+  li {
+    @media only screen and (max-width: 767px) {
+      display: table-cell;
+    }
+  }
+  a {
+    border: none !important;
+    -webkit-border-radius: 0 !important;
+    -moz-border-radius: 0 !important;
+    border-radius: 0 !important;
+    padding: 15px 40px !important;
+    @media only screen and (max-width: 991px) {
+    }
+    @media only screen and (max-width: 767px) {
+      padding: 10px 0 !important;
+      display: block;
+      float: none !important;
+    }
+  }
+  &-current {
+    background-color: #e9f9fd !important;
+  }
+  &-next, &-prev {
+    background-color: #bfe0e8 !important;
+  }
+  &-first, &-last {
+    background-color: #a6d0da !important;
+  }
+}
+.bold {
+  font-weight: bold;
+}
+.add {
+  &-top {
+    margin-top: 20px;
+  }
+  &-bottom {
+    margin-bottom: 20px;
+  }
+}
+//.search {
+//  &-form {
+//    display: none;
+//  }
+//}
+.client, .city {
+  &-search {
+    &-form {
+      margin: 20px 0;
+      select, input[type=text] {
+        width: 200px;
+        display: inline;
+      }
+      input {
+        display: inline;
+      }
+    }
+  }
+}
+.js {
+  &-show {
+    &-map {
+      cursor: pointer;
+    }
+  }
+  &-map {
+    display: none;
+  }
+}
+.signer {
+  &-input {
+    display: inline;
+    width: 42%;
+    margin-bottom: 10px;
+  }
+}
+img {
+  max-width: 100%;
+}
+
+.calendar {
+  th {
+    text-align: center;
+  }
+  td {
+    padding: 7px;
+    border: 1px solid #eee;
+    text-align: center;
+    &.filled {
+      background-color: blanchedalmond;
+    }
+  }
+}
+.js {
+  &-map {
+    &-task {
+      &-heading {
+        cursor: pointer;
+      }
+      &-body {
+        display: none;
+      }
+    }
+  }
+  &-calendar {
+    &-heading {
+      cursor: pointer;
+    }
+    &-body {
+      display: none;
+    }
+  }
+}
+//.scroll {
+//  thead {
+//    position: relative;
+//    display: block;
+//    width: 100%;
+//  }
+//  tbody {
+//    width: 100%;
+//    display: block;
+//    overflow-y: scroll;
+//    max-height: 255px;
+//  }
+//  td:nth-child(1), th:nth-child(1) { width: 170px; }
+//  td:nth-child(2), th:nth-child(2) { width: 200px }
+//  td:nth-child(3), th:nth-child(3) { width: 200px; }
+//  td:nth-child(4), th:nth-child(4) { width: 300px; }
+//  td:nth-child(5), th:nth-child(5) { width: 200px; }
+//  //td:nth-child(6), th:nth-child(6) { width: 120px; }
+//}
+a.lead {
+  display: inline-block;
+}
+
+.remove {
+  &-padding {
+    padding: 0;
+  }
+}
+
+#ui-datepicker-div {
+  z-index: 8031!important;
+}

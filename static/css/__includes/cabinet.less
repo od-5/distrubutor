@@ -1,0 +1,224 @@
+body {
+  //background-color: #0577ad;
+  overflow-y: scroll;
+}
+//.panel {
+//  &-default {
+//    border: none;
+//  }
+//}
+.notification {
+  &-line {
+    height: 38px;
+    line-height: 38px;
+    font-size: 20px;
+    text-align: center;
+    background: #FFFFCC;
+  }
+}
+.add-row, .delete-row {
+  color: #333;
+  font-size: 12px;
+}
+.add-row {
+  display: block;
+  text-align: right;
+  margin-bottom: 20px;
+  span {
+    color: #009900;
+  }
+}
+.delete-row {
+  position: absolute;
+  top: 8px;
+  right: 0;
+  span {
+    color: #cc0000;
+  }
+}
+
+
+.sale {
+  &-task {
+    &-link {
+      &-active {
+        font-weight: bold;
+      }
+    }
+  }
+}
+.js {
+  &-toggle {
+    &-heading {
+      cursor: pointer;
+    }
+    &-body {
+      display: none;
+    }
+  }
+}
+
+
+
+.nav {
+  &-mobile {
+    li {
+      display: inline-block;
+      a {
+        color: #777;
+      }
+      &:last-child {
+        text-align: right;
+        float: right;
+      }
+    }
+  }
+}
+
+
+.glyphlink {
+  .glyphicon {
+    color: #5cb85c;
+    margin-right: 5px;
+  }
+}
+#js {
+  &-photo {
+    &-map {
+      &-wrapper {
+        display: none;
+      }
+    }
+  }
+}
+
+.banner {
+  &-block {
+    display: table-row;
+    img {
+      height: 92px;
+    }
+    &_logo {
+      display: table-cell;
+      width: 70%;
+    }
+    &_client {
+      display: table-cell;
+      width: 30%;
+    }
+  }
+}
+
+.bottom {
+  &-block {
+    display: none;
+  }
+}
+.task {
+  &-modal {
+    display: none;
+    width: 500px;
+    @media only screen and (max-width: 767px) {
+      width: 300px;
+    }
+    &-add {
+      &-form {
+        width: 480px;
+        @media only screen and (max-width: 767px) {
+          width: 280px;
+        }
+      }
+    }
+    &-update {
+      &-form {
+        width: 480px;
+        @media only screen and (max-width: 767px) {
+          width: 280px;
+        }
+      }
+    }
+  }
+}
+.sale {
+  &-modal {
+    &-add {
+      &-text {
+        display: none;
+      }
+      &-form {
+        width: 480px;
+        display: none;
+        @media only screen and (max-width: 767px) {
+          width: 280px;
+        }
+      }
+    }
+  }
+}
+#client {
+  &-contact {
+    width: 500px;
+    height: auto;
+    max-height: 300px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+}
+.photo {
+  &-delete {
+    &-block {
+      display: none;
+      position: absolute;
+      background: rgba(255,255,255,0.9);
+      -webkit-box-shadow: 0 0 10px #999;
+      -moz-box-shadow: 0 0 10px #999;
+      box-shadow: 0 0 10px #999;
+      top: 0;
+      height: 100%;
+      text-align: center;
+      padding-top: 40px;
+    }
+  }
+}
+#photo_list {
+  .js-gallery {
+    img {
+      width: 100px;
+      height: 100px;
+    }
+  }
+  .glyphicon {
+    &-camera {
+      font-size: 50px;
+    }
+  }
+}
+.photo_image {
+  display: block;
+  text-align: center;
+}
+.sale {
+  &-photo {
+    &-item {
+      margin-bottom: 20px;
+      span {
+        display: block;
+        height: 50px;
+        padding: 0 10px;
+      }
+    }
+  }
+}
+.gpspoint {
+  &-photo {
+    &-container {
+      overflow: hidden;
+      overflow-x: scroll;
+      white-space: nowrap;
+      .js-gallery {
+        display: inline-block;
+        vertical-align: top;
+      }
+    }
+  }
+}

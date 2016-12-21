@@ -1,0 +1,228 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block content %}
+<div class="container dashboard">
+    <div class="dashboard-panel">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <p class="dashboard-panel__title dashboard-panel__title_conf">CRM - система управления клиентами</p>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6">
+        <a href="{% url 'manager:list' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/manager_list.png" alt="Список менеджеров">
+          </div>
+          <span class="dashboard-panel__link_text">Список менеджеров</span>
+        </a>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6">
+        <a href="{% url 'manager:add' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/manager_add.png" alt="Добавить нового менеджера">
+          </div>
+          <span class="dashboard-panel__link_text">Добавить нового менеджера</span>
+        </a>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6">
+        <a href="{% url 'client:list' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/incoming_list.png" alt="Список клиентов">
+          </div>
+          <span class="dashboard-panel__link_text">Журнал клиентов</span>
+        </a>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6">
+        <a href="{% url 'client:add' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/incoming_add.png" alt="Добавить нового клиента">
+          </div>
+          <span class="dashboard-panel__link_text">Добавить нового клиента</span>
+        </a>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6">
+        <a href="{% url 'client:task-list' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/incoming_task_list.png" alt="Журнал задач по клиентам">
+          </div>
+          <span class="dashboard-panel__link_text">Журнал задач по клиентам</span>
+        </a>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6">
+        <a href="{% url 'client:task-add' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/incoming_task_add.png" alt="Добавить новую задачу по клиенту">
+          </div>
+          <span class="dashboard-panel__link_text">Добавить новую задачу по клиенту</span>
+        </a>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+    <div class="dashboard-panel">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <p class="dashboard-panel__title dashboard-panel__title_conf">Работа с распространителями</p>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6">
+        <a href="{% url 'distributor:list' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/distributor_list.png" alt="Список распространителей">
+          </div>
+          <span class="dashboard-panel__link_text">Список распространителей</span>
+        </a>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6">
+        <a href="{% url 'distributor:add' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/distributor_add.png" alt="Добавить нового распространителя">
+          </div>
+          <span class="dashboard-panel__link_text">Добавить нового распространителя</span>
+        </a>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6">
+        <a href="{% url 'distributor:task-list' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/distributortask_list.png" alt="Список задач">
+          </div>
+          <span class="dashboard-panel__link_text">Список задач</span>
+        </a>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6">
+        <a href="{% url 'distributor:task-add' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/distributortask_add.png" alt="Добавить новую задачу">
+          </div>
+          <span class="dashboard-panel__link_text">Добавить <br> новую задачу</span>
+        </a>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6">
+        <a href="{% url 'distributor:task-archive' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/distributortask_archive.png" alt="Архив задач">
+          </div>
+          <span class="dashboard-panel__link_text">Архив задач</span>
+        </a>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6">
+        <a href="{% url 'distributor:report' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/distributor_report.png" alt="Отчёты по распространителям">
+          </div>
+          <span class="dashboard-panel__link_text">Отчёты по распространителям</span>
+        </a>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+
+    <div class="dashboard-panel">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <p class="dashboard-panel__title">Продажи</p>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6">
+        <a href="{% url 'sale:list' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/client_list.png" alt="Список продаж">
+          </div>
+          <span class="dashboard-panel__link_text">Список продаж</span>
+        </a>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6">
+        <a href="{% url 'sale:add' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/client_add.png" alt="Добавить новую продажу">
+          </div>
+          <span class="dashboard-panel__link_text">Добавить новую продажу</span>
+        </a>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6">
+        <a href="{% url 'sale:journal' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/journal_list.png" alt="Журнал продаж">
+          </div>
+          <span class="dashboard-panel__link_text">Журнал продаж</span>
+        </a>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6">
+        <a href="{% url 'moderator:review-list' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/review_list.png" alt="Отзывы">
+          </div>
+          <span class="dashboard-panel__link_text">Отзывы</span>
+        </a>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6">
+        <a href="{% url 'ticket:list' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/site_ticket.png" alt="Заявки с сайта">
+          </div>
+          <span class="dashboard-panel__link_text">Заявки с сайта</span>
+        </a>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6">
+        <a href="{% url 'manager:report' %}" class="dashboard-panel__link">
+          <div class="dashboard-panel__link-icon">
+            <img src="{{ STATIC_URL }}icon/manager_report.png" alt="Отчёты по менеджерам">
+          </div>
+          <span class="dashboard-panel__link_text">Отчёты по менеджерам</span>
+        </a>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+
+
+
+  <div class="dashboard-panel">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <p class="dashboard-panel__title dashboard-panel__title_conf">Настройки</p>
+    </div>
+    <div class="col-md-2 col-sm-4 col-xs-6">
+      <a href="{% url 'city:list' %}" class="dashboard-panel__link dashboard-panel__link_conf">
+        <div class="dashboard-panel__link-icon">
+          <img src="{{ STATIC_URL }}icon/city_list.png" alt="Список городов">
+        </div>
+        <span class="dashboard-panel__link_text">Список городов</span>
+      </a>
+    </div>
+    <div class="col-md-2 col-sm-4 col-xs-6">
+      <a href="{% url 'moderator:list' %}" class="dashboard-panel__link dashboard-panel__link_conf">
+        <div  class="dashboard-panel__link-icon">
+          <img src="{{ STATIC_URL }}icon/moderator.png" alt="Список модераторов">
+        </div>
+        <span class="dashboard-panel__link_text">Список модераторов</span>
+      </a>
+    </div>
+    <div class="col-md-2 col-sm-4 col-xs-6">
+      <a href="{% url 'package:list' %}" class="dashboard-panel__link dashboard-panel__link_conf">
+        <div  class="dashboard-panel__link-icon">
+          <img src="{{ STATIC_URL }}icon/moderator.png" alt="Платёжные пакеты">
+        </div>
+        <span class="dashboard-panel__link_text">Платёжные пакеты</span>
+      </a>
+    </div>
+    <div class="col-md-2 col-sm-4 col-xs-6">
+      <a href="{% url 'site-setup' %}" class="dashboard-panel__link dashboard-panel__link_conf">
+        <div  class="dashboard-panel__link-icon">
+          <img src="{{ STATIC_URL }}icon/site_blocks.png" alt="Настройки сайта">
+        </div>
+        <span class="dashboard-panel__link_text">Настройки сайта</span>
+      </a>
+    </div>
+    <div class="col-md-2 col-sm-4 col-xs-6">
+      <a href="{% url 'order:list' %}" class="dashboard-panel__link dashboard-panel__link_conf">
+        <div  class="dashboard-panel__link-icon">
+          <img src="{{ STATIC_URL }}icon/payment.png" alt="Платежи/ доступ к ИПК">
+        </div>
+        <span class="dashboard-panel__link_text">Платежи</span>
+      </a>
+    </div>
+    <div class="col-md-2 col-sm-4 col-xs-6">
+      <a href="{% url 'forum:list' %}" class="dashboard-panel__link dashboard-panel__link_conf">
+        <div  class="dashboard-panel__link-icon">
+          <img src="{{ STATIC_URL }}icon/forum.png" alt="Форум">
+        </div>
+        <span class="dashboard-panel__link_text">Форум</span>
+      </a>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+</div>
+{% endblock %}

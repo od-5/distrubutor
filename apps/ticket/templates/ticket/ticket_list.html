@@ -1,0 +1,182 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Заявки с сайта | {{ block.super }}{% endblock %}
+{% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li class="active">Заявки с сайта</li>
+          </ol>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <button class="btn btn-show-filter" id="js-show-filter-btn">
+              <span>Развернуть поиск <strong>+</strong></span>
+              <span class="hide">Свернуть поиск <strong>-</strong></span>
+            </button>
+            <form action="" class="js-ticket-filter-form form form-filter add-bottom" method="GET">
+              <div class="col-md-12">
+                <div class="five-col-2">
+                  <select name="city" class="form-control">
+                    <option value="0">Город</option>
+                    {% for city in city_list %}
+                      <option value="{{ city.id }}" {% if city.id == r_city %}selected="selected"{% endif %}>{{ city.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="five-col-2">
+                  <select name="type" class="form-control">
+                    <option>---- Статус ----</option>
+                    <option value="0" {% if r_type == 0 %}selected="selected"{% endif %}>Новая заявка</option>
+                    <option value="1" {% if r_type == 1 %}selected="selected"{% endif %}>В обработке</option>
+                    <option value="2" {% if r_type == 2 %}selected="selected"{% endif %}>Отклонена</option>
+                    <option value="3" {% if r_type == 3 %}selected="selected"{% endif %}>Продажа</option>
+                  </select>
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="name" class="form-control" placeholder="Имя" value="{{ r_name|default:'' }}">
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="phone" class="form-control" placeholder="Телефон" value="{{ r_phone|default:'' }}">
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="date_s" id="id_date_s" value="{{ r_date_s|default:'' }}" class="form-control" placeholder="Дата от">
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="date_e" id="id_date_e" value="{{ r_date_e|default:'' }}" class="form-control" placeholder="Дата до">
+                </div>
+                <div class="five-col-2">
+                  <input type="submit" value="Искать заявки" class="btn btn-search">
+                </div>
+                <div class="clearfix"></div>
+              </div>
+              <div class="clearfix"></div>
+            </form>
+            <div class="col-md-12">
+              <div class="col-md-8 col-xs-12">
+                <div id="ticket-chart" style="height:300px; width: 100%;"></div>
+              </div>
+              <div class="col-md-4 col-xs-12">
+                <p>Всего заявок: {{ total_count|default:0 }}</p>
+                <p>Новые заявки: {{ new_count|default:0 }}</p>
+                <p>В обработке: {{ action_count|default:0 }}</p>
+                <p>Продажи: {{ sale_count|default:0 }}</p>
+                <p>Общая сумма всех продаж: {{ price_sum|default:0 }} руб.</p>
+              </div>
+              <div class="clearfix"></div>
+              <div class="table-container">
+                <table class="table table-list">
+                  <thead>
+                    <tr>
+                      <th>Имя</th>
+                      <th>Телефон</th>
+                      <th>e-mail</th>
+                      <th>Исполнитель</th>
+                      <th>Город</th>
+                      <th>Дата</th>
+                      <th>Статус</th>
+                      <th>&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody class="js-list">
+                  {% if object_list %}
+                    {% for object in object_list %}
+                    <tr data-id="{{ object.id }}" data-name="{{ object }}" data-model="Ticket" id="id_Ticket_{{ object.id }}"
+                         class="{% if object.type == 1 %}info{% elif object.type == 2 %}danger{% else %}success{% endif %}">
+                      <td><a href="{% url 'ticket:detail' object.id %}">{{ object.name|default:'Не указано' }}</a></td>
+                      <td>{{ object.phone|default:'Не указано' }}</td>
+                      <td>{{ object.mail|default:'Не указано' }}</td>
+                      <td>{{ object.moderator|default:'Не указано' }}</td>
+                      <td>{{ object.city|default:'Не указано' }}</td>
+                      <td>{{ object.created|default:'Не указано' }}</td>
+                      <td>{{ object.get_type_display|default:'Не указано' }}</td>
+                      <td>
+                        <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="text-danger js-ajax-remove-btn">
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  {% else %}
+                    <tr>
+                      <td colspan="8"><p class="alert alert-info text-left">Заявок нет</p></td>
+                    </tr>
+                  {% endif %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+        {% include '__includes/pagination.html' %}
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+{% include '__modal/js_ajax_remove_form.html' %}
+{% endblock %}
+{% block bottom_js %}
+  <script src="{{ STATIC_URL }}js/echarts-all.js"></script>
+  <script>
+    var myChart = echarts.init(document.getElementById('ticket-chart'));
+    var chart_width = 500;
+    if ($(window).width() < 500) {
+      chart_width = 300;
+    }
+    console.log(chart_width);
+    var option = {
+      title : {
+        show: false,
+        text: 'Воронка продаж',
+        subtext: 'воронка'
+      },
+      tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c}%"
+      },
+      toolbox: {
+        show : false,
+{#        feature : {#}
+{#          mark : {show: true},#}
+{#          dataView : {show: true, readOnly: false},#}
+{#          restore : {show: true},#}
+{#          saveAsImage : {show: true}#}
+{#        }#}
+      },
+      legend: {
+        x: 'left',
+        data : ['Новые','В обработке','Продажи'],
+      },
+      calculable : false,
+      series : [
+        {
+          name:'Заявки с сайта',
+          type:'funnel',
+          width: chart_width,
+          funnelAlign: 'left',
+          legendHoverLink: false,
+          gap: 1,
+          data:[
+            {value:{{ new_count_p|default:0 }}, name:'Новые'},
+            {value:{{ action_count_p|default:0 }}, name:'В обработке'},
+            {value:{{ sale_count_p|default:0 }}, name:'Продажи'}
+          ]
+        }
+      ]
+    };
+  myChart.setOption(option);
+  </script>
+{% endblock %}

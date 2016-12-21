@@ -1,0 +1,68 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Форум | {{ block.super }}{% endblock %}
+{% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li class="active">Форум</li>
+          </ol>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-6 col-sm-6">
+          <span class="page-top__title">Форум</span>
+        </div>
+        {% if user.type == 1 %}
+        <div class="col-md-6 col-sm-6">
+          <a href="{% url 'forum:section-add' %}" class="btn btn-add page-top__btn" title="Добавить раздел">
+            <span class="glyphicon glyphicon-plus-sign"></span> Добавить раздел
+          </a>
+        </div>
+        {% endif %}
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default panel-default_forum">
+          <div class="panel-body">
+            <div class="panel-content">
+            {% for section in object_list %}
+              <div class="forum-row">
+                <div class="col-md-1 col-sm-1 col-xs-2">
+                  <img src="{{ STATIC_URL }}icon/forum/folder.png" alt="">
+                </div>
+                <div class="col-md-7 col-sm-7 col-xs-10">
+                  <a href="{{ section.get_topic_list_url|default:'#'}}" title="{{ section.title|default:'не указано' }}" class="forum__link">
+                    {{ section.title|default:'не указано' }}
+                  </a>
+                  <span class="forum__text">{{ section.description|truncatechars:50|default:'Не указано' }}</span>
+                </div>
+                <div class="col-md-4 col-sm-4 hidden-xs">
+                  <a class="forum__link">{{ section.author.get_full_name|default:'Не указано' }}</a>
+                  <span class="forum__text">{{ section.created|date:'j F Yг. g:i:s' }}</span>
+                </div>
+                <div class="clearfix"></div>
+              </div>
+            {% empty %}
+              <p class="alert alert-info">Разделов нет</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+  </div>
+{% endblock %}

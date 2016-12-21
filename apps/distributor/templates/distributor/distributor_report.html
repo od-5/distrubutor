@@ -1,0 +1,123 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Отчёты по распространителям | {{ block.super }}{% endblock %}
+{% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li><a href="{% url 'distributor:list' %}">Список распространителей</a></li>
+            <li class="active">Отчёт по распространителям</li>
+          </ol>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">Отчёт по распространителям</span><span class="page-top__count"> / {{ object_list.count|default:'0' }}</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <button class="btn btn-show-filter" id="js-show-filter-btn">
+              <span>Развернуть поиск <strong>+</strong></span>
+              <span class="hide">Свернуть поиск <strong>-</strong></span>
+            </button>
+            <form action="" class="js-distributor-report-form form form-filter" method="GET">
+              <div class="col-md-12">
+                {% if user.type == 1 %}
+                <div class="five-col-2">
+                  <select name="moderator" id="id_moderator" class="form-control input-sm">
+                    <option value="">Выберите исполнителя</option>
+                    <option value="0" {% if r_moderator == 0 %}selected="selected"{% endif %}>Все исполнители</option>
+                    {% for moderator in moderator_list %}
+                      <option value="{{ moderator.id }}" {% if moderator.id == r_moderator %}selected="selected"{% endif %}>{{ moderator }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                {% endif %}
+                <div class="five-col-1">
+                  <input type="text" name="email" id="id_email" class="form-control input-sm" placeholder="email" value="{{ r_email }}">
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="last_name" id="id_last_name" class="form-control input-sm" placeholder="Фамилия" value="{{ r_last_name }}">
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="date_s" id="id_date_s" class="form-control input-sm" placeholder="Дата от" value="{{ r_date_s|default:'' }}">
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="date_e" id="id_date_e" class="form-control input-sm" placeholder="Дата до" value="{{ r_date_e|default:'' }}">
+                </div>
+                <div class="five-col-1">
+                  <input class="btn btn-search" type="submit" value="Искать">
+                </div>
+                <div class="clearfix"></div>
+              </div>
+              <div class="clearfix"></div>
+            </form>
+            <div class="col-md-12">
+              <div class="table-container">
+                <form action="{% url 'distributor:report-excel' %}" method="post" target="_blank">{% csrf_token %}
+                  <input type="hidden" name="date_from" value="{{ r_date_s|default:'' }}">
+                  <input type="hidden" name="date_to" value="{{ r_date_e|default:'' }}">
+                  <table class="table table-list js-table-report">
+                    <thead>
+                      <tr>
+                        <th><input type="checkbox" name="select_all" id="js-select-all" value=""></th>
+                        <th>email</th>
+                        <th>ФИО</th>
+                        <th>Модератор</th>
+                        <th>Задачи</th>
+                        <th>Реализовано материала</th>
+                        <th>Стоимость работ</th>
+                        <th>Сумма к выплате</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for distributor in object_list %}
+                      <tr>
+                        <td><input type="checkbox" name="chk_group[]" value="{{ distributor.id }}"></td>
+                        <td>{{ distributor.user.email|default:'не указано' }}</td>
+                        <td>{{ distributor.user.get_full_name|default:'не указано' }}</td>
+                        <td>{{ distributor.moderator|default:'не указано' }}</td>
+                        <td>{{ distributor.task_count|default:'0' }}</td>
+                        <td>{{ distributor.actual_material_count|default:'0' }}</td>
+                        <td>{{ distributor.total_cost|default:'0' }}</td>
+                        <td>{{ distributor.actual_cost|default:'0' }}</td>
+      {#                  <td><a href="" class="btn btn-sm btn-success">детальный отчёт</a></td>#}
+                        <td><a href="{% url 'distributor:report-detail' distributor.id %}?date_from={{ r_date_s|default:'' }}&date_to={{ r_date_e|default:'' }}" class="btn btn-sm btn-success">детальный отчёт</a></td>
+                      </tr>
+                    {% empty %}
+                      <tr>
+                        <td colspan="9"><p class="alert alert-info text-left">Распространителей не найдено.</p></td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                  <br>
+                  <button type="submit" class="btn btn-info" {% if not object_list %}disabled='disabled'{% endif %}><span class="glyphicon glyphicon-download-alt"></span> Экспорт в EXCEL по выбранным работникам</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+{% endblock %}
+{% block bottom_js %}
+{% endblock %}

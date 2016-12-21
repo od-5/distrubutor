@@ -1,0 +1,22 @@
+<form action="{% url 'distributor:payment-update' %}" role="form" class="form" method="post" id="js-form-distributor-payment">
+  {% csrf_token %}
+  <input type="hidden" name="user" value="{{ object.id }}">
+  {{ formset.management_form }}
+  {% for form in formset %}
+    {{ form.id }}
+    {{ form.distributor }}
+    <div class="form-group">
+      <div class="col-md-3">{{ form.type.label_tag }}</div>
+      <div class="col-md-3">{{ form.type }}</div>
+      <div class="col-md-3">{{ form.cost.label_tag }}</div>
+      <div class="col-md-3">{{ form.cost }}</div>
+      {{ form.cost.errors }}
+      {{ form.type.errors }}
+      {% if not forloop.last %}
+      <hr>
+      {% endif %}
+      <div class="clearfix"></div>
+    </div>
+  {% endfor %}
+  <button type="submit" class="btn btn-save">Сохранить</button>
+</form>

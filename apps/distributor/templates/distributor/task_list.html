@@ -1,0 +1,168 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Список задач для распространителей | {{ block.super }}{% endblock %}
+{% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            {% if archive %}
+            <li class="active">Архив задач</li>
+            {% else %}
+            <li class="active">Список задач для распространителей</li>
+            {% endif %}
+          </ol>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+      {% if archive %}
+        <div class="col-md-12">
+          <span class="page-top__title">Архив задач</span>
+        </div>
+      {% else %}
+        <div class="col-md-6">
+          <span class="page-top__title">Список задач для распространителей</span><span class="page-top__count"> / {{ page_obj.paginator.count|default:'0' }}</span>
+        </div>
+        {% if user.type != 4 %}
+        <div class="col-md-6">
+          <a href="{% url 'distributor:task-add' %}" class="btn btn-add page-top__btn" title="Добавить новую задачу">
+            <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую задачу
+          </a>
+        </div>
+        {% endif %}
+      {% endif %}
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <button class="btn btn-show-filter" id="js-show-filter-btn">
+              <span>Развернуть поиск <strong>+</strong></span>
+              <span class="hide">Свернуть поиск <strong>-</strong></span>
+            </button>
+            <form action="" method="GET" id="js-distributor-task-list-search-form" role="form" class="form form-filter add-bottom">
+              <div class="col-md-12">
+                <div class="five-col-1">
+                  <input type="text" name="city" value="{{ r_city|default:'' }}" class="form-control" placeholder="Город">
+                </div>
+                {% if user.type == 1 %}
+                <div class="five-col-1">
+                  <input type="text" name="company" value="{{ r_company|default:'' }}" class="form-control" placeholder="Организация">
+                </div>
+                {% endif %}
+                <div class="five-col-1">
+                  <input type="text" name="distributor" value="{{ r_distributor|default:'' }}" class="form-control" placeholder="Распространитель">
+                </div>
+                {% if user.type != 1 %}
+                <div class="five-col-1">
+                  <select name="type" class="form-control">
+                    <option value="">---- Тип задачи ----</option>
+                  {% for type in action_list %}
+                    <option value="{{ type.id }}" {% if r_type == type.id %}selected="selected"{% endif %}>{{ type.name }}</option>
+                  {% endfor %}
+                  </select>
+                </div>
+                {% endif %}
+                <div class="five-col-1">
+                  <input type="text" name="date" id="id_date" value="{{ r_date|default:'' }}" class="form-control" placeholder="Дата">
+                </div>
+                <div class="five-col-1">
+                  <input type="submit" class="btn btn-search" value="Искать задачи">
+                </div>
+                <div class="clearfix"></div>
+              </div>
+              <div class="clearfix"></div>
+            </form>
+            <div class="col-md-12">
+              <div>
+                {% if not archive %}
+                <div>
+                  {% load tasks %}
+                  {% if months %}
+                  <div class="add-bottom panel panel-success">
+                    <div class="panel-heading js-calendar-heading">
+                      Календарь работ <span class="caret"></span>
+                    </div>
+                    <div class="panel-body js-calendar-body">
+                  {% for date in months %}
+                      <div class="calendar col-md-3 col-sm-6 col-xs-12 add-bottom">
+                      {% calendar user date.year date.month %}
+                      </div>
+                  {% endfor %}
+                      <div class="clearfix"></div>
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+                {% endif %}
+              </div>
+              <div class="table-container">
+                <table class="table table-list">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Распространитель</th>
+                      <th>Город</th>
+                      <th>Район</th>
+                      {% if user.type == 1 %}
+                      <th>Организация</th>
+                      {% endif %}
+                      <th>Тип задачи</th>
+                      <th>Дата задачи</th>
+                      <th>кол-во рекламных материалов, шт</th>
+                      <th>Стоимость работы, руб</th>
+                      <th>&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody class="js-list">
+                  {% for object in object_list %}
+                    <tr data-id="{{ object.id }}" data-name="{{ object }}" data-model="DistributorTask" id="id_DistributorTask_{{ object.id }}">
+                      <td><a href="{% url 'distributor:task-update' object.id %}" class="btn btn-sm btn-info"><span class="glyphicon glyphicon-edit"></span> редактировать</a></td>
+                      <td>{{ object.distributor|default:'Не указано' }}</td>
+                      <td>{{ object.sale.city|default:'Не указано' }}</td>
+                      <td>{{ object.area|default:'Не указано' }}</td>
+                      {% if user.type == 1 %}
+                      <td>{{ object.distributor.moderator.company|default:'Не указано' }}</td>
+                      {% endif %}
+                      <td>{{ object.type|default:'Не указано' }}</td>
+                      <td>{{ object.date|date:"d.m.Y"|default:'Не указано' }}</td>
+                      <td>{{ object.material_count|default:'Не указано' }}</td>
+                      <td>{{ object.total_cost|default:'Не указано' }}</td>
+                      <td>
+                        <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="text-danger js-ajax-remove-btn">
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                      </td>
+                    </tr>
+                  {% empty %}
+                    <tr>
+                      <td colspan="{% if user.type == 1 %}10{% else %}9{% endif %}">
+                        <p class="alert alert-info text-left">Задач не найдено</p>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+        {% include '__includes/pagination.html' %}
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+  {% include '__modal/js_ajax_remove_form.html' %}
+{% endblock %}

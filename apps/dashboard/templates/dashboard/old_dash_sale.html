@@ -1,0 +1,226 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block content %}
+<div class="container dashboard">
+  <div class="col-lg-12">
+    <a href="{% url 'dashboard:index' %}?full_view=0" class="btn btn-info add-bottom">
+      <span class="glyphicon glyphicon-globe"></span> Перейти на мобильную версию
+    </a>
+    <div class="panel panel-info">
+      <div class="panel-heading js-toggle-heading">
+        <p class="lead text-center remove-bottom">Оставьте ваш отзыв об исполнителе <span class="caret"></span></p>
+      </div>
+      <div class="panel-body js-toggle-body">
+        <form action="{% url 'moderator:review-add' %}" id="js-form-review-add" method="post" role="form">
+          {% csrf_token %}
+          {{ form.moderator }}
+          {{ form.name }}
+          {{ form.mail }}
+          <div class="form-group">
+            <div class="col-lg-2">{{ form.rating.label_tag }}</div>
+            <div class="col-lg-2">{{ form.rating }}</div>
+            {{ form.rating.errors }}
+            <div class="clearfix"></div>
+          </div>
+          <div class="form-group">
+            <div class="col-lg-2">{{ form.text.label_tag }}</div>
+            <div class="col-lg-10">{{ form.text }}</div>
+            {{ form.text.errors }}
+            <div class="clearfix"></div>
+          </div>
+          <div class="text-center">
+            <input type="submit" class="btn btn-success" value="Отправить">
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <p class="lead text-center remove-bottom">Фотоотчёт</p>
+      </div>
+      <div class="panel-body">
+        <div class="panel panel-success">
+          <div class="panel-heading js-toggle-heading">Карта распространения <span class="caret"></span></div>
+          <div class="panel-body js-toggle-body">
+            <div id="map" style="height: 500px; width: 100%" data-url="{% url 'sale:get_cord_list' %}"></div>
+          </div>
+        </div>
+        <form action="" method="GET" role="form" id="js-sale-dash-form" class="form-inline add-bottom">
+          <input type="text" id="id_date_start" class="form-control input-sm" name="date_start" value="{{ r_date_start|default:'' }}" placeholder="Начальная дата">
+          <input type="text" id="id_date_end" class="form-control input-sm" name="date_end" value="{{ r_date_end|default:'' }}" placeholder="Конечная дата">
+          <select name="order" id="id_order" class="form-control input-sm">
+            <option value="0">---- Выберите заказ ----</option>
+            {% for order in order_list %}
+            <option value="{{ order.id }}" {% if order.id == r_order %}selected='selected'{% endif %}>{{ order }}</option>
+            {% endfor %}
+          </select>
+          <select name="task" id="id_task" class="form-control input-sm">
+            <option value="0">---- Выберите задачу ----</option>
+            {% for task in task_list %}
+            <option value="{{ task.id }}" {% if task.id == r_task %}selected='selected'{% endif %}>{{ task }}</option>
+            {% endfor %}
+          </select>
+          <input type="hidden" name="show_table" value="{% if show_table %}1{% else %}0{% endif %}">
+          <button class="btn btn-info btn-sm"><span class="glyphicon glyphicon-search"></span> Искать</button>
+
+        </form>
+        <div>
+          <a href="{% url 'sale:address-export' %}?date_start={{ r_date_start|default:'' }}&date_end={{ r_date_end|default:'' }}&order={{ r_order|default:'' }}&task={{ r_task|default:'' }}" class="btn btn-success btn-sm">
+            <span class="glyphicon glyphicon-download-alt"></span>
+            Скачать в Excel</a>
+          {% if show_table %}
+          <a href="?date_start={{ r_date_start|default:'' }}&date_end={{ r_date_end|default:'' }}&order={{ r_order|default:'' }}&task={{ r_task|default:'' }}&show_table=0" class="btn btn-warning btn-sm" title="Показать плиткой">
+            <span class="glyphicon glyphicon-th-large"></span> Показать плиткой
+          </a>
+          {% else %}
+          <a href="?date_start={{ r_date_start|default:'' }}&date_end={{ r_date_end|default:'' }}&order={{ r_order|default:'' }}&task={{ r_task|default:'' }}&show_table=1" class="btn btn-warning btn-sm" title="Показать таблицей">
+            <span class="glyphicon glyphicon-th-list"></span> Показать таблицей
+          </a>
+          {% endif %}
+          <a href="{% url 'sale:download-archive' %}?date_start={{ r_date_start|default:'' }}&date_end={{ r_date_end|default:'' }}&order={{ r_order|default:'' }}&task={{ r_task|default:'' }}" class="btn btn-info btn-sm">Скачать</a>
+        </div>
+        <div class="clearfix"></div>
+        <br>
+      {% if point_list %}
+        {% if show_table %}
+        <table class="table" id="photo_list">
+          <thead>
+            <tr>
+              <th>Адрес\Координаты</th>
+              <th>Время</th>
+{#              <th>Комментарий</th>#}
+              <th>Кол-во материала</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for point in point_list %}
+            {% if point.pointphoto_set.count %}
+            <tr>
+              <td>{{ point|default:'Не указано' }}</td>
+              <td>{{ point.timestamp|time:'H:i'|default:'Не указано' }} - {{ point.timestamp|date:'d.m.Y'|default:'Не указано' }}</td>
+{#              <td>{{ point.comment|default:'Не указано' }}</td>#}
+              <td>{{ point.count|default:'Не указано' }}</td>
+            </tr>
+            <tr>
+              <td colspan="3">
+              {% for photo in point.pointphoto_set.all %}
+                <a href="{{ photo.photo.url }}" rel="group" class="js-gallery" title="{{ photo.name }}, время {{ photo.timestamp|time:'H:i'|default:'Не указано' }}">
+                  <span class="glyphicon glyphicon-camera"></span>
+                </a>
+              {% endfor %}
+              </td>
+            </tr>
+            {% endif %}
+          {% endfor %}
+          </tbody>
+        </table>
+
+      {% else %}
+        {% for point in point_list %}
+        {% for photo in point.pointphoto_set.all %}
+        <div class="col-lg-3 sale-photo-item">
+          <a href="{{ photo.photo.url }}" rel="group" class="js-gallery photo_image" title="{{ photo.name }}, время {{ photo.timestamp|time:'H:i'|default:'Не указано' }}">
+            <img src="{{ photo.image_resize.url }}" alt="">
+          </a>
+          <span class="small">{{ photo.name|default:'Не указано' }}</span>
+        </div>
+        {% endfor %}
+        {% endfor %}
+        <div class="clearfix"></div>
+      {% endif %}
+        {% include '__includes/pagination.html' with page_obj=point_list%}
+    {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block bottom_js %}
+<script src="//api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+<script>
+ymaps.ready(init);
+function init() {
+  var map_id = $('#map');
+  var url = map_id.data('url');
+  var task = $('#id_task').val();
+  var order = $('#id_order').val();
+  var date_start = $('#id_date_start').val();
+  var date_end = $('#id_date_end').val();
+  var data_list = '';
+  var all_address_list = '';
+  var center = '';
+  $.ajax({
+    type: "POST",
+    async: false,
+    url: url,
+    data: {
+      task: task,
+      order: order,
+      date_start: date_start,
+      date_end: date_end
+    }
+  }).done(function (data) {
+    console.log('address_list: ' + data.address_list);
+    console.log('coord_list: ' + data.coord_list);
+    console.log('all_address_list: ' + data.all_address_list);
+    console.log('center: ' + data.center);
+    center = data.center;
+    if (data.all_address_list.length){
+      all_address_list = data.all_address_list;
+    } else {
+      if (data.coord_list.length){
+        data_list = data.coord_list;
+      } else {
+        if (data.address_list.length) {
+          data_list = data.address_list;
+        }
+      }
+    }
+  });
+  var myMap = new ymaps.Map("map", {
+      center: center,
+      zoom: 13
+    }, {
+      searchControlProvider: 'yandex#search'
+  });
+{# отображение карты, если задача не выбрана #}
+{# отображение карты при выборе задачи #}
+  if (all_address_list.length) {
+    console.log('Полный список точек');
+    for(var i = 0; i < all_address_list.length; i++) {
+      console.log(all_address_list[i]);
+      myMap.geoObjects.add(
+            new ymaps.Placemark([all_address_list[i]['coord_x'], all_address_list[i]['coord_y']], {
+            balloonContent: all_address_list[i]['name'],
+            hintContent: all_address_list[i]['name']
+            })
+        );
+    }
+{#    function outputItem(item, i, all_address_list) {#}
+
+{#    }#}
+{#    all_address_list.forEach(outputItem);#}
+  } else {
+    if (data_list.length > 1){
+      console.log('Маршрут');
+      ymaps.route(
+        data_list
+      ).then(function (route) {
+{#        route.options.set('routingMode', 'pedestrian');#}
+        myMap.geoObjects.add(route);
+        var points = route.getWayPoints();
+        points.options.set('preset', 'islands#redStretchyIcon');
+      }, function (error) {
+        console.log('Возникла ошибка: ' + error.message);
+      });
+    } else {
+      console.log('В маршруте всего одна точка!');
+      myPlacemark = new ymaps.Placemark(myMap.getCenter(), {
+              hintContent: data_list[0],
+              balloonContent: data_list[0]
+          });
+      myMap.geoObjects.add(myPlacemark);
+    }
+  }
+}
+</script>
+{% endblock %}

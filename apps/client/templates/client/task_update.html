@@ -1,0 +1,90 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Редактирование задачи по клиенту | {{ block.super }}{% endblock %}
+{% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li><a href="{% url 'client:task-list' %}">Журнал задач по клиентам</a></li>
+            <li class="active">Редактирование задачи по клиенту</li>
+          </ol>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">Редактирование задачи клиенту</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="panel-content">
+              {% if success or error %}
+              <div class="col-md-12">
+                {% if success %}
+                <p class="alert alert-success">{{ success }}</p>
+                {% elif error %}
+                <p class="alert alert-danger">{{ error }}</p>
+                {% endif %}
+              </div>
+              {% endif %}
+              <form action="" role="form" class="form" id="js-form-task-update" method="post">
+                {% csrf_token %}
+              {% load  widget_tweaks %}
+                <div class="col-md-12">
+                {{ form.errors }}
+                {{ form.client }}
+                {{ form.manager|add_class:'hide' }}
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.clientcontact.label_tag }}
+                    {{ form.clientcontact }}
+                    {{ form.clientcontact.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.type.label_tag }}
+                    {{ form.type }}
+                    {{ form.type.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.date.label_tag }}
+                    {{ form.date }}
+                    {{ form.date.errors }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.comment.label_tag }}
+                    {{ form.comment }}
+                    {{ form.comment.errors }}
+                  </div>
+                </div>
+                {{ form.status }}
+                <div class="clearfix"></div>
+                <div class="col-md-6">
+                  <button type="submit" class="btn btn-save">Сохранить</button>
+                </div>
+                <div class="clearfix"></div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+{% endblock %}

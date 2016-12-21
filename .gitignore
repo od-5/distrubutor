@@ -1,0 +1,17 @@
+/cms/settings/local_settings.py
+/apps/forum/migrations
+/apps/packages/migrations
+/apps/robokassa/migrations
+/apps/distributor/migrations
+/apps/sale/migrations
+/apps/moderator/migrations
+/apps/ticket/migrations
+/apps/landing/migrations
+/apps/incoming/migrations
+/apps/manager/migrations
+/apps/city/migrations
+.idea/
+*.pyc
+core/migrations/
+/apps/adjuster/migrations
+/apps/client/migrations

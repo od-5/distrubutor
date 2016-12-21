@@ -1,0 +1,122 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Список менеджеров | {{ block.super }}{% endblock %}
+{% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li class="active">Список менеджеров</li>
+          </ol>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-6">
+          <span class="page-top__title">Менеджеры</span><span class="page-top__count"> / {{ page_obj.paginator.count|default:'0' }}</span>
+        </div>
+        <div class="col-md-6">
+          <a href="{% url 'manager:add' %}" class="btn btn-add page-top__btn" title="Добавить менеджера">
+            <span class="glyphicon glyphicon-plus-sign"></span> Добавить менеджера
+          </a>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <button class="btn btn-show-filter" id="js-show-filter-btn">
+              <span>Развернуть поиск <strong>+</strong></span>
+              <span class="hide">Свернуть поиск <strong>-</strong></span>
+            </button>
+            <form action="" method="GET" role="form" class="form form-filter">
+              <div class="col-md-12">
+                <div class="five-col-2">
+                  <select name="city" class="form-control">
+                    <option value="0">---- Город ----</option>
+                    {% if user.is_leader_manager %}
+                    {% for city in city_list %}
+                      <option value="{{ city.id }}" {% if city.id == r_city %}selected="selected"{% endif %}>{{ city.name }}</option>
+                    {% endfor %}
+                    {% endif %}
+                  </select>
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="last_name" value="{{ r_last_name|default:'' }}" class="form-control" placeholder="Фамилия">
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="first_name" value="{{ r_first_name|default:'' }}" class="form-control" placeholder="Имя">
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="patronymic" value="{{ r_patronymic|default:'' }}" class="form-control" placeholder="Отчество">
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="email" value="{{ r_email|default:'' }}" class="form-control" placeholder="e-mail">
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="phone" value="{{ r_phone|default:'' }}" class="form-control" placeholder="Телефон">
+                </div>
+                <div class="five-col-3">
+                  <input type="submit" class="btn btn-search" value="Искать менеджера">
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            </form>
+            <div class="col-md-12">
+              <div class="table-container">
+                <table class="table table-list">
+                  <thead>
+                    <tr>
+                      <th>e-mail</th>
+                      <th>Фамлия</th>
+                      <th>Имя</th>
+                      <th>Отчество</th>
+                      <th>Телефон</th>
+                      <th>&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody class="js-list">
+                  {% for object in object_list %}
+                    <tr data-id="{{ object.id }}" data-name="{{ object.user.get_full_name }}" data-model="Manager" id="id_Manager_{{ object.id }}">
+                      <td><a href="{% url 'manager:update' object.id %}"> {{ object.user.email|default:'' }}</a></td>
+                      <td>{{ object.user.last_name|default:'Не указано' }}</td>
+                      <td>{{ object.user.first_name|default:'Не указано' }}</td>
+                      <td>{{ object.user.patronymic|default:'Не указано' }}</td>
+                      <td>{{ object.user.phone|default:'Не указано' }}</td>
+                      <td class="text-right">
+                        {% if user.type != 5 %}
+                        <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Manager-{{ object.id }}" class="text-danger js-ajax-remove-btn">
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% empty %}
+                    <tr>
+                      <td colspan="6">
+                        <p class="alert alert-info text-left">Менеджеров не найдено</p>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% include '__includes/pagination.html' %}
+      </div>
+    </div>
+  </div>
+  {% include '__modal/js_ajax_remove_form.html' %}
+{% endblock %}

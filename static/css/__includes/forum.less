@@ -1,0 +1,71 @@
+.forum {
+  &-notify {
+    position: absolute;
+    left: 40%;
+    bottom: -3px;
+    background-image: url('../icon/forum-notify.png');
+    background-repeat: no-repeat;
+    width: 28px;
+    height: 34px;
+    line-height: 34px;
+    text-align: center;
+    padding-top: 4px;
+    font-weight: bold;
+    z-index: 10000;
+    @media only screen and (max-width: 991px) {
+      left: 60px;
+      bottom: -15px;
+    }
+  }
+  &__link {
+    display: block;
+    font-size: 18px;
+    color: #333;
+    @media only screen and (max-width: 991px) {
+      font-size: 14px;
+    }
+    &:hover {
+      color: #057ab0;
+      cursor: pointer;
+      text-decoration: none;
+    }
+  }
+  &__text {
+    font-size: 13px;
+    color: #96adb2;
+    @media only screen and (max-width: 991px) {
+      font-size: 12px;
+    }
+  }
+  &-row {
+    background: #fff;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    margin-bottom: 5px;
+    padding: 20px;
+  }
+  &-comment {
+    &-top {
+      margin-bottom: 20px;
+    }
+    &__control {
+      text-align: right;
+      @media only screen and (max-width: 767px) {
+        text-align: left;
+      }
+    }
+    &__title {
+      font-size: 24px;
+      @media only screen and (max-width: 991px) {
+        font-size: 20px;
+      }
+      @media only screen and (max-width: 767px) {
+        font-size: 14px;
+      }
+    }
+    &__text {
+      font-size: 14px;
+    }
+  }
+}

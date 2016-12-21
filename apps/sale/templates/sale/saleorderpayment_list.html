@@ -1,0 +1,66 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Журнал поступлений | {{ block.super }}{% endblock %}
+{% block content %}
+  {% include 'sale/__include/sale_breadcrumb.html' %}
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">Журнал поступлений</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        {% include 'sale/__include/sale_menu.html' %}
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="col-md-12">
+              <div class="table-container">
+                <table class="table table-list">
+                  <thead>
+                    <tr>
+                      <th>Продажа</th>
+                      <th>Поступление, руб</th>
+                      <th>Дата</th>
+                      <th>&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody class="js-list">
+                    {% for item in object_list %}
+                    <tr data-id="{{ item.id }}" data-name="{{ item }}" data-model="SaleOrderPayment" id="id_SaleOrderPayment_{{ item.id }}">
+                      <td>{{ item.clientjournal|default:'Не указано' }}</td>
+                      <td>{{ item.sum|default:'Не указано' }}</td>
+                      <td>{{ item.created|default:'Не указано' }}</td>
+                      <td>
+                        <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-SaleOrder-{{ item.id }}" class="text-danger js-ajax-remove-btn">
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                      </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                      <td colspan="4">
+                        <p class="alert alert-info text-left">Поступлений не найдено</p>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                    <tr></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+        {% include '__includes/pagination.html' with page_obj=object_list %}
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+{% include '__modal/js_ajax_remove_form.html' %}
+{% endblock %}

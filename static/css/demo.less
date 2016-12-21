@@ -1,0 +1,111 @@
+@import "bootstrap/less/bootstrap.less";
+@import "__includes/font.less";
+@import "__includes/variables.less";
+@import "__includes/jquery.fancybox.less";
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300);
+html, body {
+  min-height: 100%;
+  height: auto;
+}
+header {
+  background-color: #fff;
+  p {
+    float: left;
+    width: 253px;
+    margin: 25px 80px 0 0;
+    color: #000;
+    font: 300 16px/25px "Open Sans";
+    text-transform: uppercase;
+    @media only screen and (min-device-width : 320px) and (max-device-width : 768px) {
+      width: 100%;
+      margin: 0;
+      float: none;
+    }
+    span {
+      color: #e35f13;
+    }
+  }
+  .number {
+    padding: 1px 7px;
+    border-radius: 5px;
+    background-color: #bccc00;
+    color: #FFF;
+  }
+  .phone {
+    position: relative;
+    float: right;
+    margin-top: 35px;
+    @media only screen and (min-device-width : 320px) and (max-device-width : 768px) {
+      margin-top: 0;
+      float: none;
+    }
+  }
+  address {
+    margin: 0;
+    width: 265px;
+    color: #000;
+    text-transform: uppercase;
+    font: 300 35px "Open Sans";
+  }
+  h1 {
+    margin: 0;
+    overflow: hidden;
+    float: left;
+    @media only screen and (min-device-width : 320px) and (max-device-width : 768px) {
+      width: 100%;
+    }
+  }
+  .container {
+    padding: 30px 0;
+    @media only screen and (min-device-width : 320px) and (max-device-width : 768px) {
+      padding: 20px;
+    }
+  }
+}
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+  width: auto;
+}
+.sign {
+  margin: 0 auto;
+  width: 600px;
+  background-color: #fff;
+  border-radius: 10px;
+  border: 5px solid #ccc;
+  padding: 20px;
+  @media only screen and (min-device-width : 320px) and (max-device-width : 768px) {
+    width: 90%;
+  }
+  &_text {
+    font-weight: bold;
+  }
+  &_title {
+    font-weight: bold;
+    font-size: 1.8em;
+  }
+  &_slogan {
+    font-style: italic;
+    color: #d9534f;
+  }
+}
+.alert {
+  width: 900px;
+  margin: 0 auto;
+  margin-bottom: 20px;
+  @media only screen and (min-device-width : 320px) and (max-device-width : 768px) {
+    width: 100%;
+  }
+}
+main {
+  padding: 20px 0;
+}
+form {
+  width: 400px;
+  margin: 0 auto;
+  @media only screen and (min-device-width : 320px) and (max-device-width : 768px) {
+    width: 100%;
+  }
+}
+body {
+  background: url('../img/bg_open-business.jpg') center top no-repeat;
+  background-size: cover;
+}

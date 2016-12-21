@@ -1,0 +1,42 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Район {{ object.name }} города {{ object.city.name }} | {{ block.super }}{% endblock %}
+{% block content %}
+{% include 'city/__include/city_breadcrumb.html' %}
+<div class="container">
+  <div class="row">
+    <div class="page-top">
+      <div class="col-md-12">
+        <span class="page-top__title">Район {{ object.name }} города {{ object.city.name }}</span>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="panel-content">
+            <form action="" role="form" class="form" id="js-form-moderatorarea" method="post">
+              {% csrf_token %}
+              <div class="col-md-6">
+              {{ form.moderator }}
+              {{ form.city }}
+                <div class="form-group">
+                  {{ form.name.label_tag }}
+                  {{ form.name }}
+                  {{ form.name.errors }}
+                </div>
+                <button type="submit" class="btn btn-save">Сохранить</button>
+              </div>
+              <div class="clearfix"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

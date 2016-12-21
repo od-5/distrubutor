@@ -1,0 +1,105 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Настройки сайта | {{ block.super }}{% endblock %}
+{% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li class="active">Настройки сайта</li>
+          </ol>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">Настройки сайта</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="panel-content">
+              <form action="" role="form" id="js-form-setup" class="form" method="post">
+                {% csrf_token %}
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.meta_title.label_tag }}
+                    {{ form.meta_title }}
+                    {{ form.meta_title.errors }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                    {{ form.email.errors }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.meta_keys.label_tag }}
+                    {{ form.meta_keys }}
+                    {{ form.meta_keys.errors }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.meta_desc.label_tag }}
+                    {{ form.meta_desc }}
+                    {{ form.meta_desc.errors }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.video.label_tag }}
+                    {{ form.video }}
+                    {{ form.video.errors }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.top_js.label_tag }}
+                    {{ form.top_js }}
+                    {{ form.top_js.errors }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.bottom_js.label_tag }}
+                    {{ form.bottom_js }}
+                    {{ form.bottom_js.errors }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.robots_txt.label_tag }}
+                    {{ form.robots_txt }}
+                    {{ form.robots_txt.errors }}
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="col-md-6">
+                  <input type="submit" value="Сохранить изменения" class="btn btn-save">
+                </div>
+                <div class="clearfix"></div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+{% endblock %}
