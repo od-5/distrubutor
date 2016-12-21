@@ -7,3 +7,7 @@ from .robokassa import *
 from .rest import *
 from .other import *
 from .suit import *
+try:
+    from local_settings import *
+except ImportError:
+    pass
