@@ -18,6 +18,9 @@ class Country(models.Model):
     def __unicode__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('country:update', args=(self.pk,))
+
     name = models.CharField(max_length=100, verbose_name=u'Название')
     code = models.CharField(max_length=10, verbose_name=u'Код')
 
@@ -57,7 +60,7 @@ class City(models.Model):
         (12, 12),
     )
 
-    country = models.ForeignKey(to=Country, verbose_name=u'Страна')
+    country = models.ForeignKey(to=Country, verbose_name=u'Страна', blank=True, null=True, on_delete=models.SET_NULL)
     name = models.CharField(max_length=100, verbose_name=u'Название')
     coord_x = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
     coord_y = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')

@@ -6,7 +6,7 @@ from apps.manager.models import Manager
 from apps.moderator.models import Moderator, ModeratorArea, Review, Order
 from apps.distributor.models import Distributor, DistributorTask, GPSPoint
 from apps.sale.models import Sale, SaleOrder, SaleMaket
-from apps.city.models import City
+from apps.city.models import City, Country
 from apps.client.models import Client, ClientContact, Task
 from apps.ticket.models import Ticket
 from apps.packages.models import Package
@@ -26,6 +26,8 @@ def ajax_remove_item(request):
             model = request.GET.get('item_model')
             item_id = request.GET.get('item_id')
             item = get_object_or_404(eval(model), pk=int(item_id))
+            if model == 'Country':
+                pass
             if model == 'City':
                 if item.moderatorarea_set.all():
                     for area in item.moderatorarea_set.all():

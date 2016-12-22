@@ -249,6 +249,18 @@ $(function() {
     }
   });
 
+  // валидация формы добавления/изменения страны
+  $('#js-country-form').validate({
+    rules: {
+      name: {
+        required: true
+      },
+      code: {
+        required: true
+      }
+    }
+  });
+
   // валидация формы добавления/изменения города
   $( '#js-city-form' ).validate({
     rules: {
