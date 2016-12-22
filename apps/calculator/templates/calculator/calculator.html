@@ -1,0 +1,41 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Калькулятор | {{ block.super }}{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="calc">
+      <form action="" id="js-calculator-form" class="calc-form">
+        <div class="calc-row">
+          <select name="country" id="id_country">
+            <option value="">---- Выберите страну ----</option>
+          </select>
+        </div>
+        <div class="calc-row">
+          <select name="city" id="id_city">
+            <option value="">---- Выберите город ----</option>
+          </select>
+        </div>
+        <div class="calc-row">
+          <select name="moderator" id="id_moderator">
+            <option value="">---- Выберите исполнителя ----</option>
+          </select>
+        </div>
+        <div class="calc-row">
+          <select name="type" id="id_type">
+            <option value="">---- Выберите вид деятельности ----</option>
+          </select>
+        </div>
+        <div class="calc-row">
+          <input type="number" name="count" id="id_count" placeholder="Укажите количество материала">
+        </div>
+        <div class="calc-row">
+          <input type="submit" value="РАССЧИТАТЬ">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -20,6 +20,7 @@ INSTALLED_APPS = (
     'apps.dashboard',
     'apps.administrator',
     'apps.agency',
+    'apps.calculator',
     'apps.moderator',
     'apps.manager',
     'apps.city',
