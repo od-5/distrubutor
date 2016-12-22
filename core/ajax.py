@@ -26,8 +26,6 @@ def ajax_remove_item(request):
             model = request.GET.get('item_model')
             item_id = request.GET.get('item_id')
             item = get_object_or_404(eval(model), pk=int(item_id))
-            if model == 'Country':
-                pass
             if model == 'City':
                 if item.moderatorarea_set.all():
                     for area in item.moderatorarea_set.all():
