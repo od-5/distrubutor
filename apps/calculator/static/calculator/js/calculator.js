@@ -24,35 +24,38 @@ $(function() {
   // Получение списка городов по выбранной стране
   calc_form.find('#id_country').change(function() {
     var country = $(this).val();
-    var ajax_url = $(this).data('ajax-url');
-    console.log(ajax_url);
+    var url = $(this).data('url');
     if (country == '') {
-      calc_form.find('#id_city').addClass('hide');
-      calc_form.find('#id_moderator').addClass('hide');
-      calc_form.find('#id_type').addClass('hide');
+      calc_form.find('#id_city').find('option').remove();
+      calc_form.find('#id_city').append($("<option value selected='selected'>--------</option>"));
+      calc_form.find('#id_moderator').find('option').remove();
+      calc_form.find('#id_moderator').append($("<option value selected='selected'>--------</option>"));
+      calc_form.find('#id_type').find('option').remove();
+      calc_form.find('#id_type').append($("<option value selected='selected'>--------</option>"));
     } else {
       calc_form.find('#id_city').removeClass('hide');
       $.ajax({
         type: "GET",
-        url: ajax_url,
+        url: url,
         data: {
           country: country
         }
       }).done(function (data) {
         // заполняем список городов
-        console.log(data.city_list);
         var city_selector = calc_form.find('#id_city');
         city_selector.find('option').remove();
-        city_selector.append($("<option value selected='selected'>--------</option>"));
+        city_selector.append($("<option value selected='selected'>---- Выберите город ----</option>"));
         for (var i = 0; i < data.city_list.length; i++) {
           city_selector.append($("<option/>", {
-            value: data.city_selector[i]['id'],
-            text: data.city_selector[i]['name']
+            value: data.city_list[i]['id'],
+            text: data.city_list[i]['name']
           }));
         }
         // обнуляем список модераторов и видов деятельности
         calc_form.find('#id_moderator').find('option').remove();
+        calc_form.find('#id_moderator').append($("<option value selected='selected'>--------</option>"));
         calc_form.find('#id_type').find('option').remove();
+        calc_form.find('#id_type').append($("<option value selected='selected'>--------</option>"));
       });
     }
   });

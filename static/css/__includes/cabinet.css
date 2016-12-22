@@ -1,6 +1,10 @@
 body {
   overflow-y: scroll;
 }
+.calc {
+  width: 600px;
+  margin: 40px auto;
+}
 .notification-line {
   height: 38px;
   line-height: 38px;

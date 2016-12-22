@@ -1,37 +1,44 @@
 {% extends 'cabinet/cabinet_base.html' %}
+{% load staticfiles %}
 {% block viewport %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% endblock %}
 {% block title %}Калькулятор | {{ block.super }}{% endblock %}
+{% block extra_js %}
+  <script src="{% static 'calculator/js/calculator.js' %}"></script>
+{% endblock %}
 {% block content %}
 <div class="container">
   <div class="row">
     <div class="calc">
-      <form action="" id="js-calculator-form" class="calc-form">
-        <div class="calc-row">
-          <select name="country" id="id_country">
+      <form action="" id="js-calculator-form" class="calc-form form">
+        <div class="form-group">
+          <select name="country" id="id_country" class="form-control" data-url="{% url 'country:get_city_list' %}">
             <option value="">---- Выберите страну ----</option>
+          {% for country in country_list %}
+            <option value="{{ country.id }}">{{ country.name }}</option>
+          {% endfor %}
           </select>
         </div>
-        <div class="calc-row">
-          <select name="city" id="id_city">
+        <div class="form-group">
+          <select name="city" id="id_city" class="form-control">
             <option value="">---- Выберите город ----</option>
           </select>
         </div>
-        <div class="calc-row">
-          <select name="moderator" id="id_moderator">
+        <div class="form-group">
+          <select name="moderator" id="id_moderator" class="form-control">
             <option value="">---- Выберите исполнителя ----</option>
           </select>
         </div>
-        <div class="calc-row">
-          <select name="type" id="id_type">
+        <div class="form-group">
+          <select name="type" id="id_type" class="form-control">
             <option value="">---- Выберите вид деятельности ----</option>
           </select>
         </div>
-        <div class="calc-row">
-          <input type="number" name="count" id="id_count" placeholder="Укажите количество материала">
+        <div class="form-group">
+          <input type="number" name="count" id="id_count" class="form-control" placeholder="Укажите количество материала">
         </div>
-        <div class="calc-row">
+        <div class="form-group">
           <input type="submit" value="РАССЧИТАТЬ">
         </div>
       </form>
