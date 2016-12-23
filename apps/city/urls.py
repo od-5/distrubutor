@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from apps.administrator.decorators import administrator_required
 from .models import City
 from .views import CityCreateView, CityUpdateView, CityListView
-from .ajax import find_city
+from .ajax import find_city, get_moderator_list
 
 __author__ = 'alexy'
 
@@ -15,4 +15,5 @@ urlpatterns = patterns(
     url(r'^(?P<pk>\d+)/$', login_required(CityUpdateView.as_view()), name='update'),
 
     url(r'^find/$', find_city, name='find'),
+    url(r'^get_moderator_list/$', get_moderator_list, name='get_moderator_list')
 )
