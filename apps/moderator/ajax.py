@@ -65,3 +65,18 @@ def get_action_list(request):
     return {
         'success': False
     }
+
+
+@ajax_request
+def get_cost_by_action(request):
+    r_action = request.GET.get('action', '')
+    if r_action and r_action.isdigit():
+        action = ModeratorAction.objects.get(id=int(r_action))
+        return {
+            'success': True,
+            'cost': action.cost
+        }
+
+    return {
+        'success': False
+    }

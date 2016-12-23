@@ -1,7 +1,7 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
 from django.contrib.auth.views import logout
-from .ajax import moderator_review_add, get_action_list
+from .ajax import moderator_review_add, get_action_list, get_cost_by_action
 from django.contrib.auth.decorators import login_required
 from apps.administrator.decorators import administrator_required
 from .views import ModeratorListView, ReviewListView
@@ -30,4 +30,5 @@ urlpatterns = patterns(
     url(r'^payment/(?P<pk>\d+)/$', 'payment_detail', name='payment-detail'),
 
     url(r'^get_action_list/$', get_action_list, name='get_action_list'),
+    url(r'^get_cost_by_action/$', get_cost_by_action, name='get_cost_by_action'),
 )
