@@ -1,0 +1,59 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Город {{ object }} | {{ block.super }}{% endblock %}
+{% block content %}
+  {% include 'correspomdence/__include/message_breadcrumb.html' %}
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">{{ object }}</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        {% if user.type == 1 %}
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="panel-content">
+              <p class="text-info">{{ object.title }}</p>
+              <span>{{ object.created|date:'j-m-Yг. g:i:s' }}</span>
+              <hr>
+              <p>{{ object.text|safe }}</p>
+              <div class="table-container">
+                <p class="lead text-info remove-bottom">Список получателей</p>
+                <table class="table table-list">
+                  <thead>
+                    <tr>
+                      <th>Название организации</th>
+                      <th>Просмотрено</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for notify in object.messagenotify_set.all %}
+                    <tr>
+                      <td>{{ notify.moderator|default:'Не указано' }}</td>
+                      <td>
+                        {% if notify.is_view %}
+                          <span class="text-success glyphicon glyphicon-ok-sign"></span>
+                        {% else %}
+                          <span class="text-danger glyphicon glyphicon-minus-sign"></span>
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

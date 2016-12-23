@@ -25,6 +25,7 @@ urlpatterns = patterns(
     url(r'^client/', include('apps.client.urls', namespace='client'),),
     url(r'^mobile/', include('apps.mobile.urls', namespace='mobile'),),
     url(r'^payment/', include('apps.robokassa.urls', namespace='payment'),),
+    url(r'^correspondence/', include('apps.correspondence.urls', namespace='correspondence'),),
     url(r'^order/', include('apps.order.urls', namespace='order'),),
     url(r'^calculator/', include('apps.calculator.urls', namespace='calculator'),),
     url(r'', include('core.urls')),

@@ -1,3 +1,4 @@
+/apps/correspondence/migrations
 /cms/settings/local_settings.py
 /apps/forum/migrations
 /apps/packages/migrations

@@ -271,8 +271,8 @@ article p {
 .header-contact a {
     color: #FFFF99;
     background-color: transparent;
-    font-weight: bold;
     text-decoration: none;
+    font-size: 16px;
 }
 .header-contact a:hover {
     text-decoration: underline;

@@ -1,0 +1,73 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Сообщения | {{ block.super }}{% endblock %}
+{% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li class="active">Список сообщений</li>
+          </ol>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-6">
+          <span class="page-top__title">Список сообщений</span><span class="page-top__count"> / {{ page_obj.paginator.count|default:'0' }}</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      {% for object in object_list %}
+        <div class="message-notify">
+          <div class="col-md-12">
+            <div class="col-md-1 col-sm-1 col-xs-2">
+            {% if object.is_view %}
+              <img src="{{ STATIC_URL }}icon/forum/folder.png" alt="">
+            {% else %}
+              <img src="{{ STATIC_URL }}icon/forum/folder-open.png" alt="">
+            {% endif %}
+            </div>
+
+            <div class="col-md-9 col-sm-9 col-xs-10 message-notify__text">
+              <a href="{{ object.get_absolute_url }}">{{ object.message.title|default:'' }}</a>
+              <p>{{ object.message.text|striptags|safe|truncatechars:100 }}</p>
+            </div>
+            <div class="col-md-2 col-sm-1 col-xs-12 message-notify__author">
+              <div>
+              {% if object.message.author.type == 1 %}
+                Администратор
+              {% else %}
+                Рекламное агенство
+              {% endif %}
+              </div>
+              <div>
+              {{ object.message.created|date:'j-m-Yг. g:i:s' }}
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      {% empty %}
+        <div class="col-md-12">
+          <p class="alert alert-info text-left">Сообщений не найдено</p>
+        </div>
+      {% endfor %}
+      <div class="clearfix"></div>
+      {% include '__includes/pagination.html' %}
+    </div>
+  </div>
+{% include '__modal/js_ajax_remove_form.html' %}
+{% endblock %}
+{% block bottom_js %}
+{% endblock %}

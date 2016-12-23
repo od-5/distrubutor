@@ -10,8 +10,27 @@
       }
     }
   }
-}
-.table {
+  &-select {
+    width: 100%;
+    tr {
+      td, th {
+        &:first-child {
+          text-align: center;
+          width: 30px;
+        }
+
+      }
+    }
+    td, th {
+      border: 1px solid #d2e7f0;
+      padding: 0 5px;
+    }
+    &-container {
+      overflow-y: scroll;
+      margin-top: 40px;
+      max-height: 214px;
+    }
+  }
   &-container {
     padding: 63px 0;
     overflow-x: scroll;

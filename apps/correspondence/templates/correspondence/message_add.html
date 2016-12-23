@@ -1,0 +1,90 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% load staticfiles %}
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Создание сообщения | {{ block.super }}{% endblock %}
+{% block content %}
+  {% include 'correspomdence/__include/message_breadcrumb.html' %}
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">Создание сообщения</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="panel-content">
+              <form action="" role="form" class="form" id="js-message-form" method="post">
+                {% csrf_token %}
+                <div class="col-md-6">
+                  <p class="text-info">Шаг 1. Укажите тему и напишите текст сообщения</p>
+{#                  {{ form.media }}#}
+                    {{ form.author }}
+                  <div class="form-group">
+                    {{ form.title.label_tag }}
+                    {{ form.title }}
+                    {{ form.title.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.text.label_tag }}
+                    {{ form.text }}
+                    {{ form.text.errors }}
+                  </div>
+
+                </div>
+                <div class="col-md-6">
+                  <p class="text-info">Шаг 2. Выбирайте города и добавляйте получателей в список</p>
+                  <div class="form-group" data-url="{% url 'correspondence:find_moderators' %}">
+                    {{ form.city.label_tag }}
+                    {{ form.city }}
+                    {{ form.city.errors }}
+                  </div>
+                  <div class="form-group">
+                    <div class="table-select-container">
+                      <table class="table-select js-moderator-list" style="font-size: 12px;">
+                        <thead>
+                          <tr>
+                            <th><input type="checkbox" name="select_all" id="js-select-all" value=""></th>
+                            <th>Название</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                      </table>
+                      <span class="js-add-to-sender-list__btn btn btn-info hide">добавить в список получателей</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="col-md-12">
+                  <div class="js-sender-list sender-list">
+{#                    {% for i in '123456789' %}#}
+{#                    <div class="js-sender-list__item sender-list__item alert-info">#}
+{#                      <input type="hidden" value="{{ i }}" name="sender_group[]">#}
+{#                      Lorem ipsum#}
+{#                      <span class="text-danger glyphicon glyphicon-remove js-sender-remove"></span>#}
+{#                    </div>#}
+{#                    {% endfor %}#}
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="col-md-6">
+                  <button type="submit" class="btn btn-save" disabled="disabled">Отправить сообщение</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block bottom_js %}
+  <script src="{% static 'correspondence/js/correspondence.js' %}"></script>
+{% endblock %}

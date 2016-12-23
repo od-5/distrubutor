@@ -5,6 +5,24 @@
   background-color: #fff;
   width: 320px;
 }
+.table-select {
+  width: 100%;
+}
+.table-select tr td:first-child,
+.table-select tr th:first-child {
+  text-align: center;
+  width: 30px;
+}
+.table-select td,
+.table-select th {
+  border: 1px solid #d2e7f0;
+  padding: 0 5px;
+}
+.table-select-container {
+  overflow-y: scroll;
+  margin-top: 40px;
+  max-height: 214px;
+}
 .table-container {
   padding: 63px 0;
   overflow-x: scroll;

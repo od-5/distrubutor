@@ -1,0 +1,132 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}{{ object.title|default:'не указано' }} | {{ block.super }}{% endblock %}
+{% block extra_js %}
+  {{ form.media }}
+{% endblock %}
+{% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li><a href="{% url 'correspondence:notify-list' %}">Список сообщений</a></li>
+            <li class="active">{{ object.title|default:'не указано' }}</li>
+          </ol>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">{{ object.message.title|default:'не указано' }}</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default panel-default_topic">
+          <div class="panel-heading">
+            <div class="col-md-1 col-sm-1 col-xs-2">
+              <img src="{{ STATIC_URL }}icon/forum/folder.png" alt="">
+            </div>
+            <div class="col-md-11 col-sm-11 col-xs-10">
+              <span class="forum__text">
+                {% if object.message.author.type == 1 %}Администратор{% else %}Рекламное агенство{% endif %}
+              </span><br>
+              <span class="forum__text">{{ object.message.created|date:'j F Yг. g:i:s' }}</span>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <div class="col-md-12">
+              <div class="forum-comment">
+                <p class="forum-comment__title">{{ object.message.title|default:'не указано' }}</p>
+                <div class="forum-comment__text">
+                  {{ object.message.text|safe|default:'' }}
+                </div>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+{#        {% for comment in object.comment_set.all %}#}
+{#        <div class="row">#}
+{#          <div class="col-md-1 col-sm-1 col-xs-1">#}
+{#            <img src="{{ STATIC_URL }}icon/forum/comment.png" alt="">#}
+{#          </div>#}
+{#          <div class="col-md-11 col-sm-11 col-xs-11 ">#}
+{#            <div class="panel panel-default panel-default_topic" id="{{ comment.id }}">#}
+{#              <div class="panel-body">#}
+{#                <div class="forum-comment-top">#}
+{#                  <div class="col-md-6 col-sm-6 col-xs-12">#}
+{#                    <a name="#{{ comment.id }}" class="forum__link">{{ comment.author.get_full_name|default:'anonymous' }}</a>#}
+{#                    <span class="forum__text">{{ comment.created|default:'' }}</span>#}
+{#                  </div>#}
+{#                  <div class="col-md-6 col-sm-6 col-xs-12">#}
+{#                  {% if user.type == 1 or comment.author == user %}#}
+{#                    <div class="forum-comment__control">#}
+{#                      <a href="{{ comment.get_delete_url|default:'' }}" title="Удалить">Удалить</a> /#}
+{#                      <a href="{{ comment.get_update_url|default:'' }}" title="Редактировать">Редактировать</a>#}
+{#                    </div>#}
+{#                  {% endif %}#}
+{##}
+{#                  </div>#}
+{##}
+{#                  <div class="clearfix"></div>#}
+{#                </div>#}
+{#                <div class="col-md-12">#}
+{#                  <div class="forum-comment__text">#}
+{#                    {{ comment.text|safe|default:'' }}#}
+{#                  </div>#}
+{#                </div>#}
+{#              </div>#}
+{#            </div>#}
+{#          </div>#}
+{#          <div class="clearfix"></div>#}
+{#        </div>#}
+{#        {% endfor %}#}
+{#        <div class="row">#}
+{#          <div class="col-md-12">#}
+{#            <div class="lead">Новое сообщение</div>#}
+{#          </div>#}
+{#          <div class="clearfix"></div>#}
+{#        </div>#}
+
+{#        <div class="row">#}
+{#          <div class="col-md-12">#}
+{#            <div class="panel panel-default">#}
+{#              <div class="panel-body">#}
+{#                <div class="panel-content">#}
+{#                  <form action="" class="form js-forum-comment-add-form text-center" method="post" role="form">#}
+{#                    {% csrf_token %}#}
+{#                    <div class="col-md-12">#}
+{#                      <div class="form-group">#}
+{#                      {% for field in form %}#}
+{#                        {{ field }}#}
+{#                      {% endfor %}#}
+{#                      </div>#}
+{#                    </div>#}
+{#                    <div class="col-sm-6 col-sm-offset-3">#}
+{#                      <button type="submit" class="btn btn-save">Отправить</button>#}
+{#                    </div>#}
+{#                    <div class="clearfix"></div>#}
+{#                  </form>#}
+{#                </div>#}
+{#              </div>#}
+{#            </div>#}
+{#          </div>#}
+{#          <div class="clearfix"></div>#}
+{#        </div>#}
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+{% endblock %}

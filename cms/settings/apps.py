@@ -22,6 +22,7 @@ INSTALLED_APPS = (
     'apps.administrator',
     'apps.agency',
     'apps.calculator',
+    'apps.correspondence',
     'apps.moderator',
     'apps.manager',
     'apps.city',

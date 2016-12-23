@@ -22,6 +22,11 @@
   <li class="dropdown">
     <a href="" class="dropdown-toggle" data-toggle="dropdown">Настройки <span class="caret"></span></a>
     <ul class="dropdown-menu">
+      {% if user.type == 1 or user.type == 6 %}
+      <li><a href="{% url 'correspondence:list' %}">Список сообщений</a></li>
+      <li><a href="{% url 'correspondence:add' %}">Создать новое сообщение</a></li>
+      <li class="divider"></li>
+      {% endif %}
       {% if user.type == 1 %}
       <li><a href="{% url 'administrator:list' %}">Список администраторов</a></li>
       <li><a href="{% url 'administrator:add' %}">Добавить нового администратора</a></li>

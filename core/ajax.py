@@ -10,6 +10,7 @@ from apps.city.models import City, Country
 from apps.client.models import Client, ClientContact, Task
 from apps.ticket.models import Ticket
 from apps.packages.models import Package
+from apps.correspondence.models import Message
 
 __author__ = 'alexy'
 

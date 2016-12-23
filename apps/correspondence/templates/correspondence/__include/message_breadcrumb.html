@@ -1,0 +1,18 @@
+<div class="breadcrumb-container">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <ol class="breadcrumb">
+          <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+          <li><a href="{% url 'correspondence:list' %}">Список сообщений</a></li>
+          {% if object %}
+          <li class="active">Редактирование сообщения</li>
+          {% else %}
+          <li class="active">Создание сообщения</li>
+          {% endif %}
+        </ol>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</div>
