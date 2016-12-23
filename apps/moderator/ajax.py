@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from .forms import ReviewForm
 from core.models import User
+from .models import ModeratorAction
 
 __author__ = 'alexy'
 
@@ -43,4 +44,24 @@ def moderator_review_add(request):
     else:
         return {
                 'success': False
-            }
+        }
+
+
+@ajax_request
+def get_action_list(request):
+    r_moderator = request.GET.get('moderator', '')
+    if r_moderator and r_moderator.isdigit():
+        moderatoraction_qs = ModeratorAction.objects.filter(moderator__id=int(r_moderator))
+        return {
+            'success': True,
+            'action_list': [
+                {
+                    'id': item.id,
+                    'name': item.name
+                } for item in moderatoraction_qs
+            ]
+        }
+
+    return {
+        'success': False
+    }

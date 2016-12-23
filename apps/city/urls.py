@@ -15,5 +15,5 @@ urlpatterns = patterns(
     url(r'^(?P<pk>\d+)/$', login_required(CityUpdateView.as_view()), name='update'),
 
     url(r'^find/$', find_city, name='find'),
-    url(r'^get_moderator_list/$', get_moderator_list, name='get_moderator_list')
+    url(r'^get_moderator_list/$', get_moderator_list, name='get_moderator_list'),
 )
