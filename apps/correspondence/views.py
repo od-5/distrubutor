@@ -68,7 +68,6 @@ class MessageCreateView(CreateView):
         if self.request.POST.getlist('sender_group[]'):
             sender_list = []
             for i in self.request.POST.getlist('sender_group[]'):
-                print u'Создаётся сообщение для получателя %s' % i
                 moderator = Moderator.objects.get(pk=int(i))
                 sender_list.append(MessageNotify(message=self.object, moderator=moderator))
             MessageNotify.objects.bulk_create(sender_list)
