@@ -21,7 +21,12 @@ class MessageListView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        qs = Message.objects.filter(author=user)
+        if user.type == 1:
+            qs = Message.objects.filter(author__type=1)
+        elif user.type == 6:
+            qs = Message.objects.filter(author__type=6)
+        else:
+            qs = Message.objects.none()
         return qs
 
 
