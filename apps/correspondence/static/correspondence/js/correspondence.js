@@ -2,8 +2,24 @@
  * Created by alexy on 24.02.16.
  */
 $(function() {
-
-  //  Добавление задачи для монтажника по клиенту
+  //  Валидация формы создания ответа на сообщение
+  $('.js-usermessageanswer-add-form').validate({
+    rules: {
+      text: {
+        required: true
+      },
+      author: {
+        required: true
+      },
+      recipient: {
+        required: true
+      },
+      usermessage: {
+        required: true
+      }
+    }
+  });
+  //  валидация формы создания рассылки
   var message_form = $('#js-message-form');
   message_form.validate({
     rules: {

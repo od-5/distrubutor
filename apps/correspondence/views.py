@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, DetailView
 from apps.administrator.decorators import administrator_required
 from apps.moderator.models import Moderator
-from .forms import MessageForm
+from .forms import MessageForm, UserMessageAnswerForm
 from .models import Message, UserMessage
 
 __author__ = 'alexy'
@@ -29,33 +29,6 @@ class MessageListView(ListView):
             qs = Message.objects.none()
         return qs
 
-
-# @administrator_required
-# def message_add(request):
-#     context = {}
-#     user = request.user
-#     if request.method == "POST":
-#         form = MessageForm(request.POST)
-#         if form.is_valid():
-#             # client = form.save(commit=False)
-#             # client.save()
-#             # clientmanager = ClientManager(manager=client.manager, client=client)
-#             # clientmanager.save()
-#             # # return HttpResponseRedirect(reverse('client:update', args=(incoming.id,)))
-#             # context.update({
-#             #     'success': u'Клиент добавлен!'
-#             # })
-#         else:
-#             # context.update({
-#             #     'error': u'Проверьте правильность ввода полей'
-#             # })
-#             print 'error'
-#     else:
-#         form = MessageForm()
-#     context.update({
-#         'form': form,
-#     })
-#     return render(request, 'correspomdence/message_add.html', context)
 
 class MessageCreateView(CreateView):
     model = Message
@@ -91,7 +64,12 @@ class UserMessageListView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        qs = UserMessage.objects.filter(recipient=user)
+        if user.type == 2:
+            qs = UserMessage.objects.filter(recipient=user)
+        elif user.type == 1 or user.type == 6:
+            qs = UserMessage.objects.select_related().filter(usermessageanswer__recipient=user)
+        else:
+            qs = UserMessage.objects.none()
         return qs
 
 
@@ -101,9 +79,27 @@ class UserMessageDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(UserMessageDetailView, self).get_context_data()
+        form = UserMessageAnswerForm()
+        form.fields['usermessage'].initial = self.object
+        form.fields['author'].initial = self.request.user
         if self.request.user == self.object.recipient:
             self.object.is_view = True
             self.object.save()
+            form.fields['recipient'].initial = self.object.message.author
+        else:
+            form.fields['recipient'].initial = self.request.user
+        self.object.usermessageanswer_set.filter(recipient=self.request.user, is_view=False).update(is_view=True)
+        context.update({
+            'form': form
+        })
         return context
 
 
+@login_required
+def usermessage_answer_add(request):
+    form = UserMessageAnswerForm(request.POST)
+    if form.is_valid():
+        instance = form.save()
+        return HttpResponseRedirect(reverse('correspondence:usermessage-detail', args=(instance.usermessage.pk, )))
+    else:
+        return HttpResponseRedirect(reverse('correspondence:usermessage-list'))

@@ -40,7 +40,13 @@
             </div>
 
             <div class="col-md-9 col-sm-9 col-xs-10 message-notify__text">
-              <a href="{{ object.get_absolute_url }}">{{ object.message.title|default:'' }}</a>
+              <a href="{{ object.get_absolute_url }}">
+                {% if object.is_view %}
+                  {{ object.message.title|default:'' }}
+                {% else %}
+                  <strong>{{ object.message.title|default:'' }}</strong>
+                {% endif %}
+              </a>
               <p>{{ object.message.text|striptags|safe|truncatechars:100 }}</p>
             </div>
             <div class="col-md-2 col-sm-1 col-xs-12 message-notify__author">

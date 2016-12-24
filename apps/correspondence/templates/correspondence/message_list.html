@@ -23,7 +23,7 @@
         <div class="col-md-6">
           <span class="page-top__title">Список рассылок</span><span class="page-top__count"> / {{ page_obj.paginator.count|default:'0' }}</span>
         </div>
-        {% if user.type == 1 %}
+        {% if user.type == 1 or user.type == 6 %}
         <div class="col-md-6">
           <a href="{% url 'correspondence:add' %}" class="btn btn-add page-top__btn" title="Создать сообщение">
             <span class="glyphicon glyphicon-plus-sign"></span> Создать новую рассылку
