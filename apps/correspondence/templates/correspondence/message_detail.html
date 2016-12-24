@@ -34,9 +34,15 @@
                     </tr>
                   </thead>
                   <tbody>
-                  {% for notify in object.messagenotify_set.all %}
+                  {% for notify in object.usermessage_set.all %}
                     <tr>
-                      <td>{{ notify.moderator|default:'Не указано' }}</td>
+                      <td>
+                      {% if notify.recipient.moderator_user %}
+                        {{ notify.recipient.moderator_user|default:'Не указано' }}
+                      {% else %}
+                        {{ notify.recipient|default:'Не указано' }}
+                      {% endif %}
+                      </td>
                       <td>
                         {% if notify.is_view %}
                           <span class="text-success glyphicon glyphicon-ok-sign"></span>

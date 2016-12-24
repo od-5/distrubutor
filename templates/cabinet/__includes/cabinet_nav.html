@@ -23,8 +23,8 @@
     <a href="" class="dropdown-toggle" data-toggle="dropdown">Настройки <span class="caret"></span></a>
     <ul class="dropdown-menu">
       {% if user.type == 1 or user.type == 6 %}
-      <li><a href="{% url 'correspondence:list' %}">Список сообщений</a></li>
-      <li><a href="{% url 'correspondence:add' %}">Создать новое сообщение</a></li>
+      <li><a href="{% url 'correspondence:list' %}">Список рассылок</a></li>
+      <li><a href="{% url 'correspondence:add' %}">Создать новую рассылку</a></li>
       <li class="divider"></li>
       {% endif %}
       {% if user.type == 1 %}

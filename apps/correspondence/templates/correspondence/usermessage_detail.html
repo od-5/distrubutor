@@ -2,7 +2,7 @@
 {% block viewport %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% endblock %}
-{% block title %}{{ object.title|default:'не указано' }} | {{ block.super }}{% endblock %}
+{% block title %}{{ object.message.title|default:'не указано' }} | {{ block.super }}{% endblock %}
 {% block extra_js %}
   {{ form.media }}
 {% endblock %}
@@ -13,8 +13,8 @@
         <div class="col-md-12">
           <ol class="breadcrumb">
             <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
-            <li><a href="{% url 'correspondence:notify-list' %}">Список сообщений</a></li>
-            <li class="active">{{ object.title|default:'не указано' }}</li>
+            <li><a href="{% url 'correspondence:usermessage-list' %}">Список сообщений</a></li>
+            <li class="active">{{ object.message.title|default:'не указано' }}</li>
           </ol>
         </div>
         <div class="clearfix"></div>

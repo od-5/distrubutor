@@ -9,7 +9,7 @@ from django.views.generic import ListView, CreateView, DetailView
 from apps.administrator.decorators import administrator_required
 from apps.moderator.models import Moderator
 from .forms import MessageForm
-from .models import Message, MessageNotify
+from .models import Message, UserMessage
 
 __author__ = 'alexy'
 
@@ -74,8 +74,8 @@ class MessageCreateView(CreateView):
             sender_list = []
             for i in self.request.POST.getlist('sender_group[]'):
                 moderator = Moderator.objects.get(pk=int(i))
-                sender_list.append(MessageNotify(message=self.object, moderator=moderator))
-            MessageNotify.objects.bulk_create(sender_list)
+                sender_list.append(UserMessage(message=self.object, recipient=moderator.user))
+            UserMessage.objects.bulk_create(sender_list)
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -84,24 +84,24 @@ class MessageDetailView(DetailView):
     template_name = 'correspondence/message_detail.html'
 
 
-class MessageNotifyListView(ListView):
-    model = MessageNotify
-    template_name = 'correspondence/messagenotify_list.html'
+class UserMessageListView(ListView):
+    model = UserMessage
+    template_name = 'correspondence/usermessage_list.html'
     paginate_by = 25
 
     def get_queryset(self):
         user = self.request.user
-        qs = MessageNotify.objects.filter(moderator__user=user)
+        qs = UserMessage.objects.filter(recipient=user)
         return qs
 
 
-class MessageNotifyDetailView(DetailView):
-    model = MessageNotify
-    template_name = 'correspondence/messagenotify_detail.html'
+class UserMessageDetailView(DetailView):
+    model = UserMessage
+    template_name = 'correspondence/usermessage_detail.html'
 
     def get_context_data(self, **kwargs):
-        context = super(MessageNotifyDetailView, self).get_context_data()
-        if self.request.user == self.object.moderator.user:
+        context = super(UserMessageDetailView, self).get_context_data()
+        if self.request.user == self.object.recipient:
             self.object.is_view = True
             self.object.save()
         return context

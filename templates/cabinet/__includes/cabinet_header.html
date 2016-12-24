@@ -19,7 +19,7 @@
           <ul class="nav navbar-nav navbar-right header-top__nav">
             {% if user.type == 1 or user.type == 2 or user.type == 6 %}
             <li>
-              <a href="{% url 'correspondence:notify-list' %}">
+              <a href="{% url 'correspondence:usermessage-list' %}">
               {% if MESSAGE_NOTIFY %}
               Сообщения <span class="badge">{{ MESSAGE_NOTIFY.count|default:'0' }}</span>
               {% else %}

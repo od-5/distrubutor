@@ -27,18 +27,18 @@ class Message(models.Model):
     created = models.DateTimeField(verbose_name=u'Дата создания', auto_now=True)
 
 
-class MessageNotify(models.Model):
+class UserMessage(models.Model):
     class Meta:
-        verbose_name = u'Сообщение'
-        verbose_name_plural = u'Сообщения'
+        verbose_name = u'Сообщение для пользователя'
+        verbose_name_plural = u'Сообщения для пользователей'
         app_label = 'correspondence'
 
     def __unicode__(self):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('correspondence:message-detail', args=(self.pk,))
+        return reverse('correspondence:usermessage-detail', args=(self.pk,))
 
     message = models.ForeignKey(to=Message, verbose_name=u'Сообщение')
-    moderator = models.ForeignKey(to=Moderator, verbose_name=u'Получатель')
+    recipient = models.ForeignKey(to=User, verbose_name=u'Получатель')
     is_view = models.BooleanField(default=False, verbose_name=u'Просмотрено')

@@ -13,6 +13,17 @@
         <li>
           <a href="{% url 'profile' %}">Профиль</a>
         </li>
+        {% if user.type == 1 or user.type == 2 or user.type == 6 %}
+        <li>
+          <a href="{% url 'correspondence:usermessage-list' %}">
+          {% if MESSAGE_NOTIFY %}
+          Сообщения <span class="badge">{{ MESSAGE_NOTIFY.count|default:'0' }}</span>
+          {% else %}
+          Новых сообщений нет
+          {% endif %}
+          </a>
+        </li>
+        {% endif %}
         <li><a href="{% url 'logout' %}?next={% url 'dashboard:index' %}">Выход</a></li>
       </ul>
     </div>

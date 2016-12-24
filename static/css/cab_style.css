@@ -6491,6 +6491,22 @@ body {
   text-align: center;
   background: #FFFFCC;
 }
+@media only screen and (max-width: 767px) {
+  .notification-line {
+    font-size: 14px;
+  }
+}
+@media only screen and (max-width: 360px) {
+  .notification-line {
+    font-size: 12px;
+  }
+}
+@media only screen and (max-width: 360px) {
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
 .add-row,
 .delete-row {
   color: #333;
