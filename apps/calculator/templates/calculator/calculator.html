@@ -21,17 +21,17 @@
           </select>
         </div>
         <div class="form-group">
-          <select name="city" id="id_city" class="form-control">
+          <select name="city" id="id_city" class="form-control" data-url="{% url 'city:get_moderator_list' %}">
             <option value="">---- Выберите город ----</option>
           </select>
         </div>
         <div class="form-group">
-          <select name="moderator" id="id_moderator" class="form-control">
+          <select name="moderator" id="id_moderator" class="form-control" data-url="{% url 'moderator:get_action_list' %}">
             <option value="">---- Выберите исполнителя ----</option>
           </select>
         </div>
         <div class="form-group">
-          <select name="type" id="id_type" class="form-control">
+          <select name="type" id="id_type" class="form-control" data-url="{% url 'moderator:get_cost_by_action' %}">
             <option value="">---- Выберите вид деятельности ----</option>
           </select>
         </div>
