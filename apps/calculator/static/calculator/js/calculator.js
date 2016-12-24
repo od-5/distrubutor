@@ -20,8 +20,7 @@ $(function() {
         required: true
       },
       count: {
-        required: true,
-        min: 1
+        required: true
       }
     }
   });
@@ -139,6 +138,14 @@ $(function() {
     var type = $('#id_type').val(),
         count = $('#id_count').val(),
         url = $('#id_type').data('url');
+
+    count = parseInt(count);
+
+    if (count < 0) {
+      count = 0
+    }
+
+    $('#id_count').val(count);
 
     // Запрашиваем стоимость по виду деятельности
     $.ajax({
