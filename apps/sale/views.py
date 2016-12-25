@@ -194,8 +194,10 @@ class JournalListView(ListView):
                 qs = SaleOrder.objects.select_related().filter(sale__moderator=user.manager_user.moderator.moderator_user)
             else:
                 qs = SaleOrder.objects.select_related().filter(sale__manager=user.manager_user)
+        elif user.type == 6:
+            qs = SaleOrder.objects.select_related().filter(sale__moderator__ticket_forward=True)
         else:
-            qs = None
+            qs = SaleOrder.objects.none()
         if self.request.GET.get('legal_name'):
             qs = qs.filter(sale__legal_name=self.request.GET.get('legal_name'))
         if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
@@ -230,12 +232,14 @@ class JournalListView(ListView):
             city_qs = user.moderator_user.city.all()
             manager_qs = user.manager_set.all()
         elif user.type == 5:
-            manager = Manager.objects.get(user=user)
-            city_qs = City.objects.filter(moderator=manager.moderator)
-            manager_qs = Manager.objects.filter(moderator=manager.moderator)
+            city_qs = City.objects.filter(moderator=user.manager.moderator)
+            manager_qs = Manager.objects.filter(moderator=user.manager.moderator)
+        elif user.type == 6:
+            manager_qs = Manager.objects.none()
+            city_qs = City.objects.filter(moderator__ticket_forward=True)
         else:
-            city_qs = None
-            manager_qs = None
+            city_qs = City.objects.none()
+            manager_qs = Manager.objects.none()
         context.update({
             'city_list': city_qs,
             'manager_list': manager_qs,

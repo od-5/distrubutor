@@ -65,7 +65,11 @@
         </div>
         <div class="col-md-12 col-sm-8 col-xs-8">
           <div class="navbar-header">
+          {% if user.type == 6 %}
+            <a class="navbar-brand" href="{% url 'ticket:list' %}">
+          {% else %}
             <a class="navbar-brand" href="{% url 'dashboard:index' %}">
+          {% endif %}
               Контроль расклейки и распространения<br>
               <span class="navbar-brand__small hidden-xs hidden-sm">информационно-программный комплекс</span>
             </a>

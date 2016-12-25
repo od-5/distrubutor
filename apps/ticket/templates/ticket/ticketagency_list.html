@@ -9,10 +9,14 @@
       <div class="row">
         <div class="col-md-12">
           <ol class="breadcrumb">
-            {% if user.type != 6 %}
+          {% if user.type != 6 %}
             <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
-            {% endif %}
+          {% endif %}
+            {% if sale %}
+            <li class="active">Продажи</li>
+            {% else %}
             <li class="active">Заявки с сайта</li>
+            {% endif %}
           </ol>
         </div>
         <div class="clearfix"></div>
@@ -38,7 +42,6 @@
                     {% endfor %}
                   </select>
                 </div>
-              {% if user.type == 6 %}
                 <div class="five-col-2">
                   <select name="moderator" class="form-control">
                     <option value="0">Исполнитель</option>
@@ -47,22 +50,16 @@
                     {% endfor %}
                   </select>
                 </div>
+              {% if sale %}
                 <div class="clearfix"></div>
               {% else %}
-                <div class="five-col-2">
+                <div class="five-col-1">
                   <select name="type" class="form-control">
                     <option>---- Статус ----</option>
                     <option value="0" {% if r_type == 0 %}selected="selected"{% endif %}>Новая заявка</option>
                     <option value="1" {% if r_type == 1 %}selected="selected"{% endif %}>В обработке</option>
                     <option value="2" {% if r_type == 2 %}selected="selected"{% endif %}>Отклонена</option>
-                    <option value="3" {% if r_type == 3 %}selected="selected"{% endif %}>Продажа</option>
                   </select>
-                </div>
-                <div class="five-col-1">
-                  <input type="text" name="name" class="form-control" placeholder="Имя" value="{{ r_name|default:'' }}">
-                </div>
-                <div class="five-col-1">
-                  <input type="text" name="phone" class="form-control" placeholder="Телефон" value="{{ r_phone|default:'' }}">
                 </div>
               {% endif %}
                 <div class="five-col-1">

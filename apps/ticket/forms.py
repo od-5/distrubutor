@@ -14,10 +14,11 @@ class TicketAddForm(forms.ModelForm):
 class TicketChangeForm(forms.ModelForm):
     class Meta:
         model = Ticket
-        exclude = ['agency_manager', ]
+        exclude = '__all__'
         widgets = {
             'city': forms.Select(attrs={'class': 'form-control'}),
             'moderator': forms.Select(attrs={'class': 'form-control'}),
+            'agency_manager': forms.Select(attrs={'class': 'form-control'}),
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'mail': forms.EmailInput(attrs={'class': 'form-control'}),
             'phone': forms.TextInput(attrs={'class': 'form-control'}),

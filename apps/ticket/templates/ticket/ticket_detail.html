@@ -8,8 +8,22 @@
     <div class="container">
       <div class="col-md-12">
         <ol class="breadcrumb">
+        {% if user.type != 6 %}
           <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
-          <li><a href="{% url 'ticket:list' %}">Заявки с сайта</a></li>
+        {% endif %}
+          {% if object.agency_manager %}
+            {% if object.type == 3 %}
+            <li><a href="{% url 'ticket:sale' %}">Продажи</a></li>
+            {% else %}
+            <li><a href="{% url 'ticket:agency' %}">Заявки обработке</a></li>
+            {% endif %}
+          {% else %}
+            {% if user.type == 6 %}
+            <li><a href="{% url 'ticket:list' %}">Новые заявки с сайта</a></li>
+            {% else %}
+            <li><a href="{% url 'ticket:list' %}">Заявки с сайта</a></li>
+            {% endif %}
+          {% endif %}
           <li class="active">{{ object }}</li>
         </ol>
       </div>
@@ -44,6 +58,15 @@
                     {{ form.moderator }}
                     {{ form.moderator.errors }}
                   </div>
+                  {% if user.type == 6 %}
+                  <div class="form-group">
+                    {{ form.agency_manager.label_tag }}
+                    {{ form.agency_manager }}
+                    {{ form.agency_manager.errors }}
+                  </div>
+                  {% else %}
+                  {{ form.agency_manager }}
+                  {% endif %}
                   <div class="form-group">
                     {{ form.name.label_tag }}
                     {{ form.name }}

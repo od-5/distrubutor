@@ -61,7 +61,10 @@ def cms_login(request, usertype=None):
                         # todo: если пользователь - менеджер(type=5), проверить - активен ли его модератор. Если нет - не логинить
                         login(request, user)
                         request.session['demo'] = False
-                        return HttpResponseRedirect(reverse('dashboard:index'))
+                        if user.type == 6:
+                            return HttpResponseRedirect(reverse('ticket:list'))
+                        else:
+                            return HttpResponseRedirect(reverse('dashboard:index'))
                         # return HttpResponseRedirect('/')
                     else:
                         error = u'Пользователь заблокирован'

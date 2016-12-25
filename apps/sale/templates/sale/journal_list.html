@@ -9,7 +9,9 @@
       <div class="row">
         <div class="col-md-12">
           <ol class="breadcrumb">
+          {% if user.type != 6 %}
             <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+          {% endif %}
             <li class="active">Журнал продаж</li>
           </ol>
         </div>
@@ -36,7 +38,7 @@
             </button>
             <form action="" class="form form-filter" id="js-client-search-form" role="form" method="GET">
               <div class="col-md-12">
-                {% if user.type == 1 %}
+                {% if user.type == 1 or user.type == 6 %}
                 <div class="five-col-2">
                   <select name="city" class="form-control input-sm">
                     <option value="0">-- Город --</option>
@@ -46,6 +48,7 @@
                   </select>
                 </div>
                 {% endif %}
+              {% if user.type != 6 %}
                 {% if not user.manager_user and not user.manager_user.leader %}
                 <div class="five-col-2">
                   <select name="manager" class="form-control input-sm">
@@ -56,6 +59,7 @@
                   </select>
                 </div>
                 {% endif %}
+              {% endif %}
                 <div class="five-col-1">
                   <input type="text" name="legal_name" class="form-control input-sm" value="{{ r_legal_name|default:'' }}" placeholder="Юридическое название">
                 </div>
@@ -107,14 +111,20 @@
                       <th>Скидка, %</th>
                       <th>Итого, руб</th>
                       <th>Поступления, руб</th>
+                      {% if user.type != 6 %}
                       <th>&nbsp;</th>
+                      {% endif %}
                     </tr>
                   </thead>
                   <tbody class="js-list">
                   {% if object_list %}
                     {% for object in object_list %}
                     <tr data-id="{{ object.id }}" class="saleorder-tr{% if object.full_payment %} success{% elif object.has_payment %} info{% endif %}" data-name="{{ object }}" data-model="SaleOrder" id="id_SaleOrder_{{ object.id }}">
+                      {% if user.type == 6 %}
+                      <td>{{ object|default:'Не указано' }}</td>
+                      {% else %}
                       <td><a href="{% url 'sale:order-update' object.id %}">{{ object|default:'Не указано' }}</a></td>
+                      {% endif %}
                       <td>{{ object.sale.legal_name|default:'Не указано' }}</td>
                       <td>{{ object.sale.city|default:'Не указано' }}</td>
                       <td>{{ object.sale.manager|default:'Не указано' }}</td>
@@ -123,22 +133,23 @@
                       <td>{{ object.add_cost|default:'0' }}</td>
                       <td>{{ object.discount|default:'0' }}</td>
                       <td>{{ object.total_sum|default:'0' }}</td>
-                      <td style="width: 120px;">
-                        {{ object.current_payment|default:'0' }}
+                      <td style="width: 120px;">{{ object.current_payment|default:'0' }}{% if user.type != 6 %}
                         <a href="#js-modal-payment-add" id="js-payment-btn-{{ object.id }}" class="btn btn-sm btn-info js-payment-add-btn hide" data-sale="{{ object.sale.id }}" data-saleorder="{{ object.id }}">
                           <span class="glyphicon glyphicon-plus-sign"></span> Добавить
-                        </a>
+                        </a>{% endif %}
                       </td>
+                      {% if user.type != 6 %}
                       <td>
                         <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="text-danger js-ajax-remove-btn">
                           <span class="glyphicon glyphicon-remove"></span>
                         </a>
                       </td>
+                      {% endif %}
                     </tr>
                     {% endfor %}
                   {% else %}
                     <tr>
-                      <td colspan="10"><p class="alert alert-info text-left">Клиентов нет</p></td>
+                      <td colspan="{% if user.type == 6 %}9{% else %}10{% endif %}"><p class="alert alert-info text-left">Клиентов нет</p></td>
                     </tr>
                   {% endif %}
                   </tbody>
