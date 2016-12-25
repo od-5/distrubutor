@@ -6484,6 +6484,12 @@ body {
   width: 600px;
   margin: 40px auto;
 }
+@media only screen and (max-width: 767px) {
+  .calc {
+    width: 90%;
+    margin: 20px auto;
+  }
+}
 .notification-line {
   height: 38px;
   line-height: 38px;
