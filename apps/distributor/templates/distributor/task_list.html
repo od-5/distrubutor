@@ -29,11 +29,11 @@
           <span class="page-top__title">Архив задач</span>
         </div>
       {% else %}
-        <div class="col-md-6">
+        <div class="col-md-8">
           <span class="page-top__title">Список задач для распространителей</span><span class="page-top__count"> / {{ page_obj.paginator.count|default:'0' }}</span>
         </div>
-        {% if user.type != 4 %}
-        <div class="col-md-6">
+        {% if user.type == 1 or user.type == 2 or user.type == 5 %}
+        <div class="col-md-4">
           <a href="{% url 'distributor:task-add' %}" class="btn btn-add page-top__btn" title="Добавить новую задачу">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую задачу
           </a>
@@ -56,7 +56,7 @@
                 <div class="five-col-1">
                   <input type="text" name="city" value="{{ r_city|default:'' }}" class="form-control" placeholder="Город">
                 </div>
-                {% if user.type == 1 %}
+                {% if user.type == 1 or user.type == 6 %}
                 <div class="five-col-1">
                   <input type="text" name="company" value="{{ r_company|default:'' }}" class="form-control" placeholder="Организация">
                 </div>
@@ -64,7 +64,7 @@
                 <div class="five-col-1">
                   <input type="text" name="distributor" value="{{ r_distributor|default:'' }}" class="form-control" placeholder="Распространитель">
                 </div>
-                {% if user.type != 1 %}
+                {% if user.type == 2 or user.type == 5 %}
                 <div class="five-col-1">
                   <select name="type" class="form-control">
                     <option value="">---- Тип задачи ----</option>
@@ -85,6 +85,7 @@
               <div class="clearfix"></div>
             </form>
             <div class="col-md-12">
+            {% if user.type != 6 %}
               <div>
                 {% if not archive %}
                 <div>
@@ -107,6 +108,7 @@
                 </div>
                 {% endif %}
               </div>
+            {% endif %}
               <div class="table-container">
                 <table class="table table-list">
                   <thead>
@@ -115,35 +117,49 @@
                       <th>Распространитель</th>
                       <th>Город</th>
                       <th>Район</th>
-                      {% if user.type == 1 %}
+                      {% if user.type == 1 or user.type == 6%}
                       <th>Организация</th>
                       {% endif %}
                       <th>Тип задачи</th>
                       <th>Дата задачи</th>
                       <th>кол-во рекламных материалов, шт</th>
                       <th>Стоимость работы, руб</th>
+                      {% if user.type != 6 %}
                       <th>&nbsp;</th>
+                      {% endif %}
                     </tr>
                   </thead>
                   <tbody class="js-list">
                   {% for object in object_list %}
                     <tr data-id="{{ object.id }}" data-name="{{ object }}" data-model="DistributorTask" id="id_DistributorTask_{{ object.id }}">
-                      <td><a href="{% url 'distributor:task-update' object.id %}" class="btn btn-sm btn-info"><span class="glyphicon glyphicon-edit"></span> редактировать</a></td>
+                      <td>
+                        {% if user.type == 6 %}
+                        <a href="{% url 'distributor:task-update-map' object.id %}" class="btn btn-sm btn-info">
+                          <span class="glyphicon glyphicon-edit"></span> Посмотреть карту
+                        </a>
+                        {% else %}
+                        <a href="{% url 'distributor:task-update' object.id %}" class="btn btn-sm btn-info">
+                          <span class="glyphicon glyphicon-edit"></span> редактировать
+                        </a>
+                        {% endif %}
+                      </td>
                       <td>{{ object.distributor|default:'Не указано' }}</td>
                       <td>{{ object.sale.city|default:'Не указано' }}</td>
                       <td>{{ object.area|default:'Не указано' }}</td>
-                      {% if user.type == 1 %}
+                      {% if user.type == 1 or user.type == 6 %}
                       <td>{{ object.distributor.moderator.company|default:'Не указано' }}</td>
                       {% endif %}
                       <td>{{ object.type|default:'Не указано' }}</td>
                       <td>{{ object.date|date:"d.m.Y"|default:'Не указано' }}</td>
                       <td>{{ object.material_count|default:'Не указано' }}</td>
                       <td>{{ object.total_cost|default:'Не указано' }}</td>
+                      {% if user.type != 6 %}
                       <td>
                         <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="text-danger js-ajax-remove-btn">
                           <span class="glyphicon glyphicon-remove"></span>
                         </a>
                       </td>
+                      {% endif %}
                     </tr>
                   {% empty %}
                     <tr>

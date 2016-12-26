@@ -11,8 +11,17 @@
     </ul>
   </li>
   <li><a href="{% url 'calculator:index' %}">Калькулятор</a></li>
-  <li><a href="{% url 'moderator:list' %}">Список исполнителей</a></li>
+  <li><a href="{% url 'moderator:list' %}">Исполнители</a></li>
   <li><a href="{% url 'sale:journal' %}">Журнал продаж</a></li>
+  <li class="dropdown">
+    <a href="" class="dropdown-toggle" data-toggle="dropdown">
+      Задачи <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+      <li><a href="{% url 'distributor:task-list' %}">Список задач для распространителей</a></li>
+      <li><a href="{% url 'distributor:task-archive' %}">Архив задач для распространителей</a></li>
+    </ul>
+  </li>
   <li class="dropdown">
     <a href="" class="dropdown-toggle" data-toggle="dropdown">Рассылки <span class="caret"></span></a>
     <ul class="dropdown-menu">
