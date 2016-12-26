@@ -154,8 +154,8 @@ class TicketAgencyListView(ListView):
                 type__in=[0, 1, 2], moderator__ticket_forward=True, agency_manager=user)
         if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
             qs = qs.filter(city__id=int(self.request.GET.get('city')))
-        if self.request.GET.get('agency_manager') and int(self.request.GET.get('agency_manager')) != 0:
-            qs = qs.filter(agency_manager__id=int(self.request.GET.get('agency_manager')))
+        if self.request.GET.get('agency') and int(self.request.GET.get('agency')) != 0:
+            qs = qs.filter(agency_manager__id=int(self.request.GET.get('agency')))
         if self.request.GET.get('moderator') and int(self.request.GET.get('moderator')) != 0:
             qs = qs.filter(moderator__id=int(self.request.GET.get('moderator')))
         if self.request.GET.get('type') and self.request.GET.get('type').isdigit():
@@ -191,7 +191,7 @@ class TicketAgencyListView(ListView):
                 context.update({
                     'r_moderator': int(self.request.GET.get('moderator'))
                 })
-            if self.request.GET.get('agenc') and self.request.GET.get('agency').isdigit():
+            if self.request.GET.get('agency') and self.request.GET.get('agency').isdigit():
                 context.update({
                     'r_agency': int(self.request.GET.get('agency'))
                 })
@@ -227,8 +227,8 @@ class TicketSaleListView(ListView):
             qs = qs.filter(city__id=int(self.request.GET.get('city')))
         if self.request.GET.get('moderator') and int(self.request.GET.get('moderator')) != 0:
             qs = qs.filter(moderator__id=int(self.request.GET.get('moderator')))
-        if self.request.GET.get('agency_manager') and int(self.request.GET.get('agency_manager')) != 0:
-            qs = qs.filter(agency_manager__id=int(self.request.GET.get('agency_manager')))
+        if self.request.GET.get('agency') and int(self.request.GET.get('agency')) != 0:
+            qs = qs.filter(agency_manager__id=int(self.request.GET.get('agency')))
         r_date_s = self.request.GET.get('date_s')
         r_date_e = self.request.GET.get('date_e')
         if r_date_s:
@@ -260,7 +260,7 @@ class TicketSaleListView(ListView):
                 context.update({
                     'r_moderator': int(self.request.GET.get('moderator'))
                 })
-            if self.request.GET.get('agenc') and self.request.GET.get('agency').isdigit():
+            if self.request.GET.get('agency') and self.request.GET.get('agency').isdigit():
                 context.update({
                     'r_agency': int(self.request.GET.get('agency'))
                 })
