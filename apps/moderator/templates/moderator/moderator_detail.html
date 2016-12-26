@@ -1,0 +1,71 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}{{ object|default:'Информация об исплонителе' }} | {{ block.super }}{% endblock %}
+{% block content %}
+  {% include 'moderator/__include/moderator_breadcrumb.html' %}
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">{{ object|default:'Информация об исполнителе' }}</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="panel-content">
+              <form action="" role="form" class="form add-bottom" id="js-form-moderator-detail" method="post">
+              {% csrf_token %}
+                <div class="col-md-6">
+                  <p class="text-info lead">Информация об исполнителе</p>
+                  <div class="form-group">
+                    <label for="id_email">Адрес электронной почты:</label>
+                    <input type="email" id="id_email" name="email" readonly="readonly" class="form-control" value="{{ object.user.email }}">
+                  </div>
+                  <div class="form-group">
+                    <label for="id_fio">ФИО:</label>
+                    <input type="text" id="id_fio" name="fio" readonly="readonly" class="form-control" value="{{ object.user.get_full_name }}">
+                  </div>
+                  <div class="form-group">
+                    <label for="id_phone">Телефон:</label>
+                    <input type="text" id="id_phone" name="phone" readonly="readonly" class="form-control" value="{{ object.user.phone }}">
+                  </div>
+                  <div class="form-group">
+                    <label for="id_comment">Комментарий:</label>
+                    <textarea name="comment" id="id_comment" class="form-control" rows="10">{{ object.comment|default:'' }}</textarea>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <p class="text-info lead">Информация об организации</p>
+                  <div class="form-group">
+                    <label for="id_company">Название организации:</label>
+                    <input type="text" id="id_company" name="company" readonly="readonly" class="form-control" value="{{ object.company|default:'Не указано' }}">
+                  </div>
+                  <div class="form-group">
+                    <label for="id_leader">Руководитель:</label>
+                    <input type="text" id="id_leader" name="leader" readonly="readonly" class="form-control" value="{{ object.leader|default:'Не указано' }}">
+                  </div>
+                  <div class="form-group">
+                    <label for="id_leader_function">Должность руководителя:</label>
+                    <input type="text" id="id_leader_function" name="leader_function" readonly="readonly" class="form-control" value="{{ object.leader_function|default:'Не указано' }}">
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="col-md-6">
+                  <button type="submit" class="btn btn-save">Сохранить изменения</button>
+                </div>
+                <div class="clearfix"></div>
+              </form>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

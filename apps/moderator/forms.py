@@ -9,7 +9,7 @@ __author__ = 'alexy'
 class ModeratorForm(forms.ModelForm):
     class Meta:
         model = Moderator
-        fields = '__all__'
+        exclude = ['comment', ]
         widgets = {
             'user': forms.HiddenInput(attrs={'class': 'form-control'}),
             'ticket_forward': forms.CheckboxInput(),

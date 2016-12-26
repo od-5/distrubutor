@@ -102,19 +102,6 @@
               <div class="clearfix"></div>
             </form>
             <div class="col-md-12">
-            {% if user.type != 6 %}
-              <div class="col-md-8 col-xs-12">
-                <div id="ticket-chart" style="height:300px; width: 100%;"></div>
-              </div>
-              <div class="col-md-4 col-xs-12">
-                <p>Всего заявок: {{ total_count|default:0 }}</p>
-                <p>Новые заявки: {{ new_count|default:0 }}</p>
-                <p>В обработке: {{ action_count|default:0 }}</p>
-                <p>Продажи: {{ sale_count|default:0 }}</p>
-                <p>Общая сумма всех продаж: {{ price_sum|default:0 }} руб.</p>
-              </div>
-              <div class="clearfix"></div>
-            {% endif %}
               <div class="table-container">
                 <table class="table table-list">
                   <thead>
@@ -182,56 +169,4 @@
     </div>
   </div>
 {% include '__modal/js_ajax_remove_form.html' %}
-{% endblock %}
-{% block bottom_js %}
-  <script src="{{ STATIC_URL }}js/echarts-all.js"></script>
-  <script>
-    var myChart = echarts.init(document.getElementById('ticket-chart'));
-    var chart_width = 500;
-    if ($(window).width() < 500) {
-      chart_width = 300;
-    }
-    console.log(chart_width);
-    var option = {
-      title : {
-        show: false,
-        text: 'Воронка продаж',
-        subtext: 'воронка'
-      },
-      tooltip : {
-        trigger: 'item',
-        formatter: "{a} <br/>{b} : {c}%"
-      },
-      toolbox: {
-        show : false,
-{#        feature : {#}
-{#          mark : {show: true},#}
-{#          dataView : {show: true, readOnly: false},#}
-{#          restore : {show: true},#}
-{#          saveAsImage : {show: true}#}
-{#        }#}
-      },
-      legend: {
-        x: 'left',
-        data : ['Новые','В обработке','Продажи'],
-      },
-      calculable : false,
-      series : [
-        {
-          name:'Заявки с сайта',
-          type:'funnel',
-          width: chart_width,
-          funnelAlign: 'left',
-          legendHoverLink: false,
-          gap: 1,
-          data:[
-            {value:{{ new_count_p|default:0 }}, name:'Новые'},
-            {value:{{ action_count_p|default:0 }}, name:'В обработке'},
-            {value:{{ sale_count_p|default:0 }}, name:'Продажи'}
-          ]
-        }
-      ]
-    };
-  myChart.setOption(option);
-  </script>
 {% endblock %}

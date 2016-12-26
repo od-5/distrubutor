@@ -5,10 +5,14 @@
       <div class="col-md-12">
         <ol class="breadcrumb">
           <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
-          {% if user.type == 1 %}
+          {% if user.type == 1 or user.type == 6 %}
           <li><a href="{% url 'moderator:list' %}">Список модераторов</a></li>
           {% endif %}
+          {% if user.type == 1 %}
           <li class="active">Редактирование модератора</li>
+          {% else %}
+          <li class="active">{{ object|default:'Информация о модераторе' }}</li>
+          {% endif %}
         </ol>
       </div>
       <div class="clearfix"></div>

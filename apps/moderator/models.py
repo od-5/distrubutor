@@ -107,6 +107,7 @@ class Moderator(models.Model):
     deny_date = models.DateField(blank=True, null=True, verbose_name=u'Дата блокировки')
     site_visible = models.BooleanField(default=False, verbose_name=u'Не отображать на сайте')
     ticket_forward = models.BooleanField(default=False, verbose_name=u'Перенаправлять заявки на рекламное агенство')
+    comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
 
 
 class ModeratorArea(models.Model):

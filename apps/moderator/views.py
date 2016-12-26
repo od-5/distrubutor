@@ -31,7 +31,13 @@ class ModeratorListView(ListView):
     paginate_by = 50
 
     def get_queryset(self):
-        qs = User.objects.filter(type=2)
+        user = self.request.user
+        if user.type == 1:
+            qs = User.objects.filter(type=2)
+        elif user.type == 6:
+            qs = User.objects.filter(type=2, moderator_user__ticket_forward=True, moderator_user__deny_access=False)
+        else:
+            qs = User.objects.none()
         if self.request.GET.get('email'):
             qs = qs.filter(email=self.request.GET.get('email'))
         if self.request.GET.get('last_name'):
@@ -109,6 +115,20 @@ def moderator_user_update(request, pk):
         'object': moderator
     })
     return render(request, 'moderator/moderator_user_update.html', context)
+
+
+@login_required()
+def moderator_detail(request, pk):
+    context = {}
+    moderator = Moderator.objects.get(user__id=int(pk))
+    comment = request.POST.get('comment')
+    if comment:
+        moderator.comment = comment
+        moderator.save()
+    context.update({
+        'object': moderator
+    })
+    return render(request, 'moderator/moderator_detail.html', context)
 
 
 @login_required()

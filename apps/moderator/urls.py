@@ -12,9 +12,10 @@ __author__ = 'alexy'
 
 urlpatterns = patterns(
     'apps.moderator.views',
-    url(r'^$', administrator_required(ModeratorListView.as_view()), name='list'),
+    url(r'^$', login_required(ModeratorListView.as_view()), name='list'),
     url(r'^add/$', 'moderator_add', name='add'),
     url(r'^(?P<pk>\d+)/$', 'moderator_user_update', name='update'),
+    url(r'^(?P<pk>\d+)/detail/$', 'moderator_detail', name='detail'),
     url(r'^(?P<pk>\d+)/company/$', 'moderator_company_update', name='company'),
     url(r'^(?P<pk>\d+)/action/$', 'moderator_action_update', name='action'),
 

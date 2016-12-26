@@ -23,11 +23,13 @@
         <div class="col-md-6">
           <span class="page-top__title">Модераторы</span><span class="page-top__count"> / {{ page_obj.paginator.count|default:'0' }}</span>
         </div>
+        {% if user.type == 1 %}
         <div class="col-md-6">
           <a href="{% url 'moderator:add' %}" class="btn btn-add page-top__btn" title="Добавить модератора">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить модератора
           </a>
         </div>
+        {% endif %}
         <div class="clearfix"></div>
       </div>
     </div>
@@ -66,6 +68,7 @@
             </form>
             <div class="col-md-12">
               <div class="table-container">
+              {% if user.type != 6 %}
                 <table class="table table-list">
                   <thead>
                     <tr>
@@ -109,6 +112,43 @@
                   {% endfor %}
                   </tbody>
                 </table>
+              {% else %}
+                <table class="table table-list">
+                  <thead>
+                    <tr>
+                      <th>Организация</th>
+                      <th>e-mail</th>
+                      <th>ФИО</th>
+                      <th>Телефон</th>
+                      <th>Города</th>
+                      <th>Комментарий</th>
+                    </tr>
+                  </thead>
+                  <tbody class="js-list">
+                  {% for object in object_list %}
+                    <tr>
+                      <td><a href="{% url 'moderator:detail' object.id %}"> {{ object.email|default:'' }}</a></td>
+                      <td>{{ object.get_full_name|default:'Не указано' }}</td>
+                      <td>{{ object.phone|default:'Не указано' }}</td>
+                      <td>{{ object.moderator_user.company|default:'Не указано' }}</td>
+                      <td>
+                      {% for city in object.moderator_user.city.all %}
+                        {{ city.name|default:'' }}
+                        {% if not forloop.last %}<br> {% endif %}
+                      {% endfor %}
+                      </td>
+                      <td style="max-width: 400px;">{{ object.moderator_user.comment|default:'Не указано' }}</td>
+                    </tr>
+                  {% empty %}
+                    <tr>
+                      <td colspan="6">
+                        <p class="alert alert-info text-left">Модераторов не найдено</p>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              {% endif %}
               </div>
             </div>
             <div class="clearfix"></div>
