@@ -538,7 +538,6 @@ def address_export(request):
 
 def get_files(request):
     # Files (local path) to put in the .zip
-    # FIXME: Change this (get paths from DB etc)
     sale = request.user.sale_user
     point_qs = GPSPoint.objects.select_related().filter(task__sale=sale)
     # ловим значения из формы поиска
@@ -563,7 +562,6 @@ def get_files(request):
 
     # Folder name in ZIP archive which contains the above files
     # E.g [thearchive.zip]/somefiles/file2.txt
-    # FIXME: Set this to something better
     zip_subdir = "photoarchive"
     zip_filename = "%s.zip" % zip_subdir
 

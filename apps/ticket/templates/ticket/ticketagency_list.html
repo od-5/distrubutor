@@ -25,6 +25,22 @@
   </div>
   <div class="container">
     <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+        {% if sale %}
+          <span class="page-top__title">Продажи</span>
+          <span class="page-top__count"> / {{ page_obj.paginator.count|default:'0' }}</span>
+          {% if total_sum %}
+          <span class="page-top__count"> / сумма продаж: {{ total_sum|default:'0' }} руб.</span>
+          {% endif %}
+        {% else %}
+          <span class="page-top__title">Заявки в обработке</span><span class="page-top__count"> / {{ page_obj.paginator.count|default:'0' }}</span>
+        {% endif %}
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
       <div class="col-md-12">
         <div class="panel panel-default">
           <div class="panel-body">
@@ -50,6 +66,16 @@
                     {% endfor %}
                   </select>
                 </div>
+              {% if agency_list %}
+                <div class="five-col-1">
+                  <select name="moderator" class="form-control">
+                    <option value="0">Менеджер</option>
+                    {% for agency in agency_list %}
+                      <option value="{{ agency.id }}" {% if agency.id == r_agency %}selected="selected"{% endif %}>{{ agency.get_full_name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              {% endif %}
               {% if sale %}
                 <div class="clearfix"></div>
               {% else %}
@@ -100,6 +126,9 @@
                       <th>Город</th>
                       <th>Дата</th>
                       <th>Статус</th>
+                      {% if sale %}
+                      <th>Сумма</th>
+                      {% endif %}
                       <th>&nbsp;</th>
                     </tr>
                   </thead>
@@ -115,6 +144,9 @@
                       <td>{{ object.city|default:'Не указано' }}</td>
                       <td>{{ object.created|default:'Не указано' }}</td>
                       <td>{{ object.get_type_display|default:'Не указано' }}</td>
+                      {% if sale %}
+                      <td>{{ object.price|default:'0' }}</td>
+                      {% endif %}
                       <td>
                         <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="text-danger js-ajax-remove-btn">
                           <span class="glyphicon glyphicon-remove"></span>
@@ -124,7 +156,11 @@
                     {% endfor %}
                   {% else %}
                     <tr>
+                    {% if sale %}
+                      <td colspan="9"><p class="alert alert-info text-left">Продаж нет</p></td>
+                    {% else %}
                       <td colspan="8"><p class="alert alert-info text-left">Заявок нет</p></td>
+                    {% endif %}
                     </tr>
                   {% endif %}
                   </tbody>

@@ -4,6 +4,7 @@ from datetime import datetime
 from django import forms
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView
@@ -11,6 +12,7 @@ from apps.city.models import City
 from apps.manager.models import Manager
 from apps.moderator.models import Moderator
 from apps.ticket.forms import TicketChangeForm
+from core.models import User
 from .models import Ticket
 
 __author__ = 'alexy'
@@ -41,7 +43,7 @@ class TicketListView(ListView):
         elif user.type == 5:
             qs = Ticket.objects.filter(moderator=user.manager_user.moderator.moderator_user)
         elif user.type == 6:
-            qs = Ticket.objects.select_related().filter(type=0, moderator__ticket_forward=True, agency_manager__isnull=True)
+            qs = Ticket.objects.select_related().filter(moderator__ticket_forward=True, agency_manager__isnull=True)
         else:
             qs = Ticket.objects.none()
         if self.request.GET.get('name'):
@@ -144,13 +146,16 @@ class TicketAgencyListView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.type == 6:
+        if user.agency_leader:
+            qs = Ticket.objects.select_related().filter(
+                type__in=[0, 1, 2], moderator__ticket_forward=True, agency_manager__isnull=False)
+        else:
             qs = Ticket.objects.select_related().filter(
                 type__in=[0, 1, 2], moderator__ticket_forward=True, agency_manager=user)
-        else:
-            qs = Ticket.objects.none()
         if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
             qs = qs.filter(city__id=int(self.request.GET.get('city')))
+        if self.request.GET.get('agency_manager') and int(self.request.GET.get('agency_manager')) != 0:
+            qs = qs.filter(agency_manager__id=int(self.request.GET.get('agency_manager')))
         if self.request.GET.get('moderator') and int(self.request.GET.get('moderator')) != 0:
             qs = qs.filter(moderator__id=int(self.request.GET.get('moderator')))
         if self.request.GET.get('type') and self.request.GET.get('type').isdigit():
@@ -169,6 +174,11 @@ class TicketAgencyListView(ListView):
         if user.type == 6:
             city_qs = City.objects.select_related().filter(moderator__ticket_forward=True)
             moderator_qs = Moderator.objects.filter(ticket_forward=True)
+            if user.agency_leader:
+                agency_qs = User.objects.filter(type=6)
+                context.update({
+                    'agency_list': agency_qs,
+                })
             context.update({
                 'city_list': city_qs,
                 'moderator_list': moderator_qs
@@ -180,6 +190,10 @@ class TicketAgencyListView(ListView):
             if self.request.GET.get('moderator') and self.request.GET.get('moderator').isdigit():
                 context.update({
                     'r_moderator': int(self.request.GET.get('moderator'))
+                })
+            if self.request.GET.get('agenc') and self.request.GET.get('agency').isdigit():
+                context.update({
+                    'r_agency': int(self.request.GET.get('agency'))
                 })
             if self.request.GET.get('type') and self.request.GET.get('type').isdigit():
                 context.update({
@@ -203,15 +217,18 @@ class TicketSaleListView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.type == 6:
+        if user.agency_leader:
+            qs = Ticket.objects.select_related().filter(
+                type=3, moderator__ticket_forward=True, agency_manager__isnull=False)
+        else:
             qs = Ticket.objects.select_related().filter(
                 type=3, moderator__ticket_forward=True, agency_manager=user)
-        else:
-            qs = Ticket.objects.none()
         if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
             qs = qs.filter(city__id=int(self.request.GET.get('city')))
         if self.request.GET.get('moderator') and int(self.request.GET.get('moderator')) != 0:
             qs = qs.filter(moderator__id=int(self.request.GET.get('moderator')))
+        if self.request.GET.get('agency_manager') and int(self.request.GET.get('agency_manager')) != 0:
+            qs = qs.filter(agency_manager__id=int(self.request.GET.get('agency_manager')))
         r_date_s = self.request.GET.get('date_s')
         r_date_e = self.request.GET.get('date_e')
         if r_date_s:
@@ -226,6 +243,11 @@ class TicketSaleListView(ListView):
         if user.type == 6:
             city_qs = City.objects.select_related().filter(moderator__ticket_forward=True)
             moderator_qs = Moderator.objects.filter(ticket_forward=True)
+            if user.agency_leader:
+                agency_qs = User.objects.filter(type=6)
+                context.update({
+                    'agency_list': agency_qs,
+                })
             context.update({
                 'city_list': city_qs,
                 'moderator_list': moderator_qs
@@ -238,6 +260,10 @@ class TicketSaleListView(ListView):
                 context.update({
                     'r_moderator': int(self.request.GET.get('moderator'))
                 })
+            if self.request.GET.get('agenc') and self.request.GET.get('agency').isdigit():
+                context.update({
+                    'r_agency': int(self.request.GET.get('agency'))
+                })
             if self.request.GET.get('date_s'):
                 context.update({
                     'r_date_s': self.request.GET.get('date_s')
@@ -246,6 +272,11 @@ class TicketSaleListView(ListView):
                 context.update({
                     'r_date_e': self.request.GET.get('date_e')
                 })
+            total_sum = self.object_list.aggregate(Sum('price'))['price__sum'] or 0
+            print total_sum
+            context.update({
+                'total_sum': total_sum
+            })
         context.update({
             'sale': True
         })

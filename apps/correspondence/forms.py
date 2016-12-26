@@ -28,9 +28,9 @@ class UserMessageAnswerForm(forms.ModelForm):
         model = UserMessageAnswer
         fields = ('usermessage', 'author', 'recipient', 'text')
         widgets = {
-            'author': forms.TextInput(),
-            'recipient': forms.TextInput(),
-            'usermessage': forms.TextInput(),
+            'author': forms.HiddenInput(),
+            'recipient': forms.HiddenInput(),
+            'usermessage': forms.HiddenInput(),
             'text': forms.Textarea(attrs={'class': 'form-control'}),
 
         }

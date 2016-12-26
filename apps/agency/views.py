@@ -27,6 +27,8 @@ def agency_add(request):
             user.type = 6
             user.is_staff = True
             user.is_active = True
+            if request.POST.get('leader'):
+                user.agency_leader = True
             user.save()
             return HttpResponseRedirect(reverse('agency:update', args=(user.id,)))
         else:
@@ -50,7 +52,10 @@ def agency_update(request, pk):
     if request.method == 'POST':
         form = UserUpdateForm(request.POST, instance=user)
         if form.is_valid():
-            form.save()
+            instance = form.save(commit=False)
+            if request.POST.get('leader'):
+                instance.agency_leader = True
+            instance.save()
             success_msg += u' Изменения успешно сохранены'
         else:
             error_msg = u'Проверьте правильность ввода полей!'

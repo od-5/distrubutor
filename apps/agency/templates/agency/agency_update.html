@@ -44,6 +44,12 @@
                     {{ form.phone }}
                     {{ form.phone.errors }}
                   </div>
+                  {% if user.type == 1 %}
+                  <div class="form-group add-bottom">
+                    <label for="id_leader">Руководитель:</label>
+                    <input type="checkbox" name="leader" id="id_leader" {% if object.agency_leader %}checked="checked"{% endif %}>
+                  </div>
+                  {% endif %}
                   <div class="form-group add-bottom">
                     {{ form.is_active.label_tag }}
                     {{ form.is_active }}

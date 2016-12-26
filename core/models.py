@@ -76,6 +76,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     type = models.PositiveSmallIntegerField(verbose_name=u'Уровень доступа', default=1, choices=USER_TYPE_CHOICE)
     is_staff = models.BooleanField(_('staff status'), default=False,
                                    help_text=_('Designates whether the user can log into this admin site.'))
+    agency_leader = models.BooleanField(verbose_name=u'Руководитель', default=False)
 
     is_active = models.BooleanField(_('active'), default=True,
                                     help_text=_('Designates whether this user should be treated as '

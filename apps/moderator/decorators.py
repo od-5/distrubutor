@@ -14,7 +14,6 @@ def blocked(f):
         user = request.user
         if user.is_authenticated():
             if user.deny_access():
-                # fixme: сделать редирект на рабочий стол
                 return HttpResponseRedirect(reverse('dashboard:index'))
             return f(request)
         else:
