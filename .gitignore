@@ -16,3 +16,5 @@
 core/migrations/
 /apps/adjuster/migrations
 /apps/client/migrations
+vagrant/
+db.sqlite3
