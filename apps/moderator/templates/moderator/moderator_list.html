@@ -127,10 +127,10 @@
                   <tbody class="js-list">
                   {% for object in object_list %}
                     <tr>
+                      <td>{{ object.moderator_user.company|default:'Не указано' }}</td>
                       <td><a href="{% url 'moderator:detail' object.id %}"> {{ object.email|default:'' }}</a></td>
                       <td>{{ object.get_full_name|default:'Не указано' }}</td>
                       <td>{{ object.phone|default:'Не указано' }}</td>
-                      <td>{{ object.moderator_user.company|default:'Не указано' }}</td>
                       <td>
                       {% for city in object.moderator_user.city.all %}
                         {{ city.name|default:'' }}
@@ -141,7 +141,7 @@
                     </tr>
                   {% empty %}
                     <tr>
-                      <td colspan="6">
+                      <td colspan="7">
                         <p class="alert alert-info text-left">Модераторов не найдено</p>
                       </td>
                     </tr>
