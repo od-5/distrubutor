@@ -34,7 +34,7 @@ class ManagerListView(ListView):
             qs = Manager.objects.all()
         elif user.type == 2:
             if user.superviser:
-                qs = Manager.objects.select_related().filter(Q(moderator__superviser=user) | Q(moderator=user))
+                qs = Manager.objects.select_related().filter(Q(moderator__moderator_user__superviser=user) | Q(moderator=user))
             else:
                 qs = Manager.objects.filter(moderator=user)
         elif user.type == 5:
