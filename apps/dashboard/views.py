@@ -1,12 +1,11 @@
 # coding=utf-8
 import os
 import datetime
-import re
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.forms import HiddenInput
 from django.utils.timezone import utc
 from django.views.generic import TemplateView
-from apps.distributor.models import GPSPoint, DistributorTask
+from apps.distributor.models import GPSPoint
 from apps.moderator.forms import ReviewForm
 
 __author__ = 'alexy'
@@ -126,57 +125,3 @@ class DashboardView(TemplateView):
                     'actual_task_count': actual_task_count
                 })
         return context
-
-
-# todo: старый код. Аккуратно выпилить вместе с приложением apps.mobile
-def mobile_check(request):
-    try:
-        request.session['is_mobile']
-    except:
-        request.session['is_mobile'] = False
-    if 'HTTP_USER_AGENT' in request.META:
-        user_agent = request.META['HTTP_USER_AGENT']
-        patterns = [
-            'up.browser',
-            'up.link',
-            'mmp',
-            'symbian',
-            'smartphone',
-            'midp',
-            'wap',
-            'phone',
-            'pda',
-            'mobile',
-            'mini',
-            'palm',
-            'netfront',
-            'android',
-            'blackberry',
-            'WordPress App',
-            'wp-iphone',
-            'pluckItCrawler',
-            'tablet',
-            'SAMSUNG-SGH-i900',
-            'Facebook App .*',
-            'ipad',
-            'iOS',
-            '^Flipboard App .*$',
-            'Flixster App .*$',
-            'Flixster App',
-            'GT-P3100',
-            'Puffin/3.7',
-            'FBAV/.*',
-            'Silk/.*',
-            'Windows CE',
-            'SymbOS\*Opera Mobi',
-            'HTC',
-            'TBD.*',
-            'TERRA_101',
-            'DINO.*',
-        ]
-        pattern = "(%s)" % '|'.join(patterns)
-        prog = re.compile(pattern, re.IGNORECASE)
-        match = prog.search(user_agent)
-        if match:
-            request.session['is_mobile'] = True
-

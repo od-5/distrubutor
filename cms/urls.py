@@ -23,7 +23,6 @@ urlpatterns = patterns(
     url(r'^ticket/', include('apps.ticket.urls', namespace='ticket'),),
     url(r'^manager/', include('apps.manager.urls', namespace='manager'),),
     url(r'^client/', include('apps.client.urls', namespace='client'),),
-    url(r'^mobile/', include('apps.mobile.urls', namespace='mobile'),),
     url(r'^payment/', include('apps.robokassa.urls', namespace='payment'),),
     url(r'^correspondence/', include('apps.correspondence.urls', namespace='correspondence'),),
     url(r'^order/', include('apps.order.urls', namespace='order'),),
