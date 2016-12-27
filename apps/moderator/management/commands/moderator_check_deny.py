@@ -10,6 +10,6 @@ __author__ = 'alexy'
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        Moderator.objects.filter(deny_date__lt=datetime.date.today(), deny_access=False).update(deny_access=True)
+        Moderator.objects.filter(superviser__isnull=True, deny_date__lt=datetime.date.today(), deny_access=False).update(deny_access=True)
 
 
