@@ -38,7 +38,15 @@
             </button>
             <form action="" class="form form-filter" id="js-client-search-form" role="form" method="GET">
               <div class="col-md-12">
-                {% if user.type == 1 or user.type == 6 %}
+                {% if user.type == 1 or user.type == 6 or user.superviser%}
+                <div class="five-col-1">
+                  <select name="moderator" class="form-control input-sm">
+                    <option value="0">-- Модератор --</option>
+                    {% for moderator in moderator_list %}
+                      <option value="{{ moderator.id }}" {% if moderator.id == moderator_id %}selected="selected"{% endif %}>{{ moderator }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
                 <div class="five-col-2">
                   <select name="city" class="form-control input-sm">
                     <option value="0">-- Город --</option>
@@ -104,6 +112,9 @@
                       <th>Название</th>
                       <th>Юридическое наименование</th>
                       <th>Город</th>
+                      {% if user.superviser %}
+                      <th>Модератор</th>
+                      {% endif %}
                       <th>Менеджер</th>
                       <th>Кол-во материалов</th>
                       <th>Стоимость 1 шт, руб</th>
@@ -127,6 +138,9 @@
                       {% endif %}
                       <td>{{ object.sale.legal_name|default:'Не указано' }}</td>
                       <td>{{ object.sale.city|default:'Не указано' }}</td>
+                      {% if user.superviser %}
+                      <td>{{ object.sale.moderator|default:'Не указано' }}</td>
+                      {% endif %}
                       <td>{{ object.sale.manager|default:'Не указано' }}</td>
                       <td>{{ object.count|default:'0' }}</td>
                       <td>{{ object.cost|default:'0' }}</td>
@@ -149,7 +163,7 @@
                     {% endfor %}
                   {% else %}
                     <tr>
-                      <td colspan="{% if user.type == 6 %}9{% else %}10{% endif %}"><p class="alert alert-info text-left">Клиентов нет</p></td>
+                      <td colspan="{% if user.superviser %}12{% elif user.type == 6 %}9{% else %}11{% endif %}"><p class="alert alert-info text-left">Клиентов нет</p></td>
                     </tr>
                   {% endif %}
                   </tbody>

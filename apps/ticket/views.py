@@ -4,7 +4,7 @@ from datetime import datetime
 from django import forms
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView
@@ -36,12 +36,16 @@ class TicketListView(ListView):
         if user.type == 1:
             qs = Ticket.objects.all()
         elif user.type == 2:
-            if user.moderator_user.ticket_forward:
-                qs = Ticket.objects.filter(pk=-1)
+            if user.superviser:
+                qs = Ticket.objects.filter(Q(moderator__superviser=user) | Q(moderator=user.moderator_user))
             else:
-                qs = Ticket.objects.filter(moderator=user.moderator_user)
+                if user.moderator_user.ticket_forward:
+                    qs = Ticket.objects.none()
+                else:
+                    qs = Ticket.objects.filter(moderator=user.moderator_user)
         elif user.type == 5:
-            qs = Ticket.objects.filter(moderator=user.manager_user.moderator.moderator_user)
+            qs = Ticket.objects.filter(
+                moderator=user.manager_user.moderator.moderator_user, moderator__ticket_forward=False)
         elif user.type == 6:
             qs = Ticket.objects.select_related().filter(moderator__ticket_forward=True, agency_manager__isnull=True)
         else:
@@ -70,7 +74,15 @@ class TicketListView(ListView):
         if user.type == 1:
             city_qs = City.objects.all()
         elif user.type == 2:
-            city_qs = user.moderator_user.city.all()
+            if user.superviser:
+                city_qs = City.objects.select_related().filter(
+                    Q(moderator__superviser=user) | Q(moderator=user.moderator_user))
+                moderator_qs = Moderator.objects.filter(Q(superviser=user) | Q(user=user))
+                context.update({
+                    'moderator_list': moderator_qs
+                })
+            else:
+                city_qs = user.moderator_user.city.all()
         elif user.type == 5:
             city_qs = user.manager_user.moderator.moderator_user.city.all()
         elif user.type == 6:
@@ -82,7 +94,7 @@ class TicketListView(ListView):
         else:
             city_qs = City.objects.none()
         context.update({
-            'city_list': city_qs,
+            'city_list': city_qs.distinct()
         })
         if self.request.GET.get('city') and self.request.GET.get('city').isdigit():
             context.update({
@@ -315,6 +327,9 @@ def ticket_detail(request, pk):
     form.fields['city'].queryset = city_qs
     if user.type != 6:
         form.fields['city'].widget = forms.HiddenInput()
+        form.fields['agency_manager'].widget = forms.HiddenInput()
+    if user.type in [2,5]:
+        form.fields['moderator'].widget = forms.HiddenInput()
     context.update({
         'form': form,
         'object': ticket

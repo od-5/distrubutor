@@ -5,7 +5,7 @@
       <div class="col-md-12">
         <ol class="breadcrumb">
           <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
-          {% if user.type == 1 or user.type == 6 %}
+          {% if user.type == 1 or user.type == 6 or user.superviser %}
           <li><a href="{% url 'moderator:list' %}">Список модераторов</a></li>
           {% endif %}
           {% if user.type == 1 %}

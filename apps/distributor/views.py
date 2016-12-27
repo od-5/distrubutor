@@ -2,6 +2,7 @@
 import datetime
 from annoying.functions import get_object_or_None
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.forms import HiddenInput, inlineformset_factory
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
@@ -32,7 +33,11 @@ class DistributorListView(ListView):
             qs = User.objects.filter(type=4)
         elif user.type == 2:
             # qs = user.moderator_user.distributor_set.all()
-            qs = User.objects.filter(distributor_user__moderator=user.moderator_user)
+            if user.superviser:
+                qs = User.objects.filter(
+                    Q(type=4, distributor_user__moderator__superviser=user) | Q(type=4, distributor_user__moderator=user.moderator_user))
+            else:
+                qs = User.objects.filter(type=4, distributor_user__moderator=user.moderator_user)
         elif user.type == 5:
             if user.manager_user.leader:
                 qs = User.objects.filter(distributor_user__moderator=user.manager_user.moderator.moderator_user)
@@ -148,18 +153,16 @@ class DistributorTaskListView(ListView):
         if user.type == 1:
             qs = DistributorTask.objects.filter(closed=False)
         elif user.type == 2:
-            qs = DistributorTask.objects.select_related().filter(distributor__moderator=user.moderator_user, closed=False)
+            qs = DistributorTask.objects.filter(distributor__moderator=user.moderator_user, closed=False)
         elif user.type == 4:
             qs = DistributorTask.objects.filter(distributor=user.distributor_user, closed=False)
         elif user.type == 5:
             if user.manager_user.leader:
-                qs = DistributorTask.objects.select_related().filter(distributor__moderator=user.manager_user.moderator.moderator_user,
+                qs = DistributorTask.objects.filter(distributor__moderator=user.manager_user.moderator.moderator_user,
                                                     closed=False)
             else:
-                qs = DistributorTask.objects.select_related().filter(sale__manager=user.manager_user, closed=False)
-        elif user.type == 6:
-            qs = DistributorTask.objects.select_related().filter(
-                distributor__moderator__ticket_forward=True, closed=False)
+                qs = DistributorTask.objects.filter(sale__manager=user.manager_user, closed=False)
+
         else:
             qs = DistributorTask.objects.none()
         r_city = self.request.GET.get('city')
@@ -167,23 +170,22 @@ class DistributorTaskListView(ListView):
         r_company = self.request.GET.get('company')
         r_distributor = self.request.GET.get('distributor')
         r_date = self.request.GET.get('date')
-        if qs:
-            if r_city:
-                qs = qs.filter(sale__city__name__icontains=r_city)
-            if r_type:
-                qs = qs.filter(type=int(r_type))
-            if r_company:
-                qs = qs.filter(distributor__moderator__company__icontains=r_company)
-            if r_distributor:
-                qs = qs.filter(distributor__user__last_name__icontains=r_distributor)
-            if r_date:
-                qs = qs.filter(date=datetime.datetime.strptime(r_date, '%d.%m.%Y'))
-            if self.request.GET.get('date__day') and self.request.GET.get('date__month') and self.request.GET.get(
-                    'date__year'):
-                day = self.request.GET.get('date__day')
-                month = self.request.GET.get('date__month')
-                year = self.request.GET.get('date__year')
-                qs = qs.filter(date__day=day, date__month=month, date__year=year)
+        if r_city:
+            qs = qs.filter(sale__city__name__icontains=r_city)
+        if r_type:
+            qs = qs.filter(type=int(r_type))
+        if r_company:
+            qs = qs.filter(distributor__moderator__company__icontains=r_company)
+        if r_distributor:
+            qs = qs.filter(distributor__user__last_name__icontains=r_distributor)
+        if r_date:
+            qs = qs.filter(date=datetime.datetime.strptime(r_date, '%d.%m.%Y'))
+        if self.request.GET.get('date__day') and self.request.GET.get('date__month') and self.request.GET.get(
+                'date__year'):
+            day = self.request.GET.get('date__day')
+            month = self.request.GET.get('date__month')
+            year = self.request.GET.get('date__year')
+            qs = qs.filter(date__day=day, date__month=month, date__year=year)
         return qs
 
     def get_context_data(self, **kwargs):
@@ -193,11 +195,11 @@ class DistributorTaskListView(ListView):
         )
         user = self.request.user
         if user.type == 2:
-            action_qs = ModeratorAction.objects.all()
+            action_qs = ModeratorAction.objects.filter(moderator=user.moderator_user)
         elif user.type == 5:
             action_qs = ModeratorAction.objects.filter(moderator=user.manager_user.moderator.moderator_user)
         else:
-            action_qs = ModeratorAction.objects.none()
+            action_qs = None
         context.update({
             'action_list': action_qs
         })
@@ -234,20 +236,17 @@ class DistributorTaskArchiveView(ListView):
         if user.type == 1:
             qs = DistributorTask.objects.filter(closed=True)
         elif user.type == 2:
-            qs = DistributorTask.objects.select_related().filter(closed=True, distributor__moderator=user.moderator_user)
+            qs = DistributorTask.objects.filter(closed=True, distributor__moderator=user.moderator_user)
         elif user.type == 4:
             qs = DistributorTask.objects.filter(closed=True, distributor=user.distributor_user)
         elif user.type == 5:
             if user.manager_user.leader:
-                qs = DistributorTask.objects.select_related().filter(closed=True,
+                qs = DistributorTask.objects.filter(closed=True,
                                                     distributor__moderator=user.manager_user.moderator.moderator_user)
             else:
-                qs = DistributorTask.objects.select_related().filter(closed=True, sale__manager=user.manager_user)
-        elif user.type == 6:
-            qs = DistributorTask.objects.select_related().filter(
-                distributor__moderator__ticket_forward=True, closed=True)
+                qs = DistributorTask.objects.filter(closed=True, sale__manager=user.manager_user)
         else:
-            qs = DistributorTask.objects.none()
+            qs = None
         r_city = self.request.GET.get('city')
         r_type = self.request.GET.get('type')
         r_company = self.request.GET.get('company')
@@ -387,7 +386,15 @@ def distributor_report(request):
             'moderator_list': moderator_qs
         })
     elif user.type == 2:
-        qs = Distributor.objects.select_related().filter(moderator=user.moderator_user)
+        if user.superviser:
+            qs = Distributor.objects.filter(
+                Q(moderator__superviser=user) | Q(moderator=user.moderator_user))
+            moderator_qs = Moderator.objects.filter(Q(superviser=user) | Q(user=user))
+            context.update({
+                'moderator_list': moderator_qs
+            })
+        else:
+            qs = Distributor.objects.select_related().filter(moderator=user.moderator_user)
     elif user.type == 5:
         qs = Distributor.objects.select_related().filter(moderator=user.manager_user.moderator.moderator_user)
     else:

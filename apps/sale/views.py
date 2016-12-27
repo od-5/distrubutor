@@ -6,6 +6,7 @@ import StringIO
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.core.mail import send_mail
+from django.db.models import Q
 import xlwt
 
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
@@ -125,7 +126,10 @@ class SaleListView(ListView):
         if user.type == 1:
             qs = Sale.objects.all()
         elif user.type == 2:
-            qs = Sale.objects.filter(moderator=user.moderator_user)
+            if user.superviser:
+                qs = Sale.objects.filter(Q(moderator__superviser=user) | Q(moderator=user.moderator_user))
+            else:
+                qs = Sale.objects.filter(moderator=user.moderator_user)
         elif user.type == 5:
             if user.manager_user.leader:
                 qs = Sale.objects.filter(moderator=user.manager_user.moderator.moderator_user)
@@ -137,6 +141,8 @@ class SaleListView(ListView):
             qs = qs.filter(user__email=self.request.GET.get('email'))
         if self.request.GET.get('legal_name'):
             qs = qs.filter(legal_name__icontains=self.request.GET.get('legal_name'))
+        if self.request.GET.get('moderator') and int(self.request.GET.get('moderator')) != 0:
+            qs = qs.filter(moderator=int(self.request.GET.get('moderator')))
         if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
             qs = qs.filter(city=int(self.request.GET.get('city')))
         if self.request.GET.get('manager') and int(self.request.GET.get('manager')) != 0:
@@ -146,12 +152,19 @@ class SaleListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(SaleListView, self).get_context_data(**kwargs)
         user = self.request.user
+        moderator_qs = None
         if user.type == 1:
             city_qs = City.objects.all()
             manager_qs = Manager.objects.all()
         elif user.type == 2:
-            city_qs = user.moderator_user.city.all()
-            manager_qs = user.manager_set.all()
+            if user.superviser:
+                city_qs = City.objects.select_related().filter(
+                    Q(moderator__superviser=user) | Q(moderator=user.moderator_user)).distinct()
+                moderator_qs = Moderator.objects.filter(Q(superviser=user) | Q(user=user))
+                manager_qs = Manager.objects.select_related().filter(Q(moderator__superviser=user) | Q(moderator=user))
+            else:
+                city_qs = user.moderator_user.city.all()
+                manager_qs = user.manager_set.all()
         elif user.type == 5:
             manager = Manager.objects.get(user=user)
             city_qs = City.objects.filter(moderator=manager.moderator)
@@ -161,7 +174,9 @@ class SaleListView(ListView):
             manager_qs = None
         context.update({
             'city_list': city_qs,
-            'manager_list': manager_qs
+            'manager_list': manager_qs,
+            'moderator_list': moderator_qs
+
         })
         if self.request.GET.get('city'):
             context.update({
@@ -170,6 +185,10 @@ class SaleListView(ListView):
         if self.request.GET.get('manager'):
             context.update({
                 'manager_id': int(self.request.GET.get('manager'))
+            })
+        if self.request.GET.get('moderator'):
+            context.update({
+                'moderator_id': int(self.request.GET.get('moderator'))
             })
         context.update({
             'r_email': self.request.GET.get('email'),
@@ -188,7 +207,11 @@ class JournalListView(ListView):
         if user.type == 1:
             qs = SaleOrder.objects.select_related().all()
         elif user.type == 2:
-            qs = SaleOrder.objects.select_related().filter(sale__moderator=user.moderator_user)
+            if user.superviser:
+                qs = SaleOrder.objects.select_related().filter(
+                    Q(sale__moderator__superviser=user) | Q(sale__moderator=user.moderator_user))
+            else:
+                qs = SaleOrder.objects.select_related().filter(sale__moderator=user.moderator_user)
         elif user.type == 5:
             if user.manager_user.leader:
                 qs = SaleOrder.objects.select_related().filter(sale__moderator=user.manager_user.moderator.moderator_user)
@@ -202,6 +225,8 @@ class JournalListView(ListView):
             qs = qs.filter(sale__legal_name=self.request.GET.get('legal_name'))
         if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
             qs = qs.filter(sale__city=int(self.request.GET.get('city')))
+        if self.request.GET.get('moderator') and int(self.request.GET.get('moderator')) != 0:
+            qs = qs.filter(sale__moderator=int(self.request.GET.get('moderator')))
         if self.request.GET.get('manager') and int(self.request.GET.get('manager')) != 0:
             qs = qs.filter(sale__manager=int(self.request.GET.get('manager')))
         if self.request.GET.get('date_start'):
@@ -225,12 +250,20 @@ class JournalListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(JournalListView, self).get_context_data(**kwargs)
         user = self.request.user
+        moderator_qs = None
         if user.type == 1:
             city_qs = City.objects.all()
             manager_qs = Manager.objects.all()
+            moderator_qs = Moderator.objects.all()
         elif user.type == 2:
-            city_qs = user.moderator_user.city.all()
-            manager_qs = user.manager_set.all()
+            if user.superviser:
+                city_qs = City.objects.select_related().filter(
+                    Q(moderator__superviser=user) | Q(moderator=user.moderator_user)).distinct()
+                moderator_qs = Moderator.objects.filter(Q(superviser=user) | Q(user=user))
+                manager_qs = Manager.objects.select_related().filter(Q(moderator__superviser=user) | Q(moderator=user))
+            else:
+                city_qs = user.moderator_user.city.all()
+                manager_qs = user.manager_set.all()
         elif user.type == 5:
             city_qs = City.objects.filter(moderator=user.manager.moderator)
             manager_qs = Manager.objects.filter(moderator=user.manager.moderator)
@@ -242,6 +275,7 @@ class JournalListView(ListView):
             manager_qs = Manager.objects.none()
         context.update({
             'city_list': city_qs,
+            'moderator_list': moderator_qs,
             'manager_list': manager_qs,
         })
         if self.request.GET.get('payment'):
@@ -259,6 +293,10 @@ class JournalListView(ListView):
         if self.request.GET.get('city'):
             context.update({
                 'city_id': int(self.request.GET.get('city'))
+            })
+        if self.request.GET.get('moderator'):
+            context.update({
+                'moderator_id': int(self.request.GET.get('moderator'))
             })
         if self.request.GET.get('manager'):
             context.update({

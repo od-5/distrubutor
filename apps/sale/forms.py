@@ -91,15 +91,23 @@ class SaleUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user")
         super(SaleUpdateForm, self).__init__(*args, **kwargs)
+        if 'instance' in kwargs:
+            sale = kwargs['instance']
+            self.fields['manager'].queryset = sale.moderator.user.manager_set.filter(user__is_active=True)
+        else:
+            sale = None
         if user.type == 1:
-            self.fields['manager'].queryset = Manager.objects.filter(user__is_active=True)
+            if not sale:
+                self.fields['manager'].queryset = Manager.objects.filter(user__is_active=True)
         elif user.type == 2:
+            if not sale:
+                self.fields['manager'].queryset = user.manager_set.filter(user__is_active=True)
             self.fields['city'].queryset = user.moderator_user.city.all()
-            self.fields['manager'].queryset = user.manager_set.filter(user__is_active=True)
             self.fields['moderator'].widget = forms.HiddenInput()
         elif user.type == 5:
+            if not sale:
+                self.fields['manager'].queryset = user.manager_user.moderator.manager_set.filter(user__is_active=True)
             self.fields['city'].queryset = user.manager_user.moderator.moderator_user.city.all()
-            self.fields['manager'].queryset = user.manager_user.moderator.manager_set.filter(user__is_active=True)
             self.fields['moderator'].widget = forms.HiddenInput()
 
 

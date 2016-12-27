@@ -112,9 +112,11 @@ def get_current_location(request):
         if moderator:
             qs = qs.filter(moderator__company__iexact=moderator)
     elif user.type == 2:
-        qs = Distributor.objects.select_related().filter(moderator=user.moderator_user, coord_x__isnull=False, coord_y__isnull=False)
+        qs = Distributor.objects.select_related().filter(
+            moderator=user.moderator_user, coord_x__isnull=False, coord_y__isnull=False)
     elif user.type == 5:
-        qs = Distributor.objects.select_related().filter(moderator=user.manager_user.moderator, coord_x__isnull=False, coord_y__isnull=False)
+        qs = Distributor.objects.select_related().filter(
+            moderator=user.manager_user.moderator, coord_x__isnull=False, coord_y__isnull=False)
     else:
         qs = None
     if email:

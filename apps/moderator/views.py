@@ -34,8 +34,10 @@ class ModeratorListView(ListView):
         user = self.request.user
         if user.type == 1:
             qs = User.objects.filter(type=2)
+        elif user.superviser:
+            qs = User.objects.select_related().filter(type=2, moderator_user__superviser=user)
         elif user.type == 6:
-            qs = User.objects.filter(type=2, moderator_user__ticket_forward=True, moderator_user__deny_access=False)
+            qs = User.objects.select_related().filter(type=2, moderator_user__ticket_forward=True, moderator_user__deny_access=False)
         else:
             qs = User.objects.none()
         if self.request.GET.get('email'):
@@ -72,6 +74,8 @@ def moderator_add(request):
             user.type = 2
             user.is_staff = True
             user.is_active = True
+            if request.POST.get('superviser'):
+                user.superviser = True
             user.save()
             return HttpResponseRedirect(reverse('moderator:update', args=(user.id,)))
             # return HttpResponseRedirect(reverse('moderator:list'))
@@ -102,7 +106,10 @@ def moderator_user_update(request, pk):
     if request.method == 'POST':
         form = UserUpdateForm(request.POST, instance=moderator_user)
         if form.is_valid():
-            form.save()
+            instance = form.save(commit=False)
+            if request.POST.get('superviser'):
+                instance.superviser = True
+            instance.save()
             success_msg += u' Изменения успешно сохранены'
         else:
             error_msg = u'Проверьте правильность ввода полей!'

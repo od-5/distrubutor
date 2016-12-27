@@ -34,7 +34,7 @@
                 {% csrf_token %}
                 <div class="col-md-6">
                   <p class="lead text-info">Контактная информация</p>
-                  <div class="form-group {% if user.type == 2 or user.type == 5 %}hide{% endif %}">
+                  <div class="form-group {% if user.type != 1 and not user.superviser %}hide{% endif %}">
                     {{ m_form.moderator.label_tag }}
                     {{ m_form.moderator }}
                     {{ m_form.moderator.errors }}

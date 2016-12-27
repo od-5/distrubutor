@@ -41,6 +41,16 @@
             </button>
             <form action="" class="form form-filter" role="form" method="GET">
               <div class="col-md-12">
+              {% if moderator_list %}
+                <div class="five-col-1">
+                  <select name="moderator" class="form-control">
+                    <option value="0">---- Модератор ----</option>
+                    {% for moderator in moderator_list %}
+                      <option value="{{ moderator.id }}" {% if moderator.id == moderator_id %}selected="selected"{% endif %}>{{ moderator }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              {% endif %}
                 <div class="five-col-2">
                   <select name="city" class="form-control">
                     <option value="0">---- Город ----</option>
@@ -79,6 +89,9 @@
                       <th>Юридические наименование</th>
                       <th>Фактичесское наименование</th>
                       <th>Город</th>
+                      {% if user.superviser %}
+                      <th>Модератор</th>
+                      {% endif %}
                       <th>Менеджер</th>
                       <th>Пользователь</th>
                       <th>Руководитель</th>
@@ -93,6 +106,9 @@
                       <td><a href="{% url 'sale:update' object.id %}">{{ object.legal_name|default:'Не указано' }}</a></td>
                       <td>{{ object.actual_name|default:'Не указано' }}</td>
                       <td>{{ object.city|default:'Не указано' }}</td>
+                      {% if user.superviser %}
+                      <td>{{ object.moderator|default:'Не указано' }}</td>
+                      {% endif %}
                       <td>{{ object.manager|default:'Не указано' }}</td>
                       <td>{{ object.user|default:'Не указано' }}</td>
                       <td>{{ object.leader|default:'Не указано' }}</td>
@@ -106,7 +122,7 @@
                     {% endfor %}
                   {% else %}
                     <tr>
-                      <td colspan="8"><p class="alert alert-info text-left">Клиентов нет</p></td>
+                      <td colspan="{% if user.superviser %}9{% else %}8{% endif %}"><p class="alert alert-info text-left">Клиентов нет</p></td>
                     </tr>
                   {% endif %}
                   </tbody>

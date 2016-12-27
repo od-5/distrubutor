@@ -67,7 +67,11 @@
         <li><a href="{% url 'agency:list' %}">Список сотрудников РА</a></li>
         <li><a href="{% url 'agency:add' %}">Добавить сотрудника РА</a></li>
         <li class="divider"></li>
+        {% endif %}
+        {% if user.type == 1 or user.superviser %}
         <li><a href="{% url 'moderator:list' %}">Список модераторов</a></li>
+        {% endif %}
+        {% if user.type == 1 %}
         <li><a href="{% url 'moderator:add' %}">Добавить нового модератора</a></li>
         <li class="divider"></li>
         {% endif %}

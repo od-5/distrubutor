@@ -12,6 +12,7 @@ class ModeratorForm(forms.ModelForm):
         exclude = ['comment', ]
         widgets = {
             'user': forms.HiddenInput(attrs={'class': 'form-control'}),
+            'superviser': forms.Select(attrs={'class': 'form-control'}),
             'ticket_forward': forms.CheckboxInput(),
             'deny_access': forms.CheckboxInput(),
             'site_visible': forms.CheckboxInput(),
@@ -39,6 +40,7 @@ class ModeratorForm(forms.ModelForm):
         user = kwargs.pop("user")
         super(ModeratorForm, self).__init__(*args, **kwargs)
         if user.type != 1:
+            self.fields['superviser'].widget = forms.HiddenInput()
             self.fields['deny_access'].widget = forms.HiddenInput()
             self.fields['deny_date'].widget = forms.HiddenInput()
             self.fields['site_visible'].widget = forms.HiddenInput()

@@ -35,7 +35,7 @@
             </button>
             <form action="" method="GET" role="form" class="form form-filter js-manager-report-form ">
               <div class="col-md-12">
-                {% if user.type == 1 %}
+                {% if user.type == 1 or user.superviser %}
                 <div class="five-col-2">
                   <select name="moderator" id="id_moderator" class="form-control input-sm">
                     <option value="0">Выберите модератора</option>
@@ -57,7 +57,7 @@
                 <div class="five-col-1">
                   <input type="text" name="phone" value="{{ r_phone|default:'' }}" class="form-control input-sm" placeholder="Телефон">
                 </div>
-                {% if user.type != 1 %}<div class="clearfix"></div>{% endif %}
+                {% if user.type != 1 and not user.superviser %}<div class="clearfix"></div>{% endif %}
                 <div class="five-col-1">
                   <input type="text" name="date_s" id="id_date_s" class="form-control input-sm" placeholder="Дата от" value="{{ r_date_s|default:'' }}">
                 </div>

@@ -58,39 +58,18 @@ class Moderator(models.Model):
             pass
 
     user = models.OneToOneField(
-        to=User,
-        limit_choices_to={'type': 2},
-        verbose_name=u'Модератор',
-        related_name='moderator_user'
+        to=User, limit_choices_to={'type': 2}, verbose_name=u'Модератор', related_name='moderator_user'
     )
-    city = models.ManyToManyField(
-        to=City,
-        verbose_name=u'Город',
-        blank=True,
-        null=True
+    superviser = models.ForeignKey(
+        to=User, limit_choices_to={'superviser': True}, verbose_name=u'Супервайзер', related_name='superviser_user',
+        blank=True, null=True
     )
-    company = models.CharField(
-        verbose_name=u'Название организации',
-        max_length=200,
-    )
-    leader = models.CharField(
-        verbose_name=u'Руководитель',
-        max_length=200,
-        blank=True,
-        null=True
-    )
-    leader_function = models.CharField(
-        verbose_name=u'Должность руководителя',
-        max_length=200,
-        blank=True,
-        null=True
-    )
-    work_basis = models.CharField(
-        verbose_name=u'Основание для работы',
-        max_length=200,
-        blank=True,
-        null=True
-    )
+
+    city = models.ManyToManyField(to=City, verbose_name=u'Город', blank=True, null=True)
+    company = models.CharField(verbose_name=u'Название организации', max_length=200,)
+    leader = models.CharField(verbose_name=u'Руководитель', max_length=200, blank=True, null=True)
+    leader_function = models.CharField(verbose_name=u'Должность руководителя', max_length=200, blank=True, null=True)
+    work_basis = models.CharField(verbose_name=u'Основание для работы', max_length=200, blank=True, null=True)
     experience = models.CharField(max_length=256, verbose_name=u'Стаж работы', blank=True, null=True)
     description = models.TextField(verbose_name=u'Краткое описание', blank=True, null=True)
     contact = models.TextField(verbose_name=u'Контакты', blank=True, null=True)

@@ -38,7 +38,7 @@
                     {% endfor %}
                   </select>
                 </div>
-              {% if user.type == 6 %}
+              {% if user.type == 6 or user.superviser %}
                 <div class="five-col-2">
                   <select name="moderator" class="form-control">
                     <option value="0">Исполнитель</option>
@@ -48,7 +48,8 @@
                   </select>
                 </div>
                 <div class="clearfix"></div>
-              {% else %}
+              {% endif %}
+              {% if user.type != 6 %}
                 <div class="five-col-2">
                   <select name="type" class="form-control">
                     <option>---- Статус ----</option>
@@ -64,6 +65,9 @@
                 <div class="five-col-1">
                   <input type="text" name="phone" class="form-control" placeholder="Телефон" value="{{ r_phone|default:'' }}">
                 </div>
+              {% endif %}
+              {% if user.superviser %}
+                <div class="clearfix"></div>
               {% endif %}
                 <div class="five-col-1">
                   <input type="text" name="date_s" id="id_date_s" value="{{ r_date_s|default:'' }}" class="form-control" placeholder="Дата от">

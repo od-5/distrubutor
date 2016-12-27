@@ -2,7 +2,7 @@
 import datetime
 from annoying.functions import get_object_or_None
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.contrib.auth.decorators import login_required
 import xlwt
 from datetime import date
@@ -13,6 +13,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
 from apps.city.models import City
+from apps.moderator.models import Moderator
 from apps.sale.models import SaleOrder, SaleOrderPayment
 from core.forms import UserAddForm, UserUpdateForm
 from core.models import User
@@ -31,16 +32,21 @@ class ManagerListView(ListView):
         user = self.request.user
         if user.type == 1:
             qs = Manager.objects.all()
-        elif self.request.user.type == 2:
-            qs = Manager.objects.filter(moderator=user)
-        elif self.request.user.type == 5:
-            manager = Manager.objects.get(user=self.request.user)
+        elif user.type == 2:
+            if user.superviser:
+                qs = Manager.objects.select_related().filter(Q(moderator__superviser=user) | Q(moderator=user))
+            else:
+                qs = Manager.objects.filter(moderator=user)
+        elif user.type == 5:
+            manager = Manager.objects.get(user=user)
             qs = Manager.objects.filter(moderator=manager.moderator)
         else:
             qs = None
         if qs:
             if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
                 qs = qs.filter(moderator__moderator_user__city=self.request.GET.get('city'))
+            if self.request.GET.get('moderator') and int(self.request.GET.get('moderator')) != 0:
+                qs = qs.filter(moderator__moderator_user=self.request.GET.get('moderator'))
             if self.request.GET.get('email'):
                 qs = qs.filter(user__email__icontains=self.request.GET.get('email'))
             if self.request.GET.get('last_name'):
@@ -61,8 +67,17 @@ class ManagerListView(ListView):
                 'city_list': City.objects.all()
             })
         elif user.type == 2:
+            if user.superviser:
+                city_qs = City.objects.select_related().filter(
+                    Q(moderator__superviser=user) | Q(moderator=user.moderator_user)).distinct()
+                moderator_qs = Moderator.objects.filter(Q(superviser=user) | Q(user=user))
+                context.update({
+                    'moderator_list': moderator_qs.distinct()
+                })
+            else:
+                city_qs = user.moderator_user.city.all()
             context.update({
-                'city_list': user.moderator_user.city.all()
+                'city_list': city_qs
             })
         elif user.type == 5 and user.is_leader_manager():
             context.update({
@@ -71,6 +86,10 @@ class ManagerListView(ListView):
         if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
             context.update({
                 'r_city': int(self.request.GET.get('city'))
+            })
+        if self.request.GET.get('moderator') and int(self.request.GET.get('moderator')) != 0:
+            context.update({
+                'r_moderator': int(self.request.GET.get('moderator'))
             })
         context.update({
             'r_email': self.request.GET.get('email'),
@@ -116,7 +135,12 @@ def manager_add(request):
         if request.user.type == 1:
             m_form.fields['moderator'].queryset = User.objects.filter(type=2)
         elif request.user.type == 2:
-            m_form.fields['moderator'].queryset = User.objects.filter(pk=request.user.id)
+            if request.user.superviser:
+                m_form.fields['moderator'].queryset = User.objects.filter(
+                    Q(superviser=request.user) | Q(moderator_user__superviser=request.user)
+                )
+            else:
+                m_form.fields['moderator'].queryset = User.objects.filter(pk=request.user.id)
         elif request.user.type == 5:
             manager = Manager.objects.get(user=request.user)
             m_form.fields['moderator'].queryset = User.objects.filter(pk=manager.moderator.id)
@@ -174,7 +198,12 @@ def manager_report(request):
         manager_qs = Manager.objects.all()
         moderator_qs = User.objects.filter(type=2)
     elif user.type == 2:
-        manager_qs = user.manager_set.all()
+        if user.superviser:
+            moderator_qs = User.objects.select_related().filter(
+                Q(moderator_user__superviser=user, type=2) | Q(moderator_user__user=user, type=2))
+            manager_qs = Manager.objects.select_related().filter(Q(moderator__superviser=user) | Q(moderator=user))
+        else:
+            manager_qs = user.manager_set.all()
     elif user.type == 5:
         manager_qs = user.manager_user.moderator.manager_set.all()
     else:

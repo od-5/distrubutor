@@ -48,6 +48,12 @@
                     {{ form.phone }}
                     {{ form.phone.errors }}
                   </div>
+                  {% if user.type == 1 %}
+                  <div class="form-group">
+                    <label for="id_superviser">Супервайзер</label>
+                    <input type="checkbox" name="superviser" id="id_superviser" {% if object.user.superviser %}checked="checked"{% endif %}>
+                  </div>
+                  {% endif %}
                   <div class="form-group">
                     {{ form.is_active.label_tag }}
                     {{ form.is_active }}
