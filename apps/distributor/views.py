@@ -162,7 +162,8 @@ class DistributorTaskListView(ListView):
                                                     closed=False)
             else:
                 qs = DistributorTask.objects.filter(sale__manager=user.manager_user, closed=False)
-
+        elif user.type == 6:
+            qs = DistributorTask.objects.filter(distributor__moderator__ticket_forward=True, closed=False)
         else:
             qs = DistributorTask.objects.none()
         r_city = self.request.GET.get('city')
@@ -245,8 +246,10 @@ class DistributorTaskArchiveView(ListView):
                                                     distributor__moderator=user.manager_user.moderator.moderator_user)
             else:
                 qs = DistributorTask.objects.filter(closed=True, sale__manager=user.manager_user)
+        elif user.type == 6:
+            qs = DistributorTask.objects.filter(distributor__moderator__ticket_forward=True, closed=False)
         else:
-            qs = None
+            qs = DistributorTask.objects.none()
         r_city = self.request.GET.get('city')
         r_type = self.request.GET.get('type')
         r_company = self.request.GET.get('company')
