@@ -58,10 +58,15 @@ def cms_login(request, usertype=None):
                 user = authenticate(username=username, password=password)
                 if user is not None:
                     if user.is_active:
-                        # todo: если пользователь - менеджер(type=5), проверить - активен ли его модератор. Если нет - не логинить
-                        login(request, user)
-                        request.session['demo'] = False
-                        if user.type == 6:
+                        if user.type == 5:
+                            manager = user.manager_user
+                            moderator = manager.moderator
+                            if moderator.is_active:
+                                login(request, user)
+                                request.session['demo'] = False
+                            else:
+                                error = u'Ваш модератор заблокирован'
+                        elif user.type == 6:
                             return HttpResponseRedirect(reverse('ticket:list'))
                         else:
                             return HttpResponseRedirect(reverse('dashboard:index'))
