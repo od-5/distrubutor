@@ -45,6 +45,7 @@
                 <div class="col-md-4 col-sm-4 col-xs-10">
                   <a href="{{ topic.get_absolute_url|default:'#'}}" title="{{ topic.title|default:'не указано' }}" class="forum__link">
                     {{ topic.title|default:'не указано' }}
+                    {% if topic.closed %}(закрыта){% endif %}
                   </a>
                   <span class="forum__text">{{ topic.author.get_full_name|default:'Не указано' }} {{ topic.created|date:'j F Yг. g:i:s' }}</span>
                 </div>

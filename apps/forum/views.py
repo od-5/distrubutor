@@ -201,3 +201,17 @@ def topic_delete(request, pk):
         'object': topic,
     })
     return render(request, 'forum/topic_delete.html', context)
+
+
+@login_required
+def topic_close(request, pk):
+    user = request.user
+    topic = Topic.objects.get(pk=int(pk))
+    close = int(request.GET.get('close', '0'))
+    if close:
+        if user == topic.author or user.type == 1:
+            topic.closed = True
+            topic.save()
+        return HttpResponseRedirect(reverse('forum:topic-detail', args=(pk,)))
+
+    return render(request, 'forum/topic_close.html', {'object': topic})

@@ -40,6 +40,7 @@ class Section(ForumBase):
     # def get_absolute_url(self):
     #     return reverse('store:detail', args=(self.pk, ))
 
+    # TODO: отрефакторить все вида get_*_url
     def get_topic_list_url(self):
         return reverse('forum:topic-list', args=(self.pk, ))
 
@@ -117,11 +118,11 @@ class Topic(ForumBase):
     def get_comment_count(self):
         return self.comment_set.count()
 
-    # todo: на будущее - проверка модератором, закрытите темы.
     section = models.ForeignKey(to=Section, verbose_name=u'Раздел')
     title = models.CharField(max_length=256, verbose_name=u'Название')
     text = RichTextField(verbose_name=u'Сообщение')
     all_city = models.BooleanField(verbose_name=u'Доступно всем городам', default=False)
+    closed = models.BooleanField(verbose_name=u'Тема закрыта', default=False)
 
 
 class Comment(ForumCommon):
