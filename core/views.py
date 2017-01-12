@@ -61,12 +61,15 @@ def cms_login(request, usertype=None):
                         if user.type == 5:
                             manager = user.manager_user
                             moderator = manager.moderator
-                            if moderator.is_active:
+                            if moderator.is_active and not moderator.deny_access:
                                 login(request, user)
                                 request.session['demo'] = False
                             else:
                                 error = u'Ваш модератор заблокирован'
-                        elif user.type == 6:
+                        else:
+                            login(request, user)
+                            request.session['demo'] = False
+                        if user.type == 6:
                             return HttpResponseRedirect(reverse('ticket:list'))
                         else:
                             return HttpResponseRedirect(reverse('dashboard:index'))
