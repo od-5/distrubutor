@@ -403,7 +403,7 @@ def payment_received(sender, **kwargs):
     """
     Обработка сигнала result_received
     """
-    commission = kwargs['extra']
+    commission = kwargs['extra']['_commission']
     logger.error(commission)
     if int(commission) == 1:
 
