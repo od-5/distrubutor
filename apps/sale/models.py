@@ -3,11 +3,28 @@ import datetime
 from django.db import models
 from apps.city.models import City
 from apps.moderator.models import Moderator, ModeratorAction
+from apps.ticket.models import Ticket
 from core.files import upload_to
 from core.models import User
 from apps.manager.models import Manager
 
 __author__ = 'alexy'
+
+
+# class PreSale(models.Model):
+#     class Meta:
+#         verbose_name = u'Преданный клиент'
+#         verbose_name_plural = u'Переданные клиенты'
+#         app_label = 'sale'
+#
+#     def __unicode__(self):
+#         return self.legal_name
+#
+#     ticket = models.OneToOneField(to=Ticket, verbose_name=u'Заявка')
+#     moderator = models.ForeignKey(to=Moderator, verbose_name=u'Исполнитель')
+#     comment = models.TextField(verbose_name=u'Комментарий')
+#     accept = models.BooleanField(default=False, verbose_name=u'Принят в работу')
+#     comission = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Комиссия с продаж, %')
 
 
 class Sale(models.Model):

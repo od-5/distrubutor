@@ -35,11 +35,19 @@ class LandingView(TemplateView):
                     self.request.session['current_city'] = None
                     moderator_qs = None
                 else:
+                    # fixme: пока не наберётся команда стабильно работающих исполнителей - показывать всё равно
+                    # неоплативших на сайте. Заказами займётся рекламное агенство. Продумать как автоматизировать
+                    # moderator_qs = current_city.moderator_set.filter(
+                    #     site_visible=False, deny_access=False, user__is_active=True, superviser__isnull=True)
                     moderator_qs = current_city.moderator_set.filter(
-                        site_visible=False, deny_access=False, user__is_active=True, superviser__isnull=True)
+                        site_visible=False, user__is_active=True, superviser__isnull=True)
             else:
+                # fixme: пока не наберётся команда стабильно работающих исполнителей - показывать всё равно
+                # неоплативших на сайте. Заказами займётся рекламное агенство. Продумать как автоматизировать
                 moderator_qs = current_city.moderator_set.filter(
-                    site_visible=False, deny_access=False, user__is_active=True, superviser__isnull=True)
+                    site_visible=False,  user__is_active=True, superviser__isnull=True)
+                # moderator_qs = current_city.moderator_set.filter(
+                #     site_visible=False, deny_access=False, user__is_active=True, superviser__isnull=True)
         except:
             current_city = None
             moderator_qs = None
