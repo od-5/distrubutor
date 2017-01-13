@@ -56,6 +56,9 @@
               <div class="form-comment__control">
                 <a href="{{ object.get_delete_url|default:'' }}" title="Удалить">Удалить</a> /
                 <a href="{{ object.get_update_url|default:'' }}" title="Редактировать">Редактировать</a>
+                {% if not object.closed %}
+                 /<a href="{% url 'forum:topic-close' pk=object.pk %}" title="Закрыть">Закрыть</a>
+                {% endif %}
               </div>
             </div>
           {% endif %}
@@ -64,7 +67,10 @@
           <div class="panel-body">
             <div class="col-md-12">
               <div class="forum-comment">
-                <p class="forum-comment__title">{{ object.title|default:'не указано' }}</p>
+                <p class="forum-comment__title">
+                    {{ object.title|default:'не указано' }}
+                    {% if object.closed %}(закрыта){% endif %}
+                </p>
                 <div class="forum-comment__text">
                   {{ object.text|safe|default:'' }}
                 </div>
@@ -109,6 +115,8 @@
           <div class="clearfix"></div>
         </div>
         {% endfor %}
+
+        {% if not object.closed %}
         <div class="row">
           <div class="col-md-12">
             <div class="lead">Новое сообщение</div>
@@ -141,6 +149,7 @@
           </div>
           <div class="clearfix"></div>
         </div>
+        {% endif %}
       </div>
       <div class="clearfix"></div>
     </div>

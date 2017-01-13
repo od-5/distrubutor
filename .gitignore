@@ -12,6 +12,7 @@
 /apps/manager/migrations
 /apps/city/migrations
 .idea/
+*.sublime*
 *.pyc
 core/migrations/
 /apps/adjuster/migrations
