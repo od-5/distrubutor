@@ -22,9 +22,6 @@ from .forms import ModeratorForm, ModeratorAreaForm, ModeratorActionForm, Review
 from .models import Moderator, ModeratorArea, ModeratorAction, Review, Order
 from core.forms import UserAddForm, UserUpdateForm
 from core.models import User
-import logging
-# Get an instance of a logger
-logger = logging.getLogger('django.request')
 
 
 __author__ = 'alexy'
