@@ -103,7 +103,12 @@
                   {% if object_list %}
                     {% for object in object_list %}
                     <tr data-id="{{ object.id }}" data-name="{{ object.legal_name }}" data-model="Sale" id="id_Sale_{{ object.id }}">
-                      <td><a href="{% url 'sale:update' object.id %}">{{ object.legal_name|default:'Не указано' }}</a></td>
+                      <td>
+                        <a href="{% url 'sale:update' object.id %}">
+                          {{ object.legal_name|default:'Не указано' }}
+                          {% if object.presale %} <span class="glyphicon glyphicon-tag"></span>{% endif %}
+                        </a>
+                      </td>
                       <td>{{ object.actual_name|default:'Не указано' }}</td>
                       <td>{{ object.city|default:'Не указано' }}</td>
                       {% if user.superviser %}

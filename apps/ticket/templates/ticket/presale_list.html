@@ -1,0 +1,140 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Переданные клиенты | {{ block.super }}{% endblock %}
+{% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            {% if user.type != 6 %}
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            {% endif %}
+            <li class="active">Переданные клиенты</li>
+          </ol>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <button class="btn btn-show-filter" id="js-show-filter-btn">
+              <span>Развернуть поиск <strong>+</strong></span>
+              <span class="hide">Свернуть поиск <strong>-</strong></span>
+            </button>
+            <form action="" class="js-presale-filter-form form form-filter add-bottom" method="GET">
+              <div class="col-md-12">
+                {% if user.type == 1 or user.type == 6 or user.superviser %}
+                <div class="five-col-2">
+                  <select name="city" class="form-control">
+                    <option value="0">Город</option>
+                    {% for city in city_list %}
+                      <option value="{{ city.id }}" {% if city.id == r_city %}selected="selected"{% endif %}>{{ city.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="five-col-2">
+                  <select name="moderator" class="form-control">
+                    <option value="0">Исполнитель</option>
+                    {% for moderator in moderator_list %}
+                      <option value="{{ moderator.id }}" {% if moderator.id == r_moderator %}selected="selected"{% endif %}>{{ moderator.company }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              {% endif %}
+                <div class="five-col-1">
+                  <select name="accept" class="form-control">
+                    <option>---- Статус ----</option>
+                    <option value="0" {% if r_accept %}selected="selected"{% endif %}>Приняты</option>
+                    <option value="1" {% if not r_accept %}selected="selected"{% endif %}>Не приняты</option>
+                  </select>
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="legal_name" id="id_legal_name" value="{{ r_legal_name|default:'' }}" class="form-control" placeholder="Название организации">
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="date_s" id="id_date_s" value="{{ r_date_s|default:'' }}" class="form-control" placeholder="Дата от">
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="date_e" id="id_date_e" value="{{ r_date_e|default:'' }}" class="form-control" placeholder="Дата до">
+                </div>
+                <div class="five-col-2">
+                  <input type="submit" value="Искать" class="btn btn-search">
+                </div>
+                <div class="clearfix"></div>
+              </div>
+              <div class="clearfix"></div>
+            </form>
+            <div class="col-md-12">
+              <div class="table-container">
+                <table class="table table-list">
+                  <thead>
+                    <tr>
+                      <th>Название организации</th>
+                      <th>Имя</th>
+                      <th>Телефон</th>
+                      <th>e-mail</th>
+                      <th>Исполнитель</th>
+                      <th>Город</th>
+                      <th>Комиссия</th>
+                      <th>Дата</th>
+                      <th>&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody class="js-list">
+                  {% if object_list %}
+                    {% for object in object_list %}
+                    <tr data-id="{{ object.id }}" data-name="{{ object }}" data-model="PreSale" id="id_PreSale_{{ object.id }}"
+                         {% if object.accept %}class="success"{% endif %}>
+                    {% if user.type == 2 or user.type == 5 %}
+                      <td><a href="{% url 'ticket:presale-detail' object.id %}">{{ object.legal_name|default:'Не указано' }}</a></td>
+                    {% else %}
+                      <td><a href="{% url 'ticket:presale-update' object.id %}">{{ object.legal_name|default:'Не указано' }}</a></td>
+                    {% endif %}
+                      <td>{{ object.ticket.name|default:'Не указано' }}</td>
+                      <td>{{ object.ticket.phone|default:'Не указано' }}</td>
+                      <td>{{ object.ticket.mail|default:'Не указано' }}</td>
+                      <td>{{ object.moderator|default:'Не указано' }}</td>
+                      <td>{{ object.ticket.city|default:'Не указано' }}</td>
+                      <td>{{ object.commission|default:'0' }} %</td>
+                      <td>{{ object.created|default:'Не указано' }}</td>
+                      <td>
+                        {% if user.type == 1 or user.type == 6 %}
+                        <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ object.id }}" class="text-danger js-ajax-remove-btn">
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                        {% else %}
+                          {% if not object.accept %}
+                          <a href="{% url 'sale:add' %}?presale={{ object.id }}" class="btn btn-info btn-sm">Создать продажу</a>
+                          {% else %}
+                            <p class="remove-bottom alert-info">Продажа уже создана</p>
+                          {% endif %}
+                        {% endif %}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  {% else %}
+                    <tr>
+                      <td colspan="8"><p class="alert alert-info text-left">Переданных клиентов нет</p></td>
+                    </tr>
+                  {% endif %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+        {% include '__includes/pagination.html' %}
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+{% include '__modal/js_ajax_remove_form.html' %}
+{% endblock %}

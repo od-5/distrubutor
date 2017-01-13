@@ -17,6 +17,7 @@ from django.forms.models import inlineformset_factory, modelformset_factory
 from apps.packages.models import Package
 from apps.robokassa.forms import RobokassaForm
 from apps.robokassa.signals import result_received
+from apps.sale.models import CommissionOrder
 from .forms import ModeratorForm, ModeratorAreaForm, ModeratorActionForm, ReviewForm
 from .models import Moderator, ModeratorArea, ModeratorAction, Review, Order
 from core.forms import UserAddForm, UserUpdateForm
@@ -343,6 +344,7 @@ def payment_detail(request, pk):
             'OutSum': order.cost,
             'InvoiceID': order.id,
             'Description': order,
+            '_commission': 2,
             # 'Email': order.moderator.user.email,
             # 'IncCurrLabel': '',
             # 'Culture': 'ru'
@@ -357,51 +359,93 @@ def payment_detail(request, pk):
     return render(request, 'moderator/payment_detail.html', context)
 
 
+@login_required()
+def commission_list(request, pk):
+    context = {}
+    moderator = Moderator.objects.select_related().get(user=int(pk))
+    order_qs = CommissionOrder.objects.filter(moderator=moderator)
+    context.update({
+        'order_list': order_qs,
+        'object': moderator
+    })
+    return render(request, 'moderator/commission_list.html', context)
+
+
+@login_required()
+def commission_detail(request, pk):
+    context = {}
+    order = get_object_or_None(CommissionOrder, pk=int(pk))
+    if not order.pay:
+        form = RobokassaForm(initial={
+            'OutSum': order.cost,
+            'InvoiceID': order.id,
+            'Description': order,
+            '_commission': 1,
+            # 'Email': order.moderator.user.email,
+            # 'IncCurrLabel': '',
+            # 'Culture': 'ru'
+        })
+        context.update({
+            'form': form
+        })
+    context.update({
+        'order': order,
+        'object': order.moderator
+    })
+    return render(request, 'moderator/commission_detail.html', context)
+
+
 def payment_received(sender, **kwargs):
     """
     Обработка сигнала result_received
     """
-    order = Order.objects.get(id=kwargs['InvId'])
-    order.pay = True
-    order.save()
-    moderator = order.moderator
-    moderator.deny_access = False
-    today = datetime.date.today()
-    if moderator.deny_date:
-        if moderator.deny_date < today:
-            moderator.deny_date = today + relativedelta(months=order.package.month)
-        else:
-            moderator.deny_date = moderator.deny_date + relativedelta(months=order.package.month)
+    commission = kwargs['extra']['shp_commission']
+    if int(commission) == 1:
+        order = CommissionOrder.objects.get(id=kwargs['InvId'])
+        order.pay = True
+        order.save()
     else:
-        moderator.deny_date = today + relativedelta(months=order.package.month)
-    if moderator.order_set.count() == 1:
-        # todo: нужно сделать другой способ отправки, что то навроде постановки писем в очередь и
-        # их последующая отправка. django-mailer и django-mailer-2 не подходят, так как не умеют отправлять
-        # свёрстанные письма. Думаем над альтернативой.
-        email = moderator.user.email
-        # msg_plain = render_to_string('email.txt', {'name': name})
-        msg_html = render_to_string('moderator/mail.html')
-        second_msg_html = render_to_string('moderator/second_mail.html')
-        try:
-            send_mail(
-                u'Пошаговая инструкция reklamadoma.com',
-                msg_html,
-                settings.DEFAULT_FROM_EMAIL,
-                [email, ],
-                html_message=msg_html,
-            )
-        except:
-            pass
-        try:
-            send_mail(
-                u'Видеоинструкции по работе в программе Контроль распространения и расклейки',
-                msg_html,
-                settings.DEFAULT_FROM_EMAIL,
-                [email, ],
-                html_message=second_msg_html,
-            )
-        except:
-            pass
-    moderator.save()
+        order = Order.objects.get(id=kwargs['InvId'])
+        order.pay = True
+        order.save()
+        moderator = order.moderator
+        moderator.deny_access = False
+        today = datetime.date.today()
+        if moderator.deny_date:
+            if moderator.deny_date < today:
+                moderator.deny_date = today + relativedelta(months=order.package.month)
+            else:
+                moderator.deny_date = moderator.deny_date + relativedelta(months=order.package.month)
+        else:
+            moderator.deny_date = today + relativedelta(months=order.package.month)
+        if moderator.order_set.count() == 1:
+            # todo: нужно сделать другой способ отправки, что то навроде постановки писем в очередь и
+            # их последующая отправка. django-mailer и django-mailer-2 не подходят, так как не умеют отправлять
+            # свёрстанные письма. Думаем над альтернативой.
+            email = moderator.user.email
+            # msg_plain = render_to_string('email.txt', {'name': name})
+            msg_html = render_to_string('moderator/mail.html')
+            second_msg_html = render_to_string('moderator/second_mail.html')
+            try:
+                send_mail(
+                    u'Пошаговая инструкция reklamadoma.com',
+                    msg_html,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email, ],
+                    html_message=msg_html,
+                )
+            except:
+                pass
+            try:
+                send_mail(
+                    u'Видеоинструкции по работе в программе Контроль распространения и расклейки',
+                    msg_html,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email, ],
+                    html_message=second_msg_html,
+                )
+            except:
+                pass
+        moderator.save()
 
 result_received.connect(payment_received)

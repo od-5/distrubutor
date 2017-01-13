@@ -8,6 +8,7 @@
       <li><a href="{% url 'ticket:list' %}">Новые заявки с сайта</a></li>
       <li><a href="{% url 'ticket:agency' %}">Заявки в обработке</a></li>
       <li><a href="{% url 'ticket:sale' %}">Продажи</a></li>
+      <li><a href="{% url 'ticket:presale-list' %}">Переданные клиенты</a></li>
     </ul>
   </li>
   <li><a href="{% url 'calculator:index' %}">Калькулятор</a></li>
@@ -126,6 +127,9 @@
         Продажи <span class="caret"></span>
       </a>
       <ul class="dropdown-menu">
+        {% if user.type == 2 or user.type == 5 %}
+        <li><a href="{% url 'ticket:presale-list' %}">Список переданных клиентов</a></li>
+        {% endif %}
         <li><a href="{% url 'sale:list' %}">Список продаж</a></li>
         <li><a href="{% url 'sale:add' %}">Добавить новую продажу</a></li>
         <li class="divider"></li>

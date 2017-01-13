@@ -30,6 +30,9 @@ urlpatterns = patterns(
     url(r'^(?P<pk>\d+)/payment/$', 'payment_list', name='payment-list'),
     url(r'^payment/(?P<pk>\d+)/$', 'payment_detail', name='payment-detail'),
 
+    url(r'^(?P<pk>\d+)/commission/$', 'commission_list', name='commission-list'),
+    url(r'^commission/(?P<pk>\d+)/$', 'commission_detail', name='commission-detail'),
+
     url(r'^get_action_list/$', get_action_list, name='get_action_list'),
     url(r'^get_cost_by_action/$', get_cost_by_action, name='get_cost_by_action'),
 )

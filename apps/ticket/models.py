@@ -38,3 +38,20 @@ class Ticket(Common):
                                             default=1, blank=True, null=True)
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
     price = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True, verbose_name=u'Сумма')
+
+
+class PreSale(Common):
+    class Meta:
+        verbose_name = u'Преданный клиент'
+        verbose_name_plural = u'Переданные клиенты'
+        app_label = 'ticket'
+
+    def __unicode__(self):
+        return self.legal_name
+
+    ticket = models.OneToOneField(to=Ticket, verbose_name=u'Заявка')
+    moderator = models.ForeignKey(to=Moderator, verbose_name=u'Исполнитель')
+    legal_name = models.CharField(verbose_name=u'Название организации', max_length=256)
+    comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
+    accept = models.BooleanField(default=False, verbose_name=u'Принят в работу')
+    commission = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Комиссия с продаж, %')

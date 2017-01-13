@@ -1,0 +1,46 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}{{ object }} | {{ block.super }}{% endblock %}
+{% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="col-md-12">
+        <ol class="breadcrumb">
+          <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li><a href="{% url 'ticket:presale-list' %}">Переданные клиенты</a></li>
+          <li class="active">{{ object }}</li>
+        </ol>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">{{ object }}</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="panel-content">
+              <p>{{ object.ticket }}</p>
+              <p>{{ object.moderator }}</p>
+              <p>{{ object.legal_name }}</p>
+              <p>{{ object.commission|default:'0' }} %</p>
+              <p>{{ object.comment }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+
+{% endblock %}

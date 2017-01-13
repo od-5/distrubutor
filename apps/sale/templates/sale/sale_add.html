@@ -82,6 +82,7 @@
                   <p class="lead text-center text-info">Реквизиты организации</p>
                 </div>
                 <div class="col-md-6">
+                  {{ sale_form.presale }}
                   {% if user.type == 1 %}
                   <div class="form-group">
                     <div class="col-lg-5">{{ sale_form.moderator.label_tag }}</div>

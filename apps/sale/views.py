@@ -22,11 +22,12 @@ from django.views.generic import ListView
 from django.forms import HiddenInput
 from apps.city.models import City
 from apps.distributor.models import GPSPoint
+from apps.ticket.models import PreSale
 from .forms import SaleAddForm, SaleUpdateForm, SaleOrderForm, SaleMaketForm
 from apps.manager.models import Manager
 from apps.moderator.models import Moderator
 from core.forms import UserAddForm, UserUpdateForm
-from .models import Sale, SaleOrder, SaleMaket
+from .models import Sale, SaleOrder, SaleMaket, CommissionOrder
 
 __author__ = 'alexy'
 
@@ -35,6 +36,10 @@ __author__ = 'alexy'
 def sale_add(request):
     context = {}
     user = request.user
+    if request.GET.get('presale'):
+        presale = PreSale.objects.get(pk=int(request.GET.get('presale')))
+    else:
+        presale = None
     if request.method == 'POST':
         user_form = UserAddForm(request.POST)
         sale_form = SaleAddForm(request.POST, user=user)
@@ -46,6 +51,9 @@ def sale_add(request):
             sale.user = new_user
             sale.password = request.POST.get('password1')
             sale.save()
+            if presale:
+                presale.accept = True
+                presale.save()
             return HttpResponseRedirect(reverse('sale:update', args=(sale.id, )))
         else:
             context.update({
@@ -54,6 +62,15 @@ def sale_add(request):
     else:
         user_form = UserAddForm()
         sale_form = SaleAddForm(user=user)
+    if presale:
+        sale_form.fields['moderator'].initial = presale.moderator
+        sale_form.fields['city'].initial = presale.ticket.city
+        sale_form.fields['presale'].initial = presale
+        sale_form.fields['legal_name'].initial = presale.legal_name
+        user_form.fields['email'].initial = presale.ticket.mail
+        user_form.fields['phone'].initial = presale.ticket.phone
+        user_form.fields['first_name'].initial = presale.ticket.name
+        user_form.fields['last_name'].initial = presale.ticket.name
     context.update({
         'user_form': user_form,
         'sale_form': sale_form
@@ -342,6 +359,16 @@ def sale_order(request, pk):
         form = SaleOrderForm(request.POST)
         if form.is_valid():
             order = form.save()
+            if sale.presale:
+                percent = sale.presale.commission
+                sum = (float(order.total_sum()) / 100 ) * float(percent)
+                commissionorder = CommissionOrder(
+                    moderator=order.sale.moderator,
+                    sale=order.sale,
+                    saleorder=order,
+                    cost=round(sum, 2)
+                )
+                commissionorder.save()
             return HttpResponseRedirect(reverse('sale:order-update', args=(order.id,)))
         else:
             context.update({

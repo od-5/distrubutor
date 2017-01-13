@@ -1,8 +1,8 @@
 # coding=utf-8
 from django import forms
-from .models import Ticket
+from .models import Ticket, PreSale
 
-__author__ = 'Rylcev Alexy'
+__author__ = 'alexy'
 
 
 class TicketAddForm(forms.ModelForm):
@@ -14,7 +14,7 @@ class TicketAddForm(forms.ModelForm):
 class TicketChangeForm(forms.ModelForm):
     class Meta:
         model = Ticket
-        exclude = '__all__'
+        fields = '__all__'
         widgets = {
             'city': forms.Select(attrs={'class': 'form-control'}),
             'moderator': forms.Select(attrs={'class': 'form-control'}),
@@ -26,3 +26,17 @@ class TicketChangeForm(forms.ModelForm):
             'price': forms.NumberInput(attrs={'class': 'form-control', 'step': 0.01}),
             'comment': forms.Textarea(attrs={'class': 'form-control'}),
         }
+
+
+class PreSaleForm(forms.ModelForm):
+    class Meta:
+        model = PreSale
+        exclude = ['accept', 'created']
+        widgets = {
+            'ticket': forms.Select(attrs={'class': 'form-control'}),
+            'moderator': forms.Select(attrs={'class': 'form-control'}),
+            'legal_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'commission': forms.NumberInput(attrs={'class': 'form-control', 'step': 0.01}),
+            'comment': forms.Textarea(attrs={'class': 'form-control'}),
+        }
+

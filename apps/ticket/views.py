@@ -11,9 +11,9 @@ from django.views.generic import ListView
 from apps.city.models import City
 from apps.manager.models import Manager
 from apps.moderator.models import Moderator
-from apps.ticket.forms import TicketChangeForm
+from apps.ticket.forms import TicketChangeForm, PreSaleForm
 from core.models import User
-from .models import Ticket
+from .models import Ticket, PreSale
 
 __author__ = 'alexy'
 
@@ -325,9 +325,12 @@ def ticket_detail(request, pk):
     else:
         form = TicketChangeForm(instance=ticket)
     form.fields['city'].queryset = city_qs
+
     if user.type != 6:
         form.fields['city'].widget = forms.HiddenInput()
         form.fields['agency_manager'].widget = forms.HiddenInput()
+    else:
+        form.fields['moderator'].queryset = Moderator.objects.filter(ticket_forward=True, deny_access=False)
     if user.type in [2,5]:
         form.fields['moderator'].widget = forms.HiddenInput()
     context.update({
@@ -335,3 +338,153 @@ def ticket_detail(request, pk):
         'object': ticket
     })
     return render(request, 'ticket/ticket_detail.html', context)
+
+
+class PreSaleListView(ListView):
+    model = PreSale
+    paginate_by = 25
+    template_name = 'ticket/presale_list.html'
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.type == 1 or user.type == 6:
+            qs = PreSale.objects.all()
+        elif user.type == 2:
+            if user.superviser:
+                qs = PreSale.objects.filter(Q(moderator__superviser=user) | Q(moderator=user.moderator_user))
+            else:
+                qs = PreSale.objects.filter(moderator=user.moderator_user)
+        elif user.type == 5:
+            qs = PreSale.objects.filter(
+                moderator=user.manager_user.moderator.moderator_user)
+        else:
+            qs = PreSale.objects.none()
+        if self.request.GET.get('legal_name'):
+            qs = qs.filter(legal_name=self.request.GET.get('legal_name'))
+        if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
+            qs = qs.filter(ticket__city__id=int(self.request.GET.get('city')))
+        if self.request.GET.get('moderator') and int(self.request.GET.get('moderator')) != 0:
+            qs = qs.filter(moderator__id=int(self.request.GET.get('moderator')))
+        if self.request.GET.get('accept') and self.request.GET.get('accept').isdigit():
+            qs = qs.filter(accept=bool(int(self.request.GET.get('accept'))))
+        r_date_s = self.request.GET.get('date_s')
+        r_date_e = self.request.GET.get('date_e')
+        if r_date_s:
+            qs = qs.filter(created__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
+        if r_date_e:
+            qs = qs.filter(created__lte=datetime.strptime(r_date_e, '%d.%m.%Y'))
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(PreSaleListView, self).get_context_data(**kwargs)
+        user = self.request.user
+        if user.type == 1:
+            city_qs = City.objects.all()
+        elif user.type == 2:
+            if user.superviser:
+                city_qs = City.objects.select_related().filter(
+                    Q(moderator__superviser=user) | Q(moderator=user.moderator_user))
+                moderator_qs = Moderator.objects.filter(Q(superviser=user) | Q(user=user))
+                context.update({
+                    'moderator_list': moderator_qs
+                })
+            else:
+                city_qs = user.moderator_user.city.all()
+        elif user.type == 5:
+            city_qs = user.manager_user.moderator.moderator_user.city.all()
+        elif user.type == 6:
+            city_qs = City.objects.select_related().filter(moderator__ticket_forward=True)
+            moderator_qs = Moderator.objects.filter(ticket_forward=True)
+            context.update({
+                'moderator_list': moderator_qs
+            })
+        else:
+            city_qs = City.objects.none()
+        context.update({
+            'city_list': city_qs.distinct()
+        })
+        if self.request.GET.get('city') and self.request.GET.get('city').isdigit():
+            context.update({
+                'r_city': int(self.request.GET.get('city'))
+            })
+        if self.request.GET.get('moderator') and self.request.GET.get('moderator').isdigit():
+            context.update({
+                'r_moderator': int(self.request.GET.get('moderator'))
+            })
+        if self.request.GET.get('accept') and self.request.GET.get('accept').isdigit():
+            context.update({
+                'r_accept': bool(int(self.request.GET.get('accept')))
+            })
+        if self.request.GET.get('legal_name'):
+            context.update({
+                'r_legal_name': self.request.GET.get('legal_name')
+            })
+        if self.request.GET.get('date_s'):
+            context.update({
+                'r_date_s': self.request.GET.get('date_s')
+            })
+        if self.request.GET.get('date_e'):
+            context.update({
+                'r_date_e': self.request.GET.get('date_e')
+            })
+        return context
+
+
+@login_required
+def presale_add(request, pk):
+    context = {}
+    ticket = Ticket.objects.get(pk=int(pk))
+    error = None
+    if request.method == 'POST':
+        form = PreSaleForm(request.POST)
+        if form.is_valid():
+            instance = form.save()
+            return HttpResponseRedirect(reverse('ticket:presale-update', args=(instance.pk, )))
+        else:
+            error = u'Проверьте правильность заполнения полей'
+    else:
+        form = PreSaleForm(initial={
+            'ticket': ticket,
+            'moderator': ticket.moderator
+        })
+    form.fields['ticket'].queryset = Ticket.objects.filter(pk=ticket.pk)
+    form.fields['moderator'].queryset = Moderator.objects.filter(pk=ticket.moderator.pk)
+    context.update({
+        'form': form,
+        'error': error
+    })
+    return render(request, 'ticket/presale_form.html', context)
+
+
+@login_required
+def presale_update(request, pk):
+    context = {}
+    presale = PreSale.objects.get(pk=int(pk))
+    error = None
+    if request.method == 'POST':
+        form = PreSaleForm(request.POST, instance=presale)
+        if form.is_valid():
+            instance = form.save()
+            return HttpResponseRedirect(reverse('ticket:presale-update', args=(instance.pk, )))
+        else:
+            error = u'Проверьте правильность заполнения полей'
+    else:
+        form = PreSaleForm(instance=presale)
+    form.fields['ticket'].queryset = Ticket.objects.filter(pk=presale.ticket.pk)
+    form.fields['moderator'].queryset = Moderator.objects.filter(pk=presale.ticket.moderator.pk)
+    context.update({
+        'form': form,
+        'error': error,
+        'object': presale
+    })
+    return render(request, 'ticket/presale_form.html', context)
+
+
+@login_required
+def presale_detail(request, pk):
+    context = {}
+    presale = PreSale.objects.get(pk=int(pk))
+    context.update({
+        'object': presale
+    })
+    return render(request, 'ticket/presale_detail.html', context)

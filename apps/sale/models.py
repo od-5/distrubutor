@@ -3,28 +3,12 @@ import datetime
 from django.db import models
 from apps.city.models import City
 from apps.moderator.models import Moderator, ModeratorAction
-from apps.ticket.models import Ticket
+from apps.ticket.models import Ticket, PreSale
 from core.files import upload_to
 from core.models import User
 from apps.manager.models import Manager
 
 __author__ = 'alexy'
-
-
-# class PreSale(models.Model):
-#     class Meta:
-#         verbose_name = u'Преданный клиент'
-#         verbose_name_plural = u'Переданные клиенты'
-#         app_label = 'sale'
-#
-#     def __unicode__(self):
-#         return self.legal_name
-#
-#     ticket = models.OneToOneField(to=Ticket, verbose_name=u'Заявка')
-#     moderator = models.ForeignKey(to=Moderator, verbose_name=u'Исполнитель')
-#     comment = models.TextField(verbose_name=u'Комментарий')
-#     accept = models.BooleanField(default=False, verbose_name=u'Принят в работу')
-#     comission = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Комиссия с продаж, %')
 
 
 class Sale(models.Model):
@@ -36,6 +20,7 @@ class Sale(models.Model):
     def __unicode__(self):
         return self.legal_name
 
+    presale = models.OneToOneField(to=PreSale, blank=True, null=True)
     user = models.OneToOneField(to=User, limit_choices_to={'type': 3}, verbose_name=u'Пользователь', related_name='sale_user')
     moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор', related_name='sale_moderator')
     city = models.ForeignKey(to=City, verbose_name=u'Город', related_name='sale_city')
@@ -148,26 +133,19 @@ class SaleMaket(models.Model):
     date = models.DateField(verbose_name=u'Дата размещения макета')
 
 
-# class Review(models.Model):
-#     class Meta:
-#         verbose_name = u'Отзыв'
-#         verbose_name_plural = u'Отзывы'
-#         app_label = 'sale'
-#
-#     def __unicode__(self):
-#         return u'Отзыв %s' % self.name
-#
-#     RATING_CHOICES = (
-#         (1, 1),
-#         (2, 2),
-#         (3, 3),
-#         (4, 4),
-#         (5, 5),
-#     )
-#
-#     moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор')
-#     name = models.CharField(verbose_name=u'Ваше имя', max_length=100, blank=True, null=True)
-#     mail = models.EmailField(verbose_name=u'Ваше e-mail', max_length=100, blank=True, null=True)
-#     # sale = models.ForeignKey(to=Sale, verbose_name=u'Клиент')
-#     rating = models.PositiveSmallIntegerField(verbose_name=u'Оценка', choices=RATING_CHOICES, default=5, blank=True, null=True)
-#     text = models.TextField(verbose_name=u'Текст сообщения', blank=True, null=True)
+# todo: подумать как слить оплату счетов в единую модель
+class CommissionOrder(models.Model):
+    class Meta:
+        verbose_name = u'Счёт'
+        verbose_name_plural = u'Счета'
+        app_label = 'sale'
+
+    def __unicode__(self):
+        return u'Счёт на оплату агентской комиссии %s' % self.id
+
+    moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор')
+    sale = models.ForeignKey(to=Sale, verbose_name=u'Клиент')
+    saleorder = models.ForeignKey(to=SaleOrder, verbose_name=u'Заказ')
+    cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Сумма оплаты', default=0)
+    pay = models.BooleanField(default=False, verbose_name=u'Оплачено')
+    timestamp = models.DateTimeField(auto_now=True)

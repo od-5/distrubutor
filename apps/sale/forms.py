@@ -14,6 +14,7 @@ class SaleAddForm(forms.ModelForm):
         model = Sale
         exclude = ['user', 'password']
         widgets = {
+            'presale': forms.HiddenInput(),
             'moderator': forms.Select(attrs={'class': 'form-control'}),
             'city': forms.Select(attrs={'class': 'form-control'}),
             'manager': forms.Select(attrs={'class': 'form-control'}),

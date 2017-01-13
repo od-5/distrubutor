@@ -35,6 +35,10 @@
   color: #fff;
   text-transform: uppercase;
 }
+.btn-search_green,
+.btn-save_green {
+  background-color: #5cb85c;
+}
 .btn-right {
   float: right;
 }

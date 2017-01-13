@@ -107,10 +107,15 @@
                   </div>
                 </div>
                 <div class="clearfix"></div>
-                <div class="col-md-6">
-                  <button type="submit" class="btn btn-save">Сохранить изменения</button>
+                <div>
+                  <div class="col-md-6 col-sm-6 add-bottom">
+                    <button type="submit" class="btn btn-save">Сохранить изменения</button>
+                  </div>
+                  <div class="col-md-6 col-sm-6 add-bottom">
+                    <a href="{% url 'ticket:presale-add' object.id %}" class="btn btn-save btn-save_green">Передать на исполнение</a>
+                  </div>
+                  <div class="clearfix"></div>
                 </div>
-                <div class="clearfix"></div>
               </form>
             </div>
           </div>

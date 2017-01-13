@@ -1,0 +1,87 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}{% if object %}{{ object }}{% else %}Передача клиента исполнителю{% endif %} | {{ block.super }}{% endblock %}
+{% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="col-md-12">
+        <ol class="breadcrumb">
+        {% if user.type != 6 %}
+          <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+        {% endif %}
+          {% if object %}
+            <li><a href="{% url 'ticket:presale-list' %}">Переданные клиенты</a></li>
+          {% else %}
+            <li><a href="{% url 'ticket:sale' %}">Новые заявки с сайта</a></li>
+          {% endif %}
+          <li class="active">{% if object %}{{ object }}{% else %}Передача клиента исполнителю{% endif %}</li>
+        </ol>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">{% if object %}{{ object }}{% else %}Передача клиента исполнителю{% endif %}</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="panel-content">
+              {% if error %} <div class="alert alert-danger"> {{ error }} </div> {% endif %}
+              <form action="" role="form" class="form js-form-presale" method="post">
+                {% csrf_token %}
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.ticket.label_tag }}
+                    {{ form.ticket }}
+                    {{ form.ticket.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.moderator.label_tag }}
+                    {{ form.moderator }}
+                    {{ form.moderator.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.legal_name.label_tag }}
+                    {{ form.legal_name }}
+                    {{ form.legal_name.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.commission.label_tag }}
+                    {{ form.commission }}
+                    {{ form.commission.errors }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.comment.label_tag }}
+                    {{ form.comment }}
+                    {{ form.comment.errors }}
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+                <div>
+                  <div class="col-md-6 col-sm-6 add-bottom">
+                    <button type="submit" class="btn btn-save">Сохранить</button>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+
+{% endblock %}
