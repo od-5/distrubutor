@@ -57,7 +57,7 @@
                 <a href="{{ object.get_delete_url|default:'' }}" title="Удалить">Удалить</a> /
                 <a href="{{ object.get_update_url|default:'' }}" title="Редактировать">Редактировать</a>
                 {% if not object.closed %}
-                 /<a href="{% url 'forum:topic-close' pk=object.pk %}" title="Закрыть">Закрыть</a>
+                 / <a href="{% url 'forum:topic-close' pk=object.pk %}" title="Закрыть">Закрыть</a>
                 {% endif %}
               </div>
             </div>
