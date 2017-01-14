@@ -673,11 +673,9 @@ class CommissionOrderListView(ListView):
         if self.request.GET.get('moderator') and int(self.request.GET.get('moderator')) != 0:
             qs = qs.filter(moderator=int(self.request.GET.get('moderator')))
         if self.request.GET.get('date_start'):
-            datetime.datetime.strptime(self.request.GET.get('date_start'), '%d.%m.%Y')
-            qs = qs.filter(created__gte=datetime.datetime.strptime(self.request.GET.get('date_start'), '%d.%m.%Y'))
+            qs = qs.filter(timestamp__gte=datetime.datetime.strptime(self.request.GET.get('date_start'), '%d.%m.%Y'))
         if self.request.GET.get('date_end'):
-            datetime.datetime.strptime(self.request.GET.get('date_end'), '%d.%m.%Y')
-            qs = qs.filter(created__lte=datetime.datetime.strptime(self.request.GET.get('date_end'), '%d.%m.%Y'))
+            qs = qs.filter(timestamp__lte=datetime.datetime.strptime(self.request.GET.get('date_end'), '%d.%m.%Y'))
         if self.request.GET.get('pay') and self.request.GET.get('pay').isdigit():
             payment = int(self.request.GET.get('pay'))
             qs = qs.filter(pay=bool(payment))
