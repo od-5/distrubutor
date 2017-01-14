@@ -136,7 +136,7 @@
                       <td>{{ object.moderator|default:'Не указано' }}</td>
                       <td>{{ object.city|default:'Не указано' }}</td>
                       <td>{{ object.created|default:'Не указано' }}</td>
-                      <td>{{ object.get_type_display|default:'Не указано' }}</td>
+                      <td>{{ object.get_type_display|default:'Не указано' }} {% if object.presale %}(передано){% endif %}</td>
                       {% if sale %}
                       <td>{{ object.price|default:'0' }}</td>
                       {% endif %}

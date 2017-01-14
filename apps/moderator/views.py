@@ -363,7 +363,7 @@ def payment_detail(request, pk):
 @login_required()
 def commission_list(request, pk):
     context = {}
-    moderator = Moderator.objects.select_related().get(user=int(pk))
+    moderator = Moderator.objects.get(user=int(pk))
     order_qs = CommissionOrder.objects.filter(moderator=moderator)
     context.update({
         'order_list': order_qs,

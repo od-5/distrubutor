@@ -111,9 +111,11 @@
                   <div class="col-md-6 col-sm-6 add-bottom">
                     <button type="submit" class="btn btn-save">Сохранить изменения</button>
                   </div>
+                  {% if object.type == 3 and user.type == 6 and not object.presale %}
                   <div class="col-md-6 col-sm-6 add-bottom">
                     <a href="{% url 'ticket:presale-add' object.id %}" class="btn btn-save btn-save_green">Передать на исполнение</a>
                   </div>
+                  {% endif %}
                   <div class="clearfix"></div>
                 </div>
               </form>

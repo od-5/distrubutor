@@ -6,7 +6,7 @@ import StringIO
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.core.mail import send_mail
-from django.db.models import Q
+from django.db.models import Q, Sum
 import xlwt
 
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
@@ -653,3 +653,79 @@ def get_files(request):
     resp['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
 
     return resp
+
+
+class CommissionOrderListView(ListView):
+    model = CommissionOrder
+    paginate_by = 25
+    template_name = 'sale/commissionorder_list.html'
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.type == 1 or user.type == 6:
+            qs = CommissionOrder.objects.all()
+        else:
+            qs = CommissionOrder.objects.none()
+        if self.request.GET.get('sale') and int(self.request.GET.get('sale')) != 0:
+            qs = qs.filter(sale=int(self.request.GET.get('sale')))
+        if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
+            qs = qs.filter(sale__city=int(self.request.GET.get('city')))
+        if self.request.GET.get('moderator') and int(self.request.GET.get('moderator')) != 0:
+            qs = qs.filter(moderator=int(self.request.GET.get('moderator')))
+        if self.request.GET.get('date_start'):
+            datetime.datetime.strptime(self.request.GET.get('date_start'), '%d.%m.%Y')
+            qs = qs.filter(created__gte=datetime.datetime.strptime(self.request.GET.get('date_start'), '%d.%m.%Y'))
+        if self.request.GET.get('date_end'):
+            datetime.datetime.strptime(self.request.GET.get('date_end'), '%d.%m.%Y')
+            qs = qs.filter(created__lte=datetime.datetime.strptime(self.request.GET.get('date_end'), '%d.%m.%Y'))
+        if self.request.GET.get('pay') and self.request.GET.get('pay').isdigit():
+            payment = int(self.request.GET.get('pay'))
+            qs = qs.filter(pay=bool(payment))
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(CommissionOrderListView, self).get_context_data(**kwargs)
+        user = self.request.user
+        if user.type == 1 or user.type == 6:
+            city_qs = City.objects.all()
+            moderator_qs = Moderator.objects.filter(ticket_forward=True)
+            sale_qs = Sale.objects.filter(presale__isnull=False)
+        else:
+            city_qs = City.objects.none()
+            moderator_qs = Moderator.objects.none()
+            sale_qs = Moderator.objects.none()
+        context.update({
+            'city_list': city_qs,
+            'moderator_list': moderator_qs,
+            'sale_list': sale_qs,
+        })
+        if self.request.GET.get('pay') and self.request.GET.get('pay').isdigit():
+            context.update({
+                'r_pay': int(self.request.GET.get('pay'))
+            })
+        if self.request.GET.get('date_start'):
+            context.update({
+                'r_date_start': self.request.GET.get('date_start')
+            })
+        if self.request.GET.get('date_end'):
+            context.update({
+                'r_date_end': self.request.GET.get('date_end')
+            })
+        if self.request.GET.get('city'):
+            context.update({
+                'city_id': int(self.request.GET.get('city'))
+            })
+        if self.request.GET.get('moderator'):
+            context.update({
+                'moderator_id': int(self.request.GET.get('moderator'))
+            })
+        if self.request.GET.get('sale'):
+            context.update({
+                'sale_id': int(self.request.GET.get('sale'))
+            })
+        qs = self.object_list
+        total_sum = qs.aggregate(Sum('cost'))['cost__sum']
+        context.update({
+            'total_sum': total_sum
+        })
+        return context
