@@ -20,39 +20,41 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <div class="panel-content">
-              <table class="table table-list">
-                <thead>
-                  <tr>
-                    <th>Клиент</th>
-                    <th>Заказ клиента</th>
-                    <th>Сумма заказа</th>
-                    <th>% комиссии</th>
-                    <th>Дата платежа</th>
-                    <th colspan="2">Сумма к оплате</th>
-                  </tr>
-                </thead>
-                <tbody class="js-list">
-                {% for order in order_list %}
-                  <tr {% if not order.pay %}class='danger'{% endif %}>
-                    <td>{{ order.sale|default:'не указано' }}</td>
-                    <td>{{ order.saleorder|default:'не указано' }} </td>
-                    <td>{{ order.saleorder.total_sum|default:'0' }} </td>
-                    <td>{{ order.sale.presale.commission|default:'0' }} %</td>
-                    <td>{{ order.timestamp|default:'не указано' }}</td>
-                    <td>{{ order.cost|default:'не указано' }} руб.</td>
-                    <td>
-                      <a href="{% url 'moderator:commission-detail' order.id %}" class="btn btn-sm btn-info">Детализация счёта</a>
-                    </td>
-                  </tr>
-                {% empty %}
-                  <tr>
-                    <td colspan="7">
-                      <p class="alert alert-info text-left">Платежей не найдено</p>
-                    </td>
-                  </tr>
-                {% endfor %}
-                </tbody>
-              </table>
+              <div class="table-container">
+                <table class="table table-list">
+                  <thead>
+                    <tr>
+                      <th>Клиент</th>
+                      <th>Заказ клиента</th>
+                      <th>Сумма заказа</th>
+                      <th>% комиссии</th>
+                      <th>Дата платежа</th>
+                      <th colspan="2">Сумма к оплате</th>
+                    </tr>
+                  </thead>
+                  <tbody class="js-list">
+                  {% for order in order_list %}
+                    <tr {% if not order.pay %}class='danger'{% endif %}>
+                      <td>{{ order.sale|default:'не указано' }}</td>
+                      <td>{{ order.saleorder|default:'не указано' }} </td>
+                      <td>{{ order.saleorder.total_sum|default:'0' }} </td>
+                      <td>{{ order.sale.presale.commission|default:'0' }} %</td>
+                      <td>{{ order.timestamp|default:'не указано' }}</td>
+                      <td>{{ order.cost|default:'не указано' }} руб.</td>
+                      <td>
+                        <a href="{% url 'moderator:commission-detail' order.id %}" class="btn btn-sm btn-info">Детализация счёта</a>
+                      </td>
+                    </tr>
+                  {% empty %}
+                    <tr>
+                      <td colspan="7">
+                        <p class="alert alert-info text-left">Платежей не найдено</p>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

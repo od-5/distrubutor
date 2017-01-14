@@ -46,49 +46,51 @@
                 </div>
               </form>
             {% endif %}
-              <table class="table table-list">
-                <thead>
-                  <tr>
-                  {% if user.type == 1 %}
-                    <th>Модератор</th>
-                  {% endif %}
-                    <th colspan="2">Название пакета</th>
-                    <th>Сумма</th>
-                    <th>Дата платежа</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody class="js-list">
-                {% for order in order_list %}
-                  <tr data-id="{{ order.id }}" {% if not order.pay %}class='danger'{% endif %} data-name="{{ order }}" data-model="Order" id="id_Order_{{ order.id }}">
-                  {% if user.type == 1 %}
-                    <td>{{ order.moderator|default:'не указано' }}</td>
-                  {% endif %}
-                    <td>
-                      {{ order.package.name|default:'не указано' }}
-                    </td>
-                    <td>
-                      <a href="{% url 'moderator:payment-detail' order.id %}" class="btn btn-sm btn-info">Детализация счёта</a>
-                    </td>
-                    <td>{{ order.cost|default:'не указано' }}</td>
-                    <td>{{ order.timestamp|default:'не указано' }}</td>
-                    <td>
-                    {% if not order.pay %}
-                      <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Order-{{ order.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
-                        <span class="glyphicon glyphicon-remove"></span> Удалить
-                      </a>
+              <div class="table-container">
+                <table class="table table-list">
+                  <thead>
+                    <tr>
+                    {% if user.type == 1 %}
+                      <th>Модератор</th>
                     {% endif %}
-                    </td>
-                  </tr>
-                {% empty %}
-                  <tr>
-                    <td colspan="{% if user.type == 2 %}5{% else %}6{% endif %}">
-                      <p class="alert alert-info text-left">Платежей не найдено</p>
-                    </td>
-                  </tr>
-                {% endfor %}
-                </tbody>
-              </table>
+                      <th colspan="2">Название пакета</th>
+                      <th>Сумма</th>
+                      <th>Дата платежа</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody class="js-list">
+                  {% for order in order_list %}
+                    <tr data-id="{{ order.id }}" {% if not order.pay %}class='danger'{% endif %} data-name="{{ order }}" data-model="Order" id="id_Order_{{ order.id }}">
+                    {% if user.type == 1 %}
+                      <td>{{ order.moderator|default:'не указано' }}</td>
+                    {% endif %}
+                      <td>
+                        {{ order.package.name|default:'не указано' }}
+                      </td>
+                      <td>
+                        <a href="{% url 'moderator:payment-detail' order.id %}" class="btn btn-sm btn-info">Детализация счёта</a>
+                      </td>
+                      <td>{{ order.cost|default:'не указано' }}</td>
+                      <td>{{ order.timestamp|default:'не указано' }}</td>
+                      <td>
+                      {% if not order.pay %}
+                        <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Order-{{ order.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">
+                          <span class="glyphicon glyphicon-remove"></span> Удалить
+                        </a>
+                      {% endif %}
+                      </td>
+                    </tr>
+                  {% empty %}
+                    <tr>
+                      <td colspan="{% if user.type == 2 %}5{% else %}6{% endif %}">
+                        <p class="alert alert-info text-left">Платежей не найдено</p>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
