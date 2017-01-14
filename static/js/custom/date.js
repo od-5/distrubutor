@@ -105,4 +105,15 @@ $(function() {
     dateFormat: "dd.mm.yy"
   });
 
+  var commissionorder_search_form = $('#js-commissionorder-search-form');
+  commissionorder_search_form.find('#id_date_s').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
+  commissionorder_search_form.find('#id_date_e').datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
+
+
 });
