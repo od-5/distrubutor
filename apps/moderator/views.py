@@ -39,7 +39,7 @@ class ModeratorListView(ListView):
         elif user.superviser:
             qs = User.objects.select_related().filter(type=2, moderator_user__superviser=user)
         elif user.type == 6:
-            qs = User.objects.select_related().filter(type=2, moderator_user__ticket_forward=True, moderator_user__deny_access=False)
+            qs = User.objects.select_related().filter(type=2, moderator_user__ticket_forward=True)
         else:
             qs = User.objects.none()
         if self.request.GET.get('email'):
