@@ -61,7 +61,7 @@ def cms_login(request, usertype=None):
                         if user.type == 5:
                             manager = user.manager_user
                             moderator = manager.moderator
-                            if moderator.is_active and not moderator.deny_access:
+                            if moderator.is_active and not moderator.moderator_user.deny_access:
                                 login(request, user)
                                 request.session['demo'] = False
                             else:
