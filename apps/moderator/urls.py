@@ -1,11 +1,8 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
-from django.contrib.auth.views import logout
 from .ajax import moderator_review_add, get_action_list, get_cost_by_action
 from django.contrib.auth.decorators import login_required
-from apps.administrator.decorators import administrator_required
 from .views import ModeratorListView, ReviewListView
-from core.models import User
 from .decorators import blocked
 
 __author__ = 'alexy'
