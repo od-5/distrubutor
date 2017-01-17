@@ -212,7 +212,7 @@ class TicketAgencyListView(ListView):
         user = self.request.user
         if user.agency_leader:
             qs = Ticket.objects.select_related().filter(
-                type__in=[0, 1, 2], moderator__ticket_forward=True, agency_manager__isnull=False)
+                type__in=[0, 1, 2], moderator__ticket_forward=True)
         else:
             qs = Ticket.objects.select_related().filter(
                 type__in=[0, 1, 2], moderator__ticket_forward=True, agency_manager=user)
