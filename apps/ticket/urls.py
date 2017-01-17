@@ -1,7 +1,6 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
-from .ajax import ticket
 from .views import TicketListView, TicketAgencyListView, TicketSaleListView, PreSaleListView
 
 __author__ = 'alexy'
