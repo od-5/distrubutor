@@ -999,12 +999,13 @@ label.error {
 }
 .city-list li {
     float: left;
-    width: 200px;
+    width: 180px;
     margin: 0 0 6px;
 }
 .city-list a {
     color: #29abe1;
     cursor: pointer;
+    font-size: 12px;
 }
 .thnx-text {
     width: 600px;
