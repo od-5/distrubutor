@@ -236,19 +236,5 @@ $(document).ready(function () {
       }
     });
   });
-	$('.ticket-form').ajaxForm({
-    success: function(data){
-      if (data.error) {
-        $('form').resetForm();
-        $.notify(data.error, 'error');
-        console.log(data.error);
-      } else {
-        $('form').resetForm();
-        $('#mask, .window').hide();
-        $.notify(data.success, 'success');
-        console.log('not error');
-      }
-    }
-  });
 
 });

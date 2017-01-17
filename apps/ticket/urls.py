@@ -9,7 +9,7 @@ __author__ = 'alexy'
 
 urlpatterns = patterns(
     'apps.ticket.views',
-    url(r'^$', ticket, name='send'),
+    url(r'^$', 'ticket_send', name='send'),
     url(r'^list/$', login_required(TicketListView.as_view()), name='list'),
     url(r'^agency/$', login_required(TicketAgencyListView.as_view()), name='agency'),
     url(r'^sale/$', login_required(TicketSaleListView.as_view()), name='sale'),

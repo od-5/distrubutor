@@ -2,17 +2,21 @@
 from annoying.functions import get_object_or_None
 from datetime import datetime
 from django import forms
+from django.conf import settings
+from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.template.loader import render_to_string
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
 from apps.city.models import City
 from apps.manager.models import Manager
 from apps.moderator.models import Moderator
-from apps.ticket.forms import TicketChangeForm, PreSaleForm
-from core.models import User
+from apps.ticket.forms import TicketChangeForm, PreSaleForm, TicketAddForm
+from core.models import User, Setup
 from .models import Ticket, PreSale
 
 __author__ = 'alexy'
@@ -24,6 +28,54 @@ def percent_count(total, current):
         return int(percent)
     else:
         return 0
+
+
+@csrf_exempt
+def ticket_send(request):
+    """
+    Сохранение заявки с сайте в базе.
+    Отправка письма с уведомлением о новой заявке модератору или рекламному агенству.
+    Отправка письма с благодарностью на email, указанный в заявке
+    """
+    try:
+        email = Setup.objects.all()[0].email
+    except:
+        email = 'od-5@yandex.ru'
+    if request.method == "POST":
+        form = TicketAddForm(data=request.POST)
+        if request.POST.get('moderator'):
+            moderator = Moderator.objects.get(pk=int(request.POST.get('moderator')))
+            if not moderator.ticket_forward:
+                email = Moderator.objects.select_related().get(pk=int(request.POST.get('moderator'))).user.email
+        if form.is_valid():
+            ticket = form.save(commit=False)
+            ticket.type = 0
+            ticket.save()
+            theme = request.POST.get('theme')
+            mail_title_msg = u'Новая заявка на сайте reklamadoma.com'
+            message = u'Тема: %s\nИмя: %s\nТелефон: %s\n' % (theme, ticket.name, ticket.phone)
+            if email:
+                send_mail(
+                    mail_title_msg,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email, ]
+                )
+            if ticket.mail:
+                subject = u'Спасибо за заявку на сайте reklamadoma.com'
+                # msg_plain = render_to_string('email.txt', {'name': name})
+                msg_html = render_to_string('ticket/mail.html')
+                try:
+                    send_mail(
+                        subject,
+                        msg_html,
+                        settings.DEFAULT_FROM_EMAIL,
+                        [ticket.mail, ],
+                        html_message=msg_html,
+                    )
+                except:
+                    pass
+    return HttpResponseRedirect(reverse('landing:thnx'))
 
 
 class TicketListView(ListView):
