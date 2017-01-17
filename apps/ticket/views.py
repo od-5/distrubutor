@@ -330,7 +330,7 @@ def ticket_detail(request, pk):
         form.fields['city'].widget = forms.HiddenInput()
         form.fields['agency_manager'].widget = forms.HiddenInput()
     else:
-        form.fields['moderator'].queryset = Moderator.objects.filter(ticket_forward=True, deny_access=False)
+        form.fields['moderator'].queryset = Moderator.objects.filter(ticket_forward=True)
     if user.type in [2,5]:
         form.fields['moderator'].widget = forms.HiddenInput()
     context.update({
