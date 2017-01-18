@@ -99,7 +99,7 @@ class TicketListView(ListView):
             qs = Ticket.objects.filter(
                 moderator=user.manager_user.moderator.moderator_user, moderator__ticket_forward=False)
         elif user.type == 6:
-            qs = Ticket.objects.select_related().filter(type=0, moderator__ticket_forward=True, agency_manager__isnull=True)
+            qs = Ticket.objects.select_related().filter(type=0, moderator__ticket_forward=True)
         else:
             qs = Ticket.objects.none()
         if self.request.GET.get('name'):
