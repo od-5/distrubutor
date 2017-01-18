@@ -12,6 +12,7 @@ urlpatterns = patterns(
     url(r'^list/$', login_required(TicketListView.as_view()), name='list'),
     url(r'^agency/$', login_required(TicketAgencyListView.as_view()), name='agency'),
     url(r'^sale/$', login_required(TicketSaleListView.as_view()), name='sale'),
+    url(r'^add/$', 'ticket_add', name='add'),
     url(r'^presale/add/(?P<pk>\d+)/$', 'presale_add', name='presale-add'),
     url(r'^presale/(?P<pk>\d+)/$', 'presale_update', name='presale-update'),
     url(r'^presale/info/(?P<pk>\d+)/$', 'presale_detail', name='presale-detail'),

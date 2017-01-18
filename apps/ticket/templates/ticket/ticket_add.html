@@ -1,0 +1,96 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Добавление новой заявки | {{ block.super }}{% endblock %}
+{% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="col-md-12">
+        <ol class="breadcrumb">
+          <li><a href="{% url 'ticket:list' %}">Новые заявки с сайта</a></li>
+          <li class="active">Добавление новой заявки</li>
+        </ol>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">Добавление новой заявки</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="panel-content">
+              {% if error %} <div class="alert alert-danger"> {{ error }} </div> {% endif %}
+              <form action="" role="form" class="form" id="js-form-ticket-add" method="post">
+                {% csrf_token %}
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.city.label_tag }}
+                    {{ form.city }}
+                    {{ form.city.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.moderator.label_tag }}
+                    {{ form.moderator }}
+                    {{ form.moderator.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.agency_manager.label_tag }}
+                    {{ form.agency_manager }}
+                    {{ form.agency_manager.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.name.label_tag }}
+                    {{ form.name }}
+                    {{ form.name.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.mail.label_tag }}
+                    {{ form.mail }}
+                    {{ form.mail.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.phone.label_tag }}
+                    {{ form.phone }}
+                    {{ form.phone.errors }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                    {{ form.type }}
+                  <div class="form-group">
+                    {{ form.price.label_tag }}
+                    {{ form.price }}
+                    {{ form.price.errors }}
+                  </div>
+                  <div class="form-group">
+                    {{ form.comment.label_tag }}
+                    {{ form.comment }}
+                    {{ form.comment.errors }}
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+                <div>
+                  <div class="col-md-6 col-sm-6 add-bottom">
+                    <button type="submit" class="btn btn-save">Сохранить изменения</button>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+
+{% endblock %}

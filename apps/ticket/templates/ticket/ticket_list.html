@@ -21,6 +21,21 @@
   </div>
   <div class="container">
     <div class="row">
+      <div class="page-top">
+        <div class="col-md-6">
+          <span class="page-top__title">Заявки</span><span class="page-top__count"> / {{ page_obj.paginator.count|default:'0' }}</span>
+        </div>
+        {% if user.type == 6 %}
+        <div class="col-md-6">
+          <a href="{% url 'ticket:add' %}" class="btn btn-add page-top__btn" title="Добавить менеджера">
+            <span class="glyphicon glyphicon-plus-sign"></span> Добавить завку
+          </a>
+        </div>
+        {% endif %}
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
       <div class="col-md-12">
         <div class="panel panel-default">
           <div class="panel-body">

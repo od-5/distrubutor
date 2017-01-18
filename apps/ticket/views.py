@@ -78,6 +78,34 @@ def ticket_send(request):
     return HttpResponseRedirect(reverse('landing:thnx'))
 
 
+def ticket_add(request):
+    """
+    Добавление заявки внутри системы.
+    Нужно только для рекламного агенства (user.type=6)
+    """
+    context = {}
+    error = None
+    if request.method == 'POST':
+        form = TicketChangeForm(request.POST)
+        if form.is_valid():
+            instance = form.save()
+            return HttpResponseRedirect(reverse('ticket:detail', args=(instance.pk, )))
+        else:
+            context.update({
+                'error': u'Проверьте правильность ввода данных'
+            })
+    else:
+        form = TicketChangeForm()
+    form.fields['city'].queryset = City.objects.all()
+    form.fields['moderator'].queryset = Moderator.objects.filter(ticket_forward=True)
+    form.fields['type'].widget = forms.HiddenInput()
+    context.update({
+        'form': form,
+        'error': error
+    })
+    return render(request, 'ticket/ticket_add.html', context)
+
+
 class TicketListView(ListView):
     model = Ticket
     paginate_by = 25

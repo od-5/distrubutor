@@ -26,7 +26,7 @@
   <div class="container">
     <div class="row">
       <div class="page-top">
-        <div class="col-md-12">
+        <div class="col-md-6">
         {% if sale %}
           <span class="page-top__title">Продажи</span>
           <span class="page-top__count"> / {{ page_obj.paginator.count|default:'0' }}</span>
@@ -37,6 +37,13 @@
           <span class="page-top__title">Заявки в обработке</span><span class="page-top__count"> / {{ page_obj.paginator.count|default:'0' }}</span>
         {% endif %}
         </div>
+        {% if user.type == 6 %}
+        <div class="col-md-6">
+          <a href="{% url 'ticket:add' %}" class="btn btn-add page-top__btn" title="Добавить менеджера">
+            <span class="glyphicon glyphicon-plus-sign"></span> Добавить завку
+          </a>
+        </div>
+        {% endif %}
         <div class="clearfix"></div>
       </div>
     </div>

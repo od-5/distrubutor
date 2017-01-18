@@ -5,6 +5,7 @@
       Заявки <span class="caret"></span>
     </a>
     <ul class="dropdown-menu">
+      <li><a href="{% url 'ticket:add' %}">Добавление новой заявки</a></li>
       <li><a href="{% url 'ticket:list' %}">Новые заявки с сайта</a></li>
       <li><a href="{% url 'ticket:agency' %}">Заявки в обработке</a></li>
       <li><a href="{% url 'ticket:sale' %}">Продажи</a></li>

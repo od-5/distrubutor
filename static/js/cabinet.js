@@ -140,6 +140,26 @@ $(function() {
     $.fancybox.close();
   });
 
+  // Валидация формы добавления заявки внутри кабинета
+  $('#js-form-ticket-add').validate({
+    rules: {
+      city: {
+        required: true
+      },
+      moderator: {
+        required: true
+      },
+      name: {
+        required: true
+      },
+      mail: {
+        required: true
+      },
+      phone: {
+        required: true
+      }
+    }
+  });
 
   // валидация формы изменения пароля
   $( '.js-form-password-change' ).validate({
