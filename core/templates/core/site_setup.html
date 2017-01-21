@@ -33,18 +33,26 @@
             <div class="panel-content">
               <form action="" role="form" id="js-form-setup" class="form" method="post">
                 {% csrf_token %}
-                <div class="col-md-6">
+                <div class="col-md-12">
                   <div class="form-group">
                     {{ form.meta_title.label_tag }}
                     {{ form.meta_title }}
                     {{ form.meta_title.errors }}
                   </div>
                 </div>
+                <div class="clearfix"></div>
                 <div class="col-md-6">
                   <div class="form-group">
                     {{ form.email.label_tag }}
                     {{ form.email }}
                     {{ form.email.errors }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.phone.label_tag }}
+                    {{ form.phone }}
+                    {{ form.phone.errors }}
                   </div>
                 </div>
                 <div class="col-md-6">

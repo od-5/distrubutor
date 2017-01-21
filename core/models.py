@@ -151,6 +151,7 @@ class Setup(models.Model):
     meta_title = models.CharField(verbose_name=u'Заголовок сайта', max_length=256)
     meta_keys = models.TextField(verbose_name=u'Ключевые слова', blank=True, null=True)
     meta_desc = models.TextField(verbose_name=u'Мета описание', blank=True, null=True)
+    phone = models.CharField(verbose_name=u'Телефон единой службы', max_length=20, blank=True, null=True)
     email = models.EmailField(verbose_name=u'e-mail для приёма заявок')
     video = models.TextField(verbose_name=u'HTML-код видео', blank=True, null=True)
     top_js = models.TextField(verbose_name=u'Скрипты в <HEAD>..</HEAD>', blank=True)

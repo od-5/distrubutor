@@ -106,7 +106,7 @@
             </div>
           </div>
           <div class="header-city"><span class="header-city-span">Выберите город:</span> <a href="">{{ current_city.name|default:'Не выбрано' }}</a></div>
-          <div class="header-contact scroll"><a href="#block5">Контактные данные</a></div>
+          <div class="header-contact"><span class="header-contact-span">Единая служба:</span> {{ SETUP.phone|default:'8 (800) 234-37-37' }}</div>
           <div class="header-enter">
             <a href="{% url 'dashboard:index' %}" class="enter-link enter-link-top">
             <span>{% if user.is_authenticated %}{{ user.email }}{% else %} Войти как...{% endif %}</span>
@@ -121,17 +121,29 @@
       </div>
       <div class="header-main">
         <div class="holder">
-          <div class="header-main-top"><span>Интернет-портал по расклейке и распространению рекламной продукции № 1</span></div>
+          <div class="header-main-top"><span>Интернет-портал по расклейке и распространению рекламной продукции</span></div>
           <h1 class="main-title">
-            <span class="main-title1">Эффективная</span>
-            <span class="main-title2">рекламная кампания</span>
-            <span class="main-title3">за копе<span>й</span>ки</span>
+              <span class="main-title1">МАССОВАЯ РЕКЛАМА</span>
+            <span class="main-title2">НА ГОРОДСКИХ ДОСКАХ ОБЪЯВЛЕНИЙ</span>
+            <span class="main-title2">И В ПОЧТОВЫХ ЯЩИКАХ</span>
           </h1>
-          <div class="header-main-text">Рекламные плакаты на городских досках объявлений, листовки в почтовых ящиках и не только</div>
-          <div class="header-main-button scroll">
-            <a href="#block5" class="button">Оставить заявку</a>
-            <div class="header-main-button-text">Оставьте заявку на расчет стоимости <br>рекламы и консультацию менеджера</div>
+          <div class="header-main-text">Листовки промоутеров - сразу выбрасывают 87% людей! Наша реклама работает эффективней и стоит копейки.</div>
+          <div class="header-main-form">
+            <div class="header-main-form-text">Оставьте заявку на расчет стоимости рекламы и консультацию менеджера</div>
+            <form action="{% url 'ticket:send' %}" class="ticket-form" method="post">
+              {% csrf_token %}
+              <fieldset>
+                <input type="hidden" name="moderator" value="">
+                <input type="hidden" name="city" value="{{ current_city.id|default:'' }}">
+                <input type="text" name="name" class="input required" placeholder="Ваше имя *">
+                <input type="text" name="mail" class="input required" placeholder="Ваш email *">
+                <input type="text" name="phone" class="input no-margin required" placeholder="+7 (___) ___ - __ - __">
+                <input type="hidden" name="theme" value="Заявка - Едина служба">
+                <button class="submit" type="submit">ОСТАВИТЬ ЗАЯВКУ</button>
+              </fieldset>
+            </form>
           </div>
+          <div class="header-main-button-text scroll">Или выберите исполнителя сами - <a href="#block5" class="header-main-button">Перейти к выбору</a></div>
         </div>
       </div>
     </header>
@@ -253,31 +265,25 @@
           <ul class="i-slider">
           {% for moderator in moderator_list %}
             <li class="info-slide">
+              <div class="info-form">
+                <form action="{% url 'ticket:send' %}" class="ticket-form" method="post">
+                  {% csrf_token %}
+                  <fieldset>
+                    <input type="hidden" name="moderator" value="{{ moderator.id }}">
+                    <input type="hidden" name="city" value="{{ current_city.id|default:'' }}">
+                    <input type="text" name="name" class="input required" placeholder="Ваше имя *">
+                    <input type="text" name="mail" class="input required" placeholder="Ваш email *">
+                    <input type="text" name="phone" class="input no-margin required" placeholder="+7 (___) ___ - __ - __">
+                    <input type="hidden" name="theme" value="Заявка - исполнитель {{ moderator.company|default:'Не указано' }}">
+                    <button class="submit">ОСТАВИТЬ ЗАЯВКУ</button>
+                  </fieldset>
+                </form>
+              </div>
               <aside class="info-left">
                 <div class="info-logo">
                 {% if moderator.logotype %}
                   <img src="{{ moderator.logotype.url }}" alt="{{ moderator.company|default:'' }}">
                 {% endif %}
-                </div>
-                <div class="info-form-title">Заполните онлайн-заявку</div>
-                <div class="info-form-text">И получите предложение <br>по рекламе от: <br>
-                <a href="">{{ moderator.company|default:'Не указано' }}</a>
-                </div>
-                <div class="info-form">
-                  <form action="{% url 'ticket:send' %}" class="ticket-form" method="post">
-                    {% csrf_token %}
-                    <fieldset>
-                      <input type="hidden" name="moderator" value="{{ moderator.id }}">
-                      <input type="hidden" name="city" value="{{ current_city.id|default:'' }}">
-                      <input type="text" name="name" class="input required" placeholder="Ваше имя *">
-                      <input type="text" name="mail" class="input required" placeholder="Ваш email *">
-                      <input type="text" name="phone" class="input no-margin required" placeholder="+7 (___) ___ - __ - __">
-                      <input type="hidden" name="theme" value="Заявка - исполнитель {{ moderator.company|default:'Не указано' }}">
-                      <div class="submit-holder">
-                        <button class="submit">Отправить заявку</button>
-                      </div>
-                    </fieldset>
-                  </form>
                 </div>
               </aside>
               <div class="info-right">
@@ -296,8 +302,10 @@
                     -  {{ moderator.get_rating }}
                   </dd>
                   {% endif %}
+                  {% if moderator.experience %}
                   <dt>Стаж работы:</dt>
                   <dd>{{ moderator.experience|default:'' }}</dd>
+                  {% endif %}
                   <dt>Город:</dt>
                   <dd>
                   {% for city in moderator.city.all %}
@@ -320,43 +328,43 @@
                   <dd class="social">
                   {% if moderator.fb_link %}
                     <a href="{{ moderator.fb_link|safe }}" class="social-link">
-                      <img src="{% static 'landing/images/icons/fb.png' %}" class="social-link-icon" alt="{{ moderator.fb_link|safe }}">
+                      Facebook
                     </a>
                   {% endif %}
                   {% if moderator.vk_link %}
                     <a href="{{ moderator.vk_link|safe }}" class="social-link">
-                      <img src="{% static 'landing/images/icons/vk.png' %}" class="social-link-icon" alt="{{ moderator.vk_link|safe }}">
+                      Вконтакте
                     </a>
                   {% endif %}
                   {% if moderator.ok_link %}
                     <a href="{{ moderator.ok_link|safe }}" class="social-link">
-                      <img src="{% static 'landing/images/icons/ok.png' %}" class="social-link-icon" alt="{{ moderator.ok_link|safe }}">
+                      Oдноклассники
                     </a>
                   {% endif %}
                   {% if moderator.insta_link %}
                     <a href="{{ moderator.insta_link|safe }}" class="social-link">
-                      <img src="{% static 'landing/images/icons/insta.png' %}" class="social-link-icon" alt="{{ moderator.insta_link|safe }}">
+                      Instagram
                     </a>
                   {% endif %}
                   </dd>
                 </dl>
-                <div class="info-reviews">
-                  <div class="info-reviews-title">
-                    Отзывы <span>{{ moderator.review_set.count }}</span>
-                  </div>
-                  {% for review in moderator.review_set.all %}
-                  <div class="review-item">
-                    <div class="review-author">{{ review.name|default:'' }}</div>
-                    <div class="review-text">
-                      {{ review.text|safe|linebreaksbr|default:'' }}
-                    </div>
-                  </div>
-                  {% empty %}
-                  <div class="review-item">
-                    <div class="reviews-text">Нет отзывов</div>
-                  </div>
-                  {% endfor %}
+              </div>
+              <div class="info-reviews">
+                <div class="info-reviews-title">
+                  Отзывы <span>{{ moderator.review_set.count }}</span>
                 </div>
+                {% for review in moderator.review_set.all %}
+                <div class="review-item">
+                  <div class="review-author">{{ review.name|default:'' }}</div>
+                  <div class="review-text">
+                    {{ review.text|safe|linebreaksbr|default:'' }}
+                  </div>
+                </div>
+                {% empty %}
+                <div class="review-item">
+                  <div class="reviews-text">Нет отзывов</div>
+                </div>
+                {% endfor %}
               </div>
             </li>
           {% endfor %}
@@ -394,6 +402,10 @@
           <div class="footer-download">
             <div class="footer-download-text">Скачать приложение</div>
             <a href="https://play.google.com/store/apps/details?id=gw.raskleyka" target="_blank"><img src="{% static 'landing/images/googleplay.png' %}" alt=""></a>
+          </div>
+          <div class="footer-phone">
+            <span class="footer-phone-text">Единая служба: </span><br>
+            {{ SETUP.phone|default:'8 (800) 234-37-37' }}
           </div>
           <a href="http://5lands.ru/" target="_blank" class="studio">
             Дизайн сайта<br>
