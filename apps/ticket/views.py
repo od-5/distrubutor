@@ -127,7 +127,9 @@ class TicketListView(ListView):
             qs = Ticket.objects.filter(
                 moderator=user.manager_user.moderator.moderator_user, moderator__ticket_forward=False)
         elif user.type == 6:
-            qs = Ticket.objects.select_related().filter(type=0, moderator__ticket_forward=True)
+            qs = Ticket.objects.select_related().filter(
+                Q(type=0, moderator__ticket_forward=True) | Q(moderator__isnull=True)
+            )
         else:
             qs = Ticket.objects.none()
         if self.request.GET.get('name'):
@@ -240,7 +242,8 @@ class TicketAgencyListView(ListView):
         user = self.request.user
         if user.agency_leader:
             qs = Ticket.objects.select_related().filter(
-                type__in=[1, 2], moderator__ticket_forward=True)
+                Q(type__in=[1, 2], moderator__ticket_forward=True) | Q(type__in=[1, 2], moderator__isnull=True)
+            )
         else:
             qs = Ticket.objects.select_related().filter(
                 type__in=[1, 2], moderator__ticket_forward=True, agency_manager=user)
@@ -311,7 +314,8 @@ class TicketSaleListView(ListView):
         user = self.request.user
         if user.agency_leader:
             qs = Ticket.objects.select_related().filter(
-                type=3, moderator__ticket_forward=True)
+                Q(type=3, moderator__ticket_forward=True) | Q(type=3, moderator__isnull=True)
+            )
         else:
             qs = Ticket.objects.select_related().filter(
                 type=3, moderator__ticket_forward=True, agency_manager=user)
