@@ -320,10 +320,15 @@
                   <dt>Краткое описание:</dt>
                   <dd>{{ moderator.description|linebreaksbr|safe|default:'' }}</dd>
                   {% endif %}
+                  {% if moderator.contact %}
                   <dt>Контакты:</dt>
                   <dd>{{ moderator.contact|default:'' }}</dd>
+                  {% endif %}
+                  {% if moderator.phone %}
                   <dt>Телефон:</dt>
                   <dd>{{ moderator.phone|default:'' }}</dd>
+                  {% endif %}
+                {% if moderator.fb_link or moderator.vk_link or moderator.ok_link or moderator.insta_link %}
                   <dt>Соц. сети:</dt>
                   <dd class="social">
                   {% if moderator.fb_link %}
@@ -347,6 +352,7 @@
                     </a>
                   {% endif %}
                   </dd>
+                {% endif %}
                 </dl>
               </div>
               <div class="info-reviews">
