@@ -245,8 +245,9 @@ class TicketAgencyListView(ListView):
                 Q(type__in=[1, 2], moderator__ticket_forward=True) | Q(type__in=[1, 2], moderator__isnull=True)
             )
         else:
-            qs = Ticket.objects.select_related().filter(
-                type__in=[1, 2], moderator__ticket_forward=True, agency_manager=user)
+            qs = Ticket.objects.select_related().filter(type__in=[1, 2], agency_manager=user).filter(
+                Q(moderator__ticket_forward=True) | Q(moderator__isnull=True)
+            )
         if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
             qs = qs.filter(city__id=int(self.request.GET.get('city')))
         if self.request.GET.get('agency') and int(self.request.GET.get('agency')) != 0:
