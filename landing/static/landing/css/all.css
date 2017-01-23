@@ -247,6 +247,7 @@ article p {
     display: none;
     min-width: 180px;
     background: #000;
+    z-index: 1;
 }
 .header-lang-hidden .lang-link:hover {background-color: #131313;}
 .header-city {

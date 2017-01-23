@@ -304,6 +304,7 @@ dd a {
     .header-main-top {
         margin: 0 0 40px;
         text-align: center;
+        width: 100%;
     }
     .main-title {
         margin: 0 0 44px;
@@ -331,6 +332,9 @@ dd a {
     .header-main-form, .header-main-button-text {
         width: 90%;
         margin: auto
+    }
+    .header-main-form-text {
+        text-align: center;
     }
     .input, .submit {
         display: block;
@@ -607,6 +611,8 @@ dd a {
         text-align: center;
         font-size: 18px;
         font-weight: bold;
+        padding-left: 0;
+        left: 0;
     }
     .header-contact-span {
         display: inline;
