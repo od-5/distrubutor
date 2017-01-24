@@ -1,0 +1,29 @@
+.block {
+    position: absolute;
+    background-color: white;
+    font-size: large;
+    text-align: center;
+    border: medium solid darkgray;
+    padding: 4px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+#standContainer {
+    width: 400px;
+    height: 480px;
+    border: 5px solid darkgray;
+    background: darkgray;
+    margin: 0 auto;
+    position: relative;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+}
+.ui-selected {
+    border: medium solid green;
+    background-color: lightgreen
+}
+.ui-selecting {
+    border: medium solid green
+}

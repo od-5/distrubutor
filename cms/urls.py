@@ -27,6 +27,7 @@ urlpatterns = patterns(
     url(r'^correspondence/', include('apps.correspondence.urls', namespace='correspondence'),),
     url(r'^order/', include('apps.order.urls', namespace='order'),),
     url(r'^calculator/', include('apps.calculator.urls', namespace='calculator'),),
+    url(r'^stand/', include('apps.stand.urls', namespace='stand'),),
     url(r'', include('core.urls')),
     url(r'', include('landing.urls', namespace='landing')),
     (r'^i18n/', include('django.conf.urls.i18n')),
