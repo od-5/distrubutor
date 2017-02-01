@@ -1,6 +1,6 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
-from apps.city.models import City
+from apps.geolocation.models import City
 
 __author__ = 'alexy'
 

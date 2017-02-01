@@ -12,7 +12,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
-from apps.city.models import City
+from apps.geolocation.models import City
 from apps.moderator.models import Moderator
 from apps.sale.models import SaleOrder, SaleOrderPayment
 from core.forms import UserAddForm, UserUpdateForm

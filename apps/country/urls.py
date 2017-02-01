@@ -1,7 +1,7 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
 from apps.administrator.decorators import administrator_required
-from apps.city.models import Country
+from apps.geolocation.models import Country
 from .views import CountryListView, CountryCreateView, CountryUpdateView
 from .ajax import get_city_list
 

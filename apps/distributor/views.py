@@ -9,7 +9,7 @@ from django.shortcuts import render
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 import xlwt
-from apps.city.models import City
+from apps.geolocation.models import City
 from apps.moderator.models import ModeratorAction, Moderator
 from .task_calendar import get_months
 from .models import Distributor, DistributorTask, DistributorPayment, GPSPoint

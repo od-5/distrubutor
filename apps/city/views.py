@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView
 from apps.city.forms import CityForm
-from apps.city.models import City, Country
+from apps.geolocation.models import City, Country
 from apps.moderator.forms import ModeratorAreaForm
 from apps.moderator.models import ModeratorArea
 

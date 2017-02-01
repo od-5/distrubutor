@@ -17,6 +17,7 @@ INSTALLED_APPS = (
     'core',
     'api',
     'landing',
+    'apps.geolocation',
     'apps.country',
     'apps.dashboard',
     'apps.administrator',

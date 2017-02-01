@@ -1,7 +1,7 @@
 # coding=utf-8
 from django import forms
 from core.models import User
-from .models import City
+from apps.geolocation.models import City
 
 __author__ = 'alexy'
 

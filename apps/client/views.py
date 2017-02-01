@@ -12,7 +12,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
 from django.utils import timezone
-from apps.city.models import City
+from apps.geolocation.models import City
 from apps.manager.models import Manager
 from core.forms import UserAddForm, UserUpdateForm
 from core.models import User

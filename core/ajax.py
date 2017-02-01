@@ -6,7 +6,7 @@ from apps.manager.models import Manager
 from apps.moderator.models import Moderator, ModeratorArea, Review, Order
 from apps.distributor.models import Distributor, DistributorTask, GPSPoint
 from apps.sale.models import Sale, SaleOrder, SaleMaket
-from apps.city.models import City, Country
+from apps.geolocation.models import City, Country
 from apps.client.models import Client, ClientContact, Task
 from apps.ticket.models import Ticket
 from apps.packages.models import Package

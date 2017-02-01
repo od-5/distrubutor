@@ -9,7 +9,7 @@ from django.utils.translation import get_language
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 from django.conf import settings
-from apps.city.models import City, Country
+from apps.geolocation.models import City, Country
 from apps.moderator.models import Moderator
 from core.models import Setup
 

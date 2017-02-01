@@ -1,7 +1,7 @@
 # coding=utf-8
 from django.views.generic import ListView, CreateView, UpdateView
 from apps.country.forms import CountryForm
-from apps.city.models import Country
+from apps.geolocation.models import Country
 
 __author__ = '2mitrij'
 

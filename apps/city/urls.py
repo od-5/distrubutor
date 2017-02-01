@@ -2,7 +2,7 @@
 from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
 from apps.administrator.decorators import administrator_required
-from .models import City
+from apps.geolocation.models import City
 from .views import CityCreateView, CityUpdateView, CityListView
 from .ajax import find_city, get_moderator_list
 

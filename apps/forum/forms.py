@@ -1,6 +1,6 @@
 # coding=utf-8
 from django import forms
-from apps.city.models import City
+from apps.geolocation.models import City
 from .models import Section, Topic, Comment
 
 __author__ = 'alexy'

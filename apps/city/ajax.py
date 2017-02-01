@@ -1,7 +1,7 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
 from django.views.decorators.csrf import csrf_exempt
-from .models import City
+from apps.geolocation.models import City
 from apps.moderator.models import Moderator
 
 __author__ = 'alexy'

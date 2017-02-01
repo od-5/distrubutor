@@ -1,6 +1,6 @@
 # coding=utf-8
 from django.db import models
-from apps.city.models import City
+from apps.geolocation.models import City
 from apps.moderator.models import Moderator
 from core.base_model import Common
 from core.models import User

@@ -2,7 +2,7 @@
 from django.core.urlresolvers import reverse
 from ckeditor.fields import RichTextField
 from django.db import models
-from apps.city.models import City
+from apps.geolocation.models import City
 from core.models import User
 
 __author__ = 'alexy'
