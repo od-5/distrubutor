@@ -1,9 +1,9 @@
 # coding=utf-8
 from django import forms
-from core.models import User
-from apps.geolocation.models import City
 
-__author__ = 'alexy'
+from .models import City, Country
+
+__author__ = '2mitrij'
 
 
 class CityForm(forms.ModelForm):
@@ -19,3 +19,13 @@ class CityForm(forms.ModelForm):
     # def __init__(self, *args, **kwargs):
     #     super(CityAddForm, self).__init__(*args, **kwargs)
     #     self.fields['moderator'].queryset = User.objects.filter(type=2)
+
+
+class CountryForm(forms.ModelForm):
+    class Meta:
+        model = Country
+        fields = ('name', 'code')
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'code': forms.TextInput(attrs={'class': 'form-control'}),
+        }

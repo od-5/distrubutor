@@ -2,14 +2,14 @@
 {% block viewport %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% endblock %}
-{% block title %}Добавление страны | {{ block.super }}{% endblock %}
+{% block title %}Страна {{ object }} | {{ block.super }}{% endblock %}
 {% block content %}
-  {% include 'country/__include/country_breadcrumb.html' %}
+  {% include 'geolocation/__include/country_breadcrumb.html' %}
   <div class="container">
     <div class="row">
       <div class="page-top">
         <div class="col-md-12">
-          <span class="page-top__title">Добавление страны</span>
+          <span class="page-top__title">Страна {{ object }}</span>
         </div>
         <div class="clearfix"></div>
       </div>
@@ -32,7 +32,7 @@
                     {{ form.code }}
                     {{ form.code.errors }}
                   </div>
-                  <button type="submit" class="btn btn-save">Добавить страну</button>
+                  <button type="submit" class="btn btn-save add-bottom">Сохранить</button>
                 </div>
                 <div class="clearfix"></div>
               </form>
