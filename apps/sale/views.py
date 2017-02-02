@@ -282,8 +282,8 @@ class JournalListView(ListView):
                 city_qs = user.moderator_user.city.all()
                 manager_qs = user.manager_set.all()
         elif user.type == 5:
-            city_qs = City.objects.filter(moderator=user.manager.moderator)
-            manager_qs = Manager.objects.filter(moderator=user.manager.moderator)
+            city_qs = City.objects.filter(moderator=user.manager_user.moderator.moderator_user)
+            manager_qs = Manager.objects.filter(moderator=user.manager_user.moderator)
         elif user.type == 6:
             manager_qs = Manager.objects.none()
             city_qs = City.objects.filter(moderator__ticket_forward=True)
