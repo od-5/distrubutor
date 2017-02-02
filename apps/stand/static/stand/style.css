@@ -1,18 +1,22 @@
+.stand-container {
+    width: 410px;
+    margin: 20px auto;
+}
 .block {
     position: absolute;
     background-color: white;
-    font-size: large;
-    text-align: center;
     border: medium solid darkgray;
     padding: 4px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+    font-size: 12px;
 }
-#standContainer {
+#topStandContainer, #topStandContainer1 {
     width: 400px;
-    height: 480px;
+    height: 150px;
     border: 5px solid darkgray;
+    border-bottom: none;
     background: darkgray;
     margin: 0 auto;
     position: relative;
@@ -20,10 +24,37 @@
     -moz-box-sizing: content-box;
     box-sizing: content-box;
 }
-.ui-selected {
+#topStandContainer:before, #topStandContainer1:before {
+    content: '';
+    display: block;
+    width: 100px;
+    height: 100px;
+    -webkit-border-radius: 50px;
+    -moz-border-radius: 50px;
+    border-radius: 50px;
+    border: 1px solid #333;
+    margin-top: 25px;
+    margin-left: 25px;
+}
+#standContainer, #standContainer1 {
+    width: 400px;
+    height: 480px;
+    border: 5px solid darkgray;
+    background: darkgray;
+    margin: 0 auto 20px;
+    position: relative;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+}
+.stand-input {
+    width: 100%;
+    font-size: 12px;
+}
+.block.ui-selected {
     border: medium solid green;
     background-color: lightgreen
 }
-.ui-selecting {
+.block.ui-selecting {
     border: medium solid green
 }

@@ -114,6 +114,23 @@ $(function() {
     defaultDate: 1,
     dateFormat: "dd.mm.yy"
   });
-
+  var stand_add_form = $('#js-form-stand-add');
+  stand_add_form.find('#id_date_start').datepicker({
+    defaultDate: 0,
+    dateFormat: "dd.mm.yy"
+  });
+  stand_add_form.find('#id_date_end').datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
+  var stand_update_form = $('#js-form-stand-update');
+  stand_update_form.find('#id_date_start').datepicker({
+    defaultDate: 0,
+    dateFormat: "dd.mm.yy"
+  });
+  stand_update_form.find('#id_date_end').datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
 
 });

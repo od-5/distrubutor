@@ -5,6 +5,7 @@
 /apps/robokassa/migrations
 /apps/distributor/migrations
 /apps/sale/migrations
+/apps/stand/migrations
 /apps/moderator/migrations
 /apps/ticket/migrations
 /apps/landing/migrations

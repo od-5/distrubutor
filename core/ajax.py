@@ -11,6 +11,7 @@ from apps.client.models import Client, ClientContact, Task
 from apps.ticket.models import Ticket
 from apps.packages.models import Package
 from apps.correspondence.models import Message
+from apps.stand.models import Stand
 
 __author__ = 'alexy'
 

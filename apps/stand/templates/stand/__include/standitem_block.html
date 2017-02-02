@@ -1,0 +1,11 @@
+<div class="block" style="width:{{ block.width }}px;height:{{ block.height }}px;top:{{ block.top }}px; left:{{ block.left }}px">
+  <textarea class="stand-input" {% if user.type == 5 %}{% if user.manager_user.id != block.manager.id %}readonly="readonly"{% endif %}{% endif %} placeholder="Название клиента">{{ block.client|default:'' }}</textarea>
+  <div>Менеджер:
+    <span class="js-standitem-manager" data-manager="{{ block.manager.id|default:'' }}">
+      {{ block.manager|default:'' }}
+    </span>
+  </div>
+  <div>Дата создания:
+    <span class="js-standitem-created">{{ block.created|date:'d.m.Y'|default:'' }}</span>
+  </div>
+</div>

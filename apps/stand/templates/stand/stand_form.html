@@ -1,0 +1,139 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% load staticfiles %}
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}{{ object|default:'Вёрстка' }} | {{ block.super }}{% endblock %}
+{% block extra_js %}
+  <link rel="stylesheet" href="{% static 'stand/style.css' %}">
+{#  <script src="{% static 'stand/script.js' %}"></script>#}
+  <script src="{% static 'stand/script.js' %}"></script>
+{% endblock %}
+{% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li><a href="{% url 'stand:list' %}">Вёрстки</a></li>
+            <li class="active">{{ object|default:'Вёрстка' }}</li>
+          </ol>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12 text-center">
+          <span class="page-top__title">{{ object|default:'Вёрстка' }}</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="panel-content">
+              <div class="col-md-12">
+                <form action="" role="form" class="form" id="js-form-stand-update" method="post">
+                  {% csrf_token %}
+                  <div class="col-md-12">
+                    <div class="form-group">
+                    {% if user.type == 1 %}
+                      {{ form.moderator.label_tag }}
+                    {% endif %}
+                      {{ form.moderator }}
+                      {{ form.moderator.errors }}
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      {{ form.name.label_tag }}
+                      {{ form.name }}
+                      {{ form.name.errors }}
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      {{ form.date_start.label_tag }}
+                      {{ form.date_start }}
+                      {{ form.date_start.errors }}
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      {{ form.date_end.label_tag }}
+                      {{ form.date_end }}
+                      {{ form.date_end.errors }}
+                    </div>
+                  </div>
+                  <div class="clearfix"></div>
+                </form>
+              </div>
+              <div class="col-md-6">
+                <p class="lead text-info text-center">Сторона А</p>
+                <div class="stand-container" data-stand="{{ object.id }}" data-side="front" data-url="{% url 'stand:standitem' %}" data-delete-url="{% url 'stand:standitem-delete' %}">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <button class="btn btn-save add-bottom js-check-units">Проверить</button>
+                    </div>
+                    <div class="col-md-6">
+                      <button class="btn btn-save add-bottom js-combine-units">Объединить</button>
+                    </div>
+                    <div class="col-md-6">
+                      <button class="btn btn-save add-bottom js-break-units">Разбить</button>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div id="topStandContainer" data-position="top" data-min-height="150" data-min-width="120">
+                  {% for block in front_top %}
+                    {% include 'stand/__include/standitem_block.html' %}
+                  {% endfor %}
+                  </div>
+                  <div id="standContainer" data-position="bottom" data-min-height="120" data-min-width="200">
+                  {% for block in front_bottom %}
+                    {% include 'stand/__include/standitem_block.html' %}
+                  {% endfor %}
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <p class="lead text-info text-center">Сторона Б</p>
+                <div class="stand-container" data-stand="{{ object.id }}" data-side="back" data-url="{% url 'stand:standitem' %}" data-delete-url="{% url 'stand:standitem-delete' %}">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <button class="btn btn-save add-bottom js-combine-units">Объединить</button>
+                    </div>
+                    <div class="col-md-6">
+                      <button class="btn btn-save add-bottom js-break-units">Разбить</button>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div id="topStandContainer1" data-position="top" data-min-height="150" data-min-width="120">
+                  {% for block in back_top %}
+                    {% include 'stand/__include/standitem_block.html' %}
+                  {% endfor %}
+                  </div>
+                  <div id="standContainer1" data-position="bottom" data-min-height="120" data-min-width="200">
+                  {% for block in back_bottom %}
+                    {% include 'stand/__include/standitem_block.html' %}
+                  {% endfor %}
+                  </div>
+
+                </div>
+              </div>
+              <div class="col-md-6 col-md-offset-3">
+                <button id="js-stand-save" {% if user.type == 5 %}data-manager="{{ user.manager_user.id }}" data-name="{{ user.get_full_name }}"{% endif %} class="btn btn-save btn-save_green">Сохранить</button>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

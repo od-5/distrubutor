@@ -1,0 +1,84 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Вёрстки | {{ block.super }}{% endblock %}
+{% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li class="active">Вёрстки</li>
+          </ol>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-6">
+          <span class="page-top__title">Вёрстки </span>
+          <span class="page-top__count"> / {{ page_obj.paginator.count|default:'0' }}</span>
+        </div>
+        <div class="col-md-6">
+          <a href="{% url 'stand:add' %}" class="btn btn-add page-top__btn" title="Добавить модератора">
+            <span class="glyphicon glyphicon-plus-sign"></span> Добавить новую вёрстку
+          </a>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="col-md-12">
+              <div class="table-container">
+                <table class="table table-list">
+                  <thead>
+                    <tr>
+                      {% if user.type == 1 or user.superviser %}
+                      <th>Модератор</th>
+                      {% endif %}
+                      <th>Название</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody class="js-list">
+                  {% for object in object_list %}
+                    <tr data-id="{{ object.id }}" data-name="{{ object }}" data-model="Stand" id="id_Stand_{{ object.id }}">
+                    {% if user.type == 1 or user.superviser %}
+                      <td>{{ order.moderator|default:'не указано' }}</td>
+                    {% endif %}
+                      <td>
+                        <a href="{{ object.get_absolute_url }}">{{ object|default:'не указано' }}</a>
+                      </td>
+                      <td>
+                        <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-Stand-{{ object.id }}" class="text-danger js-ajax-remove-btn">
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                      </td>
+                    </tr>
+                  {% empty %}
+                    <tr>
+                      <td colspan="{% if user.type == 1 or user.superviser %}3{% else %}2{% endif %}">
+                        <p class="alert alert-info text-left">Вёрсток не найдено</p>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% include '__includes/pagination.html' %}
+      </div>
+    </div>
+  </div>
+  {% include '__modal/js_ajax_remove_form.html' %}
+{% endblock %}

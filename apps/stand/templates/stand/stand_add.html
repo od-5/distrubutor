@@ -1,0 +1,80 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Добавление новой вёрстки | {{ block.super }}{% endblock %}
+{% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li><a href="{% url 'stand:list' %}">Вёрстки</a></li>
+            <li class="active">Добавление новой вёрстки</li>
+          </ol>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">Добавление новой вёрстки</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="panel-content">
+              <form action="" role="form" class="form" id="js-form-stand-add" method="post">
+                {% csrf_token %}
+                <div class="col-md-12">
+                  <div class="form-group">
+                  {% if user.type == 1 %}
+                    {{ form.moderator.label_tag }}
+                  {% endif %}
+                    {{ form.moderator }}
+                    {{ form.moderator.errors }}
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group">
+                    {{ form.name.label_tag }}
+                    {{ form.name }}
+                    {{ form.name.errors }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.date_start.label_tag }}
+                    {{ form.date_start }}
+                    {{ form.date_start.errors }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.date_end.label_tag }}
+                    {{ form.date_end }}
+                    {{ form.date_end.errors }}
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="col-md-6">
+                  <button type="submit" class="btn btn-save">Создать вёрстку</button>
+                </div>
+                <div class="clearfix"></div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+{% endblock %}

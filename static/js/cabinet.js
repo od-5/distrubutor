@@ -41,6 +41,21 @@ $(function() {
       $(this).find('.js-payment-add-btn').addClass('hide')
     }
   );
+  // валидация формы создания вёрстки
+
+  $('#js-form-stand-add').validate({
+    rules: {
+      moderator: {
+        required: true
+      },
+      date_start: {
+        required: true
+      },
+      date_end: {
+        required: true
+      }
+    }
+  });
   // валидация формы добавления оплаты
   $( '.js-modal-payment-add-form' ).validate({
     rules: {
