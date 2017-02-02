@@ -31,7 +31,7 @@ class StandForm(forms.ModelForm):
         if user:
             if user.type == 1:
                 self.fields['moderator'].widget = forms.Select(attrs={'class': 'form-control'})
-                self.fields['moderator'].queryset = Moderator.objects.all()
+                self.fields['moderator'].queryset = Moderator.objects.filter(stand_accept=True)
             if not instance:
                 if user.type == 2:
                     self.fields['moderator'].initial = user.moderator_user

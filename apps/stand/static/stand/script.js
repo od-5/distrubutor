@@ -30,104 +30,149 @@ $(function() {
           $('.ui-selected').removeClass('ui-selected');
         }
       });
-  $('.js-check-units').click(function(){
+  function checkSelected(selection){
     var check = 0;
+    //var selected = $('.block.ui-selected');
+    var current_manager = $('#js-stand-save').data('manager');
+    var block_manager;
+    if (current_manager) {
+      selection.each(function(){
+        block_manager = $(this).find('.js-standitem-manager').attr('data-manager');
+        if (block_manager) {
+          if (block_manager != current_manager) {
+            check++;
+          }
+        }
+      })
+    }
+    return check;
+  }
+  $('.js-check-units').click(function(){
     var selected = $('.block.ui-selected');
+    //var current_manager = $('#js-stand-save').data('manager');
+    //var block_manager;
+    //if (current_manager) {
+    //  selected.each(function(){
+    //    block_manager = $(this).find('.js-standitem-manager').attr('data-manager');
+    //    if (block_manager) {
+    //      if (block_manager != current_manager) {
+    //        check++;
+    //      }
+    //    }
+    //  })
+    //}
+    var check = checkSelected(selected);
+    if (check == 0) {
+     console.log('Можно изменять');
+    } else {
+      console.log('нельзя изменять');
+    }
 
   });
   $('.js-combine-units').click(function(){
     //fixme: сделать проверку - менеджер не может объединять блоки, которые создавал не он
     var selected = $('.block.ui-selected');
-    if (selected.length > 1) {
-      var x_coords = [],
+    var check = checkSelected(selected);
+    if (check == 0) {
+      if (selected.length > 1) {
+        var x_coords = [],
           y_coords = [],
           x1_coords = [],
           y1_coords = [];
-      var min_x, max_x, min_y, max_y;
-      var s = 0, s1 = 0;
-      var top, left, width, height;
-      selected.each(function(){
-        left = $(this).position()['left'];
-        top = $(this).position()['top'];
-        width = $(this).outerWidth();
-        height = $(this).outerHeight();
-        y_coords.push($(this).position()['top']);
-        y1_coords.push($(this).position()['top']+height);
-        x_coords.push($(this).position()['left']);
-        x1_coords.push($(this).position()['left']+width);
-        s += width*height;
-      });
-      min_x = Math.min.apply(null, x_coords);
-      max_x = Math.max.apply(null, x1_coords);
-      min_y = Math.min.apply(null, y_coords);
-      max_y = Math.max.apply(null, y1_coords);
-      s1 = (max_y - min_y) * (max_x - min_x);
-      var new_width = max_x - min_x;
-      var new_height = max_y - min_y;
-      if (s==s1) {
-        selected.first().before(
-          '<div class="block" style="top:'+ min_y +
-          'px;left:' + min_x +
-          'px;width:' + new_width +
-          'px;height:' + new_height +
-          'px;z-index:10;">' +
-          '<textarea class="stand-input" placeholder="Название клиента"></textarea>' +
-          '<div class="js-standitem-manager">Менеджер:</div>'+
-          '<div>Дата создания: <span class="js-standitem-created"></span></div></div>'
-        );
-        selected.remove();
+        var min_x, max_x, min_y, max_y;
+        var s = 0, s1 = 0;
+        var top, left, width, height;
+        selected.each(function () {
+          left = $(this).position()['left'];
+          top = $(this).position()['top'];
+          width = $(this).outerWidth();
+          height = $(this).outerHeight();
+          y_coords.push($(this).position()['top']);
+          y1_coords.push($(this).position()['top'] + height);
+          x_coords.push($(this).position()['left']);
+          x1_coords.push($(this).position()['left'] + width);
+          s += width * height;
+        });
+        min_x = Math.min.apply(null, x_coords);
+        max_x = Math.max.apply(null, x1_coords);
+        min_y = Math.min.apply(null, y_coords);
+        max_y = Math.max.apply(null, y1_coords);
+        s1 = (max_y - min_y) * (max_x - min_x);
+        var new_width = max_x - min_x;
+        var new_height = max_y - min_y;
+        if (s == s1) {
+          selected.first().before(
+            '<div class="block" style="top:' + min_y +
+            'px;left:' + min_x +
+            'px;width:' + new_width +
+            'px;height:' + new_height +
+            'px;z-index:10;">' +
+            '<textarea class="stand-input" placeholder="Название клиента"></textarea>' +
+            '<div class="js-standitem-manager">Менеджер:</div>' +
+            '<div>Дата создания: <span class="js-standitem-created"></span></div></div>'
+          );
+          selected.remove();
+        } else {
+          // fixme: сделать выводод предупреждения на странице не через alert
+          //alert('Нельзя объединить!');
+          $.notify('Нельзя объединить блоки таким образом', 'error');
+        }
       } else {
         // fixme: сделать выводод предупреждения на странице не через alert
-        alert('Нельзя объединить!');
+        //alert('Нужно выбрать больше одно элемента');
+        $.notify('для объединения блоков нужно выбрать больше одно элемента', 'error');
       }
     } else {
-      // fixme: сделать выводод предупреждения на странице не через alert
-      alert('Нужно выбрать больше одно элемента');
+      $.notify('Не не можете изменять блоки, созданные другими менеджерами', 'error');
     }
-
   });
   $('.js-break-units').click(function(){
     //fixme: сделать проверку - менеджер не может разбивать блоки, которые создавал не он
     var selected = $('.block.ui-selected');
-    if (selected.length == 1) {
-      var minBlockHeight = selected.first().parent().data('min-height');
-      var minBlockWidth = selected.first().parent().data('min-width');
-      var topFirst = selected.first().position()['top'];
-      var leftFirst = selected.first().position()['left'];
-      var blockWidth = selected.last().outerWidth();
-      var blockHeight = selected.last().outerHeight();
-      var x_factor = blockWidth / minBlockWidth;
-      var y_factor = blockHeight / minBlockHeight;
-      var newBlockCount = x_factor*y_factor;
-      if (newBlockCount > 1) {
-        var a = 1;
-        var new_top = topFirst;
-        while (a <=y_factor) {
-          var b = 1;
-          var new_left = leftFirst;
-          while (b <= x_factor) {
-            selected.first().before(
-              '<div class="block" style="top:'+ new_top +
-              'px;left:' + new_left +
-              'px;width:' + minBlockWidth +
-              'px;height:' + minBlockHeight +
-              'px;z-index:10;">' +
-              '<textarea class="stand-input" placeholder="Название клиента"></textarea>' +
-              '<div class="js-standitem-manager">Менеджер:</div>'+
-              '<div>Дата создания: <span class="js-standitem-created"></span></div></div>'
-            );
-            new_left += minBlockWidth;
-            b++;
+    var check = checkSelected(selected);
+    if (check == 0) {
+      if (selected.length == 1) {
+        var minBlockHeight = selected.first().parent().data('min-height');
+        var minBlockWidth = selected.first().parent().data('min-width');
+        var topFirst = selected.first().position()['top'];
+        var leftFirst = selected.first().position()['left'];
+        var blockWidth = selected.last().outerWidth();
+        var blockHeight = selected.last().outerHeight();
+        var x_factor = blockWidth / minBlockWidth;
+        var y_factor = blockHeight / minBlockHeight;
+        var newBlockCount = x_factor * y_factor;
+        if (newBlockCount > 1) {
+          var a = 1;
+          var new_top = topFirst;
+          while (a <= y_factor) {
+            var b = 1;
+            var new_left = leftFirst;
+            while (b <= x_factor) {
+              selected.first().before(
+                '<div class="block" style="top:' + new_top +
+                'px;left:' + new_left +
+                'px;width:' + minBlockWidth +
+                'px;height:' + minBlockHeight +
+                'px;z-index:10;">' +
+                '<textarea class="stand-input" placeholder="Название клиента"></textarea>' +
+                '<div class="js-standitem-manager">Менеджер:</div>' +
+                '<div>Дата создания: <span class="js-standitem-created"></span></div></div>'
+              );
+              new_left += minBlockWidth;
+              b++;
+            }
+            new_top += minBlockHeight;
+            a++;
           }
-          new_top += minBlockHeight;
-          a++;
+          selected.remove();
+        } else {
+          alert('Нельзя разбить на более мелкие блоки');
         }
-        selected.remove();
       } else {
-        alert('Нельзя разбить на более мелкие блоки');
+        alert('Можно разбить только один большой блок на несколько!')
       }
     } else {
-      alert('Можно разбить только один большой блок на несколько!')
+      $.notify('Не не можете изменять блоки, созданные другими менеджерами', 'error');
     }
   });
   $('#js-stand-save').click(function(){

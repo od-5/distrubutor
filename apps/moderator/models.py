@@ -86,6 +86,7 @@ class Moderator(models.Model):
     deny_date = models.DateField(blank=True, null=True, verbose_name=u'Дата блокировки')
     site_visible = models.BooleanField(default=False, verbose_name=u'Не отображать на сайте')
     ticket_forward = models.BooleanField(default=False, verbose_name=u'Перенаправлять заявки на рекламное агенство')
+    stand_accept = models.BooleanField(default=False, verbose_name=u'Система вёрсток')
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
 
 

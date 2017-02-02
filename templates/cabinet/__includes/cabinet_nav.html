@@ -146,6 +146,10 @@
         <li><a href="{% url 'sale:add' %}">Добавить новую продажу</a></li>
         <li class="divider"></li>
         <li><a href="{% url 'sale:journal' %}">Журнал продаж</a></li>
+      {% if user.type == 1 or user.type == 2 and user.moderator_user.stand_accept or user.type == 5 and user.manager_user.moderator.moderator_user.stand_accept %}
+        <li class="divider"></li>
+        <li><a href="{% url 'stand:list' %}">Журнал вёрсток</a></li>
+      {% endif %}
       </ul>
     </li>
     {% if user.manager_user and not user.manager_user.leader %}{% else %}

@@ -3,6 +3,7 @@ import datetime
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from apps.moderator.models import Moderator
 from .models import Stand, StandItem
 from .forms import StandForm
 
@@ -119,6 +120,8 @@ class StandListView(ListView):
             qs = Stand.objects.filter(moderator=user.manager_user.moderator.moderator_user)
         else:
             qs = None
+        if self.request.GET.get('moderator') and self.request.GET.get('moderator').isdigit():
+            qs = qs.filter(moderator=int(self.request.GET.get('moderator')))
         if self.request.GET.get('name'):
             qs = qs.filter(name__icontains=self.request.GET.get('name'))
         if self.request.GET.get('date_start'):
@@ -129,6 +132,15 @@ class StandListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(StandListView, self).get_context_data(**kwargs)
+        user = self.request.user
+        if self.request.GET.get('moderator') and self.request.GET.get('moderator').isdigit():
+            context.update({
+                'moderator_id': int(self.request.GET.get('moderator'))
+            })
+        if self.request.GET.get('name'):
+            context.update({
+                'r_name': self.request.GET.get('name')
+            })
         if self.request.GET.get('date_start'):
             context.update({
                 'r_date_start': self.request.GET.get('date_start')
@@ -137,4 +149,13 @@ class StandListView(ListView):
             context.update({
                 'r_date_end': self.request.GET.get('date_end')
             })
+        if user.type == 1:
+            qs = Moderator.objects.filter(stand_accept=True)
+        elif user.superviser:
+            qs = Moderator.objects.filter(stand_accept=True, superviser=user)
+        else:
+            qs = Moderator.objects.none()
+        context.update({
+            'moderator_list': qs
+        })
         return context

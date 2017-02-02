@@ -132,5 +132,16 @@ $(function() {
     defaultDate: 7,
     dateFormat: "dd.mm.yy"
   });
+  var stand_search_form = $('#js-stand-search-form');
+  stand_search_form.find('#id_date_start').datepicker({
+    defaultDate: 0,
+    dateFormat: "dd.mm.yy"
+  });
+  stand_search_form.find('#id_date_end').datepicker({
+    defaultDate: 7,
+    dateFormat: "dd.mm.yy"
+  });
+
+
 
 });
