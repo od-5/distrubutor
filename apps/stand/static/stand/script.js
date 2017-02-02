@@ -187,38 +187,42 @@ $(function() {
         csrfmiddlewaretoken: csrftoken
       },
       url: selected.first().parents('.stand-container').data('delete-url')
-    });
-    selected.each(function(){
-      left = $(this).position()['left'];
-      top = $(this).position()['top'];
-      width = $(this).outerWidth();
-      height = $(this).outerHeight();
-      client = $(this).find('textarea').val();
-      position = $(this).parents('div').data('position');
-      side = $(this).parents('.stand-container').data('side');
-      url = $(this).parents('.stand-container').data('url');
-      stand = $(this).parents('.stand-container').data('stand');
-      manager = $(this).find('.js-standitem-manager').attr('data-manager');
-      created = $(this).find('.js-standitem-created').text();
-      $.ajax({
-        type: "POST",
-        data: {
-          stand: stand,
-          width: width,
-          height: height,
-          top: top,
-          left: left,
-          client: client,
-          side: side,
-          position: position,
-          manager: manager,
-          created: created,
-          csrfmiddlewaretoken: csrftoken
-        },
-        url: url
+    }).done(function(data){
+      selected.each(function(){
+        left = $(this).position()['left'];
+        top = $(this).position()['top'];
+        width = $(this).outerWidth();
+        height = $(this).outerHeight();
+        client = $(this).find('textarea').val();
+        position = $(this).parents('div').data('position');
+        side = $(this).parents('.stand-container').data('side');
+        url = $(this).parents('.stand-container').data('url');
+        stand = $(this).parents('.stand-container').data('stand');
+        manager = $(this).find('.js-standitem-manager').attr('data-manager');
+        created = $(this).find('.js-standitem-created').text();
+        $.ajax({
+          type: "POST",
+          async: false,
+          data: {
+            stand: stand,
+            width: width,
+            height: height,
+            top: top,
+            left: left,
+            client: client,
+            side: side,
+            position: position,
+            manager: manager,
+            created: created,
+            csrfmiddlewaretoken: csrftoken
+          },
+          url: url
+        });
+        $('#js-form-stand-update').submit();
       });
-      $('#js-form-stand-update').submit();
+
     });
+
   });
   //var today = new Date();
   //console.log(today.toLocaleDateString());
