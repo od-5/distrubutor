@@ -34,6 +34,6 @@ INSTALLED_APPS = (
     'apps.packages',
     'apps.robokassa',
     'apps.order',
-    'apps.stand',
+    # 'apps.stand',
     'django_cleanup',
 )
