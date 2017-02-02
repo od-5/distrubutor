@@ -1,10 +1,12 @@
 # coding=utf-8
-from annoying.decorators import ajax_request
 from django.views.decorators.csrf import csrf_exempt
+
+from annoying.decorators import ajax_request
+
 from .models import City
 from apps.moderator.models import Moderator
 
-__author__ = 'alexy'
+__author__ = '2mitrij'
 
 
 @csrf_exempt
@@ -41,6 +43,26 @@ def get_moderator_list(request):
             ]
         }
 
+    return {
+        'success': False
+    }
+
+
+@ajax_request
+def get_city_list(request):
+    r_country = request.GET.get('country') or ''
+    city_list = []
+    if r_country and r_country.isdigit():
+        city_qs = City.objects.filter(country__id=int(r_country))
+        for city in city_qs:
+            city_list.append({
+                'id': city.id,
+                'name': city.name
+            })
+        return {
+            'success': True,
+            'city_list': city_list
+        }
     return {
         'success': False
     }

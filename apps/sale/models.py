@@ -1,7 +1,7 @@
 # coding=utf-8
 import datetime
 from django.db import models
-from apps.city.models import City
+from apps.geolocation.models import City
 from apps.moderator.models import Moderator, ModeratorAction
 from apps.ticket.models import Ticket, PreSale
 from core.files import upload_to

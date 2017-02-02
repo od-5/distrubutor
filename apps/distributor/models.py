@@ -7,7 +7,7 @@ from django.conf import settings
 from imagekit.models import ImageSpecField
 from pilkit.processors import SmartResize
 from pytils.translit import slugify
-from apps.city.models import City
+from apps.geolocation.models import City
 from apps.moderator.models import Moderator, ModeratorArea, ModeratorAction
 from apps.sale.models import Sale, SaleOrder
 from core.files import upload_to, pointphoto_upload

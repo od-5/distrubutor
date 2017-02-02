@@ -18,5 +18,6 @@
 core/migrations/
 /apps/adjuster/migrations
 /apps/client/migrations
+/apps/geolocation/migrations
 vagrant/
 db.sqlite3

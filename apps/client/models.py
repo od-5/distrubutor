@@ -1,7 +1,7 @@
 # coding=utf-8
 from django.core.urlresolvers import reverse
 from django.db import models
-from apps.city.models import City
+from apps.geolocation.models import City
 from apps.manager.models import Manager
 from apps.moderator.models import Moderator
 

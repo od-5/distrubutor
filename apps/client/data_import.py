@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 import pyexcel
-from apps.city.models import City
+from apps.geolocation.models import City
 from apps.client.models import Client, ClientManager, ClientContact
 import pyexcel_xls
 import pyexcel_xlsx

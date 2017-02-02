@@ -1,7 +1,7 @@
 # coding=utf-8
 from django import forms
 from django.core.urlresolvers import reverse
-from apps.city.models import City
+from apps.geolocation.models import City
 from .models import Message, UserMessageAnswer
 
 __author__ = 'alexy'

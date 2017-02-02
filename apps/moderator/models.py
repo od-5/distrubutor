@@ -1,7 +1,7 @@
 # coding=utf-8
 from PIL import Image
 from django.db import models
-from apps.city.models import City
+from apps.geolocation.models import City
 from apps.packages.models import Package
 from core.files import upload_to
 from core.models import User

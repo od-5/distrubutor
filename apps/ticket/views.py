@@ -12,7 +12,7 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
-from apps.city.models import City
+from apps.geolocation.models import City
 from apps.manager.models import Manager
 from apps.moderator.models import Moderator
 from apps.ticket.forms import TicketChangeForm, PreSaleForm, TicketAddForm

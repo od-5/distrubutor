@@ -20,7 +20,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
 from django.forms import HiddenInput
-from apps.city.models import City
+from apps.geolocation.models import City
 from apps.distributor.models import GPSPoint
 from apps.ticket.models import PreSale
 from .forms import SaleAddForm, SaleUpdateForm, SaleOrderForm, SaleMaketForm

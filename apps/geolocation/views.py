@@ -1,21 +1,18 @@
 # coding=utf-8
-from django.core.urlresolvers import reverse
-from django.forms import formset_factory
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView
-from apps.city.forms import CityForm
-from apps.city.models import City, Country
+
+from .models import City, Country
+from .forms import CityForm, CountryForm
 from apps.moderator.forms import ModeratorAreaForm
 from apps.moderator.models import ModeratorArea
 
-__author__ = 'alexy'
+__author__ = '2mitrij'
 
 
 class CityListView(ListView):
     model = City
-    template_name = 'city/city_list.html'
+    template_name = 'geolocation/city_list.html'
 
     def get_queryset(self):
         user = self.request.user
@@ -72,13 +69,13 @@ class CityListView(ListView):
 class CityCreateView(CreateView):
     model = City
     form_class = CityForm
-    template_name = 'city/city_add.html'
+    template_name = 'geolocation/city_add.html'
 
 
 class CityUpdateView(UpdateView):
     model = City
     form_class = CityForm
-    template_name = 'city/city_update.html'
+    template_name = 'geolocation/city_update.html'
 
     def get_context_data(self, **kwargs):
         context = super(CityUpdateView, self).get_context_data()
@@ -106,3 +103,19 @@ class CityUpdateView(UpdateView):
             })
         return context
 
+
+class CountryListView(ListView):
+    model = Country
+    template_name = 'geolocation/country_list.html'
+
+
+class CountryCreateView(CreateView):
+    model = Country
+    form_class = CountryForm
+    template_name = 'geolocation/country_add.html'
+
+
+class CountryUpdateView(UpdateView):
+    model = Country
+    form_class = CountryForm
+    template_name = 'geolocation/country_update.html'
