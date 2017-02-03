@@ -2,7 +2,7 @@
 import datetime
 from django.db.models import Q
 from django.http import HttpResponseRedirect
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView
 from apps.moderator.models import Moderator
 from .models import Stand, StandItem
 from .forms import StandForm
@@ -24,54 +24,54 @@ class StandCreateView(CreateView):
         return kwargs
 
     def form_valid(self, form):
-        self.object = form.save()
+        stand = form.save()
         today = datetime.date.today()
         # создание вёрстки по умолчанию.
         # todo: подумать над более элегантным способом
         StandItem.objects.bulk_create([
-            StandItem(created=today, stand=self.object, side='front', position='top',
+            StandItem(created=today, stand=stand, side='front', position='top',
                       width=120, height=150, top=0, left=160),
-            StandItem(created=today, stand=self.object, side='front', position='top',
+            StandItem(created=today, stand=stand, side='front', position='top',
                       width=120, height=150, top=0, left=280),
-            StandItem(created=today, stand=self.object, side='front', position='bottom',
+            StandItem(created=today, stand=stand, side='front', position='bottom',
                       width=200, height=120, top=0, left=0),
-            StandItem(created=today, stand=self.object, side='front', position='bottom',
+            StandItem(created=today, stand=stand, side='front', position='bottom',
                       width=200, height=120, top=0, left=200),
-            StandItem(created=today, stand=self.object, side='front', position='bottom',
+            StandItem(created=today, stand=stand, side='front', position='bottom',
                       width=200, height=120, top=120, left=0),
-            StandItem(created=today, stand=self.object, side='front', position='bottom',
+            StandItem(created=today, stand=stand, side='front', position='bottom',
                       width=200, height=120, top=120, left=200),
-            StandItem(created=today, stand=self.object, side='front', position='bottom',
+            StandItem(created=today, stand=stand, side='front', position='bottom',
                       width=200, height=120, top=240, left=0),
-            StandItem(created=today, stand=self.object, side='front', position='bottom',
+            StandItem(created=today, stand=stand, side='front', position='bottom',
                       width=200, height=120, top=240, left=200),
-            StandItem(created=today, stand=self.object, side='front', position='bottom',
+            StandItem(created=today, stand=stand, side='front', position='bottom',
                       width=200, height=120, top=360, left=0),
-            StandItem(created=today, stand=self.object, side='front', position='bottom',
+            StandItem(created=today, stand=stand, side='front', position='bottom',
                       width=200, height=120, top=360, left=200),
-            StandItem(created=today, stand=self.object, side='back', position='top',
+            StandItem(created=today, stand=stand, side='back', position='top',
                       width=120, height=150, top=0, left=160),
-            StandItem(created=today, stand=self.object, side='back', position='top',
+            StandItem(created=today, stand=stand, side='back', position='top',
                       width=120, height=150, top=0, left=280),
-            StandItem(created=today, stand=self.object, side='back', position='bottom',
+            StandItem(created=today, stand=stand, side='back', position='bottom',
                       width=200, height=120, top=0, left=0),
-            StandItem(created=today, stand=self.object, side='back', position='bottom',
+            StandItem(created=today, stand=stand, side='back', position='bottom',
                       width=200, height=120, top=0, left=200),
-            StandItem(created=today, stand=self.object, side='back', position='bottom',
+            StandItem(created=today, stand=stand, side='back', position='bottom',
                       width=200, height=120, top=120, left=0),
-            StandItem(created=today, stand=self.object, side='back', position='bottom',
+            StandItem(created=today, stand=stand, side='back', position='bottom',
                       width=200, height=120, top=120, left=200),
-            StandItem(created=today, stand=self.object, side='back', position='bottom',
+            StandItem(created=today, stand=stand, side='back', position='bottom',
                       width=200, height=120, top=240, left=0),
-            StandItem(created=today, stand=self.object, side='back', position='bottom',
+            StandItem(created=today, stand=stand, side='back', position='bottom',
                       width=200, height=120, top=240, left=200),
-            StandItem(created=today, stand=self.object, side='back', position='bottom',
+            StandItem(created=today, stand=stand, side='back', position='bottom',
                       width=200, height=120, top=360, left=0),
-            StandItem(created=today, stand=self.object, side='back', position='bottom',
+            StandItem(created=today, stand=stand, side='back', position='bottom',
                       width=200, height=120, top=360, left=200)
 
         ])
-        return HttpResponseRedirect(self.object.get_absolute_url())
+        return HttpResponseRedirect(stand.get_absolute_url())
 
 
 class StandUpdateView(UpdateView):

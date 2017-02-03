@@ -31,15 +31,22 @@ $(function() {
         }
       });
   function checkSelected(selection){
+    // проверка на возмоность изменения блока. return 0 - можно изменять, иначе - нельзя
     var check = 0;
+    var client;
     //var selected = $('.block.ui-selected');
     var current_manager = $('#js-stand-save').data('manager');
     var block_manager;
     if (current_manager) {
       selection.each(function(){
         block_manager = $(this).find('.js-standitem-manager').attr('data-manager');
+        client = $(this).find('textarea').val().trim();
         if (block_manager) {
           if (block_manager != current_manager) {
+            check++;
+          }
+        } else {
+          if (client) {
             check++;
           }
         }
@@ -49,18 +56,6 @@ $(function() {
   }
   $('.js-check-units').click(function(){
     var selected = $('.block.ui-selected');
-    //var current_manager = $('#js-stand-save').data('manager');
-    //var block_manager;
-    //if (current_manager) {
-    //  selected.each(function(){
-    //    block_manager = $(this).find('.js-standitem-manager').attr('data-manager');
-    //    if (block_manager) {
-    //      if (block_manager != current_manager) {
-    //        check++;
-    //      }
-    //    }
-    //  })
-    //}
     var check = checkSelected(selected);
     if (check == 0) {
      console.log('Можно изменять');
@@ -108,8 +103,9 @@ $(function() {
             'px;height:' + new_height +
             'px;z-index:10;">' +
             '<textarea class="stand-input" placeholder="Название клиента"></textarea>' +
+            '<input type="number" name="sum" class="stand-input" placeholder="Сумма">' +
             '<div class="js-standitem-manager">Менеджер:</div>' +
-            '<div>Дата создания: <span class="js-standitem-created"></span></div></div>'
+            '<div><span class="js-standitem-created"></span></div></div>'
           );
           selected.remove();
         } else {
@@ -155,8 +151,9 @@ $(function() {
                 'px;height:' + minBlockHeight +
                 'px;z-index:10;">' +
                 '<textarea class="stand-input" placeholder="Название клиента"></textarea>' +
+                '<input type="number" name="sum" class="stand-input" placeholder="Сумма">' +
                 '<div class="js-standitem-manager">Менеджер:</div>' +
-                '<div>Дата создания: <span class="js-standitem-created"></span></div></div>'
+                '<div><span class="js-standitem-created"></span></div></div>'
               );
               new_left += minBlockWidth;
               b++;
@@ -177,7 +174,7 @@ $(function() {
   });
   $('#js-stand-save').click(function(){
     var selected = $('.block');
-    var top, width, left, height, side, position, client, manager, url, created, csrftoken, stand;
+    var top, width, left, height, side, position, client, manager, url, created, csrftoken, stand, sum;
     csrftoken = $('input[name=csrfmiddlewaretoken]').val();
     $.ajax({
       type: "POST",
@@ -194,6 +191,7 @@ $(function() {
         width = $(this).outerWidth();
         height = $(this).outerHeight();
         client = $(this).find('textarea').val();
+        sum = $(this).find('input').val();
         position = $(this).parents('div').data('position');
         side = $(this).parents('.stand-container').data('side');
         url = $(this).parents('.stand-container').data('url');
@@ -211,6 +209,7 @@ $(function() {
             left: left,
             client: client,
             side: side,
+            sum: sum,
             position: position,
             manager: manager,
             created: created,
@@ -228,18 +227,24 @@ $(function() {
   //console.log(today.toLocaleDateString());
   $('.stand-container').on('change', '.stand-input', function(){
   // при изменении названия клиента устанавливаем текущую даты
+    console.log($(this).val());
     var today = new Date();
-    $(this).parents('.block').find('.js-standitem-created').text(today.toLocaleDateString());
     var save_button = $('#js-stand-save');
-    var current_manager = save_button.data('manager');
-    var current_manager_name = save_button.data('name');
-
-    if (current_manager) {
-      console.log(current_manager);
-      console.log(current_manager_name);
-      $(this).parents('.block').find('.js-standitem-manager').text(current_manager_name);
-      $(this).parents('.block').find('.js-standitem-manager').attr('data-manager', current_manager);
+      var current_manager = save_button.data('manager');
+      var current_manager_name = save_button.data('name');
+    if ($(this).val().trim()) {
+      $(this).parents('.block').find('.js-standitem-created').text(today.toLocaleDateString());
+      if (current_manager) {
+        $(this).parents('.block').find('.js-standitem-manager').text(current_manager_name);
+        $(this).parents('.block').find('.js-standitem-manager').attr('data-manager', current_manager);
+      } else {
+        $(this).parents('.block').find('.js-standitem-manager').text('Руководитель');
+        $(this).parents('.block').find('.js-standitem-manager').attr('data-manager', '');
+      }
+    } else {
+      $(this).parents('.block').find('.js-standitem-created').text(today.toLocaleDateString());
+      $(this).parents('.block').find('.js-standitem-manager').text('');
+      $(this).parents('.block').find('.js-standitem-manager').attr('data-manager', '');
     }
-  // если пользователь является менеджером, то прикрепляем его к блоку
   });
 });

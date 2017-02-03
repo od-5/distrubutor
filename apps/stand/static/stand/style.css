@@ -11,6 +11,10 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     font-size: 12px;
+    line-height: 1em;
+}
+.block_client {
+    background-color: #FFFFCC;
 }
 #topStandContainer, #topStandContainer1 {
     width: 400px;

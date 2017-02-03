@@ -1,6 +1,7 @@
 # coding=utf-8
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.db.models import Sum
 from apps.manager.models import Manager
 from apps.moderator.models import Moderator
 from core.base_model import Common
@@ -20,6 +21,10 @@ class Stand(models.Model):
             return u'%s %s - %s ' % (self.name, self.date_start, self.date_end)
         else:
             return u'Стенд %s - %s ' % (self.date_start, self.date_end)
+
+    def get_total_sum(self):
+        total_sum = self.standitem_set.aggregate(Sum('sum'))['sum__sum']
+        return total_sum
 
     def get_absolute_url(self):
         return reverse('stand:update', args=(self.pk, ))
@@ -49,6 +54,7 @@ class StandItem(models.Model):
 
     stand = models.ForeignKey(to=Stand, verbose_name=u'Вёрстка')
     manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер', blank=True, null=True)
+    moderator = models.BooleanField(verbose_name=u'Модератор', default=False)
     client = models.TextField(verbose_name=u'Название клиента', blank=True, null=True)
     side = models.CharField(max_length=5, verbose_name=u'Сторона', choices=SIDE_CHOICES)
     position = models.CharField(max_length=6, verbose_name=u'Сторона', choices=POSITION_CHOICES)
@@ -56,5 +62,5 @@ class StandItem(models.Model):
     height = models.PositiveIntegerField(verbose_name=u'Высота', default=0)
     top = models.PositiveIntegerField(verbose_name=u'Отступ сверху', default=0)
     left = models.PositiveIntegerField(verbose_name=u'Отступ слева', default=0)
+    sum = models.DecimalField(verbose_name=u'Сумма', blank=True, null=True, max_digits=10, decimal_places=2)
     created = models.DateField(verbose_name=u'Дата создания')
-

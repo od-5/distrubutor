@@ -1,11 +1,13 @@
-<div class="block" style="width:{{ block.width }}px;height:{{ block.height }}px;top:{{ block.top }}px; left:{{ block.left }}px">
-  <textarea class="stand-input" {% if user.type == 5 %}{% if block.manager and user.manager_user.id != block.manager.id %}readonly="readonly"{% endif %}{% endif %} placeholder="Название клиента">{{ block.client|default:'' }}</textarea>
+<div class="block{% if block.client %} block_client{% endif %}" style="width:{{ block.width }}px;height:{{ block.height }}px;top:{{ block.top }}px; left:{{ block.left }}px">
+{#  <textarea class="stand-input" {% if user.type == 5 %}{% if block.client and not block.manager %}readonly="readonly"{% endif %}{% if block.manager %}{% if block.manager.id != user.manager_user.id %}readonly="readonly"{% endif %}{%  %}{% endif %}{% endif %} placeholder="Название клиента">{{ block.client|default:'' }}</textarea>#}
+  <textarea class="stand-input" {% if user.type == 5 and block.client %}{% if block.manager and block.manager.id != user.manager_user.id or not block.manager %}readonly="readonly"{% endif %}{% endif %} placeholder="Название клиента">{{ block.client|default:'' }}</textarea>
+  <input type="number" name="sum" class="stand-input" {% if user.type == 5 and block.client %}{% if block.manager and block.manager.id != user.manager_user.id or not block.manager %}readonly="readonly"{% endif %}{% endif %} placeholder="Сумма" value="{{ block.sum|safe|default:'' }}">
   <div>Менеджер:
     <span class="js-standitem-manager" data-manager="{{ block.manager.id|default:'' }}">
-      {{ block.manager|default:'' }}
+      {% if block.client and not block.manager %}Руководитель{% else %}{{ block.manager|default:'' }}{% endif %}
     </span>
   </div>
-  <div>Дата создания:
+  <div>
     <span class="js-standitem-created">{{ block.created|date:'d.m.Y'|default:'' }}</span>
   </div>
 </div>

@@ -37,3 +37,8 @@ class StandForm(forms.ModelForm):
                     self.fields['moderator'].initial = user.moderator_user
                 elif user.type == 5:
                     self.fields['moderator'].initial = user.manager_user.moderator.moderator_user
+            else:
+                if user.type == 5:
+                    self.fields['name'].widget = forms.HiddenInput()
+                    self.fields['date_start'].widget = forms.HiddenInput()
+                    self.fields['date_end'].widget = forms.HiddenInput()

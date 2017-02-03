@@ -29,6 +29,9 @@
       <div class="page-top">
         <div class="col-md-12 text-center">
           <span class="page-top__title">{{ object|default:'Вёрстка' }}</span>
+          {% if object.get_total_sum %}
+          <span class="page-top__count"> / {{ object.get_total_sum|default:'' }}</span>
+          {% endif %}
         </div>
         <div class="clearfix"></div>
       </div>
@@ -52,21 +55,27 @@
                   </div>
                   <div class="col-md-12">
                     <div class="form-group">
+                    {% if user.type != 5 %}
                       {{ form.name.label_tag }}
+                    {% endif %}
                       {{ form.name }}
                       {{ form.name.errors }}
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
+                    {% if user.type != 5 %}
                       {{ form.date_start.label_tag }}
+                    {% endif %}
                       {{ form.date_start }}
                       {{ form.date_start.errors }}
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
+                    {% if user.type != 5 %}
                       {{ form.date_end.label_tag }}
+                    {% endif %}
                       {{ form.date_end }}
                       {{ form.date_end.errors }}
                     </div>
