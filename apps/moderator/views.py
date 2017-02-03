@@ -1,35 +1,37 @@
 # coding=utf-8
-from annoying.decorators import ajax_request
-from annoying.functions import get_object_or_None
-from django.conf import settings
-from django.contrib.auth.decorators import login_required
-from django.template.loader import render_to_string
-from apps.administrator.decorators import administrator_required
-from django.core.mail import send_mail
 import datetime
 from dateutil.relativedelta import relativedelta
+
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import ListView
-from django.forms.models import inlineformset_factory, modelformset_factory
+from django.views.generic import ListView, DetailView
+from django.forms.models import inlineformset_factory
+
+from annoying.functions import get_object_or_None
+
+from core.forms import UserAddForm, UserUpdateForm
+from core.models import User
+from apps.administrator.decorators import administrator_required
 from apps.packages.models import Package
 from apps.robokassa.forms import RobokassaForm
 from apps.robokassa.signals import result_received
 from apps.sale.models import CommissionOrder
 from .forms import ModeratorForm, ModeratorAreaForm, ModeratorActionForm, ReviewForm
 from .models import Moderator, ModeratorArea, ModeratorAction, Review, Order
-from core.forms import UserAddForm, UserUpdateForm
-from core.models import User
-
 
 __author__ = 'alexy'
 
 
 class ModeratorListView(ListView):
     queryset = User.objects.filter(type=2)
-    template_name='moderator/moderator_list.html'
+    template_name = 'moderator/moderator_list.html'
     paginate_by = 50
 
     def get_queryset(self):
@@ -449,5 +451,25 @@ def payment_received(sender, **kwargs):
             except:
                 pass
         moderator.save()
+
+
+class OrderListView(ListView):
+    model = Order
+    template_name = 'moderator/order_list.html'
+    paginate_by = 50
+
+    def get_context_data(self, **kwargs):
+        context = super(OrderListView, self).get_context_data()
+        pay_qs = self.object_list.filter(pay=True)
+        context.update({
+            'total_sum': pay_qs.aggregate(Sum('cost'))['cost__sum']
+        })
+        return context
+
+
+class OrderDetailView(DetailView):
+    model = Order
+    template_name = 'moderator/order_detail.html'
+
 
 result_received.connect(payment_received)

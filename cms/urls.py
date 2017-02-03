@@ -4,8 +4,8 @@ from django.conf.urls.static import static
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-import debug_toolbar
 
+import debug_toolbar
 
 urlpatterns = patterns(
     '',
@@ -14,8 +14,6 @@ urlpatterns = patterns(
     url(r'^administrator/', include('apps.administrator.urls', namespace='administrator'),),
     url(r'^agency/', include('apps.agency.urls', namespace='agency'),),
     url(r'^moderator/', include('apps.moderator.urls', namespace='moderator'),),
-    # url(r'^country/', include('apps.country.urls', namespace='country'),),
-    # url(r'^city/', include('apps.city.urls', namespace='city'),),
     url(r'', include('apps.geolocation.urls'),),
     url(r'^forum/', include('apps.forum.urls', namespace='forum'),),
     url(r'^package/', include('apps.packages.urls', namespace='package'),),
@@ -26,7 +24,6 @@ urlpatterns = patterns(
     url(r'^client/', include('apps.client.urls', namespace='client'),),
     url(r'^payment/', include('apps.robokassa.urls', namespace='payment'),),
     url(r'^correspondence/', include('apps.correspondence.urls', namespace='correspondence'),),
-    url(r'^order/', include('apps.order.urls', namespace='order'),),
     url(r'^calculator/', include('apps.calculator.urls', namespace='calculator'),),
     url(r'^stand/', include('apps.stand.urls', namespace='stand'),),
     url(r'', include('core.urls')),
