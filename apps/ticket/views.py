@@ -388,7 +388,7 @@ def ticket_detail(request, pk):
     if user.type == 2:
         city_qs = city_qs.filter(moderator=user)
     elif user.type == 5:
-        city_qs = city_qs.filter(moderator=user.manager.moderator)
+        city_qs = city_qs.filter(moderator=user.manager_user.moderator)
     elif user.type == 6:
         city_qs = city_qs.select_related().filter(moderator__ticket_forward=True)
     ticket = get_object_or_None(Ticket, pk=int(pk))
