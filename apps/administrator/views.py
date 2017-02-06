@@ -1,10 +1,7 @@
 # coding=utf-8
-from django.contrib.auth.decorators import login_required
-from .decorators import administrator_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
-from django.views.generic import UpdateView, ListView
+from django.views.generic import CreateView, UpdateView, ListView
+
 from core.forms import UserAddForm, UserUpdateForm
 from core.models import User
 
@@ -42,50 +39,38 @@ class AdministratorListView(ListView):
         return context
 
 
-@administrator_required
-def administrator_add(request):
-    context = {}
-    if request.method == "POST":
-        form = UserAddForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.type = 1
-            user.is_superuser = True
-            user.is_staff = True
-            user.is_active = True
-            user.save()
-            return HttpResponseRedirect(reverse('administrator:update', args=(user.id,)))
-        else:
-            context.update({
-                'error': u'Проверьте правильность ввода полей'
-            })
-    else:
-        form = UserAddForm()
-    context.update({
-        'form': form,
-    })
-    return render(request, 'administrator/administrator_add.html', context)
+class AdministratorCreateView(CreateView):
+    form_class = UserAddForm
+    template_name = 'administrator/administrator_add.html'
+
+    def get_success_url(self):
+        return reverse('administrator:update', args=(self.object.pk,))
+
+    def form_valid(self, form):
+        form.instance.type = 1
+        form.instance.is_superuser = True
+        form.instance.is_staff = True
+        form.instance.is_active = True
+        return super(AdministratorCreateView, self).form_valid(form)
 
 
-@administrator_required
-def administrator_update(request, pk):
-    context = {}
-    user = User.objects.get(pk=int(pk))
-    success_msg = u''
-    error_msg = u''
-    if request.method == 'POST':
-        form = UserUpdateForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
-            success_msg += u' Изменения успешно сохранены'
-        else:
-            error_msg = u'Проверьте правильность ввода полей!'
-    else:
-        form = UserUpdateForm(instance=user)
-    context.update({
-        'success': success_msg,
-        'error': error_msg,
-        'form': form,
-        'object': user
-    })
-    return render(request, 'administrator/administrator_update.html', context)
+# TODO: корявенько, продумать
+class AdministratorUpdateView(UpdateView):
+    model = User
+    form_class = UserUpdateForm
+    template_name = 'administrator/administrator_update.html'
+
+    def form_valid(self, form):
+        self.object = form.save()
+        context = self.get_context_data(form=form)
+        context.update({
+            'success': u'Изменения успешно сохранены'
+        })
+        return self.render_to_response(context)
+
+    def form_invalid(self, form):
+        context = self.get_context_data(form=form)
+        context.update({
+            'error': u'Проверьте правильность ввода полей!'
+        })
+        return self.render_to_response(context)
