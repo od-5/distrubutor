@@ -1,14 +1,7 @@
 # coding=utf-8
-import os
-import datetime
-import re
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.forms import HiddenInput
-from django.utils.timezone import utc
 from django.views.generic import TemplateView
+
 from apps.geolocation.models import Country
-from apps.distributor.models import GPSPoint, DistributorTask
-from apps.moderator.forms import ReviewForm
 
 __author__ = 'alexy'
 
