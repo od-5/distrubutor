@@ -2,6 +2,8 @@
 from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, UpdateView, ListView
 
+from lib.cbv import RedirectlessFormMixin
+
 from core.forms import UserAddForm, UserUpdateForm
 from core.models import User
 
@@ -54,23 +56,7 @@ class AdministratorCreateView(CreateView):
         return super(AdministratorCreateView, self).form_valid(form)
 
 
-# TODO: корявенько, продумать
-class AdministratorUpdateView(UpdateView):
+class AdministratorUpdateView(RedirectlessFormMixin, UpdateView):
     model = User
     form_class = UserUpdateForm
     template_name = 'administrator/administrator_update.html'
-
-    def form_valid(self, form):
-        self.object = form.save()
-        context = self.get_context_data(form=form)
-        context.update({
-            'success': u'Изменения успешно сохранены'
-        })
-        return self.render_to_response(context)
-
-    def form_invalid(self, form):
-        context = self.get_context_data(form=form)
-        context.update({
-            'error': u'Проверьте правильность ввода полей!'
-        })
-        return self.render_to_response(context)
