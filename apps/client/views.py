@@ -1,27 +1,21 @@
 # coding=utf-8
 import datetime
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django import forms
-from django.contrib.auth.decorators import login_required
-import xlwt
-from datetime import date, datetime
-from annoying.decorators import ajax_request
+
+from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView, UpdateView
 from django.utils import timezone
+
+from lib.cbv import RedirectlessFormMixin, SendUserToFormMixin
 from apps.geolocation.models import City
 from apps.manager.models import Manager
-from core.forms import UserAddForm, UserUpdateForm
-from core.models import User
 from .models import Client, Task, ClientContact, ClientManager
 from .forms import ClientAddForm, ClientUpdateForm, TaskForm, ClientContactForm, ClientImportForm
 
 __author__ = 'alexy'
 
 
+# TODO: придумать как структурировать и улучшить
 class ClientListView(ListView):
     model = Client
     template_name = 'client/client_list.html'
@@ -122,7 +116,8 @@ class ClientListView(ListView):
                 city_qs = user.manager_user.moderator.moderator_user.city.all()
             else:
                 city_qs = None
-            manager_qs = Manager.objects.filter(moderator=user.manager_user.moderator.moderator_user, user__is_active=True)
+            manager_qs = Manager.objects.filter(
+                moderator=user.manager_user.moderator.moderator_user, user__is_active=True)
         else:
             manager_qs = None
             city_qs = None
@@ -135,280 +130,211 @@ class ClientListView(ListView):
         return context
 
 
-@login_required
-def client_add(request):
-    context = {}
-    user = request.user
-    if request.method == "POST":
-        form = ClientAddForm(request.POST, user=user)
-        if form.is_valid():
-            client = form.save(commit=False)
-            client.save()
-            clientmanager = ClientManager(manager=client.manager, client=client)
+class ClientCreateView(CreateView, SendUserToFormMixin, RedirectlessFormMixin):
+    form_class = ClientAddForm
+    template_name = 'client/client_add.html'
+
+    def form_valid(self, form):
+        result = super(ClientCreateView, self).form_valid(form)
+        clientmanager = ClientManager(manager=self.object.manager, client=self.object)
+        clientmanager.save()
+        return result
+
+
+class ClientUpdateView(UpdateView, SendUserToFormMixin, RedirectlessFormMixin):
+    model = Client
+    form_class = ClientUpdateForm
+    template_name = 'client/client_update.html'
+
+    def form_valid(self, form):
+        result = super(ClientUpdateView, self).form_valid(form)
+        if 'manager' in form.changed_data:
+            self.object.type = 2
+            self.object.save()
+            clientmanager = ClientManager(manager=self.object.manager, client=self.object)
             clientmanager.save()
-            # return HttpResponseRedirect(reverse('client:update', args=(incoming.id,)))
-            context.update({
-                'success': u'Клиент добавлен!'
-            })
-        else:
-            context.update({
-                'error': u'Проверьте правильность ввода полей'
-            })
-    else:
-        form = ClientAddForm(user=user)
-    context.update({
-        'form': form,
-    })
-    return render(request, 'client/client_add.html', context)
+        return result
 
 
-@login_required
-def client_update(request, pk):
-    context = {}
-    client = Client.objects.get(pk=int(pk))
-    old_manager_id = client.manager.id
-    success_msg = u''
-    error_msg = u''
-    user = request.user
-    if request.method == 'POST':
-        form = ClientUpdateForm(request.POST, user=user, instance=client)
-        if form.is_valid():
-            client = form.save(commit=False)
-            client.save()
-            if old_manager_id != client.manager.id:
-                client.type = 2
-                client.save()
-                clientmanager = ClientManager(manager=client.manager, gclient=client)
-                clientmanager.save()
-            success_msg = u' Изменения успешно сохранены'
-        else:
-            error_msg = u'Проверьте правильность ввода полей!'
-    else:
-        form = ClientUpdateForm(user=user, instance=client)
+class ClientManagerHistory(ListView):
+    template_name = 'client/clientmanager_history.html'
 
-    context.update({
-        'success': success_msg,
-        'error': error_msg,
-        'form': form,
-        'object': client,
-    })
-    return render(request, 'client/client_update.html', context)
+    def get_queryset(self):
+        self.client = get_object_or_404(Client, pk=self.kwargs['pk'])
+        return self.client.clientmanager_set.all()
+
+    def get_context_data(self, **kwargs):
+        context = super(ClientManagerHistory, self).get_context_data(**kwargs)
+        context['object'] = self.client
+        return context
 
 
-@login_required
-def clientmanager_history(request, pk):
-    client = Client.objects.get(pk=int(pk))
-    context = {
-        'object': client,
-        'object_list': client.clientmanager_set.all()
-    }
-    return render(request, 'client/clientmanager_history.html', context)
+class ClientContactListView(ListView):
+    template_name = 'client/clientcontact_list.html'
+
+    def get_queryset(self):
+        self.client = get_object_or_404(Client, pk=self.kwargs['pk'])
+        return self.client.clientcontact_set.all()
+
+    def get_context_data(self, **kwargs):
+        context = super(ClientContactListView, self).get_context_data(**kwargs)
+        context['object'] = self.client
+        return context
 
 
-@login_required
-def clientcontact_list(request, pk):
-    client = Client.objects.get(pk=int(pk))
-    context = {
-        'object': client,
-        'object_list': client.clientcontact_set.all()
-    }
-    return render(request, 'client/clientcontact_list.html', context)
+class ClientContactCreateView(CreateView):
+    form_class = ClientContactForm
+    template_name = 'client/clientcontact_add.html'
+
+    def get_initial(self):
+        self.client = get_object_or_404(Client, pk=self.kwargs['pk'])
+        return {'client': self.client}
+
+    def get_success_url(self):
+        return reverse('client:contact-list', args=(self.client.pk,))
+
+    def get_context_data(self, **kwargs):
+        context = super(ClientContactCreateView, self).get_context_data(**kwargs)
+        context['object'] = self.client
+        return context
 
 
-@login_required
-def clientcontact_add(request, pk):
-    success_msg = None
-    error_msg = None
-    client = Client.objects.get(pk=int(pk))
-    if request.method == 'POST':
-        form = ClientContactForm(request.POST)
-        if form.is_valid():
-            form.save()
-            success_msg = u'Контактное лицо успешно добавлено'
-            return HttpResponseRedirect(reverse('client:contact-list', args=(client.id,)))
-        else:
-            error_msg = u'Проверьте правильность ввода полей!'
-    else:
-        form = ClientContactForm(
-            initial={
-                'client': client
-            }
-        )
-    context = {
-        'object': client,
-        'form': form,
-        'success_msg': success_msg,
-        'error_msg': error_msg
-    }
-    return render(request, 'client/clientcontact_add.html', context)
+class ClientContactUpdateView(UpdateView):
+    model = ClientContact
+    form_class = ClientContactForm
+    template_name = 'client/clientcontact_update.html'
+
+    def get_success_url(self):
+        return reverse('client:contact-list', args=(self.object.client.pk,))
+
+    def get_context_data(self, **kwargs):
+        context = super(ClientContactUpdateView, self).get_context_data(**kwargs)
+        context['object'] = self.object.client
+        return context
 
 
-@login_required
-def clientcontact_update(request, pk):
-    context = {}
-    success_msg = None
-    error_msg = None
-    contact = ClientContact.objects.get(pk=int(pk))
-    if request.method == 'POST':
-        form = ClientContactForm(request.POST, instance=contact)
-        if form.is_valid():
-            form.save()
-            success_msg = u'Изменения сохранены'
-            return HttpResponseRedirect(reverse('client:contact-list', args=(contact.client.id,)))
-        else:
-            error_msg = u'Проверьте правильность ввода полей!'
-    else:
-        form = ClientContactForm(instance=contact)
-    context = {
-        'contact': contact,
-        'object': contact.client,
-        'form': form,
-        'success_msg': success_msg,
-        'error_msg': error_msg
-    }
-    return render(request, 'client/clientcontact_update.html', context)
+# TODO: придумать как структурировать и улучшить
+class ClientTaskListView(ListView):
+    template_name = 'client/task_list.html'
+    paginate_by = 25
 
-
-@login_required
-def task_list(request):
-    context = {}
-    if request.GET.get('error') and int(request.GET.get('error')) == 1:
-        context.update({
-            'error': True
-        })
-    user = request.user
-    if user.type == 1:
-        qs = Task.objects.all()
-        manager_qs = Manager.objects.all()
-    elif user.type == 2:
-        qs = Task.objects.filter(manager__moderator=user)
-        manager_qs = Manager.objects.filter(moderator=user)
-    elif user.type == 5:
-        if user.manager_user.leader:
-            qs = Task.objects.filter(manager__moderator=user.manager_user.moderator)
-            manager_qs = Manager.objects.filter(moderator=user.manager_user.moderator.moderator_user)
-        else:
-            qs = Task.objects.filter(manager=user.manager_user)
-            manager_qs = None
-    else:
+    def get_queryset(self):
+        user = self.request.user
         qs = None
-        manager_qs = None
-    context.update({
-        'manager_list': manager_qs
-    })
-    r_name = request.GET.get('name')
-    r_date_s = request.GET.get('date_s')
-    r_date_e = request.GET.get('date_e')
-    r_all = request.GET.get('all')
-    r_type = request.GET.get('type')
-    r_status = request.GET.get('status')
-    r_manager = request.GET.get('manager')
-    if r_all and int(r_all) == 1:
-        request.session['show_all_task'] = True
-    elif r_all and int(r_all) == 0:
-        request.session['show_all_task'] = False
-    try:
-        show_all = request.session['show_all_task']
-    except:
-        show_all = False
-    if r_manager and int(r_manager) != 0:
-        qs = qs.filter(manager=int(r_manager))
-        context.update({
-            'r_manager': int(r_manager)
-        })
-    if not r_name and not r_date_s and not r_date_e and not show_all:
-        qs = qs.filter(date=timezone.localtime(timezone.now()))
-    else:
-        if r_name:
-            qs = qs.filter(client__name__icontains=r_name)
-        if r_date_s:
-            qs = qs.filter(date__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
-        if r_date_e:
-            qs = qs.filter(date__lte=datetime.strptime(r_date_e, '%d.%m.%Y'))
+        if user.type == 1:
+            qs = Task.objects.all()
+        elif user.type == 2:
+            qs = Task.objects.filter(manager__moderator=user)
+        elif user.type == 5:
+            if user.manager_user.leader:
+                qs = Task.objects.filter(manager__moderator=user.manager_user.moderator)
+            else:
+                qs = Task.objects.filter(manager=user.manager_user)
 
-    if r_type:
-        qs = qs.filter(type=int(r_type))
-        context.update({
-            'r_type': int(r_type)
-        })
-    if r_status:
-        qs = qs.filter(status=int(r_status))
-        context.update({
-            'r_status': int(r_status)
-        })
-    if r_name:
-        context.update({
-            'r_name': r_name
-        })
-    if r_date_s:
-        context.update({
-            'r_date_s': r_date_s
-        })
-    if r_date_e:
-        context.update({
-            'r_date_e': r_date_e
-        })
-    if show_all:
-        context.update({
-            'show_all': True
-        })
-    paginator = Paginator(qs, 25)
-    page = request.GET.get('page')
-    try:
-        object_list = paginator.page(page)
-    except PageNotAnInteger:
-        object_list = paginator.page(1)
-    except EmptyPage:
-        object_list = paginator.page(paginator.num_pages)
-    context.update({
-        'object_list': object_list
-    })
-    return render(request, 'client/task_list.html', context)
+        r_name = self.request.GET.get('name')
+        r_date_s = self.request.GET.get('date_s')
+        r_date_e = self.request.GET.get('date_e')
+        r_all = self.request.GET.get('all')
+        r_type = self.request.GET.get('type')
+        r_status = self.request.GET.get('status')
+        r_manager = self.request.GET.get('manager')
 
-
-@login_required
-def task_add(request):
-    context = {}
-    user = request.user
-    if request.method == "POST":
-        form = TaskForm(request.POST, user=user)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.save()
-            return HttpResponseRedirect(reverse('client:task-update', args=(instance.id,)))
+        if r_all and int(r_all) == 1:
+            self.request.session['show_all_task'] = True
+        elif r_all and int(r_all) == 0:
+            self.request.session['show_all_task'] = False
+        try:
+            show_all = self.request.session['show_all_task']
+        except:
+            show_all = False
+        if r_manager and int(r_manager) != 0:
+            qs = qs.filter(manager=int(r_manager))
+        if not r_name and not r_date_s and not r_date_e and not show_all:
+            qs = qs.filter(date=timezone.localtime(timezone.now()))
         else:
+            if r_name:
+                qs = qs.filter(client__name__icontains=r_name)
+            if r_date_s:
+                qs = qs.filter(date__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
+            if r_date_e:
+                qs = qs.filter(date__lte=datetime.strptime(r_date_e, '%d.%m.%Y'))
+        if r_type:
+            qs = qs.filter(type=int(r_type))
+        if r_status:
+            qs = qs.filter(status=int(r_status))
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(ClientTaskListView, self).get_context_data(**kwargs)
+
+        if self.request.GET.get('error') and int(self.request.GET.get('error')) == 1:
             context.update({
-                'error': u'Проверьте правильность ввода полей'
+                'error': True
             })
-    else:
-        form = TaskForm(user=user)
-    context.update({
-        'form': form,
-    })
-    return render(request, 'client/task_add.html', context)
+
+        user = self.request.user
+        manager_qs = None
+        if user.type == 1:
+            manager_qs = Manager.objects.all()
+        elif user.type == 2:
+            manager_qs = Manager.objects.filter(moderator=user)
+        elif user.type == 5:
+            if user.manager_user.leader:
+                manager_qs = Manager.objects.filter(moderator=user.manager_user.moderator.moderator_user)
+
+        context.update({
+            'manager_list': manager_qs
+        })
+        r_name = self.request.GET.get('name')
+        r_date_s = self.request.GET.get('date_s')
+        r_date_e = self.request.GET.get('date_e')
+        r_type = self.request.GET.get('type')
+        r_status = self.request.GET.get('status')
+        r_manager = self.request.GET.get('manager')
+        show_all = self.request.session.get('show_all_task')
+
+        if r_manager and int(r_manager) != 0:
+            context.update({
+                'r_manager': int(r_manager)
+            })
+        if r_type:
+            context.update({
+                'r_type': int(r_type)
+            })
+        if r_status:
+            context.update({
+                'r_status': int(r_status)
+            })
+        if r_name:
+            context.update({
+                'r_name': r_name
+            })
+        if r_date_s:
+            context.update({
+                'r_date_s': r_date_s
+            })
+        if r_date_e:
+            context.update({
+                'r_date_e': r_date_e
+            })
+        if show_all:
+            context.update({
+                'show_all': True
+            })
+
+        return context
 
 
-@login_required
-def task_update(request, pk):
-    context = {}
-    object = Task.objects.get(pk=int(pk))
-    success_msg = u''
-    error_msg = u''
-    user = request.user
-    if request.method == 'POST':
-        form = TaskForm(request.POST, user=user, instance=object)
-        if form.is_valid():
-            form.save()
-            success_msg = u'Изменения успешно сохранены'
-        else:
-            error_msg = u'Проверьте правильность ввода полей!'
-    else:
-        form = TaskForm(user=user, instance=object)
-    form.fields['client'].widget = forms.HiddenInput()
-    context.update({
-        'success': success_msg,
-        'error': error_msg,
-        'form': form,
-        'object': object,
-    })
-    return render(request, 'client/task_update.html', context)
+class ClientTaskCreateView(CreateView, SendUserToFormMixin):
+    form_class = TaskForm
+    template_name = 'client/task_add.html'
+
+    def get_success_url(self):
+        return reverse('client:task-update', args=(self.object.pk,))
+
+
+class ClientTaskUpdateView(UpdateView, SendUserToFormMixin, RedirectlessFormMixin):
+    model = Task
+    form_class = TaskForm
+    template_name = 'client/task_update.html'

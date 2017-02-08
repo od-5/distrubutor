@@ -31,7 +31,7 @@ class AgencyCreateView(CreateView):
         return super(AgencyCreateView, self).form_valid(form)
 
 
-class AgencyUpdateView(RedirectlessFormMixin, UpdateView):
+class AgencyUpdateView(UpdateView, RedirectlessFormMixin):
     model = User
     form_class = UserUpdateForm
     template_name = 'agency/agency_update.html'

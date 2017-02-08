@@ -1,14 +1,15 @@
 # coding=utf-8
 from django import forms
+
 from apps.manager.models import Manager
-from core.models import User
 from .models import Client, Task, ClientContact
 
 __author__ = 'alexy'
 
 
 class ClientImportForm(forms.Form):
-    file = forms.FileField(label=u'Выберите файл', widget=forms.FileInput(attrs={'class': 'btn btn-default add-bottom form-control'}))
+    file = forms.FileField(
+        label=u'Выберите файл', widget=forms.FileInput(attrs={'class': 'btn btn-default add-bottom form-control'}))
 
 
 class ClientAddForm(forms.ModelForm):

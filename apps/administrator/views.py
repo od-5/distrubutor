@@ -56,7 +56,7 @@ class AdministratorCreateView(CreateView):
         return super(AdministratorCreateView, self).form_valid(form)
 
 
-class AdministratorUpdateView(RedirectlessFormMixin, UpdateView):
+class AdministratorUpdateView(UpdateView, RedirectlessFormMixin):
     model = User
     form_class = UserUpdateForm
     template_name = 'administrator/administrator_update.html'
