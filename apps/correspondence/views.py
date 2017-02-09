@@ -1,12 +1,8 @@
 # coding=utf-8
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.forms import formset_factory
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, DetailView
-from apps.administrator.decorators import administrator_required
 from apps.moderator.models import Moderator
 from .forms import MessageForm, UserMessageAnswerForm
 from .models import Message, UserMessage

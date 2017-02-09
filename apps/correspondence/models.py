@@ -1,9 +1,7 @@
 # coding=utf-8
-from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
-from apps.moderator.models import Moderator
-from core.base_model import Common
+
 from core.models import User
 
 __author__ = 'alexy'
