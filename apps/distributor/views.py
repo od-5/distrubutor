@@ -1,15 +1,18 @@
 # coding=utf-8
 import datetime
+
+import xlwt
 from annoying.functions import get_object_or_None
-from django.core.urlresolvers import reverse
+
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
-from django.forms import HiddenInput, inlineformset_factory
+from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView, UpdateView
 from django.contrib.auth.decorators import login_required
-import xlwt
-from apps.geolocation.models import City
+
+from lib.cbv import SendUserToFormMixin
 from apps.moderator.models import ModeratorAction, Moderator
 from .task_calendar import get_months
 from .models import Distributor, DistributorTask, DistributorPayment, GPSPoint
@@ -21,6 +24,7 @@ from core.models import User
 __author__ = 'alexy'
 
 
+# TODO: нужно упрощать
 class DistributorListView(ListView):
     queryset = User.objects.filter(type=4)
     template_name = 'distributor/distributor_list.html'
@@ -35,7 +39,9 @@ class DistributorListView(ListView):
             # qs = user.moderator_user.distributor_set.all()
             if user.superviser:
                 qs = User.objects.filter(
-                    Q(type=4, distributor_user__moderator__superviser=user) | Q(type=4, distributor_user__moderator=user.moderator_user))
+                    Q(type=4, distributor_user__moderator__superviser=user) |
+                    Q(type=4, distributor_user__moderator=user.moderator_user)
+                )
             else:
                 qs = User.objects.filter(type=4, distributor_user__moderator=user.moderator_user)
         elif user.type == 5:
@@ -70,6 +76,7 @@ class DistributorListView(ListView):
         return context
 
 
+# TODO: переделать в CBV, нужно красивое решение с двумя формами
 @login_required
 def distributor_add(request):
     context = {}
@@ -99,6 +106,7 @@ def distributor_add(request):
     return render(request, 'distributor/distributor_add.html', context)
 
 
+# TODO: переделать в CBV, нужно красивое решение с двумя формами
 @login_required
 def distributor_update(request, pk):
     context = {}
@@ -296,54 +304,26 @@ class DistributorTaskArchiveView(ListView):
         return context
 
 
-@login_required
-def distributor_task_add(request):
-    context = {}
-    user = request.user
-    if request.method == 'POST':
-        form = DistributorTaskForm(request.POST, user=user)
-        if form.is_valid():
-            task = form.save(commit=False)
-            task.type = task.order.type
-            task.save()
-            return HttpResponseRedirect(reverse('distributor:task-list'))
-        else:
-            context.update({
-                'error': u'Проверьте правильность ввода полей'
-            })
-    else:
-        form = DistributorTaskForm(user=user)
-    context.update({
-        'form': form
-    })
-    return render(request, 'distributor/task_add.html', context)
+class DistributorTaskCreateView(CreateView, SendUserToFormMixin):
+    form_class = DistributorTaskForm
+    template_name = 'distributor/task_add.html'
+    success_url = reverse_lazy('distributor:task-list')
+
+    def form_valid(self, form):
+        form.instance.type = form.instance.order.type
+        return super(DistributorTaskCreateView, self).form_valid(form)
 
 
-@login_required
-def distributor_task_update(request, pk):
-    context = {}
-    user = request.user
-    task = DistributorTask.objects.select_related().get(pk=int(pk))
-    if request.method == 'POST':
-        form = DistributorTaskUpdateForm(request.POST, user=user, instance=task)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.type = instance.order.type
-            instance.save()
-            return HttpResponseRedirect(reverse('distributor:task-list'))
-        else:
-            context.update({
-                'error': u'Проверьте правильность ввода полей'
-            })
-    else:
-        form = DistributorTaskUpdateForm(user=user, instance=task)
-    form.fields['sale'].widget = HiddenInput()
-    form.fields['order'].queryset = task.sale.saleorder_set.filter(closed=False)
-    context.update({
-        'form': form,
-        'object': task
-    })
-    return render(request, 'distributor/task_update.html', context)
+# TODO: зачем нужен отдельный класс формы?
+class DistributorTaskUpdateView(UpdateView, SendUserToFormMixin):
+    model = DistributorTask
+    form_class = DistributorTaskUpdateForm
+    template_name = 'distributor/task_update.html'
+    success_url = reverse_lazy('distributor:task-list')
+
+    def form_valid(self, form):
+        form.instance.type = form.instance.order.type
+        return super(DistributorTaskUpdateView, self).form_valid(form)
 
 
 @login_required
@@ -378,74 +358,93 @@ def gps_point_update(request, pk):
     return render(request, 'distributor/point_update.html', context)
 
 
-@login_required
-def distributor_report(request):
-    context = {}
-    user = request.user
-    if user.type == 1:
-        qs = Distributor.objects.select_related().all()
-        moderator_qs = Moderator.objects.all()
-        context.update({
-            'moderator_list': moderator_qs
-        })
-    elif user.type == 2:
-        if user.superviser:
-            qs = Distributor.objects.filter(
-                Q(moderator__superviser=user) | Q(moderator=user.moderator_user))
-            moderator_qs = Moderator.objects.filter(Q(superviser=user) | Q(user=user))
+# TODO: нужно упрощать
+class DistributorReportView(ListView):
+    template_name = 'distributor/distributor_report.html'
+
+    def get_queryset(self):
+        user = self.request.user
+        r_email = self.request.GET.get('email')
+        r_last_name = self.request.GET.get('last_name')
+        r_moderator = self.request.GET.get('moderator')
+        r_date_s = self.request.GET.get('date_s')
+        r_date_e = self.request.GET.get('date_e')
+
+        qs = None
+        if user.type == 1:
+            if r_moderator:
+                qs = Distributor.objects.select_related().all()
+        elif user.type == 2:
+            if user.superviser:
+                qs = Distributor.objects.filter(
+                    Q(moderator__superviser=user) | Q(moderator=user.moderator_user))
+            else:
+                qs = Distributor.objects.select_related().filter(moderator=user.moderator_user)
+        elif user.type == 5:
+            qs = Distributor.objects.select_related().filter(moderator=user.manager_user.moderator.moderator_user)
+
+        if r_email:
+            qs = qs.filter(user__email__icontains=r_email)
+        if r_last_name:
+            qs = qs.filter(user__last_name__icontains=r_last_name)
+        if r_moderator and r_moderator.isdigit():
+            if int(r_moderator) != 0:
+                qs = qs.filter(moderator=int(r_moderator))
+
+        if qs:
+            for distributor in qs:
+                d_task_qs = distributor.distributortask_set.all()
+                if r_date_s:
+                    d_task_qs = d_task_qs.filter(date__gte=datetime.datetime.strptime(r_date_s, '%d.%m.%Y'))
+                if r_date_e:
+                    d_task_qs = d_task_qs.filter(date__lte=datetime.datetime.strptime(r_date_e, '%d.%m.%Y'))
+                distributor.task_count = d_task_qs.count()
+                distributor.actual_material_count = distributor.actual_cost = distributor.total_cost = 0
+                for task in d_task_qs:
+                    distributor.actual_material_count += task.actual_material_count()
+                    distributor.actual_cost += task.actual_cost()
+                    distributor.total_cost += task.total_cost()
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(DistributorReportView, self).get_context_data()
+
+        user = self.request.user
+        moderator_qs = None
+        if user.type == 1:
+            moderator_qs = Moderator.objects.all()
+        elif user.type == 2:
+            if user.superviser:
+                moderator_qs = Moderator.objects.filter(Q(superviser=user) | Q(user=user))
+        if moderator_qs is not None:
             context.update({
                 'moderator_list': moderator_qs
             })
-        else:
-            qs = Distributor.objects.select_related().filter(moderator=user.moderator_user)
-    elif user.type == 5:
-        qs = Distributor.objects.select_related().filter(moderator=user.manager_user.moderator.moderator_user)
-    else:
-        qs = None
-    r_email = request.GET.get('email')
-    r_last_name = request.GET.get('last_name')
-    r_moderator = request.GET.get('moderator')
-    r_date_s = request.GET.get('date_s')
-    r_date_e = request.GET.get('date_e')
-    if user.type == 1 and not r_moderator:
-        qs = None
-    context.update({
-        'r_date_s': r_date_s,
-        'r_date_e': r_date_e
-    })
-    if r_email:
-        qs = qs.filter(user__email__icontains=r_email)
+
+        r_email = self.request.GET.get('email')
+        r_last_name = self.request.GET.get('last_name')
+        r_moderator = self.request.GET.get('moderator')
+        r_date_s = self.request.GET.get('date_s')
+        r_date_e = self.request.GET.get('date_e')
         context.update({
-            'r_email': r_email
+            'r_date_s': r_date_s,
+            'r_date_e': r_date_e
         })
-    if r_last_name:
-        qs = qs.filter(user__last_name__icontains=r_last_name)
-        context.update({
-            'r_last_name': r_last_name
-        })
-    if r_moderator and r_moderator.isdigit():
-        if int(r_moderator) != 0:
-            qs = qs.filter(moderator=int(r_moderator))
-        context.update({
-            'r_moderator': int(r_moderator)
-        })
-    if qs:
-        for distributor in qs:
-            d_task_qs = distributor.distributortask_set.all()
-            if r_date_s:
-                d_task_qs = d_task_qs.filter(date__gte=datetime.datetime.strptime(r_date_s, '%d.%m.%Y'))
-            if r_date_e:
-                d_task_qs = d_task_qs.filter(date__lte=datetime.datetime.strptime(r_date_e, '%d.%m.%Y'))
-            distributor.task_count = d_task_qs.count()
-            distributor.actual_material_count = distributor.actual_cost = distributor.total_cost = 0
-            for task in d_task_qs:
-                distributor.actual_material_count += task.actual_material_count()
-                distributor.actual_cost += task.actual_cost()
-                distributor.total_cost += task.total_cost()
-    context.update({
-        'object_list': qs
-    })
-    return render(request, 'distributor/distributor_report.html', context)
+        if r_email:
+            context.update({
+                'r_email': r_email
+            })
+        if r_last_name:
+            context.update({
+                'r_last_name': r_last_name
+            })
+        if r_moderator and r_moderator.isdigit():
+            context.update({
+                'r_moderator': int(r_moderator)
+            })
+
+        return context
 
 
 def distributor_report_excel(request):
@@ -530,7 +529,7 @@ def distributor_report_excel(request):
     ws.col(3).width = 13000
     ws.col(4).width = 5000
     ws.col(5).width = 5000
-    for count in range(i+1):
+    for count in range(i + 1):
         ws.row(count).height = 400
 
     fname = 'distributor_report.xls'
@@ -611,7 +610,7 @@ def distributor_detail_report_excel(request, pk):
         ws.col(3).width = 6000
         ws.col(4).width = 6000
         ws.col(5).width = 6000
-        for count in range(i+1):
+        for count in range(i + 1):
             ws.row(count).height = 400
 
     fname = 'distributor_report_detail_report.xls'

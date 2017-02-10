@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView, DetailView
+
 from apps.moderator.models import Moderator
 from .forms import MessageForm, UserMessageAnswerForm
 from .models import Message, UserMessage

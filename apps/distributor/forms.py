@@ -1,5 +1,6 @@
 # coding=utf-8
 from django import forms
+
 from apps.sale.models import Sale
 from .models import Distributor, DistributorTask, DistributorPayment, GPSPoint
 
@@ -76,7 +77,7 @@ class DistributorTaskUpdateForm(forms.ModelForm):
         exclude = ['type']
         widgets = {
             'distributor': forms.Select(attrs={'class': 'form-control'}),
-            'sale': forms.Select(attrs={'class': 'form-control'}),
+            'sale': forms.HiddenInput(),
             'order': forms.Select(attrs={'class': 'form-control'}),
             'area': forms.Select(attrs={'class': 'form-control'}),
             'material_count': forms.NumberInput(attrs={'class': 'form-control'}),
@@ -89,6 +90,9 @@ class DistributorTaskUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user")
         super(DistributorTaskUpdateForm, self).__init__(*args, **kwargs)
+
+        self.fields['order'].queryset = self.instance.sale.saleorder_set.filter(closed=False)
+
         if user.type == 1:
             self.fields['distributor'].queryset = Distributor.objects.filter(user__is_active=True)
         elif user.type == 2:

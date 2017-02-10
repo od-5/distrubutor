@@ -1,7 +1,9 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
+
 from django.forms import inlineformset_factory
 from django.views.decorators.csrf import csrf_exempt
+
 from apps.moderator.models import ModeratorArea
 from apps.sale.models import Sale
 from .forms import DistributorPaymentForm
