@@ -198,7 +198,7 @@ class DistributorTaskListView(ListView):
         return qs
 
     def get_context_data(self, **kwargs):
-        context = super(DistributorTaskListView, self).get_context_data()
+        context = super(DistributorTaskListView, self).get_context_data(**kwargs)
         context.update(
             get_months(),
         )
@@ -277,7 +277,7 @@ class DistributorTaskArchiveView(ListView):
         return qs
 
     def get_context_data(self, **kwargs):
-        context = super(DistributorTaskArchiveView, self).get_context_data()
+        context = super(DistributorTaskArchiveView, self).get_context_data(**kwargs)
         if self.request.GET.get('city'):
             context.update({
                 'r_city': self.request.GET.get('city')
@@ -408,7 +408,7 @@ class DistributorReportView(ListView):
         return qs
 
     def get_context_data(self, **kwargs):
-        context = super(DistributorReportView, self).get_context_data()
+        context = super(DistributorReportView, self).get_context_data(**kwargs)
 
         user = self.request.user
         moderator_qs = None

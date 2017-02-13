@@ -34,7 +34,7 @@ class CityListView(ListView):
 
     @csrf_exempt
     def get_context_data(self, **kwargs):
-        context = super(CityListView, self).get_context_data()
+        context = super(CityListView, self).get_context_data(**kwargs)
         user = self.request.user
         if user.type == 1:
             qs = City.objects.all()
@@ -78,7 +78,7 @@ class CityUpdateView(UpdateView):
     template_name = 'geolocation/city_update.html'
 
     def get_context_data(self, **kwargs):
-        context = super(CityUpdateView, self).get_context_data()
+        context = super(CityUpdateView, self).get_context_data(**kwargs)
         user = self.request.user
         if user.type != 1:
             if user.type == 2:

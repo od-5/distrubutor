@@ -33,7 +33,7 @@ class DashboardView(TemplateView):
         return os.path.join(folder, template)
 
     def get_context_data(self, **kwargs):
-        context = super(DashboardView, self).get_context_data()
+        context = super(DashboardView, self).get_context_data(**kwargs)
         user = self.request.user
         if user.type == 3:
             sale = user.sale_user

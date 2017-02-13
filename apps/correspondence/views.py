@@ -75,7 +75,7 @@ class UserMessageDetailView(DetailView):
     template_name = 'correspondence/usermessage_detail.html'
 
     def get_context_data(self, **kwargs):
-        context = super(UserMessageDetailView, self).get_context_data()
+        context = super(UserMessageDetailView, self).get_context_data(**kwargs)
         form = UserMessageAnswerForm()
         form.fields['usermessage'].initial = self.object
         form.fields['author'].initial = self.request.user
