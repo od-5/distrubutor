@@ -2,6 +2,7 @@
 from annoying.decorators import ajax_request
 from django.middleware import csrf
 from django.views.decorators.csrf import csrf_exempt
+from apps.geolocation.models import City
 
 __author__ = 'alexy'
 
@@ -9,15 +10,35 @@ __author__ = 'alexy'
 @ajax_request
 @csrf_exempt
 def hanger_ticket(request):
-    name = request.POST.get('name')
-    phone = request.POST.get('phone')
-    mail = request.POST.get('mail')
-    theme = request.POST.get('theme')
-    site = request.POST.get('site')
-    success = False
-    if site and site == 'hanger-reklama.com':
-        if name and phone and mail and theme:
-            success = True
+    name = request.POST.get('name') or ''
+    phone = request.POST.get('phone') or ''
+    mail = request.POST.get('mail') or ''
+    theme = request.POST.get('theme') or ''
+    city_name = request.POST.get('city') or ''
+    if city_name:
+        city = City.objects.filter(name=city_name).first()
+        if city:
+            moderator = city.moderator_set.filter(stand_accept=True).first()
+            if moderator:
+                return {
+                    'success': True,
+                    'name': name,
+                    'phone': phone,
+                    'mail': mail,
+                    'theme': theme,
+                    'city': city.name,
+                    'moderator': moderator.__unicode__()
+                }
+            else:
+                return {
+                    'success': False,
+                    'message': u'Not moderator found'
+                }
+        else:
+            return {
+                'success': False,
+                'message': u'Not city found'
+            }
     return {
-        'success': success
+        'success': False,
     }
