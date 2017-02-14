@@ -1,7 +1,9 @@
 # coding=utf-8
+import urllib
+
 from annoying.decorators import ajax_request
-from django.middleware import csrf
 from django.views.decorators.csrf import csrf_exempt
+
 from apps.geolocation.models import City
 
 __author__ = 'alexy'
@@ -18,9 +20,10 @@ def hanger_ticket(request):
     mail = request.POST.get('mail') or ''
     theme = request.POST.get('theme') or ''
     city_name = request.POST.get('city') or ''
-    logger.error(u'name: %s, phone: %s, mail: %s, theme: %s, city_name: %s' % (name, phone, mail, theme, city_name))
+    logger.error(u'name: %s, phone: %s, mail: %s, theme: %s, city_name: %s' %
+                 (name, phone, mail, theme, urllib.unquote(city_name)))
     if city_name:
-        city = City.objects.filter(name=city_name).first()
+        city = City.objects.filter(name=urllib.unquote(city_name)).first()
         if city:
             moderator = city.moderator_set.filter(stand_accept=True).first()
             if moderator:
