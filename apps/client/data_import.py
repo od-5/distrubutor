@@ -3,10 +3,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 import pyexcel
-from apps.geolocation.models import City
 from apps.client.models import Client, ClientManager, ClientContact
-import pyexcel_xls
-import pyexcel_xlsx
 
 __author__ = 'alexy'
 
@@ -71,7 +68,9 @@ def client_list_import(request):
                         )
                         clientmanager.save()
                 except:
-                    error.append(u'Строка %s, Город %s не доступен для модератора %s' % (i, city, user.manager_user.moderator.moderator_user))
+                    error.append(
+                        u'Строка %s, Город %s не доступен для модератора %s' % (
+                            i, city, user.manager_user.moderator.moderator_user))
             i += 1
         context = {
             'error_list': error,

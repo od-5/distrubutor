@@ -1,7 +1,5 @@
 # coding=utf-8
-import datetime
-from django.core.urlresolvers import reverse
-from apps.forum.models import Notification
+from .models import Notification
 
 __author__ = 'alexy'
 

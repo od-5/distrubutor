@@ -54,7 +54,7 @@
                         {{ order.package.name|default:'не указано' }}
                       </td>
                       <td>
-                        <a href="{% url 'order:detail' order.id %}" class="btn btn-sm btn-info">Детализация счёта</a>
+                        <a href="{% url 'moderator:order-detail' order.id %}" class="btn btn-sm btn-info">Детализация счёта</a>
                       </td>
                       <td>{{ order.cost|default:'не указано' }}</td>
                       <td>{{ order.timestamp|default:'не указано' }}</td>

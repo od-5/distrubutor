@@ -33,16 +33,6 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <div class="panel-content">
-              {% if success or error %}
-              <div class="col-md-12">
-                {% if success %}
-                <p class="alert alert-success">{{ success }}</p>
-                {% elif error %}
-                <p class="alert alert-danger">{{ error }}</p>
-                {% endif %}
-              </div>
-              <div class="clearfix"></div>
-              {% endif %}
               <form action="" role="form" class="form" id="js-form-distributor-task-update" method="post">
                 {% csrf_token %}
                     {{ form.errors }}

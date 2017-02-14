@@ -1,7 +1,9 @@
 # coding=utf-8
-from django.core.urlresolvers import reverse
-from ckeditor.fields import RichTextField
 from django.db import models
+from django.core.urlresolvers import reverse
+
+from ckeditor.fields import RichTextField
+
 from apps.geolocation.models import City
 from core.models import User
 
@@ -83,21 +85,24 @@ class Topic(ForumBase):
         if self.leader:
             leader_qs = User.objects.select_related().filter(type=5, manager_user__leader=True, is_active=True)
             if leader_qs and not self.all_city:
-                leader_qs = leader_qs.filter(manager_user__moderator__moderator_user__city__in=self.get_city_id_list()).distinct()
+                leader_qs = leader_qs.filter(
+                    manager_user__moderator__moderator_user__city__in=self.get_city_id_list()).distinct()
             for user in leader_qs:
                 notification = Notification(topic=self, user=user)
                 notification.save()
         if self.manager:
             manager_qs = User.objects.select_related().filter(type=5, manager_user__leader=False, is_active=True)
             if manager_qs and not self.all_city:
-                manager_qs = manager_qs.filter(manager_user__moderator__moderator_user__city__in=self.get_city_id_list()).distinct()
+                manager_qs = manager_qs.filter(
+                    manager_user__moderator__moderator_user__city__in=self.get_city_id_list()).distinct()
             for user in manager_qs:
                 notification = Notification(topic=self, user=user)
                 notification.save()
         if self.distributor:
             distributor_qs = User.objects.select_related().filter(type=4, is_active=True)
             if distributor_qs and not self.all_city:
-                distributor_qs = distributor_qs.filter(distributor_user__moderator__city__in=self.get_city_id_list()).distinct()
+                distributor_qs = distributor_qs.filter(
+                    distributor_user__moderator__city__in=self.get_city_id_list()).distinct()
             for user in distributor_qs:
                 notification = Notification(topic=self, user=user)
                 notification.save()

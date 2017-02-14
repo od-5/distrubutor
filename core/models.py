@@ -1,18 +1,8 @@
 # coding=utf-8
-import os
-from random import randint
-import uuid
-from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-from django.contrib.contenttypes import generic
-from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from imagekit.models import ImageSpecField
-from pilkit.processors import SmartResize
-from core.files import upload_to
 
 __author__ = 'alexy'
 

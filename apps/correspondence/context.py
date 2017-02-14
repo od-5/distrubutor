@@ -1,5 +1,4 @@
 # coding=utf-8
-import datetime
 from .models import UserMessage
 
 __author__ = 'alexy'

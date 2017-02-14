@@ -1,22 +1,21 @@
 # coding=utf-8
-from PIL import Image
-from os import path as op
-from annoying.functions import get_object_or_None
-from django.db import models
-from django.conf import settings
-from imagekit.models import ImageSpecField
-from pilkit.processors import SmartResize
-from pytils.translit import slugify
-from apps.geolocation.models import City
-from apps.moderator.models import Moderator, ModeratorArea, ModeratorAction
-from apps.sale.models import Sale, SaleOrder
-from core.files import upload_to, pointphoto_upload
-from core.models import User
-import core.geotagging as api
 import datetime
 
-__author__ = 'alexy'
+from PIL import Image
+from pilkit.processors import SmartResize
+from imagekit.models import ImageSpecField
+from annoying.functions import get_object_or_None
 
+from django.db import models
+from django.conf import settings
+
+from apps.moderator.models import Moderator, ModeratorArea, ModeratorAction
+from apps.sale.models import Sale, SaleOrder
+from core.files import pointphoto_upload
+from core.models import User
+import core.geotagging as api
+
+__author__ = 'alexy'
 
 api_key = settings.YANDEX_MAPS_API_KEY
 

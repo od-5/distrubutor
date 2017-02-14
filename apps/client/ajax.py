@@ -1,14 +1,15 @@
 # coding=utf-8
-from annoying.decorators import ajax_request
 from datetime import datetime
+
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, JsonResponse
-from apps.client.models import Client
+from django.http import HttpResponseRedirect
+
+from annoying.decorators import ajax_request
+
 from apps.sale.models import Sale
 from core.models import User
-from .models import Client, Task, ClientContact
 from apps.manager.models import Manager
-from .models import Client, ClientManager
+from .models import Client, Task, ClientContact, ClientManager
 
 __author__ = 'alexy'
 

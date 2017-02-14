@@ -1,22 +1,24 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
-from .views import SectionListView
 
+from apps.administrator.decorators import administrator_required
+from .views import SectionListView, SectionCreateView, SectionUpdateView, TopicListView, TopicCreateView,\
+    TopicUpdateView, TopicNotifyListView, CommentUpdateView
 __author__ = 'alexy'
 
 urlpatterns = patterns(
     'apps.forum.views',
     url(r'^$', login_required(SectionListView.as_view()), name='list'),
-    url(r'^add/$', 'section_add', name='section-add'),
-    url(r'^(?P<pk>\d+)/update/$', 'section_update', name='section-update'),
-    url(r'^(?P<pk>\d+)/$', 'topic_list', name='topic-list'),
-    url(r'^topic/add/$', 'topic_add', name='topic-add'),
-    url(r'^topic/new/$', 'topic_notify', name='topic-notify'),
+    url(r'^add/$', administrator_required(SectionCreateView.as_view()), name='section-add'),
+    url(r'^(?P<pk>\d+)/update/$', administrator_required(SectionUpdateView.as_view), name='section-update'),
+    url(r'^(?P<pk>\d+)/$', login_required(TopicListView.as_view()), name='topic-list'),
+    url(r'^topic/add/$', login_required(TopicCreateView.as_view()), name='topic-add'),
+    url(r'^topic/new/$', login_required(TopicNotifyListView.as_view()), name='topic-notify'),
     url(r'^topic/(?P<pk>\d+)/$', 'topic_detail', name='topic-detail'),
-    url(r'^topic/(?P<pk>\d+)/update/$', 'topic_update', name='topic-update'),
+    url(r'^topic/(?P<pk>\d+)/update/$', login_required(TopicUpdateView.as_view()), name='topic-update'),
     url(r'^topic/(?P<pk>\d+)/delete/$', 'topic_delete', name='topic-delete'),
     url(r'^topic/(?P<pk>\d+)/close/$', 'topic_close', name='topic-close'),
-    url(r'^comment/(?P<pk>\d+)/update/$', 'comment_update', name='comment-update'),
+    url(r'^comment/(?P<pk>\d+)/update/$', login_required(CommentUpdateView.as_view()), name='comment-update'),
     url(r'^comment/(?P<pk>\d+)/delete/$', 'comment_delete', name='comment-delete'),
 )

@@ -1,23 +1,21 @@
 # coding=utf-8
-from calendar import HTMLCalendar, LocaleHTMLCalendar
-from datetime import date, datetime
-from itertools import groupby
-from locale import getlocale
-import _locale
-from django.conf import settings
-from django.core.urlresolvers import reverse
-from django.utils.timezone import UTC
-
 try:
     import pytz
 except ImportError:
     pytz = None
+from calendar import LocaleHTMLCalendar
+from datetime import datetime
+from itertools import groupby
+import _locale
+
+from django.conf import settings
+from django.core.urlresolvers import reverse
+from django.utils.timezone import UTC
 
 __author__ = 'alexy'
 
 
 def next_month(origin_date):
-    day = origin_date.day
     month = origin_date.month
     year = origin_date.year
     if origin_date.month == 12:

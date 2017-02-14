@@ -1,6 +1,6 @@
 # coding=utf-8
 from django import forms
-from apps.geolocation.models import City
+
 from .models import Section, Topic, Comment
 
 __author__ = 'alexy'
@@ -36,7 +36,17 @@ class SectionUpdateForm(forms.ModelForm):
 class TopicAddForm(forms.ModelForm):
     class Meta:
         model = Topic
-        fields = ('section', 'author', 'title', 'text', 'all_city', 'moderator', 'leader', 'manager', 'distributor', 'city')
+        fields = (
+            'section',
+            'author', 'title',
+            'text',
+            'all_city',
+            'moderator',
+            'leader',
+            'manager',
+            'distributor',
+            'city'
+        )
         widgets = {
             'section': forms.HiddenInput(),
             'author': forms.HiddenInput(),
@@ -59,7 +69,18 @@ class TopicAddForm(forms.ModelForm):
 class TopicUpdateForm(forms.ModelForm):
     class Meta:
         model = Topic
-        fields = ('section', 'author', 'title', 'text', 'all_city', 'moderator', 'leader', 'manager', 'distributor', 'city')
+        fields = (
+            'section',
+            'author',
+            'title',
+            'text',
+            'all_city',
+            'moderator',
+            'leader',
+            'manager',
+            'distributor',
+            'city'
+        )
         widgets = {
             'section': forms.HiddenInput(),
             'author': forms.HiddenInput(),

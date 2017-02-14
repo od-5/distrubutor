@@ -1,10 +1,12 @@
 # coding=utf-8
 import os
 import datetime
+
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.forms import HiddenInput
 from django.utils.timezone import utc
 from django.views.generic import TemplateView
+
 from apps.distributor.models import GPSPoint
 from apps.moderator.forms import ReviewForm
 
@@ -31,7 +33,7 @@ class DashboardView(TemplateView):
         return os.path.join(folder, template)
 
     def get_context_data(self, **kwargs):
-        context = super(DashboardView, self).get_context_data()
+        context = super(DashboardView, self).get_context_data(**kwargs)
         user = self.request.user
         if user.type == 3:
             sale = user.sale_user

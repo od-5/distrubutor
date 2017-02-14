@@ -1,6 +1,8 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
+
 from django.views.decorators.csrf import csrf_exempt
+
 from apps.moderator.models import Moderator
 
 __author__ = 'alexy'
@@ -24,6 +26,3 @@ def find_moderators(request):
     return {
         'success': False
     }
-
-
-
