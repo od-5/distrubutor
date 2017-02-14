@@ -134,7 +134,7 @@
                     {% for object in object_list %}
                     <tr data-id="{{ object.id }}" data-name="{{ object }}" data-model="Ticket" id="id_Ticket_{{ object.id }}"
                          class="{% if object.type == 1 %}info{% elif object.type == 2 %}danger{% else %}success{% endif %}">
-                      <td><a href="{% url 'ticket:detail' object.id %}">{{ object.name|default:'Не указано' }}</a>{% if ticket.hanger %}(hanger-reklama.com){% endif %}</td>
+                      <td><a href="{% url 'ticket:detail' object.id %}">{{ object.name|default:'Не указано' }}</a>{% if object.hanger %}(hanger-reklama.com){% endif %}</td>
                       <td>{{ object.phone|default:'Не указано' }}</td>
                       <td>{{ object.mail|default:'Не указано' }}</td>
                       {% if user.agency_leader %}
