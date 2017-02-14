@@ -1,14 +1,16 @@
 # coding=utf-8
 import urllib
+import logging
 
 from annoying.decorators import ajax_request
 from django.views.decorators.csrf import csrf_exempt
 
 from apps.geolocation.models import City
+from apps.ticket.models import Ticket
 
 __author__ = 'alexy'
 
-import logging
+
 logger = logging.getLogger('django.request')
 
 
@@ -27,6 +29,14 @@ def hanger_ticket(request):
         if city:
             moderator = city.moderator_set.filter(stand_accept=True).first()
             if moderator:
+                ticket = Ticket(city=city, moderator=moderator, hanger=True)
+                if name:
+                    ticket.name = name
+                if phone:
+                    ticket.phone = phone
+                if mail:
+                    ticket.mail = mail
+                ticket.save()
                 return {
                     'success': True,
                     'name': name,
