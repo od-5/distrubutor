@@ -6,6 +6,9 @@ from apps.geolocation.models import City
 
 __author__ = 'alexy'
 
+import logging
+logger = logging.getLogger('django.request')
+
 
 @ajax_request
 @csrf_exempt
@@ -15,6 +18,7 @@ def hanger_ticket(request):
     mail = request.POST.get('mail') or ''
     theme = request.POST.get('theme') or ''
     city_name = request.POST.get('city') or ''
+    logger.error(u'name: %s, phone: %s, mail: %s, theme: %s, city_name: %s' % (name, phone, mail, theme, city_name))
     if city_name:
         city = City.objects.filter(name=city_name).first()
         if city:
