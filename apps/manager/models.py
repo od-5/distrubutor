@@ -1,8 +1,8 @@
 # coding=utf-8
 from django.core.urlresolvers import reverse
 from django.db import models
-from core.models import User
 
+from core.models import User
 
 __author__ = 'alexy'
 

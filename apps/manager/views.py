@@ -1,17 +1,17 @@
 # coding=utf-8
 import datetime
+
+import xlwt
+
 from annoying.functions import get_object_or_None
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
 from django.db.models import Sum, Q
 from django.contrib.auth.decorators import login_required
-import xlwt
-from datetime import date
-from annoying.decorators import ajax_request
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
+
 from apps.geolocation.models import City
 from apps.moderator.models import Moderator
 from apps.sale.models import SaleOrder, SaleOrderPayment
@@ -34,7 +34,8 @@ class ManagerListView(ListView):
             qs = Manager.objects.all()
         elif user.type == 2:
             if user.superviser:
-                qs = Manager.objects.select_related().filter(Q(moderator__moderator_user__superviser=user) | Q(moderator=user))
+                qs = Manager.objects.select_related().filter(
+                    Q(moderator__moderator_user__superviser=user) | Q(moderator=user))
             else:
                 qs = Manager.objects.filter(moderator=user)
         elif user.type == 5:
@@ -60,7 +61,7 @@ class ManagerListView(ListView):
         return qs
 
     def get_context_data(self, **kwargs):
-        context = super(ManagerListView, self).get_context_data()
+        context = super(ManagerListView, self).get_context_data(**kwargs)
         user = self.request.user
         if user.type == 1:
             context.update({
@@ -101,6 +102,7 @@ class ManagerListView(ListView):
         return context
 
 
+# TODO: нужно решение с двумя формами аналогично distributor_add, distributor_update
 @login_required
 def manager_add(request):
     context = {}
@@ -152,6 +154,7 @@ def manager_add(request):
     return render(request, 'manager/manager_add.html', context)
 
 
+# TODO: нужно решение с двумя формами аналогично distributor_add, distributor_update
 @login_required
 def manager_update(request, pk):
     context = {}
@@ -189,92 +192,122 @@ def manager_update(request, pk):
     return render(request, 'manager/manager_update.html', context)
 
 
-@login_required
-def manager_report(request):
-    context = {}
-    user = request.user
-    moderator_qs = None
-    if user.type == 1:
-        manager_qs = Manager.objects.all()
-        moderator_qs = User.objects.filter(type=2)
-    elif user.type == 2:
-        if user.superviser:
-            moderator_qs = User.objects.select_related().filter(
-                Q(moderator_user__superviser=user, type=2) | Q(moderator_user__user=user, type=2))
-            manager_qs = Manager.objects.select_related().filter(Q(moderator__superviser=user) | Q(moderator=user))
-        else:
-            manager_qs = user.manager_set.all()
-    elif user.type == 5:
-        manager_qs = user.manager_user.moderator.manager_set.all()
-    else:
+class ManagerReportView(ListView):
+    template_name = 'manager/manager_report.html'
+
+    def get_queryset(self):
+        user = self.request.user
+
         manager_qs = None
-    r_email = request.GET.get('email')
-    r_moderator = request.GET.get('moderator')
-    r_last_name = request.GET.get('last_name')
-    r_first_name = request.GET.get('first_name')
-    r_phone = request.GET.get('phone')
-    r_date_s = request.GET.get('date_s')
-    r_date_e = request.GET.get('date_e')
-    if r_moderator and int(r_moderator) != 0:
-        manager_qs = manager_qs.filter(moderator=int(r_moderator))
-        context.update({
-            'r_moderator': int(r_moderator)
-        })
-    if r_email:
-        manager_qs = manager_qs.filter(user__email__icontains=r_email)
-        context.update({
-            'r_email': r_email
-        })
-    if r_last_name:
-        manager_qs = manager_qs.filter(user__last_name__icontains=r_last_name)
-        context.update({
-            'r_last_name': r_last_name
-        })
-    if r_first_name:
-        manager_qs = manager_qs.filter(user__first_name__icontains=r_first_name)
-        context.update({
-            'r_first_name': r_first_name
-        })
-    if r_date_s:
-        context.update({
-            'r_date_s': r_date_s
-        })
-    if r_date_e:
-        context.update({
-            'r_date_e': r_date_e
-        })
-    for manager in manager_qs:
-        manager.client_count = manager.client_set.count()
-        task_qs = manager.task_set.all()
-        saleorder_qs = SaleOrder.objects.filter(sale__manager=manager)
-        payment_qs = SaleOrderPayment.objects.filter(sale__manager=manager)
+        if user.type == 1:
+            manager_qs = Manager.objects.all()
+        elif user.type == 2:
+            if user.superviser:
+                manager_qs = Manager.objects.select_related().filter(Q(moderator__superviser=user) | Q(moderator=user))
+            else:
+                manager_qs = user.manager_set.all()
+        elif user.type == 5:
+            manager_qs = user.manager_user.moderator.manager_set.all()
+
+        r_email = self.request.GET.get('email')
+        r_moderator = self.request.GET.get('moderator')
+        r_last_name = self.request.GET.get('last_name')
+        r_first_name = self.request.GET.get('first_name')
+        r_phone = self.request.GET.get('phone')
+        r_date_s = self.request.GET.get('date_s')
+        r_date_e = self.request.GET.get('date_e')
+
+        if r_moderator and int(r_moderator) != 0:
+            manager_qs = manager_qs.filter(moderator=int(r_moderator))
+        if r_email:
+            manager_qs = manager_qs.filter(user__email__icontains=r_email)
+        if r_last_name:
+            manager_qs = manager_qs.filter(user__last_name__icontains=r_last_name)
+        if r_first_name:
+            manager_qs = manager_qs.filter(user__first_name__icontains=r_first_name)
+
+        for manager in manager_qs:
+            manager.client_count = manager.client_set.count()
+            task_qs = manager.task_set.all()
+            saleorder_qs = SaleOrder.objects.filter(sale__manager=manager)
+            payment_qs = SaleOrderPayment.objects.filter(sale__manager=manager)
+            if r_date_s:
+                task_qs = task_qs.filter(date__gte=datetime.datetime.strptime(r_date_s, '%d.%m.%Y'))
+                saleorder_qs = saleorder_qs.filter(date_start__gte=datetime.datetime.strptime(r_date_s, '%d.%m.%Y'))
+                payment_qs = payment_qs.filter(created__gte=datetime.datetime.strptime(r_date_s, '%d.%m.%Y'))
+            if r_date_e:
+                task_qs = task_qs.filter(date__lte=datetime.datetime.strptime(r_date_e, '%d.%m.%Y'))
+                saleorder_qs = saleorder_qs.filter(date_end__lte=datetime.datetime.strptime(r_date_e, '%d.%m.%Y'))
+                payment_qs = payment_qs.filter(created__lte=datetime.datetime.strptime(r_date_e, '%d.%m.%Y'))
+            manager.task_count = task_qs.count()
+            manager.call_count = task_qs.filter(type=1).count()
+            manager.meet_count = task_qs.filter(type=0).count()
+            manager.sale_count = task_qs.filter(type=2).count()
+            manager.deny_count = task_qs.filter(type=3).count()
+            manager.total_sale = 0
+            for saleorder in saleorder_qs:
+                manager.total_sale += saleorder.total_sum()
+            manager.total_payment = payment_qs.aggregate(Sum('sum'))['sum__sum'] or 0
+
+        if r_phone:
+            manager_qs = manager_qs.filter(user__phone__icontains=r_phone)
+
+        return manager_qs
+
+    def get_context_data(self, **kwargs):
+        context = super(ManagerReportView, self).get_context_data(**kwargs)
+
+        user = self.request.user
+        moderator_qs = None
+        if user.type == 1:
+            moderator_qs = User.objects.filter(type=2)
+        elif user.type == 2:
+            if user.superviser:
+                moderator_qs = User.objects.select_related().filter(
+                    Q(moderator_user__superviser=user, type=2) | Q(moderator_user__user=user, type=2))
+
+        r_email = self.request.GET.get('email')
+        r_moderator = self.request.GET.get('moderator')
+        r_last_name = self.request.GET.get('last_name')
+        r_first_name = self.request.GET.get('first_name')
+        r_phone = self.request.GET.get('phone')
+        r_date_s = self.request.GET.get('date_s')
+        r_date_e = self.request.GET.get('date_e')
+
+        if r_moderator and int(r_moderator) != 0:
+            context.update({
+                'r_moderator': int(r_moderator)
+            })
+        if r_email:
+            context.update({
+                'r_email': r_email
+            })
+        if r_last_name:
+            context.update({
+                'r_last_name': r_last_name
+            })
+        if r_first_name:
+            context.update({
+                'r_first_name': r_first_name
+            })
         if r_date_s:
-            task_qs = task_qs.filter(date__gte=datetime.datetime.strptime(r_date_s, '%d.%m.%Y'))
-            saleorder_qs = saleorder_qs.filter(date_start__gte=datetime.datetime.strptime(r_date_s, '%d.%m.%Y'))
-            payment_qs = payment_qs.filter(created__gte=datetime.datetime.strptime(r_date_s, '%d.%m.%Y'))
+            context.update({
+                'r_date_s': r_date_s
+            })
         if r_date_e:
-            task_qs = task_qs.filter(date__lte=datetime.datetime.strptime(r_date_e, '%d.%m.%Y'))
-            saleorder_qs = saleorder_qs.filter(date_end__lte=datetime.datetime.strptime(r_date_e, '%d.%m.%Y'))
-            payment_qs = payment_qs.filter(created__lte=datetime.datetime.strptime(r_date_e, '%d.%m.%Y'))
-        manager.task_count = task_qs.count()
-        manager.call_count = task_qs.filter(type=1).count()
-        manager.meet_count = task_qs.filter(type=0).count()
-        manager.sale_count = task_qs.filter(type=2).count()
-        manager.deny_count = task_qs.filter(type=3).count()
-        manager.total_sale = 0
-        for saleorder in saleorder_qs:
-            manager.total_sale += saleorder.total_sum()
-        manager.total_payment = payment_qs.aggregate(Sum('sum'))['sum__sum'] or 0
-    if r_phone:
-        manager_qs = manager_qs.filter(user__phone__icontains=r_phone)
+            context.update({
+                'r_date_e': r_date_e
+            })
+        if r_phone:
+            context.update({
+                'r_phone': r_phone
+            })
+
         context.update({
-            'r_phone': r_phone
+            'moderator_list': moderator_qs,
         })
-    context.update({
-        'moderator_list': moderator_qs,
-        'object_list': manager_qs
-    })
-    return render(request, 'manager/manager_report.html', context)
+
+        return context
 
 
 def manager_report_excel(request):
@@ -322,7 +355,8 @@ def manager_report_excel(request):
     ws.write(3, 6, u'Отказы', style1)
     ws.write(3, 7, u'Сумма продаж', style1)
     ws.write(3, 8, u'Сумма поступлений', style1)
-    total_client = total_task = total_call = total_meet = total_sale = total_deny = total_sale_sum = total_payment_sum = 0
+    total_client = total_task = total_call = total_meet = total_sale = total_deny = total_sale_sum = 0
+    total_payment_sum = 0
     i = 4
     if manager_qs:
         for manager in manager_qs:
@@ -386,7 +420,7 @@ def manager_report_excel(request):
     ws.col(6).width = 3000
     ws.col(7).width = 5100
     ws.col(8).width = 6000
-    for count in range(i+1):
+    for count in range(i + 1):
         ws.row(count).height = 400
 
     fname = 'manager_report.xls'
@@ -490,7 +524,8 @@ def manager_detail_report_excel(request, pk):
 
         total_saleorder_cost = total_sale_payment = total_payment = 0
         for saleorder in saleorder_qs:
-            ws1.write(j, 0, u'%s - %s' % (saleorder.date_start.strftime('%d.%m.%Y'), saleorder.date_start.strftime('%d.%m.%Y')), style1)
+            ws1.write(j, 0, u'%s - %s' % (saleorder.date_start.strftime('%d.%m.%Y'),
+                      saleorder.date_start.strftime('%d.%m.%Y')), style1)
             ws1.write(j, 1, saleorder.__unicode__(), style1)
             ws1.write(j, 2, saleorder.total_sum(), style1)
             ws1.write(j, 3, saleorder.current_payment(), style1)
@@ -525,11 +560,11 @@ def manager_detail_report_excel(request, pk):
     ws2.col(1).width = 10000
     ws2.col(2).width = 10000
     ws2.col(3).width = 8000
-    for count in range(i+1):
+    for count in range(i + 1):
         ws.row(count).height = 400
-    for count in range(j+1):
+    for count in range(j + 1):
         ws1.row(count).height = 400
-    for count in range(k+1):
+    for count in range(k + 1):
         ws2.row(count).height = 400
 
     fname = 'manager_detail_report.xls'
