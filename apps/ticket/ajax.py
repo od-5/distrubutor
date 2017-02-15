@@ -3,6 +3,8 @@ import urllib
 import logging
 
 from annoying.decorators import ajax_request
+from django.conf import settings
+from django.core.mail import send_mail
 from django.views.decorators.csrf import csrf_exempt
 
 from apps.geolocation.models import City
@@ -37,6 +39,18 @@ def hanger_ticket(request):
                 if mail:
                     ticket.mail = mail
                 ticket.save()
+                try:
+                    theme = u'Заявка с сайта hanger-reklama.com'
+                    mail_title_msg = u'Новая заявка на сайте reklamadoma.com'
+                    message = u'Тема: %s\nИмя: %s\nТелефон: %s\n' % (theme, ticket.name, ticket.phone)
+                    send_mail(
+                        mail_title_msg,
+                        message,
+                        settings.DEFAULT_FROM_EMAIL,
+                        [ticket.moderator.user.email, ]
+                    )
+                except:
+                    pass
                 return {
                     'success': True,
                     'name': name,
