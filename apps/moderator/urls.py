@@ -4,9 +4,10 @@ from django.contrib.auth.decorators import login_required
 
 from apps.administrator.decorators import administrator_required
 from .ajax import moderator_review_add, get_action_list, get_cost_by_action
-from .views import ModeratorListView, ReviewListView, OrderListView, OrderDetailView, moderator_add,\
+from .views import ModeratorListView, ReviewListView, OrderListView, OrderDetailView,\
     moderator_user_update, moderator_detail, moderator_company_update, moderator_action_update, review_update,\
-    area_add, area_update, payment_list, payment_detail, commission_list, commission_detail
+    area_add, area_update, payment_list, payment_detail, commission_list, commission_detail, ModeratorCreateView,\
+    ModeratorUserUpdateView, ModeratorDetailView, ModeratorCompanyUpdateView
 from .decorators import blocked
 
 __author__ = 'alexy'
@@ -14,10 +15,14 @@ __author__ = 'alexy'
 urlpatterns = patterns(
     '',
     url(r'^$', login_required(ModeratorListView.as_view()), name='list'),
-    url(r'^add/$', moderator_add, name='add'),
-    url(r'^(?P<pk>\d+)/$', moderator_user_update, name='update'),
-    url(r'^(?P<pk>\d+)/detail/$', moderator_detail, name='detail'),
-    url(r'^(?P<pk>\d+)/company/$', moderator_company_update, name='company'),
+    # url(r'^add/$', moderator_add, name='add'),
+    url(r'^add/$', administrator_required(ModeratorCreateView.as_view()), name='add'),
+    # url(r'^(?P<pk>\d+)/$', moderator_user_update, name='update'),
+    url(r'^(?P<pk>\d+)/$', login_required(ModeratorUserUpdateView.as_view()), name='update'),
+    # url(r'^(?P<pk>\d+)/detail/$', moderator_detail, name='detail'),
+    url(r'^(?P<pk>\d+)/detail/$', login_required(ModeratorDetailView.as_view()), name='detail'),
+    # url(r'^(?P<pk>\d+)/company/$', moderator_company_update, name='company'),
+    url(r'^(?P<pk>\d+)/company/$', login_required(ModeratorCompanyUpdateView.as_view()), name='company'),
     url(r'^(?P<pk>\d+)/action/$', moderator_action_update, name='action'),
 
     url(r'review/add/$', moderator_review_add, name='review-add'),

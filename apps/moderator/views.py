@@ -11,11 +11,12 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.forms.models import inlineformset_factory
 
 from annoying.functions import get_object_or_None
 
+from lib.cbv import RedirectlessFormMixin, SendUserToFormMixin
 from core.forms import UserAddForm, UserUpdateForm
 from core.models import User
 from apps.administrator.decorators import administrator_required
@@ -68,108 +69,178 @@ class ModeratorListView(ListView):
         return context
 
 
-@administrator_required
-def moderator_add(request):
-    context = {}
-    if request.method == "POST":
-        form = UserAddForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.type = 2
-            user.is_staff = True
-            user.is_active = True
-            if request.POST.get('superviser'):
-                user.superviser = True
-            user.save()
-            return HttpResponseRedirect(reverse('moderator:update', args=(user.id,)))
-            # return HttpResponseRedirect(reverse('moderator:list'))
-        else:
-            context.update({
-                'error': u'Проверьте правильность ввода полей'
-            })
-    else:
-        form = UserAddForm()
-    context.update({
-        'form': form,
-    })
-    return render(request, 'moderator/moderator_add.html', context)
+# @administrator_required
+# def moderator_add(request):
+#     context = {}
+#     if request.method == "POST":
+#         form = UserAddForm(request.POST)
+#         if form.is_valid():
+#             user = form.save(commit=False)
+#             user.type = 2
+#             user.is_staff = True
+#             user.is_active = True
+#             if request.POST.get('superviser'):
+#                 user.superviser = True
+#             user.save()
+#             return HttpResponseRedirect(reverse('moderator:update', args=(user.id,)))
+#             # return HttpResponseRedirect(reverse('moderator:list'))
+#         else:
+#             context.update({
+#                 'error': u'Проверьте правильность ввода полей'
+#             })
+#     else:
+#         form = UserAddForm()
+#     context.update({
+#         'form': form,
+#     })
+#     return render(request, 'moderator/moderator_add.html', context)
 
 
-@login_required()
-def moderator_user_update(request, pk):
-    context = {}
-    moderator_user = User.objects.get(pk=int(pk))
-    success_msg = u''
-    error_msg = u''
-    try:
-        moderator = Moderator.objects.get(user=moderator_user)
-    except:
-        moderator = Moderator(user=moderator_user)
-        moderator.deny_access = True
-        moderator.save()
-    if request.method == 'POST':
-        form = UserUpdateForm(request.POST, instance=moderator_user)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            if request.POST.get('superviser'):
-                instance.superviser = True
-            instance.save()
-            success_msg += u' Изменения успешно сохранены'
-        else:
-            error_msg = u'Проверьте правильность ввода полей!'
-    else:
-        form = UserUpdateForm(instance=moderator_user)
-    context.update({
-        'form': form,
-        'success': success_msg,
-        'error': error_msg,
-        'object': moderator
-    })
-    return render(request, 'moderator/moderator_user_update.html', context)
+class ModeratorCreateView(CreateView):
+    form_class = UserAddForm
+    template_name = 'moderator/moderator_add.html'
+
+    def get_success_url(self):
+        return reverse('moderator:update', args=(self.object.pk, ))
+
+    def form_valid(self, form):
+        form.instance.type = 2
+        form.instance.is_staff = True
+        form.instance.is_active = True
+        form.instance.superviser = 'superviser' in self.request.POST
+        return super(ModeratorCreateView, self).form_valid(form)
 
 
-@login_required()
-def moderator_detail(request, pk):
-    context = {}
-    moderator = Moderator.objects.get(user__id=int(pk))
-    comment = request.POST.get('comment')
-    if comment:
-        moderator.comment = comment
-        moderator.save()
-    context.update({
-        'object': moderator
-    })
-    return render(request, 'moderator/moderator_detail.html', context)
+# @login_required()
+# def moderator_user_update(request, pk):
+#     context = {}
+#     moderator_user = User.objects.get(pk=int(pk))
+#     success_msg = u''
+#     error_msg = u''
+#     try:
+#         moderator = Moderator.objects.get(user=moderator_user)
+#     except:
+#         moderator = Moderator(user=moderator_user)
+#         moderator.deny_access = True
+#         moderator.save()
+#     if request.method == 'POST':
+#         form = UserUpdateForm(request.POST, instance=moderator_user)
+#         if form.is_valid():
+#             instance = form.save(commit=False)
+#             if request.POST.get('superviser'):
+#                 instance.superviser = True
+#             instance.save()
+#             success_msg += u' Изменения успешно сохранены'
+#         else:
+#             error_msg = u'Проверьте правильность ввода полей!'
+#     else:
+#         form = UserUpdateForm(instance=moderator_user)
+#     context.update({
+#         'form': form,
+#         'success': success_msg,
+#         'error': error_msg,
+#         'object': moderator
+#     })
+#     return render(request, 'moderator/moderator_user_update.html', context)
 
 
-@login_required()
-def moderator_company_update(request, pk):
-    context = {}
-    user = request.user
-    moderator_user = User.objects.get(pk=int(pk))
-    success_msg = u''
-    error_msg = u''
-    try:
-        moderator = Moderator.objects.get(user=moderator_user)
-    except:
-        moderator = Moderator(user=moderator_user)
-        moderator.save()
-    if request.method == 'POST':
-        form = ModeratorForm(request.POST, request.FILES, instance=moderator, user=user)
-        if form.is_valid():
-            form.save()
-            success_msg += u' Изменения успешно сохранены'
-        else:
-            error_msg = u'Проверьте правильность ввода полей!'
-    else:
-        form = ModeratorForm(instance=moderator, user=user)
-    context.update({
-        'form': form,
-        'success': success_msg,
-        'error': error_msg,
-        'object': moderator
-    })
-    return render(request, 'moderator/moderator_update.html', context)
+class ModeratorUserUpdateView(UpdateView, RedirectlessFormMixin):
+    model = User
+    form_class = UserUpdateForm
+    template_name = 'moderator/moderator_user_update.html'
+
+    def get_object(self):
+        obj = super(ModeratorUserUpdateView, self).get_object()
+        try:
+            moderator = Moderator.objects.get(user=obj)
+        except Moderator.DoesNotExist:
+            moderator = Moderator(user=obj)
+            moderator.deny_access = True
+            moderator.save()
+        return obj
+
+    def form_valid(self, form):
+        if self.request.POST.get('superviser'):
+            form.instance.superviser = 'superviser'
+        return super(ModeratorUserUpdateView, self).form_valid(form)
+
+
+# @login_required()
+# def moderator_detail(request, pk):
+#     context = {}
+#     moderator = Moderator.objects.get(user__id=int(pk))
+#     comment = request.POST.get('comment')
+#     if comment:
+#         moderator.comment = comment
+#         moderator.save()
+#     context.update({
+#         'object': moderator
+#     })
+#     return render(request, 'moderator/moderator_detail.html', context)
+
+
+class ModeratorDetailView(DetailView):
+    model = Moderator
+    template_name = 'moderator/moderator_detail.html'
+    pk_url_kwarg = None
+    slug_url_kwarg = 'pk'
+    slug_field = 'user__id'
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if 'comment' in request.POST:
+            self.object.comment = request.POST['comment']
+            self.object.save()
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
+
+# @login_required()
+# def moderator_company_update(request, pk):
+#     context = {}
+#     user = request.user
+#     moderator_user = User.objects.get(pk=int(pk))
+#     success_msg = u''
+#     error_msg = u''
+#     try:
+#         moderator = Moderator.objects.get(user=moderator_user)
+#     except:
+#         moderator = Moderator(user=moderator_user)
+#         moderator.save()
+#     if request.method == 'POST':
+#         form = ModeratorForm(request.POST, request.FILES, instance=moderator, user=user)
+#         if form.is_valid():
+#             form.save()
+#             success_msg += u' Изменения успешно сохранены'
+#         else:
+#             error_msg = u'Проверьте правильность ввода полей!'
+#     else:
+#         form = ModeratorForm(instance=moderator, user=user)
+#     context.update({
+#         'form': form,
+#         'success': success_msg,
+#         'error': error_msg,
+#         'object': moderator
+#     })
+#     return render(request, 'moderator/moderator_update.html', context)
+
+
+class ModeratorCompanyUpdateView(UpdateView, RedirectlessFormMixin, SendUserToFormMixin):
+    model = Moderator
+    form_class = ModeratorForm
+    template_name = 'moderator/moderator_update.html'
+    pk_url_kwarg = None
+    slug_url_kwarg = 'pk'
+    slug_field = 'user__id'
+
+    def get_object(self):
+        try:
+            obj = super(ModeratorCompanyUpdateView, self).get_object()
+        except Http404:
+            user = User.objects.get(pk=self.kwargs['pk'])
+            obj = Moderator(user=user)
+            obj.save()
+        return obj
 
 
 @login_required()
@@ -207,6 +278,10 @@ def moderator_action_update(request, pk):
         'object': moderator
     })
     return render(request, 'moderator/moderator_action_update.html', context)
+
+
+# class ModeratorActionUpdateView(UpdateView):
+#     template_name = 'moderator/moderator_action_update.html'
 
 
 @login_required()

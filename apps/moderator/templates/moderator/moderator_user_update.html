@@ -20,7 +20,20 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <div class="panel-content">
-              {% if error or success %}
+              {% if form.is_bound %}
+              <div class="col-md-12">
+                {% if form.is_valid %}
+                <div class="alert alert-success">
+                    Изменения успешно сохранены
+                </div>
+                {% else %}
+                <div class="alert alert-danger">
+                    Проверьте правильность ввода полей!
+                </div>
+                {% endif %}
+              </div>
+              {% endif %}
+<!--               {% if error or success %}
               <div class="col-md-12">
                 {% if error %}
                 <div class="alert alert-danger">
@@ -33,7 +46,7 @@
                 </div>
                 {% endif %}
               </div>
-              {% endif %}
+              {% endif %} -->
               <form action="" role="form" class="form add-bottom" id="js-form-user-update" method="post">
               {% csrf_token %}
                 <div class="col-md-6">

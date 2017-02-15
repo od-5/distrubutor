@@ -1,6 +1,6 @@
 # coding=utf-8
 from django import forms
-from django.contrib.admin.widgets import ManyToManyRawIdWidget
+
 from .models import Moderator, ModeratorArea, ModeratorAction, Review
 
 __author__ = 'alexy'
@@ -109,4 +109,3 @@ class ReviewForm(forms.ModelForm):
             'text': forms.Textarea(attrs={'class': 'form-control', 'placeholder': u'Текст сообщения'}),
             'rating': forms.Select(attrs={'class': 'form-control'}),
         }
-
