@@ -12,6 +12,7 @@
 /apps/incoming/migrations
 /apps/manager/migrations
 /apps/city/migrations
+/apps/hanger_mailer/migrations
 .idea/
 *.sublime*
 *.pyc

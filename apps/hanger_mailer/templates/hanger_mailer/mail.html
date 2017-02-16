@@ -1,0 +1,746 @@
+﻿{% load staticfiles %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=320, target-densitydpi=device-dpi">
+ <base href="http://reklamadoma.com">
+	<style type="text/css">
+         /* Client-specific Styles */
+         #outlook a {padding:0;} /* Force Outlook to provide a "view in browser" menu link. */
+         body{width:100% !important; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; margin:0; padding:0;}
+         /* Prevent Webkit and Windows Mobile platforms from changing default font sizes, while not breaking desktop design. */
+         .ExternalClass {width:100%;} /* Force Hotmail to display emails at full width */
+         .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {line-height: 100%;} /* Force Hotmail to display normal line spacing.*/
+         #backgroundTable {margin:0; padding:0; width:100% !important; line-height: 100% !important;}
+         img {outline:none; text-decoration:none;border:none; -ms-interpolation-mode: bicubic;}
+         a img {border:none;}
+         .image_fix {display:block;}
+         p {margin: 0px 0px !important;}
+         table td {border-collapse: collapse;}
+         table { border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; }
+         a {color: #222222;text-decoration: none;text-decoration:none!important;}
+         /*STYLES*/
+		 table[class=header_col2] {width: 300px!important;}
+		 table[class=header_col3] {width: 230px!important;text-align:right!important;}
+		 td[class=mob_hide] {display: table-cell!important;}
+		 td[class=mob_show] {display: none!important;}
+		 span[class=title] {font-size: 30px!important; line-height: 36px!important;}
+         /*IPAD STYLES*/
+         @media only screen and (max-width: 640px) {
+			table[class=devicewidth] {width: 440px!important;text-align:center!important;}
+			table[class=header_col2] {width: 100%!important;}
+			table[class=header_col3] {width: 100%!important;text-align:center!important;}
+			td[class=mob_hide] {display: none!important;}
+			td[class=mob_show] {display: table-cell!important;}
+			span[class=title] {font-size: 20px!important; line-height: 24px!important;}
+			span[class=col_text] {font-size: 14px!important; line-height: 20px!important;}
+         }
+         /*IPHONE STYLES*/
+         @media only screen and (max-width: 480px) {
+			table[class=devicewidth] {width: 320px!important;text-align:center!important;}
+         }
+      </style>
+</head>
+<body>
+<table bgcolor="#e9f4ff" border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tbody>
+    
+	
+<tr>
+<td align="center" width="100%" style="font-family: Arial, Verdana, Helvetica, sans-serif; -webkit-text-size-adjust: none; -ms-text-size-adjust: none;">
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<tbody>
+	<tr>
+      <td align="center" height="89" width="600"></td>
+	</tr>
+	<tr>
+      <td align="center"><table border="0" cellpadding="0" cellspacing="0" width="600" class="devicewidth">
+	      <tbody>
+			<tr>
+				<td width="90%" valign="top" align="center" colspan="3">
+					<img src="{% static 'hanger_mailer/logo.png' %}" alt="">
+				</td>
+			</tr>
+			<tr>
+				<td height="36" width="100%" valign="top" colspan="3"></td>
+			</tr>
+			<tr>
+				<td width="5%" valign="top"></td>
+				<td width="90%" valign="top" align="center">
+					<img src="{% static 'hanger_mailer/text1.png' %}" alt="" style="max-width: 100%;">
+				</td>
+				<td width="5%" valign="top"></td>
+			</tr>
+			<tr>
+				<td height="19" width="100%" valign="top" colspan="3"></td>
+			</tr>
+			<tr>
+				<td width="8%" valign="top"></td>
+				<td width="84%" valign="top" align="center">
+					<span style="color: #000; font-size: 18px; font-family: Arial; line-height: 22px;">
+					Массовая рекламная кампания с помощью листовок-хенгеров</span>
+				</td>
+				<td width="8%" valign="top"></td>
+			</tr>
+			<tr>
+				<td height="22" width="100%" valign="top" colspan="3"></td>
+			</tr>
+          </tbody>
+        </table>
+	  </td>
+    </tr>
+	<tr>
+      <td align="center" height="20" width="600"></td>
+	</tr>
+	<tr>
+      <td align="center">
+		<table border="0" cellpadding="0" cellspacing="0" width="600" class="devicewidth">
+	      <tbody>
+			<tr>
+				<td width="100%" valign="top" colspan="3" style="border: 1px solid #d5e2e7; border-top: 4px solid #f9c911; border-bottom: 0;">
+				  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+					<tbody>
+					  <tr>
+						<td height="43" width="100%" valign="top" colspan="3"></td>
+					  </tr>
+					  <tr>
+						<td width="8%" valign="top"></td>
+						<td width="84%" valign="top" align="left">
+							<span style="color: #000; font-size: 16px; font-family: Arial; font-weight: bold; line-height: 22px; ">
+							А вы уже знаете способ рассказать о себе потенциальному клиенту всего за 70 копеек с гарантией результата?</span>
+						</td>
+						<td width="8%" valign="top"></td>
+					  </tr>
+					  <tr>
+						<td height="26" width="100%" valign="top" colspan="3"></td>
+					  </tr>
+					  <tr>
+						<td width="8%" valign="top"></td>
+						<td width="84%" valign="top" align="left">
+							<span style="color: #717376; font-size: 16px; font-family: Arial; line-height: 22px; ">
+							Вероятно, вы уже слышали о хенгерах — рекламных листовках, которые размещаются на дверных ручках квартир,
+							как о самом эффективном инструменте Indoor-рекламы?</span>
+						</td>
+						<td width="8%" valign="top"></td>
+					  </tr>
+					  <tr>
+						<td height="26" width="100%" valign="top" colspan="3"></td>
+					  </tr>
+					  <tr>
+						<td width="8%" valign="top"></td>
+						<td width="84%" valign="top" align="left">
+							<span style="color: #717376; font-size: 16px; font-family: Arial; line-height: 22px; ">
+							Стандартные хенгеры содержат информацию об одном продукте и услуге, а цена их изготовления и распространения 
+							составляет от 3 рублей за экземпляр.</span>
+						</td>
+						<td width="8%" valign="top"></td>
+					  </tr>
+					  <tr>
+						<td height="44" width="100%" valign="top" colspan="3"></td>
+					  </tr>
+					</tbody>
+				  </table>
+				</td>
+			</tr>
+			<tr>
+			  <td width="100%" height="35" valign="top" colspan="3" background="{% static 'hanger_mailer/bottom.png' %}">
+			</tr>
+          </tbody>
+        </table>
+	  </td>
+    </tr>
+	<tr>
+      <td align="center" height="35" width="600"></td>
+	</tr>
+	<tr>
+      <td align="center"><table border="0" cellpadding="0" cellspacing="0" width="600" class="devicewidth">
+	      <tbody>
+			<tr>
+				<td width="5%" valign="top"></td>
+				<td width="90%" valign="top" align="center">
+					<img src="{% static 'hanger_mailer/text2.png' %}" alt="" style="max-width: 100%;">
+				</td>
+				<td width="5%" valign="top"></td>
+			</tr>
+			<tr>
+				<td height="49" width="100%" valign="top" colspan="3"></td>
+			</tr>
+			<tr>
+				<td valign="top" align="center" colspan="3">
+					<img src="{% static 'hanger_mailer/img.jpg' %}" alt="">
+				</td>
+			</tr>
+          </tbody>
+        </table>
+	  </td>
+    </tr>
+	<tr>
+      <td align="center" height="48" width="600"></td>
+	</tr>
+	<tr>
+      <td align="center">
+		<table border="0" cellpadding="0" cellspacing="0" width="600" bgcolor="#fff" style="background:#fff;" class="devicewidth">
+			<tbody>
+				<tr>
+					<td height="44" width="100%" valign="top" colspan="3"></td>
+				</tr>
+				<tr>
+					<td width="8%" valign="top"></td>
+					<td width="84%" valign="top" align="left">
+						<span style="color: #717376; font-size: 16px; font-family: Arial; line-height: 22px; ">
+						Мини-листовка в форме хенгера с рекламным блоком и полезной информацией для жителей (прогноз погоды, телефонные
+						номера коммунальных служб) — эффективный способ рассказать о вашем продукте или услуге в любом районе города.
+						Это просто, быстро и выгодно!</span>
+					</td>
+					<td width="8%" valign="top"></td>
+				</tr>
+				<tr>
+					<td height="22" width="100%" valign="top" colspan="3"></td>
+				</tr>
+				<tr>
+					<td width="8%" valign="top"></td>
+					<td width="84%" valign="top" align="left">
+						<span style="color: #717376; font-size: 16px; font-family: Arial; line-height: 22px; ">
+						Вы заказываете рекламу, мы размещаем ее на  ручках дверей квартир в многоэтажных домах. Мы предоставляем 100% 
+						фотоотчет по каждому адресу размещения при помощи уникальной программе отчетности и лично гарантируем доставку
+						рекламных листовок в каждый дом. Отклик не заставит себя ждать.</span>
+					</td>
+					<td width="8%" valign="top"></td>
+				</tr>
+				<tr>
+					<td height="22" width="100%" valign="top" colspan="3"></td>
+				</tr>
+				<tr>
+					<td width="8%" valign="top"></td>
+					<td width="84%" valign="top" align="left">
+						<span style="color: #2baee3; font-size: 16px; font-family: Arial; line-height: 22px; ">
+						По желанию, процесс размещения рекламы вы можете наблюдать в онлайн режиме в программе отчетности у себя дома или в офисе.</span>
+					</td>
+					<td width="8%" valign="top"></td>
+				</tr>
+				<tr>
+					<td height="22" width="100%" valign="top" colspan="3"></td>
+				</tr>
+				<tr>
+					<td width="8%" valign="top"></td>
+					<td width="84%" valign="top" align="left">
+						<span style="color: #000; font-size: 16px; font-family: Arial; font-weight: bold; line-height: 22px; ">
+						Такую услугу больше никто не предоставляет</span>
+					</td>
+					<td width="8%" valign="top"></td>
+				</tr>
+				<tr>
+					<td height="48" width="100%" valign="top" colspan="3"></td>
+				</tr>
+			</tbody>
+        </table>
+	  </td>
+    </tr>
+	<tr>
+      <td align="center">
+		<table border="0" cellpadding="0" cellspacing="0" width="600" bgcolor="#2baee3" style="background:#2baee3;" class="devicewidth">
+			<tbody>
+				<tr>
+					<td height="48" width="100%" valign="top" colspan="3"></td>
+				</tr>
+				<tr>
+					<td width="8%" valign="top"></td>
+					<td width="84%" valign="top" align="left">
+					  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+						<tbody>
+						  <tr>
+							<td width="17%" valign="middle">
+							  <img src="{% static 'hanger_mailer/icon.png' %}" alt="" style="max-width: 100%;">
+							</td>
+							<td width="12%" valign="top"></td>
+							<td width="71%" valign="top">
+							  <span style="color: #fff; font-size: 16px; font-family: Arial; line-height: 22px; ">
+							  Своих первых клиентов вы получите уже в день размещения. Такая реклама будет работать еще cпустя месяцы.<br><br></span>
+							  <span style="color: #fff; font-size: 16px; font-family: Arial; font-weight: bold; line-height: 22px; ">
+							  Мы предлагаем гораздо больше в 4 раза дешевле!</span>
+							</td>
+						  </tr>
+						</tbody>
+					  </table>
+					</td>
+					<td width="8%" valign="top"></td>
+				</tr>
+				<tr>
+					<td height="44" width="100%" valign="top" colspan="3"></td>
+				</tr>
+			</tbody>
+        </table>
+	  </td>
+    </tr>
+	<tr>
+      <td align="center">
+		<table border="0" cellpadding="0" cellspacing="0" width="600" bgcolor="#fff" style="border-bottom: 1px solid #deeaf7; background:#fff;" class="devicewidth">
+			<tbody>
+				<tr>
+					<td height="40" width="100%" valign="top" colspan="3"></td>
+				</tr>
+				<tr>
+					<td width="8%" valign="top"></td>
+					<td width="84%" valign="top" align="left">
+						<span style="color: #743c93; font-size: 24px; font-family: Arial; font-weight: bold; line-height: 36px; text-transform: uppercase;">
+						4 выгоды <span style="color: #000;">размещения рекламы</span><br>
+						в листовках-хенгерах</span>
+					</td>
+					<td width="8%" valign="top"></td>
+				</tr>
+				<tr>
+					<td height="38" width="100%" valign="top" colspan="3"></td>
+				</tr>
+			</tbody>
+        </table>
+	  </td>
+    </tr>
+	<tr>
+      <td align="center">
+		<table border="0" cellpadding="0" cellspacing="0" width="600" bgcolor="#fff" style="border-bottom: 1px solid #deeaf7; background:#fff;" class="devicewidth">
+			<tbody>
+				<tr>
+					<td height="41" width="100%" valign="top" colspan="3"></td>
+				</tr>
+				<tr>
+					<td width="8%" valign="top"></td>
+					<td width="84%" valign="top" align="left">
+					  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+						<tbody>
+						  <tr>
+							<td width="60%" valign="middle">
+							   <table border="0" cellpadding="0" cellspacing="0" width="100%">
+								  <tbody>
+									<tr>
+										<td width="100%" valign="top" align="left">
+											<span style="color: #000; font-size: 20px; font-family: Arial; font-weight: bold; line-height: 22px;">
+											Стоимость ниже в 4 раза!</span>
+										</td>
+									</tr>
+									<tr>
+										<td width="100%" height="17" valign="top" align="left">
+									</tr>
+									<tr>
+										<td width="100%" valign="top" align="left">
+											<span style="color: #717376; font-size: 14px; font-family: Arial; line-height: 22px;">
+											Рекламный блок листовки рассчитан на нескольких рекламодателей. За счет этого стоимость 
+											размещения рекламы вместе с дизайном и размещением вам обойдется всего в 70 копеек за 
+											экземпляр. Стиомость рекламы в хенгерах у конкурентов в среднем обходится в 4 раза дороже.</span>
+										</td>
+									</tr>
+								  </tbody>
+								</table>
+							</td>
+							<td width="2%" valign="top"></td>
+							<td width="38%" valign="middle" align="center">
+							  <img src="{% static 'hanger_mailer/1.jpg' %}" alt="" style="max-width: 100%;">
+							</td>
+						  </tr>
+						</tbody>
+					  </table>
+					</td>
+					<td width="8%" valign="top"></td>
+				</tr>
+				<tr>
+					<td height="45" width="100%" valign="top" colspan="3"></td>
+				</tr>
+			</tbody>
+        </table>
+	  </td>
+    </tr>
+	<tr>
+      <td align="center">
+		<table border="0" cellpadding="0" cellspacing="0" width="600" bgcolor="#fff" style="border-bottom: 1px solid #deeaf7; background:#fff;" class="devicewidth">
+			<tbody>
+				<tr>
+					<td height="41" width="100%" valign="top" colspan="3"></td>
+				</tr>
+				<tr>
+					<td width="8%" valign="top"></td>
+					<td width="84%" valign="top" align="left">
+					  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+						<tbody>
+						  <tr>
+							<td width="60%" valign="middle">
+							   <table border="0" cellpadding="0" cellspacing="0" width="100%">
+								  <tbody>
+									<tr>
+										<td width="100%" valign="top" align="left">
+											<span style="color: #000; font-size: 20px; font-family: Arial; font-weight: bold; line-height: 22px;">
+											Онлайн-отчетность — ваша гарантия эффективности!</span>
+										</td>
+									</tr>
+									<tr>
+										<td width="100%" height="17" valign="top" align="left">
+									</tr>
+									<tr>
+										<td width="100%" valign="top" align="left">
+											<span style="color: #717376; font-size: 14px; font-family: Arial; line-height: 22px;">
+											Вам не придется ездить по адресам, чтобы проверить работу исполнителей. Вы контролируете 
+											процесс прямо из дома, не отрываясь от монитора вашего компьютера.  С помощью уникальной 
+											программы отчетности вы увидите прямо на карте, где, когда и во сколько был исполнитель.</span>
+										</td>
+									</tr>
+								  </tbody>
+								</table>
+							</td>
+							<td width="2%" valign="top"></td>
+							<td width="38%" valign="middle" align="center">
+							  <img src="{% static 'hanger_mailer/2.jpg' %}" alt="" style="max-width: 100%;">
+							</td>
+						  </tr>
+						</tbody>
+					  </table>
+					</td>
+					<td width="8%" valign="top"></td>
+				</tr>
+				<tr>
+					<td height="45" width="100%" valign="top" colspan="3"></td>
+				</tr>
+			</tbody>
+        </table>
+	  </td>
+    </tr>
+	<tr>
+      <td align="center">
+		<table border="0" cellpadding="0" cellspacing="0" width="600" bgcolor="#fff" style="border-bottom: 1px solid #deeaf7; background:#fff;" class="devicewidth">
+			<tbody>
+				<tr>
+					<td height="41" width="100%" valign="top" colspan="3"></td>
+				</tr>
+				<tr>
+					<td width="8%" valign="top"></td>
+					<td width="84%" valign="top" align="left">
+					  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+						<tbody>
+						  <tr>
+							<td width="60%" valign="middle">
+							   <table border="0" cellpadding="0" cellspacing="0" width="100%">
+								  <tbody>
+									<tr>
+										<td width="100%" valign="top" align="left">
+											<span style="color: #000; font-size: 20px; font-family: Arial; font-weight: bold; line-height: 22px;">
+											Гарантия контакта</span>
+										</td>
+									</tr>
+									<tr>
+										<td width="100%" height="17" valign="top" align="left">
+									</tr>
+									<tr>
+										<td width="100%" valign="top" align="left">
+											<span style="color: #717376; font-size: 14px; font-family: Arial; line-height: 22px;">
+											В 99 случаях из 100 листовка попадет в дом, а информация в ней будет прочитана всеми членами семьи.
+											Такого высокого процента отдачи вы не получите ни от какого другого рекламного носителя</span>
+										</td>
+									</tr>
+								  </tbody>
+								</table>
+							</td>
+							<td width="2%" valign="top"></td>
+							<td width="38%" valign="middle" align="center">
+							  <img src="{% static 'hanger_mailer/3.jpg' %}" alt="" style="max-width: 100%;">
+							</td>
+						  </tr>
+						</tbody>
+					  </table>
+					</td>
+					<td width="8%" valign="top"></td>
+				</tr>
+				<tr>
+					<td height="45" width="100%" valign="top" colspan="3"></td>
+				</tr>
+			</tbody>
+        </table>
+	  </td>
+    </tr>
+	<tr>
+      <td align="center">
+		<table border="0" cellpadding="0" cellspacing="0" width="600" bgcolor="#fff" style="border-bottom: 1px solid #deeaf7; background:#fff;" class="devicewidth">
+			<tbody>
+				<tr>
+					<td height="41" width="100%" valign="top" colspan="3"></td>
+				</tr>
+				<tr>
+					<td width="8%" valign="top"></td>
+					<td width="84%" valign="top" align="left">
+					  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+						<tbody>
+						  <tr>
+							<td width="60%" valign="middle">
+							   <table border="0" cellpadding="0" cellspacing="0" width="100%">
+								  <tbody>
+									<tr>
+										<td width="100%" valign="top" align="left">
+											<span style="color: #000; font-size: 20px; font-family: Arial; font-weight: bold; line-height: 22px;">
+											Реальная польза для клиента</span>
+										</td>
+									</tr>
+									<tr>
+										<td width="100%" height="17" valign="top" align="left">
+									</tr>
+									<tr>
+										<td width="100%" valign="top" align="left">
+											<span style="color: #717376; font-size: 14px; font-family: Arial; line-height: 22px;">
+											Благодаря наличию справочной информации о работе служб города, телефонам ЖКХ в мини-листовке
+											рекламную листовку не выкинут тут же в мусорное ведро, а обязательно изучат ее содержимое.</span>
+										</td>
+									</tr>
+								  </tbody>
+								</table>
+							</td>
+							<td width="2%" valign="top"></td>
+							<td width="38%" valign="middle" align="center">
+							  <img src="{% static 'hanger_mailer/4.jpg' %}" alt="" style="max-width: 100%;">
+							</td>
+						  </tr>
+						</tbody>
+					  </table>
+					</td>
+					<td width="8%" valign="top"></td>
+				</tr>
+				<tr>
+					<td height="45" width="100%" valign="top" colspan="3"></td>
+				</tr>
+			</tbody>
+        </table>
+	  </td>
+    </tr>
+	<tr>
+      <td align="center">
+		<table border="0" cellpadding="0" cellspacing="0" width="600" bgcolor="#fff" style="background:#fff;" class="devicewidth">
+			<tbody>
+				<tr>
+					<td height="41" width="100%" valign="top" colspan="3"></td>
+				</tr>
+				<tr>
+					<td width="8%" valign="top"></td>
+					<td width="84%" valign="top" align="center">
+					  <span style="color: #000; font-size: 36px; font-family: Arial; font-weight: bold; line-height: 48px;">
+					  Что входит в стоимость?</span>
+					</td>
+					<td width="8%" valign="top"></td>
+				</tr>
+				<tr>
+					<td height="41" width="100%" valign="top" colspan="3"></td>
+				</tr>
+				<tr>
+					<td width="8%" valign="top"></td>
+					<td width="84%" valign="top" align="left">
+					  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+						<tbody>
+						  <tr>
+							<td width="58%" valign="middle">
+							   <table border="0" cellpadding="0" cellspacing="0" width="100%">
+								  <tbody>
+									<tr>
+									  <td width="100%" valign="top" align="left">
+										<table border="0" cellpadding="0" cellspacing="0" width="100%">
+										  <tbody>
+											<tr>
+												<td width="12%" valign="top">
+													<table border="0" cellpadding="0" cellspacing="0" width="100%">
+													  <tbody>
+														<tr>
+															<td height="6" valign="top"></td>
+														</tr>
+														<tr>
+															<td><img src="{% static 'hanger_mailer/arrow.png' %}" alt="" style="max-width: 100%;"></td>
+														</tr>
+													  </tbody>
+													</table>
+												</td>
+												<td width="4%" valign="top"></td>
+												<td width="84%" valign="top" align="left">
+													<span style="color: #717376; font-size: 14px; font-family: Arial; line-height: 22px; ">
+													Разработка маркетинговой стратегии и адресной программы для рекламной кампании от профессионалов рекламного рынка</span>
+												</td>
+											</tr>
+										  </tbody>
+										</table>
+									  </td>
+									</tr>
+									<tr>
+										<td width="100%" height="22" valign="top" align="left">
+									</tr>
+									<tr>
+									  <td width="100%" valign="top" align="left">
+										<table border="0" cellpadding="0" cellspacing="0" width="100%">
+										  <tbody>
+											<tr>
+												<td width="12%" valign="top">
+													<table border="0" cellpadding="0" cellspacing="0" width="100%">
+													  <tbody>
+														<tr>
+															<td height="6" valign="top"></td>
+														</tr>
+														<tr>
+															<td><img src="{% static 'hanger_mailer/arrow.png' %}" alt="" style="max-width: 100%;"></td>
+														</tr>
+													  </tbody>
+													</table>
+												</td>
+												<td width="4%" valign="top"></td>
+												<td width="84%" valign="top" align="left">
+													<span style="color: #717376; font-size: 14px; font-family: Arial; line-height: 22px; ">
+													Уникальный дизайн хенгера-лситовки «под ключ»</span>
+												</td>
+											</tr>
+										  </tbody>
+										</table>
+									  </td>
+									</tr>
+									<tr>
+										<td width="100%" height="22" valign="top" align="left">
+									</tr>
+									<tr>
+									  <td width="100%" valign="top" align="left">
+										<table border="0" cellpadding="0" cellspacing="0" width="100%">
+										  <tbody>
+											<tr>
+												<td width="12%" valign="top">
+													<table border="0" cellpadding="0" cellspacing="0" width="100%">
+													  <tbody>
+														<tr>
+															<td height="6" valign="top"></td>
+														</tr>
+														<tr>
+															<td><img src="{% static 'hanger_mailer/arrow.png' %}" alt="" style="max-width: 100%;"></td>
+														</tr>
+													  </tbody>
+													</table>
+												</td>
+												<td width="4%" valign="top"></td>
+												<td width="84%" valign="top" align="left">
+													<span style="color: #717376; font-size: 14px; font-family: Arial; line-height: 22px; ">
+													Фотоотчет в виде {{ count|default:'50 000' }} фотографий, привязанных с помощью GPS-навигации к каждому адресу на гугл-
+													карте, по которому была заказана услуга распространения мини-газеты</span>
+												</td>
+											</tr>
+										  </tbody>
+										</table>
+									  </td>
+									</tr>
+								  </tbody>
+								</table>
+							</td>
+							<td width="4%" valign="top"></td>
+							<td width="38%" valign="top" align="center">
+							  <img src="{% static 'hanger_mailer/5.jpg' %}" alt="" style="max-width: 100%;">
+							</td>
+						  </tr>
+						</tbody>
+					  </table>
+					</td>
+					<td width="8%" valign="top"></td>
+				</tr>
+				<tr>
+					<td height="45" width="100%" valign="top" colspan="3"></td>
+				</tr>
+			</tbody>
+        </table>
+	  </td>
+    </tr>
+	
+	
+	<tr>
+      <td align="center">
+		<table border="0" cellpadding="0" cellspacing="0" width="600" height="527" valign="middle" background="{% static 'hanger_mailer/bg.jpg' %}" style="background-position: 50% 0;" class="devicewidth">
+			<tbody>
+				<tr>
+					<td width="100%" valign="middle" colspan="3">
+					  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+						<tbody>
+						  <tr>
+							<td width="8%" valign="top"></td>
+							<td width="84%" valign="top" align="center">
+								<span style="color: #000; font-size: 18px; font-family: Arial; line-height: 21px;">
+								Стоимость размещения <br>
+								за 1 рекламный блок</span>
+							</td>
+							<td width="8%" valign="top"></td>
+						  </tr>
+						  <tr>
+							<td height="23" valign="top"></td>
+						  </tr>
+						  <tr>
+							<td width="8%" valign="top"></td>
+							<td width="84%" valign="top" align="center">
+								<span style="color: #000; font-size: 24px; font-family: Arial; font-weight: bold; line-height: 29px;">
+								{{ price|default:'35 000' }} рублей за {{ count|default:'50 000' }}<br> экземпляров</span>
+							</td>
+							<td width="8%" valign="top"></td>
+						  </tr>
+						  <tr>
+							<td height="21" valign="top"></td>
+						  </tr>
+						  <tr>
+							<td width="8%" valign="top"></td>
+							<td width="84%" valign="top" align="center">
+								<span style="color: #000; font-size: 18px; font-family: Arial; line-height: 21px;">
+								70 копеек за за одну единицу<br>
+								листовки с вашей рекламой.</span>
+							</td>
+							<td width="8%" valign="top"></td>
+						  </tr>
+						</tbody>
+					  </table>
+					</td>
+				</tr>
+			</tbody>
+        </table>
+	  </td>
+    </tr>
+	<tr>
+      <td align="center" height="47" width="600"></td>
+	</tr>
+	<tr>
+      <td align="center"><table border="0" cellpadding="0" cellspacing="0" width="600" class="devicewidth">
+	      <tbody>
+			
+			<tr>
+				<td width="8%" valign="top"></td>
+				<td width="84%" valign="top" align="center">
+					<span style="color: #000; font-size: 14px; font-family: Arial; line-height: 17px;">
+					Наш менеджер свяжется <br>
+					с вами в ближайшее время</span>
+				</td>
+				<td width="8%" valign="top"></td>
+			</tr>
+			<tr>
+				<td height="7" width="100%" valign="top" colspan="3"></td>
+			</tr>
+			<tr>
+				<td width="8%" valign="top"></td>
+				<td width="84%" valign="top" align="center">
+					<span style="color: #000; font-size: 30px; font-family: Arial; line-height: 30px;">
+					{{ phone|default:'8 800 234-37-37' }}</span>
+				</td>
+				<td width="8%" valign="top"></td>
+			</tr>
+			<tr>
+				<td height="33" width="100%" valign="top" colspan="3"></td>
+			</tr>
+			<tr>
+				<td width="90%" valign="top" align="center" colspan="3">
+					<img src="{% static 'hanger_mailer/logo.png' %}" alt="">
+				</td>
+			</tr>
+          </tbody>
+        </table>
+	  </td>
+    </tr>
+	<tr>
+      <td align="center" height="62" width="100%"></td>
+	</tr>
+		
+</tbody>
+</table>		
+</td>
+</tr>
+	
+  </tbody>
+</table>
+</body>
+</html>

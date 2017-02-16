@@ -41,8 +41,31 @@ $(function() {
       $(this).find('.js-payment-add-btn').addClass('hide')
     }
   );
-  // валидация формы создания вёрстки
 
+  //валидация формы создания рассылки по хенгерам
+  $('#js-form-hangermail').validate({
+    rules: {
+      moderator: {
+        required: true
+      },
+      city: {
+        required: true
+      },
+      title: {
+        required: true
+      },
+      phone: {
+        required: true
+      },
+      count: {
+        required: true
+      },
+      price: {
+        required: true
+      }
+    }
+  });
+  // валидация формы создания вёрстки
   $('#js-form-stand-add').validate({
     rules: {
       moderator: {

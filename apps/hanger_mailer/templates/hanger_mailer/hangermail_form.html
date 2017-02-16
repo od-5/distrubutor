@@ -1,0 +1,107 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}{{ object|default:'Рассылка' }} | {{ block.super }}{% endblock %}
+{% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+            <li><a href="{% url 'hanger_mailer:list' %}">Почтовые рассылки </a></li>
+            <li class="active">{{ object|default:'Рассылка' }}</li>
+          </ol>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">{{ object|default:'Рассылка' }}</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="panel-content">
+            {{ form.errors }}
+              <form action="" role="form" class="form" id="js-form-hangermailitem" method="post">
+                {% csrf_token %}
+              {{ form.moderator }}
+                <div class="col-md-12">
+                  <div class="form-group">
+                    {{ form.title.label_tag }}
+                    {{ form.title }}
+                    {{ form.title.errors }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.city.label_tag }}
+                    {{ form.city }}
+                    {{ form.city.errors }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.phone.label_tag }}
+                    {{ form.phone }}
+                    {{ form.phone.errors }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.count.label_tag }}
+                    {{ form.count }}
+                    {{ form.count.errors }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ form.price.label_tag }}
+                    {{ form.price }}
+                    {{ form.price.errors }}
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="col-md-6">
+              {% if object %}
+                  <button type="submit" class="btn btn-save add-bottom">Сохранить изменения</button>
+              {% else %}
+                  <button type="submit" class="btn btn-save">Создать рассылку</button>
+              {% endif %}
+                </div>
+                <div class="clearfix"></div>
+              {% if object %}
+                <div class="col-md-12">
+                  <div class="form-group">
+                    {{ form.mail_list.label_tag }}
+                    {{ form.mail_list }}
+{#                    <label for="id_mail_list">Введите список адресов через запятую</label>#}
+{#                    <textarea name="mail_list" id="id_mail_list" class="form-control" placeholder="mail1@mail.ru, mail2@mail.ru..."></textarea>#}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <button type="submit" class="btn btn-save btn-save_green add-bottom">Добавить адреса в рассылку</button>
+                </div>
+                <div class="clearfix"></div>
+              {% else %}
+                {{ form.mail_list }}
+              {% endif %}
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+{% endblock %}

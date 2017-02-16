@@ -33,5 +33,6 @@ INSTALLED_APPS = (
     'apps.packages',
     'apps.robokassa',
     'apps.stand',
+    'apps.hanger_mailer',
     'django_cleanup',
 )
