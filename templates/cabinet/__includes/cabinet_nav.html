@@ -68,7 +68,7 @@
     <li class="dropdown">
       <a href="" class="dropdown-toggle" data-toggle="dropdown">Настройки <span class="caret"></span></a>
       <ul class="dropdown-menu">
-        {% if user.type == 2 or user.type == 5 %}
+        {% if user.type == 2 and user.moderator_user.stand_accept or user.type == 5 and user.manager_user.moderator.moderator_user.stand_accept %}
         <li><a href="{% url 'hanger_mailer:list' %}">Список рассылок по хенгерам</a></li>
         <li><a href="{% url 'hanger_mailer:add' %}">Создать новую рассылку по хенгерам</a></li>
         <li class="divider"></li>
