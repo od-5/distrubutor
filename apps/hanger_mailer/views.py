@@ -15,6 +15,16 @@ class HangerMailListView(ListView):
     template_name = 'hanger_mailer/hangermail_list.html'
     paginate_by = 25
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.type == 2:
+            qs = self.model.objects.filter(moderator=user.moderator_user)
+        elif user.type == 5:
+            qs = self.model.objects.filter(moderator=user.manager_user.moderator.moderator_user)
+        else:
+            qs = self.model.objects.none()
+        return qs
+
 
 class HangerMailCreateView(CreateView, SendUserToFormMixin):
     model = HangerMail
