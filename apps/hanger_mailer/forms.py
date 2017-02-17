@@ -12,7 +12,7 @@ class HangerMailForm(forms.ModelForm):
     """
     class Meta:
         model = HangerMail
-        fields = '__all__'
+        exclude = ['mail_count', ]
         widgets = {
             'moderator': forms.HiddenInput(),
             'city': forms.Select(attrs={'class': 'form-control'}),

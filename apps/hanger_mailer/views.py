@@ -44,7 +44,6 @@ class HangerMailUpdateView(UpdateView, SendUserToFormMixin):
                 try:
                     validate_email(i)
                     item = HangerMailItem(hangermail=form.instance, email=i)
-                    item.save()
                 except ValidationError:
                     pass
 

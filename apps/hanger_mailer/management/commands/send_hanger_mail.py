@@ -30,4 +30,7 @@ class Command(BaseCommand):
                 )
             except:
                 pass
+            hanger_mailer = mail.hangermail
+            hanger_mailer.mail_count += 1
+            hanger_mailer.save()
             mail.delete()

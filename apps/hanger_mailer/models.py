@@ -1,9 +1,8 @@
 # coding=utf-8
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.db.models import Sum
-from apps.geolocation.models import City
 
+from apps.geolocation.models import City
 from apps.manager.models import Manager
 from apps.moderator.models import Moderator
 from core.base_model import Common
@@ -30,6 +29,7 @@ class HangerMail(Common):
     phone = models.CharField(max_length=100, verbose_name=u'Телефон', blank=True, null=True)
     count = models.PositiveIntegerField(verbose_name=u'Количество экземпляров', blank=True, null=True)
     price = models.PositiveIntegerField(verbose_name=u'Стоимость, руб', blank=True, null=True)
+    mail_count = models.PositiveIntegerField(verbose_name=u'Кол-во писем в рассылке', default=0)
 
 
 class HangerMailItem(models.Model):

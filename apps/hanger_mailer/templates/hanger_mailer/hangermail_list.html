@@ -48,6 +48,7 @@
                       {% endif %}
                       <th>Название</th>
                       <th>Ждут отправки</th>
+                      <th>Отправлено</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -61,6 +62,7 @@
                         <a href="{{ object.get_absolute_url }}">{{ object|default:'не указано' }}</a>
                       </td>
                       <td>{{ object.hangermailitem_set.count|default:'0' }}</td>
+                      <td>{{ object.mail_count|default:'0' }}</td>
                       <td>
                         {% if user.type != 5 %}
                         <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-HangerMail-{{ object.id }}" class="text-danger js-ajax-remove-btn">
