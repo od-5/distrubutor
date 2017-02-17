@@ -19,7 +19,7 @@ class HangerMail(Common):
         ordering = ['-created', ]
 
     def __unicode__(self):
-        return u'Рассылка город %s' % self.city.name
+        return u'Рассылка город %s - %s' % (self.city.name, self.title)
 
     def get_absolute_url(self):
         return reverse('hanger_mailer:update', args=(self.pk, ))
