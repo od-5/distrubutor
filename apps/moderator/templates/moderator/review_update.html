@@ -32,14 +32,22 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <div class="panel-content">
-              {% if error %}
+              {% if form.is_bound and not form.is_valid %}
+              <div class="col-md-12">
+                <div class="alert alert-danger">
+                  Проверьте правильность ввода данных
+                </div>
+              </div>
+              <div class="clearfix"></div>
+              {% endif %}
+<!--               {% if error %}
               <div class="col-md-12">
                 <div class="alert alert-danger">
                   {{ error }}
                 </div>
               </div>
               <div class="clearfix"></div>
-              {% endif %}
+              {% endif %} -->
               <form action="" role="form" class="form" id="js-form-review-update" method="post">
               {% csrf_token %}
                 <div class="col-md-4">
