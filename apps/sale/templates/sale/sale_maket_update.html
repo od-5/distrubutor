@@ -20,11 +20,11 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <div class="panel-content">
-              {% if success or error %}
+              {% if form.is_bound %}
               <div class="col-md-12">
-                {% if success %}
+                {% if form.is_valid %}
                 <p class="alert alert-success">{{ success }}</p>
-                {% elif error %}
+                {% else %}
                 <p class="alert alert-danger">{{ error }}</p>
                 {% endif %}
               </div>

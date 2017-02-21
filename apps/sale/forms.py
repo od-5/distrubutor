@@ -1,5 +1,6 @@
 # coding=utf-8
 from django import forms
+
 from apps.manager.models import Manager
 from .models import Sale, SaleOrder, SaleMaket
 
@@ -130,6 +131,11 @@ class SaleOrderForm(forms.ModelForm):
             'discount': forms.NumberInput(attrs={'class': 'form-control'}),
             'closed': forms.CheckboxInput(),
         }
+
+        def __init__(self, *args, **kwargs):
+            super(SaleOrderForm, self).__init__(*args, **kwargs)
+            sale = kwargs['instance']
+            self.fields['type'].queryset = sale.moderator.moderatoraction_set.all()
 
 
 class SaleMaketForm(forms.ModelForm):

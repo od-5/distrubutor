@@ -1,12 +1,15 @@
 # coding=utf-8
-from annoying.decorators import ajax_request
 from datetime import datetime
+
 from django.conf import settings
 from django.core.mail import send_mail
-from annoying.functions import get_object_or_None
 from django.views.decorators.csrf import csrf_exempt
+
+from annoying.decorators import ajax_request
+from annoying.functions import get_object_or_None
+
 from apps.distributor.models import DistributorTask
-from apps.sale.models import SaleOrder, Sale, SaleOrderPayment
+from .models import SaleOrder, Sale, SaleOrderPayment
 from apps.sms.views import send_sms
 
 __author__ = 'alexy'

@@ -1,9 +1,9 @@
 # coding=utf-8
-import datetime
 from django.db import models
+
 from apps.geolocation.models import City
 from apps.moderator.models import Moderator, ModeratorAction
-from apps.ticket.models import Ticket, PreSale
+from apps.ticket.models import PreSale
 from core.files import upload_to
 from core.models import User
 from apps.manager.models import Manager
@@ -21,11 +21,14 @@ class Sale(models.Model):
         return self.legal_name
 
     presale = models.OneToOneField(to=PreSale, blank=True, null=True)
-    user = models.OneToOneField(to=User, limit_choices_to={'type': 3}, verbose_name=u'Пользователь', related_name='sale_user')
+    user = models.OneToOneField(
+        to=User, limit_choices_to={'type': 3}, verbose_name=u'Пользователь', related_name='sale_user')
     moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор', related_name='sale_moderator')
     city = models.ForeignKey(to=City, verbose_name=u'Город', related_name='sale_city')
-    manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер', blank=True, null=True, related_name='sale_manager')
-    sender_email = models.EmailField(verbose_name=u'Email для получения уведомлений', blank=True, null=True, max_length=100)
+    manager = models.ForeignKey(
+        to=Manager, verbose_name=u'Менеджер', blank=True, null=True, related_name='sale_manager')
+    sender_email = models.EmailField(
+        verbose_name=u'Email для получения уведомлений', blank=True, null=True, max_length=100)
     phone_sms = models.CharField(verbose_name=u'Телефон для смс уведомлений', blank=True, null=True, max_length=20)
     password = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'пароль')
     legal_name = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Юридическое название')
@@ -75,7 +78,8 @@ class SaleOrder(models.Model):
         return round(count, 2)
 
     def total_sum(self):
-        total = ((float(self.cost)*(1+float(self.add_cost)*0.01))*(1-float(self.discount)*0.01)) * self.count
+        total = ((float(self.cost) * (1 + float(self.add_cost) * 0.01)) * (
+            1 - float(self.discount) * 0.01)) * self.count
         return round(total, 2)
 
     sale = models.ForeignKey(to=Sale, verbose_name=u'Продажа')
