@@ -9,17 +9,14 @@ from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, Http404
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.forms.models import inlineformset_factory
 
-from annoying.functions import get_object_or_None
-
 from lib.cbv import RedirectlessFormMixin, SendUserToFormMixin
 from core.forms import UserAddForm, UserUpdateForm
 from core.models import User
-from apps.administrator.decorators import administrator_required
 from apps.packages.models import Package
 from apps.robokassa.forms import RobokassaForm
 from apps.robokassa.signals import result_received
@@ -69,33 +66,6 @@ class ModeratorListView(ListView):
         return context
 
 
-# @administrator_required
-# def moderator_add(request):
-#     context = {}
-#     if request.method == "POST":
-#         form = UserAddForm(request.POST)
-#         if form.is_valid():
-#             user = form.save(commit=False)
-#             user.type = 2
-#             user.is_staff = True
-#             user.is_active = True
-#             if request.POST.get('superviser'):
-#                 user.superviser = True
-#             user.save()
-#             return HttpResponseRedirect(reverse('moderator:update', args=(user.id,)))
-#             # return HttpResponseRedirect(reverse('moderator:list'))
-#         else:
-#             context.update({
-#                 'error': u'Проверьте правильность ввода полей'
-#             })
-#     else:
-#         form = UserAddForm()
-#     context.update({
-#         'form': form,
-#     })
-#     return render(request, 'moderator/moderator_add.html', context)
-
-
 class ModeratorCreateView(CreateView):
     form_class = UserAddForm
     template_name = 'moderator/moderator_add.html'
@@ -111,39 +81,6 @@ class ModeratorCreateView(CreateView):
         return super(ModeratorCreateView, self).form_valid(form)
 
 
-# @login_required()
-# def moderator_user_update(request, pk):
-#     context = {}
-#     moderator_user = User.objects.get(pk=int(pk))
-#     success_msg = u''
-#     error_msg = u''
-#     try:
-#         moderator = Moderator.objects.get(user=moderator_user)
-#     except:
-#         moderator = Moderator(user=moderator_user)
-#         moderator.deny_access = True
-#         moderator.save()
-#     if request.method == 'POST':
-#         form = UserUpdateForm(request.POST, instance=moderator_user)
-#         if form.is_valid():
-#             instance = form.save(commit=False)
-#             if request.POST.get('superviser'):
-#                 instance.superviser = True
-#             instance.save()
-#             success_msg += u' Изменения успешно сохранены'
-#         else:
-#             error_msg = u'Проверьте правильность ввода полей!'
-#     else:
-#         form = UserUpdateForm(instance=moderator_user)
-#     context.update({
-#         'form': form,
-#         'success': success_msg,
-#         'error': error_msg,
-#         'object': moderator
-#     })
-#     return render(request, 'moderator/moderator_user_update.html', context)
-
-
 class ModeratorUserUpdateView(UpdateView, RedirectlessFormMixin):
     model = User
     form_class = UserUpdateForm
@@ -152,11 +89,11 @@ class ModeratorUserUpdateView(UpdateView, RedirectlessFormMixin):
     def get_object(self):
         obj = super(ModeratorUserUpdateView, self).get_object()
         try:
-            moderator = Moderator.objects.get(user=obj)
+            self.moderator = Moderator.objects.get(user=obj)
         except Moderator.DoesNotExist:
-            moderator = Moderator(user=obj)
-            moderator.deny_access = True
-            moderator.save()
+            self.moderator = Moderator(user=obj)
+            self.moderator.deny_access = True
+            self.moderator.save()
         return obj
 
     def form_valid(self, form):
@@ -164,19 +101,10 @@ class ModeratorUserUpdateView(UpdateView, RedirectlessFormMixin):
             form.instance.superviser = 'superviser'
         return super(ModeratorUserUpdateView, self).form_valid(form)
 
-
-# @login_required()
-# def moderator_detail(request, pk):
-#     context = {}
-#     moderator = Moderator.objects.get(user__id=int(pk))
-#     comment = request.POST.get('comment')
-#     if comment:
-#         moderator.comment = comment
-#         moderator.save()
-#     context.update({
-#         'object': moderator
-#     })
-#     return render(request, 'moderator/moderator_detail.html', context)
+    def get_context_data(self, **kwargs):
+        context = super(ModeratorUserUpdateView, self).get_context_data(**kwargs)
+        context['object'] = self.moderator
+        return context
 
 
 class ModeratorDetailView(DetailView):
@@ -193,36 +121,6 @@ class ModeratorDetailView(DetailView):
             self.object.save()
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
-
-
-# @login_required()
-# def moderator_company_update(request, pk):
-#     context = {}
-#     user = request.user
-#     moderator_user = User.objects.get(pk=int(pk))
-#     success_msg = u''
-#     error_msg = u''
-#     try:
-#         moderator = Moderator.objects.get(user=moderator_user)
-#     except:
-#         moderator = Moderator(user=moderator_user)
-#         moderator.save()
-#     if request.method == 'POST':
-#         form = ModeratorForm(request.POST, request.FILES, instance=moderator, user=user)
-#         if form.is_valid():
-#             form.save()
-#             success_msg += u' Изменения успешно сохранены'
-#         else:
-#             error_msg = u'Проверьте правильность ввода полей!'
-#     else:
-#         form = ModeratorForm(instance=moderator, user=user)
-#     context.update({
-#         'form': form,
-#         'success': success_msg,
-#         'error': error_msg,
-#         'object': moderator
-#     })
-#     return render(request, 'moderator/moderator_update.html', context)
 
 
 class ModeratorCompanyUpdateView(UpdateView, RedirectlessFormMixin, SendUserToFormMixin):
@@ -297,29 +195,6 @@ def area_add(request):
     return HttpResponseRedirect(reverse('city:list'))
 
 
-# @login_required()
-# def area_update(request, pk):
-#     context = {}
-#     area = ModeratorArea.objects.get(pk=int(pk))
-#     if request.method == 'POST':
-#         form = ModeratorAreaForm(request.POST, instance=area)
-#         if form.is_valid():
-#             form.save()
-#             return HttpResponseRedirect(reverse('city:update', args=(area.city.id, )))
-#         else:
-#             context.update({
-#                 'error': u'Проверьте правильность заполнения формы'
-#             })
-#     else:
-#         form = ModeratorAreaForm(instance=area)
-#     context.update({
-#         'form': form,
-#         'object': area
-#     })
-
-#     return render(request, 'moderator/moderatorarea_update.html', context)
-
-
 class AreaUpdateView(UpdateView):
     model = ModeratorArea
     form_class = ModeratorAreaForm
@@ -337,28 +212,6 @@ def review_add(request):
         if form.is_valid():
             form.save()
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
-
-
-# @login_required()
-# def review_update(request, pk):
-#     context = {}
-#     review = get_object_or_404(Review, pk=int(pk))
-#     if request.method == 'POST':
-#         form = ReviewForm(request.POST, instance=review)
-#         if form.is_valid():
-#             form.save()
-#             return HttpResponseRedirect(reverse('moderator:review-list'))
-#         else:
-#             context.update({
-#                 'error': u'Проверьте правильность ввода данных'
-#             })
-#     else:
-#         form = ReviewForm(instance=review)
-#     context.update({
-#         'form': form,
-#         'object': review
-#     })
-#     return render(request, 'moderator/review_update.html', context)
 
 
 class ReviewUpdateView(UpdateView):
@@ -401,34 +254,6 @@ class ReviewListView(ListView):
         return context
 
 
-# @login_required()
-# def payment_list(request, pk):
-#     context = {}
-#     moderator = Moderator.objects.select_related().get(user=int(pk))
-#     if request.GET.get('package') and moderator.city.count():
-
-#         try:
-#             package = Package.objects.get(pk=int(request.GET.get('package')))
-#             total_sum = package.cost * moderator.city.count()
-#             order = Order.objects.create(moderator=moderator, cost=total_sum, package=package)
-#             return HttpResponseRedirect(reverse('moderator:payment-detail', args=(order.id, )))
-#         except:
-#             pass
-#     order_qs = moderator.order_set.all()
-
-#     if request.user.type == 2:
-#         context.update({
-#             'package_list': Package.objects.all(),
-#         })
-#     if request.user.type not in [1, 2]:
-#         return HttpResponseRedirect(reverse('dashboard:index'))
-#     context.update({
-#         'order_list': order_qs,
-#         'object': moderator
-#     })
-#     return render(request, 'moderator/payment_list.html', context)
-
-
 class PaymentListView(ListView):
     template_name = 'moderator/payment_list.html'
     context_object_name = 'order_list'
@@ -456,31 +281,8 @@ class PaymentListView(ListView):
         context = super(PaymentListView, self).get_context_data(**kwargs)
         if self.request.user.type == 2:
             context['package_list'] = Package.objects.all()
+        context['object'] = self.moderator
         return context
-
-
-# @login_required()
-# def payment_detail(request, pk):
-#     context = {}
-#     order = get_object_or_None(Order, pk=int(pk))
-#     if not order.pay:
-#         form = RobokassaForm(initial={
-#             'OutSum': order.cost,
-#             'InvoiceID': order.id,
-#             'Description': order,
-#             '_commission': 2,
-#             # 'Email': order.moderator.user.email,
-#             # 'IncCurrLabel': '',
-#             # 'Culture': 'ru'
-#         })
-#         context.update({
-#             'form': form
-#         })
-#     context.update({
-#         'order': order,
-#         'object': order.moderator
-#     })
-#     return render(request, 'moderator/payment_detail.html', context)
 
 
 # TODO: переписать использование имен в контексте шаблона
@@ -507,18 +309,6 @@ class PaymentDetailView(DetailView):
         return context
 
 
-# @login_required()
-# def commission_list(request, pk):
-#     context = {}
-#     moderator = Moderator.objects.get(user=int(pk))
-#     order_qs = CommissionOrder.objects.filter(moderator=moderator)
-#     context.update({
-#         'order_list': order_qs,
-#         'object': moderator
-#     })
-#     return render(request, 'moderator/commission_list.html', context)
-
-
 class CommissionListView(ListView):
     template_name = 'moderator/commission_list.html'
     context_object_name = 'order_list'
@@ -531,30 +321,6 @@ class CommissionListView(ListView):
         context = super(CommissionListView, self).get_context_data(**kwargs)
         context['object'] = self.moderator
         return context
-
-
-# @login_required()
-# def commission_detail(request, pk):
-#     context = {}
-#     order = get_object_or_None(CommissionOrder, pk=int(pk))
-#     if not order.pay:
-#         form = RobokassaForm(initial={
-#             'OutSum': order.cost,
-#             'InvoiceID': order.id,
-#             'Description': order,
-#             '_commission': 1,
-#             # 'Email': order.moderator.user.email,
-#             # 'IncCurrLabel': '',
-#             # 'Culture': 'ru'
-#         })
-#         context.update({
-#             'form': form
-#         })
-#     context.update({
-#         'order': order,
-#         'object': order.moderator
-#     })
-#     return render(request, 'moderator/commission_detail.html', context)
 
 
 # TODO: переписать использование имен в контексте шаблона
