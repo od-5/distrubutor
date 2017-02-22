@@ -1,15 +1,11 @@
 # coding=utf-8
-from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 from core.models import User
+from .base_test import LoginWithAdminTestCase
 
 
-class AdministratorTestCase(TestCase):
-    def setUp(self):
-        self.admin_user = User.objects.create_user('admin@admin.ad', '123456')
-        self.client.login(username='admin@admin.ad', password='123456')
-
+class AdministratorTestCase(LoginWithAdminTestCase):
     def test_list_smoke(self):
         response = self.client.get(reverse('administrator:list'))
         self.assertEqual(response.status_code, 200)
@@ -39,11 +35,11 @@ class AdministratorTestCase(TestCase):
             reverse('administrator:add'),
             {'email': 'some_admin@admin.ad', 'password1': 'password', 'password2': 'password'})
         some_admin = User.objects.get(email='some_admin@admin.ad')
+        self.assertRedirects(response, reverse('administrator:update', args=(some_admin.pk,)))
         self.assertEqual(some_admin.type, 1)
         self.assertEqual(some_admin.is_superuser, True)
         self.assertEqual(some_admin.is_staff, True)
         self.assertEqual(some_admin.is_active, True)
-        self.assertRedirects(response, reverse('administrator:update', args=(some_admin.pk,)))
 
     def test_update_smoke(self):
         response = self.client.get(reverse('administrator:update', args=(self.admin_user.pk,)))
