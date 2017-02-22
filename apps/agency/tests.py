@@ -2,10 +2,10 @@
 from django.core.urlresolvers import reverse
 
 from core.models import User
-from apps.administrator.base_test import LoginWithAdminTestCase
+from core.tests.base import LoginWithUserTestCase
 
 
-class AgencyTestCase(LoginWithAdminTestCase):
+class AgencyTestCase(LoginWithUserTestCase):
     def test_list_smoke(self):
         response = self.client.get(reverse('agency:list'))
         self.assertEqual(response.status_code, 200)
