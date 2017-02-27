@@ -29,16 +29,9 @@ class Distributor(models.Model):
     def __unicode__(self):
         return self.user.get_full_name()
 
-    user = models.OneToOneField(
-        to=User,
-        limit_choices_to={'type': 4},
-        verbose_name=u'Пользователь',
-        related_name='distributor_user'
-    )
-    moderator = models.ForeignKey(
-        to=Moderator,
-        verbose_name=u'Модератор'
-    )
+    user = models.OneToOneField(to=User, limit_choices_to={'type': 4}, verbose_name=u'Пользователь',
+                                related_name='distributor_user')
+    moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор')
     coord_x = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=u'Ширина', blank=True, null=True)
     coord_y = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=u'Долгота', blank=True, null=True)
     coord_time = models.DateTimeField(verbose_name=u'Временная метка', blank=True, null=True)
@@ -56,14 +49,8 @@ class DistributorPayment(models.Model):
 
     distributor = models.ForeignKey(to=Distributor)
     type = models.ForeignKey(to=ModeratorAction, verbose_name=u'Тип работы')
-    cost = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        verbose_name=u'Олата, руб/шт',
-        default=0,
-        null=True,
-        blank=True
-    )
+    cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Олата, руб/шт',
+                               default=0, null=True, blank=True)
 
 
 class DistributorTask(models.Model):
@@ -118,33 +105,13 @@ class DistributorTask(models.Model):
     def get_sale_city(self):
         return self.sale.city.name
 
-    distributor = models.ForeignKey(
-        to=Distributor,
-        verbose_name=u'Распространитель'
-    )
-    sale = models.ForeignKey(
-        to=Sale,
-        verbose_name=u'Клиент'
-    )
-    order = models.ForeignKey(
-        to=SaleOrder,
-        verbose_name=u'Заказ клиента'
-    )
-    area = models.ForeignKey(
-        to=ModeratorArea,
-        verbose_name=u'Район'
-    )
-    type = models.ForeignKey(
-        to=ModeratorAction,
-        verbose_name=u'Тип задачи',
-    )
-    material_count = models.PositiveIntegerField(
-        verbose_name=u'Кол-во рекламной продукции',
-        default=0
-    )
-    date = models.DateField(
-        verbose_name=u'Дата'
-    )
+    distributor = models.ForeignKey(to=Distributor, verbose_name=u'Распространитель')
+    sale = models.ForeignKey(to=Sale, verbose_name=u'Клиент')
+    order = models.ForeignKey(to=SaleOrder, verbose_name=u'Заказ клиента')
+    area = models.ForeignKey(to=ModeratorArea, verbose_name=u'Район')
+    type = models.ForeignKey(to=ModeratorAction, verbose_name=u'Тип задачи',)
+    material_count = models.PositiveIntegerField(verbose_name=u'Кол-во рекламной продукции', default=0)
+    date = models.DateField(verbose_name=u'Дата')
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
     define_address = models.BooleanField(default=True, verbose_name=u'Определять адреса')
     closed = models.BooleanField(default=False, verbose_name=u'Задача закрыта')
