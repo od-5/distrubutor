@@ -1,7 +1,7 @@
 # coding=utf-8
 from django import forms
+
 from .models import Manager
-from core.models import User
 
 __author__ = 'alexy'
 

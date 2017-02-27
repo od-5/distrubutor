@@ -3,35 +3,32 @@ import datetime
 import os
 import zipfile
 import StringIO
-from django.contrib.auth.decorators import login_required
-from django.conf import settings
-from django.core.mail import send_mail
-from django.db.models import Q, Sum
 import xlwt
 
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-
-
-from datetime import date
-from annoying.decorators import ajax_request
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q, Sum
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import ListView
+from django.shortcuts import render, get_object_or_404
+from django.views.generic import ListView, UpdateView
 from django.forms import HiddenInput
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
+from annoying.decorators import ajax_request
+
+from apps.manager.models import Manager
+from apps.moderator.models import Moderator
+from core.forms import UserAddForm, UserUpdateForm
 from apps.geolocation.models import City
 from apps.distributor.models import GPSPoint
 from apps.ticket.models import PreSale
 from .forms import SaleAddForm, SaleUpdateForm, SaleOrderForm, SaleMaketForm
-from apps.manager.models import Manager
-from apps.moderator.models import Moderator
-from core.forms import UserAddForm, UserUpdateForm
 from .models import Sale, SaleOrder, SaleMaket, CommissionOrder
 
 __author__ = 'alexy'
 
 
+# TODO: две формы
 @login_required
 def sale_add(request):
     context = {}
@@ -78,6 +75,7 @@ def sale_add(request):
     return render(request, 'sale/sale_add.html', context)
 
 
+# TODO: две формы
 @login_required
 def sale_view(request, pk):
     context = {}
@@ -231,7 +229,8 @@ class JournalListView(ListView):
                 qs = SaleOrder.objects.select_related().filter(sale__moderator=user.moderator_user)
         elif user.type == 5:
             if user.manager_user.leader:
-                qs = SaleOrder.objects.select_related().filter(sale__moderator=user.manager_user.moderator.moderator_user)
+                qs = SaleOrder.objects.select_related().filter(
+                    sale__moderator=user.manager_user.moderator.moderator_user)
             else:
                 qs = SaleOrder.objects.select_related().filter(sale__manager=user.manager_user)
         elif user.type == 6:
@@ -336,6 +335,7 @@ class JournalListView(ListView):
         return context
 
 
+# TODO:
 @login_required
 def sale_order(request, pk):
     context = {}
@@ -361,7 +361,7 @@ def sale_order(request, pk):
             order = form.save()
             if sale.presale:
                 percent = sale.presale.commission
-                sum = (float(order.total_sum()) / 100 ) * float(percent)
+                sum = (float(order.total_sum()) / 100) * float(percent)
                 commissionorder = CommissionOrder(
                     moderator=order.sale.moderator,
                     sale=order.sale,
@@ -391,54 +391,36 @@ def sale_order(request, pk):
     return render(request, 'sale/sale_order.html', context)
 
 
-@login_required
-def sale_order_update(request, pk):
-    context = {}
-    order = SaleOrder.objects.get(pk=int(pk))
-    sale = order.sale
-    if request.method == 'POST':
-        form = SaleOrderForm(request.POST, instance=order)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('sale:order', args=(sale.id, )))
-        else:
-            context.update({
-                'error': u'Проверьте правильность ввода полей'
-            })
-    else:
-        form = SaleOrderForm(instance=order)
-    form.fields['type'].queryset = sale.moderator.moderatoraction_set.all()
-    context.update({
-        'form': form,
-        'object': order,
-        'sale': sale
-    })
-    return render(request, 'sale/sale_order_update.html', context)
+class SaleOrderUpdateView(UpdateView):
+    model = SaleOrder
+    form_class = SaleOrderForm
+    template_name = 'sale/sale_order_update.html'
+
+    def get_success_url(self):
+        return reverse('sale:order', args=(self.object.pk, ))
+
+    def get_context_data(self, **kwargs):
+        context = super(SaleOrderUpdateView, self).get_context_data(**kwargs)
+        context['sale'] = self.object.sale
+        return context
 
 
-@login_required
-def saleorderpayment_list(request, pk):
-    context = {}
-    sale = Sale.objects.get(pk=int(pk))
-    success_msg = u''
-    error_msg = u''
-    qs = sale.saleorderpayment_set.all()
-    paginator = Paginator(qs, 25)
-    page = request.GET.get('page')
-    try:
-        qs_list = paginator.page(page)
-    except PageNotAnInteger:
-        qs_list = paginator.page(1)
-    except EmptyPage:
-        qs_list = paginator.page(paginator.num_pages)
-    context.update({
-        'object': sale,
-        'sale': sale,
-        'object_list': qs_list
-    })
-    return render(request, 'sale/saleorderpayment_list.html', context)
+class SaleOrderPaymentListView(ListView):
+    template_name = 'sale/saleorderpayment_list.html'
+    paginate_by = 25
+
+    def get_queryset(self):
+        self.sale = get_object_or_404(Sale, pk=self.kwargs['pk'])
+        qs = self.sale.saleorderpayment_set.all()
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(SaleOrderPaymentListView, self).get_context_data(**kwargs)
+        context['sale'] = self.sale
+        return context
 
 
+# TODO:
 @login_required
 def sale_maket(request, pk):
     context = {}
@@ -483,28 +465,13 @@ def sale_maket(request, pk):
     return render(request, 'sale/sale_maket.html', context)
 
 
-@login_required
-def sale_maket_update(request, pk):
-    context = {}
-    maket = SaleMaket.objects.get(pk=int(pk))
-    success_msg = u''
-    error_msg = u''
-    if request.method == 'POST':
-        form = SaleMaketForm(request.POST, request.FILES, instance=maket)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('sale:maket', args=(maket.sale.id,)))
-    else:
-        form = SaleMaketForm(instance=maket, initial={
-            'file': maket.file
-        })
-    context.update({
-        'success': success_msg,
-        'error': error_msg,
-        'form': form,
-        'object': maket,
-    })
-    return render(request, 'sale/sale_maket_update.html', context)
+class SaleMaketUpdateView(UpdateView):
+    model = SaleMaket
+    form_class = SaleMaketForm
+    template_name = 'sale/sale_maket_update.html'
+
+    def get_success_url(self):
+        return reverse('sale:maket', args=(self.object.pk,))
 
 
 def address_export(request):
@@ -571,8 +538,8 @@ def address_export(request):
             i += 1
             if point.count:
                 material_count += point.count
-    ws.write(i+1, 0, u'Итого указанное кол-во материала', style1)
-    ws.write(i+1, 1, material_count, style1)
+    ws.write(i + 1, 0, u'Итого указанное кол-во материала', style1)
+    ws.write(i + 1, 1, material_count, style1)
     # i = 6
     # porch_total = 0
     # for item in order.clientordersurface_set.all():

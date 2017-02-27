@@ -1,6 +1,8 @@
 # coding=utf-8
 from PIL import Image
+
 from django.db import models
+
 from apps.geolocation.models import City
 from apps.packages.models import Package
 from core.files import upload_to
@@ -39,7 +41,7 @@ class Moderator(models.Model):
             rate = 0
             for review in qs:
                 rate += review.rating
-            return int(round(float(rate)/count))
+            return int(round(float(rate) / count))
         else:
             return None
 
@@ -139,7 +141,8 @@ class Review(models.Model):
     name = models.CharField(verbose_name=u'Ваше имя', max_length=100, blank=True, null=True)
     mail = models.EmailField(verbose_name=u'Ваше e-mail', max_length=100, blank=True, null=True)
     # sale = models.ForeignKey(to=Sale, verbose_name=u'Клиент')
-    rating = models.PositiveSmallIntegerField(verbose_name=u'Оценка', choices=RATING_CHOICES, default=5, blank=True, null=True)
+    rating = models.PositiveSmallIntegerField(
+        verbose_name=u'Оценка', choices=RATING_CHOICES, default=5, blank=True, null=True)
     text = models.TextField(verbose_name=u'Текст сообщения', blank=True, null=True)
 
 

@@ -20,16 +20,15 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <div class="panel-content">
-              {% if error or success %}
+              {% if form.is_bound %}
               <div class="col-md-12">
-                {% if error %}
-                <div class="alert alert-danger">
-                  {{ error }}
-                </div>
-                {%  endif %}
-                {% if success %}
+                {% if form.is_valid %}
                 <div class="alert alert-success">
-                  {{ success }}
+                    Изменения успешно сохранены
+                </div>
+                {% else %}
+                <div class="alert alert-danger">
+                    Проверьте правильность ввода полей!
                 </div>
                 {% endif %}
               </div>

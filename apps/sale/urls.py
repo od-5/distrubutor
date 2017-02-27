@@ -1,8 +1,9 @@
 # coding=utf-8
 from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
-from .models import Sale
-from .views import SaleListView, JournalListView, CommissionOrderListView
+
+from .views import SaleListView, JournalListView, CommissionOrderListView, SaleOrderUpdateView,\
+    SaleOrderPaymentListView, SaleMaketUpdateView
 from .ajax import get_client_coord_list, payment_add, get_material_residue, send_sms_notify, send_email_notify
 
 __author__ = 'alexy'
@@ -14,9 +15,9 @@ urlpatterns = patterns(
     url(r'^(?P<pk>\d+)/$', 'sale_view', name='update'),
     url(r'^update/$', 'sale_update', name='sale_update'),
     url(r'^(?P<pk>\d+)/maket/$', 'sale_maket', name='maket'),
-    url(r'^maket/(?P<pk>\d+)/$', 'sale_maket_update', name='maket-update'),
+    url(r'^maket/(?P<pk>\d+)/$', login_required(SaleMaketUpdateView.as_view()), name='maket-update'),
     url(r'^(?P<pk>\d+)/order/$', 'sale_order', name='order'),
-    url(r'^order/(?P<pk>\d+)/$', 'sale_order_update', name='order-update'),
+    url(r'^order/(?P<pk>\d+)/$', login_required(SaleOrderUpdateView.as_view()), name='order-update'),
     url(r'^journal/$', login_required(JournalListView.as_view()), name='journal'),
     url(r'export/$', 'address_export', name='address-export'),
     url(r'archive/$', 'get_files', name='download-archive'),
@@ -28,7 +29,7 @@ urlpatterns = patterns(
     #
     #
     # url(r'^export/(?P<pk>\d+)/$', 'client_excel_export', name='excel_export'),
-    url(r'(?P<pk>\d+)/payment/$', 'saleorderpayment_list', name='payment-list'),
+    url(r'(?P<pk>\d+)/payment/$', login_required(SaleOrderPaymentListView.as_view()), name='payment-list'),
     url(r'payment/add/$', payment_add, name='payment-add'),
 
     url(r'commisionorder/$', login_required(CommissionOrderListView.as_view()), name='commissionorder-list'),

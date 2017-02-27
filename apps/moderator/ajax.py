@@ -1,9 +1,8 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
-from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
-from .forms import ReviewForm
+
 from core.models import User
+from .forms import ReviewForm
 from .models import ModeratorAction
 
 __author__ = 'alexy'
@@ -43,7 +42,7 @@ def moderator_review_add(request):
             }
     else:
         return {
-                'success': False
+            'success': False
         }
 
 
