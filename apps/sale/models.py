@@ -169,3 +169,84 @@ class CommissionOrder(models.Model):
     cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Сумма оплаты', default=0)
     pay = models.BooleanField(default=False, verbose_name=u'Оплачено')
     timestamp = models.DateTimeField(auto_now=True)
+
+
+class Questionary(models.Model):
+    class Meta:
+        verbose_name = u'Анкета'
+        verbose_name_plural = u'Анкеты'
+        app_label = 'sale'
+
+    def __unicode__(self):
+        return u''
+
+    title = models.CharField(max_length=256, verbose_name=u'Заголовок')
+    sale = models.ForeignKey(Sale, verbose_name=u'Клиент')
+    created = models.DateTimeField(verbose_name=u'Дата создания', auto_now_add=True)
+
+
+class QuestionaryQuestion(models.Model):
+    class Meta:
+        verbose_name = u'Вопрос анкеты'
+        verbose_name_plural = u'Вопросы анкеты'
+        app_label = 'sale'
+
+    QUESTION_TYPE_CHOICE = (
+        (1, 'Произвольный'),
+        (2, 'Выбор варианта'),
+    )
+
+    def __unicode__(self):
+        return u''
+
+    questionary = models.ForeignKey(Questionary, verbose_name=u'Анкета')
+    text = models.TextField(verbose_name=u'Текст вопроса')
+    question_type = models.PositiveSmallIntegerField(
+        verbose_name=u'Тип ответа', choices=QUESTION_TYPE_CHOICE, default=1)
+
+
+class QuestionaryAnswer(models.Model):
+    class Meta:
+        verbose_name = u'Вариант ответа'
+        verbose_name_plural = u'Варианты ответа'
+        app_label = 'sale'
+
+    def __unicode__(self):
+        return u''
+
+    questionary_question = models.ForeignKey(QuestionaryQuestion, verbose_name=u'Вопрос анкеты')
+    text = models.TextField(verbose_name=u'Текст ответа')
+
+
+class QuestionaryCompleted(models.Model):
+    class Meta:
+        verbose_name = u'Заполненная анкета'
+        verbose_name_plural = u'Заполненные анкеты'
+        app_label = 'sale'
+
+    SEX_CHOICE = (
+        (1, 'Мужской'),
+        (2, 'Женский'),
+    )
+
+    def __unicode__(self):
+        return u''
+
+    questionary = models.ForeignKey(Questionary, verbose_name=u'Анкета')
+    full_name = models.CharField(max_length=256, verbose_name=u'ФИО')
+    age = models.PositiveSmallIntegerField(verbose_name=u'Возраст')
+    sex = models.PositiveSmallIntegerField(verbose_name=u'Пол', choices=SEX_CHOICE)
+
+
+class QuestionaryQuestionCompleted(models.Model):
+    class Meta:
+        verbose_name = u'Ответ заполненной анкеты'
+        verbose_name_plural = u'Ответы заполненной анкеты'
+        app_label = 'sale'
+
+    def __unicode__(self):
+        return u''
+
+    questionary_question = models.ForeignKey(QuestionaryQuestion, verbose_name=u'Вопрос анкеты')
+    questionary_completed = models.ForeignKey(QuestionaryCompleted, verbose_name=u'Заполненная анкета')
+    text = models.TextField(verbose_name=u'Ответ')
