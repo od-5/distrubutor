@@ -16,14 +16,16 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from annoying.decorators import ajax_request
 
+from lib.cbv import ListWithCreateView, RedirectlessFormMixin
 from apps.manager.models import Manager
 from apps.moderator.models import Moderator
 from core.forms import UserAddForm, UserUpdateForm
 from apps.geolocation.models import City
 from apps.distributor.models import GPSPoint
 from apps.ticket.models import PreSale
-from .forms import SaleAddForm, SaleUpdateForm, SaleOrderForm, SaleMaketForm
-from .models import Sale, SaleOrder, SaleMaket, CommissionOrder
+from .forms import SaleAddForm, SaleUpdateForm, SaleOrderForm, SaleMaketForm, SaleQuestionaryCreateForm,\
+    SaleQuestionaryUpdateForm
+from .models import Sale, SaleOrder, SaleMaket, CommissionOrder, Questionary
 
 __author__ = 'alexy'
 
@@ -473,6 +475,43 @@ class SaleMaketUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('sale:maket', args=(self.object.pk,))
+
+
+class SaleQuestionaryView(ListWithCreateView):
+    form_class = SaleQuestionaryCreateForm
+    template_name = 'sale/sale_questionary.html'
+    paginate_by = 25
+
+    def get_queryset(self):
+        self.sale = get_object_or_404(Sale, pk=self.kwargs['pk'])
+        return self.sale.questionary_set.all()
+
+    def get_initial(self):
+        initial = super(ListWithCreateView, self).get_initial()
+        initial['sale'] = self.sale
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super(SaleQuestionaryView, self).get_context_data(**kwargs)
+        context.update({
+            'sale': self.sale,
+            'object': self.sale
+        })
+        return context
+
+    def get_success_url(self):
+        return reverse('sale:questionary-update', args=(self.object.pk,))
+
+
+class SaleQuestionaryUpdateView(UpdateView, RedirectlessFormMixin):
+    model = Questionary
+    form_class = SaleQuestionaryUpdateForm
+    template_name = 'sale/sale_questionary_update.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SaleQuestionaryUpdateView, self).get_context_data(**kwargs)
+        context['sale'] = self.object.sale
+        return context
 
 
 def address_export(request):

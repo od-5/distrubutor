@@ -3,7 +3,7 @@ from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
 
 from .views import SaleListView, JournalListView, CommissionOrderListView, SaleOrderUpdateView,\
-    SaleOrderPaymentListView, SaleMaketUpdateView
+    SaleOrderPaymentListView, SaleMaketUpdateView, SaleQuestionaryView, SaleQuestionaryUpdateView
 from .ajax import get_client_coord_list, payment_add, get_material_residue, send_sms_notify, send_email_notify
 
 __author__ = 'alexy'
@@ -19,6 +19,10 @@ urlpatterns = patterns(
     url(r'^(?P<pk>\d+)/order/$', 'sale_order', name='order'),
     url(r'^order/(?P<pk>\d+)/$', login_required(SaleOrderUpdateView.as_view()), name='order-update'),
     url(r'^journal/$', login_required(JournalListView.as_view()), name='journal'),
+
+    url(r'^(?P<pk>\d+)/questionary/$', login_required(SaleQuestionaryView.as_view()), name='questionary'),
+    url(r'^questionary/(?P<pk>\d+)/$', login_required(SaleQuestionaryUpdateView.as_view()), name='questionary-update'),
+
     url(r'export/$', 'address_export', name='address-export'),
     url(r'archive/$', 'get_files', name='download-archive'),
     # url(r'^add-surface/$', 'add_client_surface', name='add-client-surface'),

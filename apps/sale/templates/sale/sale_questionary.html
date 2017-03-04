@@ -1,0 +1,82 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Анкеты клиента {{ object.legal_name }} | {{ block.super }}{% endblock %}
+{% block content %}
+  {% include 'sale/__include/sale_breadcrumb.html' %}
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">Анкеты клиента {{ object.legal_name }}</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        {% include 'sale/__include/sale_menu.html' %}
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="panel-content">
+              <form action="" class="form" id="js-form-sale-questionary" method="post" role="form">
+                {% csrf_token %}
+                <div class="col-md-12">
+                  <p class="lead text-info text-center">Добавить новую анкету для {{ object.legal_name }}</p>
+                </div>
+                <div class="col-md-6">
+                  {{ form.sale }}
+                  <div class="form-group">
+                    {{ form.title.label_tag }}
+                    {{ form.title }}
+                    {{ form.title.errors }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="">&nbsp;</label>
+                    <input type="submit" value="Создать" class="btn btn-save">
+                </div>
+                <div class="clearfix"></div>
+              </form>
+              <div class="col-md-12">
+                <table class="table table-list">
+                  <thead>
+                    <tr>
+                      <th>Заголовок анкеты</th>
+                      <th>Дата создания анкеты</th>
+                      <th>&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody class="js-list">
+                  {% for object in object_list %}
+                    <tr data-id="{{ object.id }}" data-name="{{ object.title }}" data-model="Questionary" id="id_Questionary_{{ object.id }}">
+                      <td><a href="{% url 'sale:questionary-update' object.pk %}">{{ object.title|default:'Не указано' }}</a></td>
+                      <td>{{ object.created|default:'Не указано' }}</td>
+                      <td>
+                        <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-SaleMaket-{{ item.id }}" class="text-danger js-ajax-remove-btn">
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                      </td>
+                    </tr>
+                  {% empty %}
+                    <tr>
+                      <td colspan="4">
+                        <p class="alert alert-info text-left">У клиента нет созданных анкет</p>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+        </div>
+        {% include '__includes/pagination.html' with page_obj=object_list %}
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+{% include '__modal/js_ajax_remove_form.html' %}
+{% endblock %}

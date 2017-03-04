@@ -1,0 +1,110 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Редактирование анкеты клиента {{ sale.legal_name }} | {{ block.super }}{% endblock %}
+{% block extra_js %}
+<script type="text/javascript">
+  $(function() {
+    function bindAnswerFormset($el) {
+      $el.formset_improved({
+        animateForms: true,
+        form: '[data-formset_answer-form]',
+        emptyForm: '[data-formset_answer-empty-form]',
+        body: '[data-formset_answer-body]',
+        add: '[data-formset_answer-add]',
+        deleteButton: '[data-formset_answer-delete-button]',
+        empty_prefix: '__answer_prefix__'
+      });
+    };
+
+    $('#js-sale-questionary-question-formset > div[data-formset-body]').on('formAdded', function(event) {
+        var $new_form = $(event.target);
+        bindAnswerFormset($new_form.find('.js-sale-questionary-answer-formset'));
+
+        var question_type = $new_form.find('input[type=radio]:checked').val();
+        if (question_type != 2) {
+          $new_form.find('.js-sale-questionary-answer-formset').addClass('hidden');
+        }
+
+        $new_form.change(function(event) {
+          var $form = $(event.currentTarget);
+              $el = $(event.target);
+
+          if ($form.is('[data-formset-form]') && $el.is('input[type=radio]')) {
+            if ($el.val() == 1) {
+              var answer_formset = $form.find('.js-sale-questionary-answer-formset').formset_improved('getOrCreate');
+              answer_formset.$forms().each(function() {
+                $(this).find(answer_formset.opts.deleteButton).trigger('click');
+              });
+              $form.find('.js-sale-questionary-answer-formset').addClass('hidden');
+            }
+            else if ($el.val() == 2) {
+              $form.find('.js-sale-questionary-answer-formset').removeClass('hidden');
+            }
+          }
+        });
+    });
+
+    $('#js-sale-questionary-question-formset').formset_improved({
+      animateForms: true
+    });
+  });
+</script>
+{% endblock %}
+{% block content %}
+  {% include 'sale/__include/sale_breadcrumb.html' %}
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">Редактирование анкеты клиента {{ sale.legal_name }}</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        {% include 'sale/__include/sale_menu.html' %}
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="panel-content">
+              {% if form.is_bound %}
+              {% if form.is_valid %}
+              <div class="alert alert-success">
+                Изменения успешно сохранены
+              </div>
+              {% else %}
+              <div class="alert alert-danger">
+                Проверьте правильность заполнения
+              </div>
+              {% endif %}
+              {% endif %}
+              <form action="" class="form" id="js-form-sale-questionary" method="post" role="form">
+                {% csrf_token %}
+                <div class="col-md-6">
+                  {{ form.sale }}
+                  <div class="form-group">
+                    {{ form.title.label_tag }}
+                    {{ form.title }}
+                    {{ form.title.errors }}
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+                {% include 'sale/__include/sale_questionary_question_formset.html' %}
+                <div class="clearfix"></div>
+                <div class="col-md-12">
+                    <label for="">&nbsp;</label>
+                    <input type="submit" value="Сохранить изменения" class="btn btn-save">
+                </div>
+                <div class="clearfix"></div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+{% include '__modal/js_ajax_remove_form.html' %}
+{% endblock %}

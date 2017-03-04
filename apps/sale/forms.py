@@ -1,8 +1,11 @@
 # coding=utf-8
+from nested_formset import nestedformset_factory
+
 from django import forms
+from django.forms.models import inlineformset_factory, BaseInlineFormSet
 
 from apps.manager.models import Manager
-from .models import Sale, SaleOrder, SaleMaket
+from .models import Sale, SaleOrder, SaleMaket, Questionary, QuestionaryQuestion, QuestionaryAnswer
 
 __author__ = 'alexy'
 
@@ -159,3 +162,62 @@ class SaleMaketForm(forms.ModelForm):
             'file': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'date': forms.DateInput(attrs={'class': 'form-control'}),
         }
+
+
+class SaleQuestionaryCreateForm(forms.ModelForm):
+    class Meta:
+        model = Questionary
+        fields = ('title', 'sale')
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'sale': forms.HiddenInput(),
+        }
+
+
+class BaseSaleQuestionaryAnswerFormset(BaseInlineFormSet):
+    @property
+    def empty_form(self):
+        form = super(BaseSaleQuestionaryAnswerFormset, self).empty_form
+        form.prefix = self.add_prefix('__answer_prefix__')
+        return form
+
+
+SaleQuestionaryAnswerFormset = inlineformset_factory(
+    QuestionaryQuestion, QuestionaryAnswer,
+    formset=BaseSaleQuestionaryAnswerFormset,
+    fields=('text',),
+    widgets={
+        'text': forms.Textarea(attrs={'class': 'form-control', 'rows': '2', 'placeholder': 'введите текст ответа'}),
+    },
+    can_delete=True,
+    extra=0
+)
+
+
+SaleQuestionaryQuestionFormset = nestedformset_factory(
+    Questionary, QuestionaryQuestion,
+    nested_formset=SaleQuestionaryAnswerFormset,
+    fields=('text', 'question_type',),
+    widgets={
+        'text': forms.Textarea(attrs={'class': 'form-control', 'rows': '2', 'placeholder': 'введите текст вопроса'}),
+        'question_type': forms.RadioSelect()
+    },
+    can_delete=True,
+    extra=0
+)
+
+
+class SaleQuestionaryUpdateForm(SaleQuestionaryCreateForm):
+    def __init__(self, *args, **kwargs):
+        super(SaleQuestionaryUpdateForm, self).__init__(*args, **kwargs)
+        self.question_formset = SaleQuestionaryQuestionFormset(instance=self.instance, data=self.data or None)
+
+    def save(self, commit=True):
+        result = super(SaleQuestionaryUpdateForm, self).save(commit)
+        self.question_formset.save(commit)
+        return result
+
+    def clean(self):
+        if self.question_formset.is_bound and not self.question_formset.is_valid():
+            raise forms.ValidationError(u'Проверьте правильность заполнения содержимого анкеты!')
+        return super(SaleQuestionaryUpdateForm, self).clean()

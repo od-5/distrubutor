@@ -178,7 +178,7 @@ class Questionary(models.Model):
         app_label = 'sale'
 
     def __unicode__(self):
-        return u''
+        return self.title
 
     title = models.CharField(max_length=256, verbose_name=u'Заголовок')
     sale = models.ForeignKey(Sale, verbose_name=u'Клиент')
@@ -198,6 +198,13 @@ class QuestionaryQuestion(models.Model):
 
     def __unicode__(self):
         return u''
+
+    def save(self, *args, **kwargs):
+        if self.question_type == 1:
+            answers = QuestionaryAnswer.objects.filter(questionary_question=self)
+            answers.delete()
+
+        super(QuestionaryQuestion, self).save(*args, **kwargs)
 
     questionary = models.ForeignKey(Questionary, verbose_name=u'Анкета')
     text = models.TextField(verbose_name=u'Текст вопроса')
