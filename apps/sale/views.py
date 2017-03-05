@@ -337,61 +337,54 @@ class JournalListView(ListView):
         return context
 
 
-# TODO:
-@login_required
-def sale_order(request, pk):
-    context = {}
-    error = u''
-    sale = Sale.objects.get(pk=int(pk))
-    order_list_qs = sale.saleorder_set.all()
-    total_sum = 0
-    for order in order_list_qs:
-        if order.total_sum():
-            total_sum += order.total_sum()
-    page = request.GET.get('page')
-    paginator = Paginator(order_list_qs, 25)
-    page = request.GET.get('page')
-    try:
-        order_list = paginator.page(page)
-    except PageNotAnInteger:
-        order_list = paginator.page(1)
-    except EmptyPage:
-        order_list = paginator.page(paginator.num_pages)
-    if request.method == 'POST':
-        form = SaleOrderForm(request.POST)
-        if form.is_valid():
-            order = form.save()
-            if sale.presale:
-                percent = sale.presale.commission
-                sum = (float(order.total_sum()) / 100) * float(percent)
-                commissionorder = CommissionOrder(
-                    moderator=order.sale.moderator,
-                    sale=order.sale,
-                    saleorder=order,
-                    cost=round(sum, 2)
-                )
-                commissionorder.save()
-            return HttpResponseRedirect(reverse('sale:order-update', args=(order.id,)))
-        else:
-            context.update({
-                'error': u'Проверьте правильность ввода полей'
-            })
-    else:
-        form = SaleOrderForm(initial={
-            'sale': sale
+class SaleOrderView(ListWithCreateView):
+    form_class = SaleOrderForm
+    template_name = 'sale/sale_order.html'
+    context_object_name = 'order_list'
+    paginate_by = 25
+
+    def get_queryset(self):
+        self.sale = get_object_or_404(Sale, pk=self.kwargs['pk'])
+        return self.sale.saleorder_set.all()
+
+    def get_initial(self):
+        initial = super(SaleOrderView, self).get_initial()
+        initial['sale'] = self.sale
+        return initial
+
+    def form_valid(self, form):
+        result = super(SaleOrderView, self).form_valid(form)
+
+        if self.sale.presale:
+            percent = self.sale.presale.commission
+            total_sum = (float(self.object.total_sum()) / 100) * float(percent)
+            commissionorder = CommissionOrder(
+                moderator=self.object.sale.moderator,
+                sale=self.object.sale,
+                saleorder=self.object,
+                cost=round(total_sum, 2)
+            )
+            commissionorder.save()
+
+        return result
+
+    def get_context_data(self, **kwargs):
+        context = super(SaleOrderView, self).get_context_data(**kwargs)
+
+        total_sum = 0
+        for order in self.object_list:
+            if order.total_sum():
+                total_sum += order.total_sum()
+
+        context.update({
+            'object': self.sale,
+            'sale': self.sale,
+            'total_sum': total_sum
         })
-    # fixme: перенести в метод инициализации формы
-    # form.fields['type'].queryset = sale.moderator.moderatoraction_set.all()
-    form.fields['closed'].widget = HiddenInput()
-    context.update({
-        'total_sum': total_sum,
-        'error': error,
-        'form': form,
-        'object': sale,
-        'sale': sale,
-        'order_list': order_list
-    })
-    return render(request, 'sale/sale_order.html', context)
+        return context
+
+    def get_success_url(self):
+        return reverse('sale:order-update', args=(self.object.pk,))
 
 
 class SaleOrderUpdateView(UpdateView):

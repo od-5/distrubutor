@@ -137,17 +137,6 @@ class SaleOrderForm(forms.ModelForm):
             'closed': forms.CheckboxInput(),
         }
 
-    def __init__(self, *args, **kwargs):
-        super(SaleOrderForm, self).__init__(*args, **kwargs)
-        if 'instance' in kwargs:
-            instance = kwargs['instance']
-            self.fields['type'].queryset = instance.sale.moderator.moderatoraction_set.all()
-        else:
-            self.fields['closed'].widget = forms.HiddenInput()
-            if 'initial' in kwargs:
-                if 'sale' in kwargs['initial']:
-                    self.fields['type'].queryset = kwargs['initial']['sale'].moderator.moderatoraction_set.all()
-
 
 class SaleMaketForm(forms.ModelForm):
     """
