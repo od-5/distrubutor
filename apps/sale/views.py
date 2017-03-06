@@ -11,8 +11,6 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, UpdateView
-from django.forms import HiddenInput
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from annoying.decorators import ajax_request
 
@@ -416,49 +414,28 @@ class SaleOrderPaymentListView(ListView):
         return context
 
 
-# TODO:
-@login_required
-def sale_maket(request, pk):
-    context = {}
-    sale = Sale.objects.get(pk=int(pk))
-    success = u''
-    error = u''
-    if request.method == 'POST':
-        form = SaleMaketForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            context.update({
-                'success': u'Макет клиента успешно добавлен'
-            })
-            form = SaleMaketForm(initial={'sale': sale})
-        else:
-            context.update({
-                'error': u'Проверьте правильность ввода полей'
-            })
-    else:
-        form = SaleMaketForm(
-            initial={
-                'sale': sale
-            }
-        )
-    maket_list_qs = sale.salemaket_set.all()
-    paginator = Paginator(maket_list_qs, 25)
-    page = request.GET.get('page')
-    try:
-        maket_list = paginator.page(page)
-    except PageNotAnInteger:
-        maket_list = paginator.page(1)
-    except EmptyPage:
-        maket_list = paginator.page(paginator.num_pages)
-    context.update({
-        'sale': sale,
-        'success': success,
-        'error': error,
-        'form': form,
-        'object': sale,
-        'maket_list': maket_list
-    })
-    return render(request, 'sale/sale_maket.html', context)
+class SaleMaketView(ListWithCreateView, RedirectlessFormMixin):
+    form_class = SaleMaketForm
+    template_name = 'sale/sale_maket.html'
+    context_object_name = 'maket_list'
+    paginate_by = 25
+
+    def get_queryset(self):
+        self.sale = get_object_or_404(Sale, pk=self.kwargs['pk'])
+        return self.sale.salemaket_set.all()
+
+    def get_initial(self):
+        initial = super(SaleMaketView, self).get_initial()
+        initial['sale'] = self.sale
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super(SaleMaketView, self).get_context_data(**kwargs)
+        context.update({
+            'object': self.sale,
+            'sale': self.sale
+        })
+        return context
 
 
 class SaleMaketUpdateView(UpdateView):

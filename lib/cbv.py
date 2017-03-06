@@ -30,6 +30,7 @@ class SendUserToFormMixin(FormMixin):
 
 
 # TODO: протестировать, внедрить
+# TODO: context_object_name используется обоими сущностями, нужно разделить
 # ListView
 #     MultipleObjectTemplateResponseMixin
 #         TemplateResponseMixin
