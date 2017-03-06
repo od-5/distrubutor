@@ -32,11 +32,21 @@
               </div>
               {% endif %}
               <form action="" id="js-form-sale-order" method="post" role="form" class="form">
+                <div class="col-md-12">
+                  <p class="alert alert-info small">
+                    Сумма заказа указывается либо полностью, либо указывается количество материала и стоимость за 1 шт.
+                  </p>
+                </div>
                 {% csrf_token %}
                 {{ form.errors }}
                 {{ form.sale }}
                 <div class="col-md-6">
                   <div class="form-group">
+                    {{ form.category.label_tag }}
+                    {{ form.category }}
+                    {{ form.category.errors }}
+                  </div>
+                  <div class="form-group{% if object.category != 0 %} hide{% endif %}">
                     {{ form.type.label_tag }}
                     {{ form.type }}
                     {{ form.type.errors }}
@@ -52,12 +62,17 @@
                     {{ form.date_end.errors }}
                   </div>
                   <div class="form-group">
+                    {{ form.full_cost.label_tag }}
+                    {{ form.full_cost }}
+                    {{ form.full_cost.errors }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
                     {{ form.count.label_tag }}
                     {{ form.count }}
                     {{ form.count.errors }}
                   </div>
-                </div>
-                <div class="col-md-6">
                   <div class="form-group">
                     {{ form.cost.label_tag }}
                     {{ form.cost }}
@@ -73,6 +88,8 @@
                     {{ form.discount }}
                     {{ form.discount.errors }}
                   </div>
+                </div>
+                <div class="col-md-6">
                   <div class="form-group">
                     {{ form.closed.label_tag }}
                     {{ form.closed }}

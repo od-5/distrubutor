@@ -24,10 +24,18 @@
                 {% csrf_token %}
                 <div class="col-md-12">
                   <p class="lead text-info text-center">Добавить новый заказ для {{ object.legal_name }}</p>
+                  <p class="alert alert-info small">
+                    Сумма заказа указывается либо полностью, либо указывается количество материала и стоимость за 1 шт.
+                  </p>
                 </div>
                 <div class="col-md-6">
                   {{ form.sale }}
                   {{ form.sale.errors }}
+                  <div class="form-group">
+                    {{ form.category.label_tag }}
+                    {{ form.category }}
+                    {{ form.category.errors }}
+                  </div>
                   <div class="form-group">
                     {{ form.type.label_tag }}
                     {{ form.type }}
@@ -42,17 +50,21 @@
                     {{ form.date_end.label_tag }}
                     {{ form.date_end }}
                     {{ form.date_end.errors }}
-                    <div class="clearfix"></div>
                   </div>
+                  <div class="form-group">
+                    {{ form.full_cost.label_tag }}
+                    {{ form.full_cost }}
+                    {{ form.full_cost.errors }}
+                  </div>
+                  {{ form.closed }}
+                </div>
+                <div class="col-lg-6">
                   <div class="form-group">
                     {{ form.count.label_tag }}
                     {{ form.count }}
                     {{ form.count.errors }}
                     <div class="clearfix"></div>
                   </div>
-                  {{ form.closed }}
-                </div>
-                <div class="col-lg-6">
                   <div class="form-group">
                     {{ form.cost.label_tag }}
                     {{ form.cost }}

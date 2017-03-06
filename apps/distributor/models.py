@@ -2,6 +2,7 @@
 import datetime
 
 from PIL import Image
+from django.core.urlresolvers import reverse
 from pilkit.processors import SmartResize
 from imagekit.models import ImageSpecField
 from annoying.functions import get_object_or_None
@@ -10,7 +11,7 @@ from django.db import models
 from django.conf import settings
 
 from apps.moderator.models import Moderator, ModeratorArea, ModeratorAction
-from apps.sale.models import Sale, SaleOrder
+from apps.sale.models import Sale, SaleOrder, SALE_ORDER_CATEGORY
 from core.files import pointphoto_upload
 from core.models import User
 import core.geotagging as api
@@ -61,10 +62,27 @@ class DistributorTask(models.Model):
         ordering = ['-date', ]
 
     def __unicode__(self):
-        return u'%s, %s' % (self.get_type_display(), self.date)
+        if self.type:
+            return u'%s, %s' % (self.get_type_display(), self.date)
+        else:
+            return u'%s' % self.date
+
+    def get_absolute_url(self):
+        if self.category == 0:
+            return reverse('distributor:task-update', args=(self.pk, ))
+        elif self.category == 1:
+            return reverse('distributor:task-promo-update', args=(self.pk, ))
+        elif self.category == 2:
+            # todo: поставить потом url страницы с задачей по анкетированию
+            return reverse('distributor:task-list')
+        else:
+            return reverse('distributor:task-list')
 
     def get_type_display(self):
-        return self.type.name
+        type_name = ''
+        if self.type:
+            type_name = self.type.name
+        return type_name
 
     def actual_material_count(self):
         """
@@ -97,7 +115,10 @@ class DistributorTask(models.Model):
         return cost
 
     def get_area_name(self):
-        return self.area.name
+        area_name = ''
+        if self.area:
+            area_name = self.area.name
+        return area_name
 
     def get_sale_name(self):
         return self.sale.legal_name
@@ -106,15 +127,23 @@ class DistributorTask(models.Model):
         return self.sale.city.name
 
     distributor = models.ForeignKey(to=Distributor, verbose_name=u'Распространитель')
+    category = models.PositiveIntegerField(verbose_name=u'Категория задачи',
+                                           default=SALE_ORDER_CATEGORY[0][0], choices=SALE_ORDER_CATEGORY)
     sale = models.ForeignKey(to=Sale, verbose_name=u'Клиент')
     order = models.ForeignKey(to=SaleOrder, verbose_name=u'Заказ клиента')
-    area = models.ForeignKey(to=ModeratorArea, verbose_name=u'Район')
-    type = models.ForeignKey(to=ModeratorAction, verbose_name=u'Тип задачи',)
+    area = models.ForeignKey(to=ModeratorArea, verbose_name=u'Район', blank=True, null=True)
+    type = models.ForeignKey(to=ModeratorAction, verbose_name=u'Тип задачи', blank=True, null=True)
     material_count = models.PositiveIntegerField(verbose_name=u'Кол-во рекламной продукции', default=0)
     date = models.DateField(verbose_name=u'Дата')
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
     define_address = models.BooleanField(default=True, verbose_name=u'Определять адреса')
+    radius = models.PositiveIntegerField(verbose_name=u'Ра диус области выполнения задачи', blank=True, null=True)
+    coord_x = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=u'Широта', blank=True, null=True)
+    coord_y = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=u'Долгота', blank=True, null=True)
+    start_time = models.DateTimeField(verbose_name=u'Начало выполнения', blank=True, null=True)
+    end_time = models.DateTimeField(verbose_name=u'Окончание выполнения', blank=True, null=True)
     closed = models.BooleanField(default=False, verbose_name=u'Задача закрыта')
+    audio = models.BooleanField(default=False, verbose_name=u'Вести аудиозапись')
 
 
 class GPSPoint(models.Model):
@@ -149,7 +178,7 @@ class GPSPoint(models.Model):
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
     coord_x = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=u'Широта')
     coord_y = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=u'Долгота')
-    timestamp = models.DateTimeField(default=datetime.datetime.now(), verbose_name=u'Временная метка')
+    timestamp = models.DateTimeField(auto_now=True, verbose_name=u'Временная метка')
 
 
 class PointPhoto(models.Model):
@@ -181,7 +210,7 @@ class PointPhoto(models.Model):
 
     point = models.ForeignKey(to=GPSPoint, verbose_name=u'GPS точка')
     name = models.CharField(max_length=150, verbose_name=u'Название', blank=True, null=True)
-    timestamp = models.DateTimeField(default=datetime.datetime.now(), verbose_name=u'Временная метка')
+    timestamp = models.DateTimeField(auto_now=True, verbose_name=u'Временная метка')
     photo = models.ImageField(verbose_name=u'Фотография', upload_to=pointphoto_upload)
     image_resize = ImageSpecField(
         [SmartResize(*settings.POINT_PHOTO_THUMB_SIZE)], source='photo', format='JPEG', options={'quality': 94}

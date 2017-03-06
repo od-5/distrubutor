@@ -1,8 +1,12 @@
 {% extends 'cabinet/cabinet_base.html' %}
+{% load staticfiles %}
 {% block viewport %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% endblock %}
 {% block title %}Список распространителей | {{ block.super }}{% endblock %}
+{% block extra_js %}
+  <script src="{% static 'distributor/js/distributor.js' %}"></script>
+{% endblock %}
 {% block content %}
   <div class="breadcrumb-container">
     <div class="container">

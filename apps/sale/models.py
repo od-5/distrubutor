@@ -11,6 +11,13 @@ from apps.manager.models import Manager
 __author__ = 'alexy'
 
 
+SALE_ORDER_CATEGORY = (
+    (0, u'Расклейка или распространение'),
+    (1, u'Промо акция'),
+    (2, u'Анкетирование')
+)
+
+
 class Sale(models.Model):
     class Meta:
         verbose_name = u'Клиент'
@@ -78,18 +85,27 @@ class SaleOrder(models.Model):
         return round(count, 2)
 
     def total_sum(self):
-        total = ((float(self.cost) * (1 + float(self.add_cost) * 0.01)) * (
-            1 - float(self.discount) * 0.01)) * self.count
+        """
+        Отображение полной стоимости заказа
+        """
+        if self.full_cost:
+            total = self.full_cost
+        else:
+            total = ((float(self.cost) * (1 + float(self.add_cost) * 0.01)) * (
+                1 - float(self.discount) * 0.01)) * self.count
         return round(total, 2)
 
     sale = models.ForeignKey(to=Sale, verbose_name=u'Продажа')
     date_start = models.DateField(verbose_name=u'Дата начала')
     date_end = models.DateField(verbose_name=u'Дата окончания', blank=True, null=True)
-    type = models.ForeignKey(to=ModeratorAction, verbose_name=u'Тип заказа')
-    count = models.PositiveIntegerField(verbose_name=u'Количество материала, шт')
-    cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Стоимость за 1шт., руб')
+    type = models.ForeignKey(to=ModeratorAction, verbose_name=u'Тип заказа', blank=True, null=True)
+    category = models.PositiveIntegerField(verbose_name=u'Категория заказа',
+                                           default=SALE_ORDER_CATEGORY[0][0], choices=SALE_ORDER_CATEGORY)
+    count = models.PositiveIntegerField(verbose_name=u'Количество материала, шт', default=0)
+    cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Стоимость за 1шт., руб', default=0)
     add_cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Наценка, %', default=0)
     discount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Скидка, %', default=0)
+    full_cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Полная стоимость', default=0)
     closed = models.BooleanField(verbose_name=u'Заказ закрыт', default=False)
     has_payment = models.BooleanField(default=False, verbose_name=u'Есть поступления')
     full_payment = models.BooleanField(default=False, verbose_name=u'Оплачено')

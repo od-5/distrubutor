@@ -36,6 +36,7 @@ def distributor_payment_update(request):
 @ajax_request
 def get_task_initial(request):
     r_sale = request.GET.get('sale')
+    r_sale_category = request.GET.get('category')
     distributor_list = []
     area_list = []
     order_list = []
@@ -43,7 +44,7 @@ def get_task_initial(request):
         sale = Sale.objects.get(pk=int(r_sale))
         distributor_qs = Distributor.objects.select_related().filter(moderator=sale.moderator, user__is_active=True)
         area_qs = ModeratorArea.objects.filter(moderator=sale.moderator, city=sale.city)
-        order_qs = sale.saleorder_set.filter(closed=False)
+        order_qs = sale.saleorder_set.filter(closed=False, category=int(r_sale_category))
         for order in order_qs:
             order_list.append({
                 'id': order.id,
@@ -60,8 +61,11 @@ def get_task_initial(request):
                 'id': area.id,
                 'name': area.name
             })
-
+        print sale.city.coord_x
+        print sale.city.coord_y
         return {
+            'coord_x': float(sale.city.coord_x),
+            'coord_y': float(sale.city.coord_y),
             'order_list': order_list,
             'distributor_list': distributor_list,
             'area_list': area_list,

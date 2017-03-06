@@ -134,10 +134,17 @@ def task_detail(request, pk):
         serializer = DistributorTaskSerializer(task)
         return Response(serializer.data)
     if request.method == 'PUT':
-        if request.data.get('closed'):
-            task.closed = str_to_bool(request.data.get('closed'))
-            task.save()
-            return Response(status=status.HTTP_200_OK)
+        if True in map(lambda x: x in request.data, ('closed', 'start_time', 'end_time')):
+            serializer = DistributorTaskSerializer(task, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(status=status.HTTP_304_NOT_MODIFIED)
+            # if request.data.get('closed'):
+            #     task.closed = str_to_bool(request.data.get('closed'))
+            #     task.save()
+            #     return Response(status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 

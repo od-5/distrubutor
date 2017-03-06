@@ -5,7 +5,8 @@ from django.conf.urls import patterns, url
 from .ajax import distributor_payment_update, get_task_initial, get_task_cord_list, get_current_location, \
     ajax_remove_photo
 from .views import DistributorListView, DistributorTaskListView, DistributorTaskArchiveView,\
-    DistributorTaskCreateView, DistributorTaskUpdateView, DistributorReportView
+    DistributorTaskCreateView, DistributorTaskUpdateView, DistributorReportView, DistributorPromoTaskCreateView, \
+    DistributorPromoTaskUpdateView
 
 __author__ = 'alexy'
 
@@ -24,6 +25,11 @@ urlpatterns = patterns(
     url(r'^tasks/archive/$', login_required(DistributorTaskArchiveView.as_view()), name='task-archive'),
     url(r'^task/add/$', login_required(DistributorTaskCreateView.as_view()), name='task-add'),
     url(r'^task/(?P<pk>\d+)/$', login_required(DistributorTaskUpdateView.as_view()), name='task-update'),
+
+    url(r'^task/promo/add/$', login_required(DistributorPromoTaskCreateView.as_view()), name='task-promo-add'),
+    url(r'^task/promo/(?P<pk>\d+)/$', login_required(DistributorPromoTaskUpdateView.as_view()),
+        name='task-promo-update'),
+
     url(r'^task/(?P<pk>\d+)/map/$', 'distributor_task_update_map', name='task-update-map'),
     url(r'^point/(?P<pk>\d+)/$', 'gps_point_update', name='gpspoint-update'),
 

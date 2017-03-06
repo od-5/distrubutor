@@ -378,7 +378,8 @@ def sale_order(request, pk):
         form = SaleOrderForm(initial={
             'sale': sale
         })
-    form.fields['type'].queryset = sale.moderator.moderatoraction_set.all()
+    # fixme: перенести в метод инициализации формы
+    # form.fields['type'].queryset = sale.moderator.moderatoraction_set.all()
     form.fields['closed'].widget = HiddenInput()
     context.update({
         'total_sum': total_sum,
@@ -397,7 +398,7 @@ class SaleOrderUpdateView(UpdateView):
     template_name = 'sale/sale_order_update.html'
 
     def get_success_url(self):
-        return reverse('sale:order', args=(self.object.pk, ))
+        return reverse('sale:order', args=(self.object.sale.pk, ))
 
     def get_context_data(self, **kwargs):
         context = super(SaleOrderUpdateView, self).get_context_data(**kwargs)

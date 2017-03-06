@@ -124,18 +124,26 @@ class SaleOrderForm(forms.ModelForm):
             'sale': forms.HiddenInput(attrs={'class': 'form-control'}),
             'date_start': forms.DateInput(attrs={'class': 'form-control'}),
             'date_end': forms.DateInput(attrs={'class': 'form-control'}),
+            'category': forms.Select(attrs={'class': 'form-control'}),
             'type': forms.Select(attrs={'class': 'form-control'}),
             'count': forms.NumberInput(attrs={'class': 'form-control'}),
-            'cost': forms.NumberInput(attrs={'class': 'form-control'}),
-            'add_cost': forms.NumberInput(attrs={'class': 'form-control'}),
-            'discount': forms.NumberInput(attrs={'class': 'form-control'}),
+            'cost': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'full_cost': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'add_cost': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'discount': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
             'closed': forms.CheckboxInput(),
         }
 
-        def __init__(self, *args, **kwargs):
-            super(SaleOrderForm, self).__init__(*args, **kwargs)
-            sale = kwargs['instance']
-            self.fields['type'].queryset = sale.moderator.moderatoraction_set.all()
+    def __init__(self, *args, **kwargs):
+        super(SaleOrderForm, self).__init__(*args, **kwargs)
+        if 'instance' in kwargs:
+            instance = kwargs['instance']
+            self.fields['type'].queryset = instance.sale.moderator.moderatoraction_set.all()
+        else:
+            self.fields['closed'].widget = forms.HiddenInput()
+            if 'initial' in kwargs:
+                if 'sale' in kwargs['initial']:
+                    self.fields['type'].queryset = kwargs['initial']['sale'].moderator.moderatoraction_set.all()
 
 
 class SaleMaketForm(forms.ModelForm):

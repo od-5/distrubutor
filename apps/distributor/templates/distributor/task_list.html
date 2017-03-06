@@ -1,8 +1,12 @@
 {% extends 'cabinet/cabinet_base.html' %}
+{% load staticfiles %}
 {% block viewport %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% endblock %}
 {% block title %}Список задач для распространителей | {{ block.super }}{% endblock %}
+{% block extra_js %}
+  <script src="{% static 'distributor/js/distributor.js' %}"></script>
+{% endblock %}
 {% block content %}
   <div class="breadcrumb-container">
     <div class="container">
@@ -63,6 +67,14 @@
                 {% endif %}
                 <div class="five-col-1">
                   <input type="text" name="distributor" value="{{ r_distributor|default:'' }}" class="form-control" placeholder="Распространитель">
+                </div>
+                <div class="five-col-1">
+                  <select name="category" class="form-control">
+                    <option value="">---- Категория задачи ----</option>
+                    <option value="0" {% if r_category == 0 %}selected="selected"{% endif %}>Расклейка или распространение</option>
+                    <option value="1" {% if r_category == 1 %}selected="selected"{% endif %}>Промо акция</option>
+                    <option value="2" {% if r_category == 2 %}selected="selected"{% endif %}>Анкетирование</option>
+                  </select>
                 </div>
                 {% if user.type == 2 or user.type == 5 %}
                 <div class="five-col-1">
@@ -138,7 +150,7 @@
                           <span class="glyphicon glyphicon-edit"></span> Посмотреть карту
                         </a>
                         {% else %}
-                        <a href="{% url 'distributor:task-update' object.id %}" class="btn btn-sm btn-info">
+                        <a href="{{ object.get_absolute_url  }}" class="btn btn-sm btn-info">
                           <span class="glyphicon glyphicon-edit"></span> редактировать
                         </a>
                         {% endif %}
@@ -149,7 +161,7 @@
                       {% if user.type == 1 or user.type == 6 %}
                       <td>{{ object.distributor.moderator.company|default:'Не указано' }}</td>
                       {% endif %}
-                      <td>{{ object.type|default:'Не указано' }}</td>
+                      <td>{% if object.type %}{{ object.type }}{% else %}{{ object.get_category_display }}{% endif %}</td>
                       <td>{{ object.date|date:"d.m.Y"|default:'Не указано' }}</td>
                       <td>{{ object.material_count|default:'Не указано' }}</td>
                       <td>{{ object.total_cost|default:'Не указано' }}</td>

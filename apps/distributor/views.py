@@ -16,8 +16,8 @@ from lib.cbv import SendUserToFormMixin
 from apps.moderator.models import ModeratorAction, Moderator
 from .task_calendar import get_months
 from .models import Distributor, DistributorTask, DistributorPayment, GPSPoint
-from .forms import DistributorAddForm, DistributorUpdateForm, DistributorPaymentForm, DistributorTaskForm, \
-    DistributorTaskUpdateForm, GPSPointUpdateForm
+from .forms import DistributorAddForm, DistributorUpdateForm, DistributorPaymentForm, DistributorTaskForm,\
+    GPSPointUpdateForm, DistributorPromoTaskForm
 from core.forms import UserAddForm, UserUpdateForm
 from core.models import User
 
@@ -176,13 +176,16 @@ class DistributorTaskListView(ListView):
             qs = DistributorTask.objects.none()
         r_city = self.request.GET.get('city')
         r_type = self.request.GET.get('type')
+        r_category = self.request.GET.get('category')
         r_company = self.request.GET.get('company')
         r_distributor = self.request.GET.get('distributor')
         r_date = self.request.GET.get('date')
         if r_city:
             qs = qs.filter(sale__city__name__icontains=r_city)
-        if r_type:
+        if r_type and r_type.isdigit():
             qs = qs.filter(type=int(r_type))
+        if r_category and r_category.isdigit():
+            qs = qs.filter(category=int(r_category))
         if r_company:
             qs = qs.filter(distributor__moderator__company__icontains=r_company)
         if r_distributor:
@@ -232,6 +235,10 @@ class DistributorTaskListView(ListView):
             context.update({
                 'r_type': int(self.request.GET.get('type'))
             })
+        if self.request.GET.get('category') and self.request.GET.get('category').isdigit():
+            context.update({
+                'r_category': int(self.request.GET.get('category'))
+            })
         return context
 
 
@@ -260,14 +267,17 @@ class DistributorTaskArchiveView(ListView):
             qs = DistributorTask.objects.none()
         r_city = self.request.GET.get('city')
         r_type = self.request.GET.get('type')
+        r_category = self.request.GET.get('category')
         r_company = self.request.GET.get('company')
         r_distributor = self.request.GET.get('distributor')
         r_date = self.request.GET.get('date')
         if qs:
             if r_city:
                 qs = qs.filter(sale__city__name=r_city)
-            if r_type:
+            if r_type and r_type.isdigit():
                 qs = qs.filter(type=int(r_type))
+            if r_category and r_category.isdigit():
+                qs = qs.filter(category=int(r_category))
             if r_company:
                 qs = qs.filter(distributor__moderator__company__iexact=r_company)
             if r_distributor:
@@ -296,7 +306,11 @@ class DistributorTaskArchiveView(ListView):
             })
         if self.request.GET.get('type'):
             context.update({
-                'r_type': self.request.GET.get('type')
+                'r_type': int(self.request.GET.get('type'))
+            })
+        if self.request.GET.get('category'):
+            context.update({
+                'r_category': int(self.request.GET.get('category'))
             })
         context.update({
             'archive': True
@@ -309,21 +323,48 @@ class DistributorTaskCreateView(CreateView, SendUserToFormMixin):
     template_name = 'distributor/task_add.html'
     success_url = reverse_lazy('distributor:task-list')
 
+    def get_initial(self):
+        return {
+            'category': 0
+        }
+
     def form_valid(self, form):
         form.instance.type = form.instance.order.type
         return super(DistributorTaskCreateView, self).form_valid(form)
 
 
-# TODO: зачем нужен отдельный класс формы?
 class DistributorTaskUpdateView(UpdateView, SendUserToFormMixin):
     model = DistributorTask
-    form_class = DistributorTaskUpdateForm
+    form_class = DistributorTaskForm
     template_name = 'distributor/task_update.html'
     success_url = reverse_lazy('distributor:task-list')
 
     def form_valid(self, form):
-        form.instance.type = form.instance.order.type
+        # print form.instance.order.type
+        if form.instance.order.category == 0:
+            form.instance.type = form.instance.order.type
         return super(DistributorTaskUpdateView, self).form_valid(form)
+
+
+class DistributorPromoTaskCreateView(CreateView, SendUserToFormMixin):
+    """
+    Добавление задачи на проведение промо акции
+    """
+    form_class = DistributorPromoTaskForm
+    template_name = 'distributor/task_promo_add.html'
+    success_url = reverse_lazy('distributor:task-list')
+
+    def get_initial(self):
+        return {
+            'category': 1
+        }
+
+
+class DistributorPromoTaskUpdateView(UpdateView, SendUserToFormMixin):
+    model = DistributorTask
+    form_class = DistributorPromoTaskForm
+    template_name = 'distributor/task_promo_update.html'
+    success_url = reverse_lazy('distributor:task-list')
 
 
 @login_required

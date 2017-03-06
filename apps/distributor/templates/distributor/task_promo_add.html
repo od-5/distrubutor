@@ -3,7 +3,7 @@
 {% block viewport %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% endblock %}
-{% block title %}Добавление новой задачи для распространителя | {{ block.super }}{% endblock %}
+{% block title %}Добавление новой задачи на проведение промо акции | {{ block.super }}{% endblock %}
 {% block extra_js %}
   <script src="{% static 'distributor/js/distributor.js' %}"></script>
 {% endblock %}
@@ -15,7 +15,7 @@
           <ol class="breadcrumb">
             <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
             <li><a href="{% url 'distributor:task-list' %}">Список задач для распространителей</a></li>
-            <li class="active">Добавление новой задачи для распространителя</li>
+            <li class="active">Добавление новой задачи на проведение промо акции</li>
           </ol>
         </div>
         <div class="clearfix"></div>
@@ -26,7 +26,7 @@
     <div class="row">
       <div class="page-top">
         <div class="col-md-12">
-          <span class="page-top__title">Добавление новой задачи для распространителя</span>
+          <span class="page-top__title">Добавление новой задачи на проведение промо акции</span>
         </div>
         <div class="clearfix"></div>
       </div>
@@ -36,7 +36,7 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <div class="panel-content">
-              <form action="" role="form" class="form" data-category="0" id="js-form-distributor-task-add" method="post">
+              <form action="" role="form" class="form" id="js-form-distributor-task-promo-add" method="post">
                 {% csrf_token %}
                 {{ form.closed }}
                 {{ form.category }}
@@ -51,23 +51,17 @@
                     {{ form.distributor }}
                     {{ form.distributor.errors }}
                   </div>
-                  <div class="form-group hide">
-                    {{ form.area.label_tag }}
-                    {{ form.area }}
-                    {{ form.area.errors }}
-                  </div>
                   <div class="form-group">
-                    {{ form.define_address.label_tag }}
-                    {{ form.define_address }}
-                    {{ form.define_address.errors }}
+                    {{ form.material_count.label_tag }}
+                    {{ form.material_count }}
+                    {{ form.material_count.errors }}
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <div class="form-group hide" data-url="{% url 'sale:get_material_residue' %}">
+                  <div class="form-group hide">
                     {{ form.order.label_tag }}
                     {{ form.order }}
                     {{ form.order.errors }}
-                    <div class="text-info small" style="position: absolute;" id="js-order-material-residue"></div>
                   </div>
                   <div class="form-group">
                     {{ form.date.label_tag }}
@@ -75,12 +69,33 @@
                     {{ form.date.errors }}
                   </div>
                   <div class="form-group">
-                    {{ form.material_count.label_tag }}
-                    {{ form.material_count }}
-                    {{ form.material_count.errors }}
+                    {{ form.audio.label_tag }}
+                    <br>
+                    {{ form.audio }}
+                    {{ form.audio.errors }}
                   </div>
                 </div>
                 <div class="clearfix"></div>
+                <div id="map-container" class="hide">
+                  <div class="col-md-12 add-bottom">
+                    <div id="map" style="height:500px;width:100%;"></div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      {{ form.coord_x.label_tag }}
+                      {{ form.coord_x }}
+                      {{ form.coord_x.errors }}
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      {{ form.coord_y.label_tag }}
+                      {{ form.coord_y }}
+                      {{ form.coord_y.errors }}
+                    </div>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
                 <div class="col-md-12">
                   <div class="form-group">
                     {{ form.comment.label_tag }}
@@ -101,4 +116,8 @@
       <div class="clearfix"></div>
     </div>
   </div>
+{% endblock %}
+{% block bottom_js %}
+<script src="//api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+<script src="{% static 'distributor/js/distributor-task-map.js' %}" type="text/javascript"></script>
 {% endblock %}
