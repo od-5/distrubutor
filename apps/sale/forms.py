@@ -135,15 +135,18 @@ class SaleOrderForm(forms.ModelForm):
             'add_cost': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
             'discount': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
             'closed': forms.CheckboxInput(),
+            'questionary': forms.Select(attrs={'class': 'form-control'})
         }
 
     def __init__(self, *args, **kwargs):
         super(SaleOrderForm, self).__init__(*args, **kwargs)
         if self.instance.pk:
             self.fields['type'].queryset = self.instance.sale.moderator.moderatoraction_set.all()
+            self.fields['questionary'].queryset = self.instance.sale.questionary_set.all()
         else:
             if 'initial' in kwargs and 'sale' in kwargs['initial']:
                 self.fields['type'].queryset = kwargs['initial']['sale'].moderator.moderatoraction_set.all()
+                self.fields['questionary'].queryset = kwargs['initial']['sale'].questionary_set.all()
 
 
 class SaleMaketForm(forms.ModelForm):

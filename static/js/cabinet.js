@@ -477,7 +477,13 @@ $(function() {
   // отображение\сркытие полей в форме заказа при выборе категорий заказа
   sale_order_form.find('#id_category').change(function(){
     var category = $(this).val();
-    //todo: здесь прописать отображение\скрытие поля выборе анкеты
+    if (category == 2) {
+        sale_order_form.find('#id_questionary').rules('add', {'required': true});
+        sale_order_form.find('#id_questionary').parents('.form-group').removeClass('hide');
+    } else {
+        sale_order_form.find('#id_questionary').rules('remove');
+        sale_order_form.find('#id_questionary').parents('.form-group').addClass('hide');
+    }
     if (category != 0) {
       sale_order_form.find('#id_type').rules('remove', 'required');
       sale_order_form.find('#id_type').parents('.form-group').addClass('hide');
@@ -498,6 +504,9 @@ $(function() {
       type: {
         required: true
       },
+      questionary: {
+        required: true
+      },
       date_start: {
         required: true
       },
@@ -508,6 +517,9 @@ $(function() {
     messages: {
       type: {
         required: '* вы не выбрали тип заказа!'
+      },
+      questionary: {
+        required: '* вы не выбрали анкету!'
       }
     }
   });

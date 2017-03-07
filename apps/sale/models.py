@@ -1,5 +1,6 @@
 # coding=utf-8
 from django.db import models
+from django.core.exceptions import ValidationError
 
 from apps.geolocation.models import City
 from apps.moderator.models import Moderator, ModeratorAction
@@ -95,6 +96,16 @@ class SaleOrder(models.Model):
                 1 - float(self.discount) * 0.01)) * self.count
         return round(total, 2)
 
+    def save(self, *args, **kwargs):
+        if self.category != SALE_ORDER_CATEGORY[2][0]:
+            self.questionary = None
+
+        super(SaleOrder, self).save(*args, **kwargs)
+
+    def clean(self):
+        if self.category == SALE_ORDER_CATEGORY[2][0] and self.questionary is None:
+            raise ValidationError(u'Не выбрана анкета!')
+
     sale = models.ForeignKey(to=Sale, verbose_name=u'Продажа')
     date_start = models.DateField(verbose_name=u'Дата начала')
     date_end = models.DateField(verbose_name=u'Дата окончания', blank=True, null=True)
@@ -109,6 +120,7 @@ class SaleOrder(models.Model):
     closed = models.BooleanField(verbose_name=u'Заказ закрыт', default=False)
     has_payment = models.BooleanField(default=False, verbose_name=u'Есть поступления')
     full_payment = models.BooleanField(default=False, verbose_name=u'Оплачено')
+    questionary = models.ForeignKey('Questionary', verbose_name=u'Анкета', null=True, blank=True)
 
 
 class SaleOrderPayment(models.Model):
