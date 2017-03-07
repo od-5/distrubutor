@@ -45,6 +45,7 @@ class DistributorPaymentForm(forms.ModelForm):
         }
 
 
+# TODO: сократить наследованием (3 формы далее)
 class DistributorTaskForm(forms.ModelForm):
     class Meta:
         model = DistributorTask
@@ -103,6 +104,39 @@ class DistributorPromoTaskForm(forms.ModelForm):
         if self.instance.id:
             self.fields['sale'].widget = forms.HiddenInput()
             self.fields['order'].queryset = self.instance.sale.saleorder_set.filter(closed=False, category=1)
+        else:
+            self.fields['closed'].widget = forms.HiddenInput()
+        if user.type == 1:
+            self.fields['distributor'].queryset = Distributor.objects.filter(user__is_active=True)
+        elif user.type == 2:
+            self.fields['distributor'].queryset = user.moderator_user.distributor_set.filter(user__is_active=True)
+            self.fields['sale'].queryset = Sale.objects.filter(moderator=user.moderator_user)
+
+
+class DistributorQuestTaskForm(forms.ModelForm):
+    class Meta:
+        model = DistributorTask
+        exclude = ['type', 'area', 'define_address', 'start_time', 'end_time']
+        widgets = {
+            'distributor': forms.Select(attrs={'class': 'form-control'}),
+            'sale': forms.Select(attrs={'class': 'form-control'}),
+            'order': forms.Select(attrs={'class': 'form-control'}),
+            'material_count': forms.NumberInput(attrs={'class': 'form-control'}),
+            'radius': forms.NumberInput(attrs={'class': 'form-control', 'step': 1}),
+            'date': forms.DateInput(attrs={'class': 'form-control'}),
+            'comment': forms.Textarea(attrs={'class': 'form-control'}),
+            'closed': forms.CheckboxInput(),
+            'category': forms.HiddenInput(),
+            'coord_x': forms.NumberInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+            'coord_y': forms.NumberInput(attrs={'class': 'form-control', 'readonly': 'readonly'})
+        }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user")
+        super(DistributorQuestTaskForm, self).__init__(*args, **kwargs)
+        if self.instance.id:
+            self.fields['sale'].widget = forms.HiddenInput()
+            self.fields['order'].queryset = self.instance.sale.saleorder_set.filter(closed=False, category=2)
         else:
             self.fields['closed'].widget = forms.HiddenInput()
         if user.type == 1:

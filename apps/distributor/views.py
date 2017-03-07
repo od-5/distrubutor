@@ -17,7 +17,7 @@ from apps.moderator.models import ModeratorAction, Moderator
 from .task_calendar import get_months
 from .models import Distributor, DistributorTask, DistributorPayment, GPSPoint
 from .forms import DistributorAddForm, DistributorUpdateForm, DistributorPaymentForm, DistributorTaskForm,\
-    GPSPointUpdateForm, DistributorPromoTaskForm
+    GPSPointUpdateForm, DistributorPromoTaskForm, DistributorQuestTaskForm
 from core.forms import UserAddForm, UserUpdateForm
 from core.models import User
 
@@ -322,11 +322,7 @@ class DistributorTaskCreateView(CreateView, SendUserToFormMixin):
     form_class = DistributorTaskForm
     template_name = 'distributor/task_add.html'
     success_url = reverse_lazy('distributor:task-list')
-
-    def get_initial(self):
-        return {
-            'category': 0
-        }
+    initial = {'category': 0}
 
     def form_valid(self, form):
         form.instance.type = form.instance.order.type
@@ -346,27 +342,6 @@ class DistributorTaskUpdateView(UpdateView, SendUserToFormMixin):
         return super(DistributorTaskUpdateView, self).form_valid(form)
 
 
-class DistributorPromoTaskCreateView(CreateView, SendUserToFormMixin):
-    """
-    Добавление задачи на проведение промо акции
-    """
-    form_class = DistributorPromoTaskForm
-    template_name = 'distributor/task_promo_add.html'
-    success_url = reverse_lazy('distributor:task-list')
-
-    def get_initial(self):
-        return {
-            'category': 1
-        }
-
-
-class DistributorPromoTaskUpdateView(UpdateView, SendUserToFormMixin):
-    model = DistributorTask
-    form_class = DistributorPromoTaskForm
-    template_name = 'distributor/task_promo_update.html'
-    success_url = reverse_lazy('distributor:task-list')
-
-
 @login_required
 def distributor_task_update_map(request, pk):
     context = {}
@@ -380,6 +355,37 @@ def distributor_task_update_map(request, pk):
         'object': task
     })
     return render(request, 'distributor/task_update_map.html', context)
+
+
+class DistributorPromoTaskCreateView(CreateView, SendUserToFormMixin):
+    """
+    Добавление задачи на проведение промо акции
+    """
+    form_class = DistributorPromoTaskForm
+    template_name = 'distributor/task_promo_add.html'
+    success_url = reverse_lazy('distributor:task-list')
+    initial = {'category': 1}
+
+
+class DistributorPromoTaskUpdateView(UpdateView, SendUserToFormMixin):
+    model = DistributorTask
+    form_class = DistributorPromoTaskForm
+    template_name = 'distributor/task_promo_update.html'
+    success_url = reverse_lazy('distributor:task-list')
+
+
+class DistributorQuestTaskCreateView(CreateView, SendUserToFormMixin):
+    form_class = DistributorQuestTaskForm
+    template_name = 'distributor/task_quest_add.html'
+    success_url = reverse_lazy('distributor:task-list')
+    initial = {'category': 2}
+
+
+class DistributorQuestTaskUpdateView(UpdateView, SendUserToFormMixin):
+    model = DistributorTask
+    form_class = DistributorQuestTaskForm
+    template_name = 'distributor/task_quest_update.html'
+    success_url = reverse_lazy('distributor:task-list')
 
 
 @login_required

@@ -2,11 +2,11 @@
 import datetime
 
 from PIL import Image
-from django.core.urlresolvers import reverse
 from pilkit.processors import SmartResize
 from imagekit.models import ImageSpecField
 from annoying.functions import get_object_or_None
 
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.conf import settings
 
@@ -73,8 +73,7 @@ class DistributorTask(models.Model):
         elif self.category == 1:
             return reverse('distributor:task-promo-update', args=(self.pk, ))
         elif self.category == 2:
-            # todo: поставить потом url страницы с задачей по анкетированию
-            return reverse('distributor:task-list')
+            return reverse('distributor:task-quest-update', args=(self.pk, ))
         else:
             return reverse('distributor:task-list')
 
@@ -137,7 +136,7 @@ class DistributorTask(models.Model):
     date = models.DateField(verbose_name=u'Дата')
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
     define_address = models.BooleanField(default=True, verbose_name=u'Определять адреса')
-    radius = models.PositiveIntegerField(verbose_name=u'Ра диус области выполнения задачи', blank=True, null=True)
+    radius = models.PositiveIntegerField(verbose_name=u'Радиус области выполнения задачи', blank=True, null=True)
     coord_x = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=u'Широта', blank=True, null=True)
     coord_y = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=u'Долгота', blank=True, null=True)
     start_time = models.DateTimeField(verbose_name=u'Начало выполнения', blank=True, null=True)
