@@ -1,5 +1,4 @@
 {% load formset_improved_tags %}
-
 <div class="col-md-12">
   <label>Вопросы акеты:</label>
   <div id="js-sale-questionary-question-formset" data-formset-prefix="{{ form.question_formset.prefix }}">
@@ -7,7 +6,7 @@
 
     <div data-formset-body>
       {% for question_form in form.question_formset %}
-      {% include 'sale/__include/sale_questionary_question_form.html' with form=question_form only %}
+      {% include 'sale/__include/sale_questionary_question_form.html' with blocked=blocked form=question_form only %}
       {% empty %}
       <p class="alert alert-info text-left">добавьте вопросы анкеты</p>
       {% endfor %}
@@ -19,8 +18,10 @@
       {% endescapescript %}
     </script>
 
+    {% if not blocked %}
     <a class="add-row" href="javascript:void(0)" role="button" data-formset-add>
       <span class="glyphicon glyphicon-plus-sign"></span> добавить вопрос
     </a>
+    {% endif %}
   </div>
 </div>

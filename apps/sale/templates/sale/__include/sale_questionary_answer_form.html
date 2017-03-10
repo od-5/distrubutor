@@ -1,7 +1,9 @@
 <div data-formset_answer-form>
+  {% if not blocked %}
   <a href="javascript:void(0)" role="button" data-formset_answer-delete-button>
     <span class="glyphicon glyphicon-minus-sign"></span> удалить ответ
   </a>
+  {% endif %}
 
   {{ form.id }}
   <div class="hidden">{{ form.DELETE }}</div>

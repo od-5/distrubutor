@@ -1,9 +1,11 @@
 <div data-formset-form>
   <div style="position: relative;">
     <br><br>
+    {% if not blocked %}
     <a class="delete-row" href="javascript:void(0)" role="button" data-formset-delete-button>
       <span class="glyphicon glyphicon-minus-sign"></span> удалить вопрос
     </a>
+    {% endif %}
   </div>
   {{ form.id }}
   <div class="hidden">{{ form.DELETE }}</div>
@@ -25,7 +27,7 @@
 
       <div data-formset_answer-body>
         {% for answer_form in form.nested %}
-        {% include 'sale/__include/sale_questionary_answer_form.html' with form=answer_form only %}
+        {% include 'sale/__include/sale_questionary_answer_form.html' with blocked=blocked form=answer_form only %}
         {% empty %}
         <p class="alert alert-info text-left">добавьте варианты ответов на вопрос</p>
         {% endfor %}
@@ -35,9 +37,11 @@
         {% include 'sale/__include/sale_questionary_answer_form.html' with form=form.nested.empty_form only %}
       </script>
 
+      {% if not blocked %}
       <a href="javascript:void(0)" role="button" data-formset_answer-add>
         <span class="glyphicon glyphicon-plus-sign"></span> добавить ответ
       </a>
+      {% endif %}
     </div>
   </div>
   <div class="clearfix"></div>

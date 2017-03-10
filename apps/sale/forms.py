@@ -1,9 +1,10 @@
 # coding=utf-8
-from nested_formset import nestedformset_factory
+from nested_formset import nestedformset_factory, BaseNestedFormset
 
 from django import forms
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 
+from lib.forms import BlockedModelFormMixin, FormKwargsFormsetMixin
 from apps.manager.models import Manager
 from .models import Sale, SaleOrder, SaleMaket, Questionary, QuestionaryQuestion, QuestionaryAnswer
 
@@ -174,7 +175,7 @@ class SaleQuestionaryCreateForm(forms.ModelForm):
         }
 
 
-class BaseSaleQuestionaryAnswerFormset(BaseInlineFormSet):
+class BaseSaleQuestionaryAnswerFormset(BaseInlineFormSet, FormKwargsFormsetMixin):
     @property
     def empty_form(self):
         form = super(BaseSaleQuestionaryAnswerFormset, self).empty_form
@@ -185,6 +186,7 @@ class BaseSaleQuestionaryAnswerFormset(BaseInlineFormSet):
 SaleQuestionaryAnswerFormset = inlineformset_factory(
     QuestionaryQuestion, QuestionaryAnswer,
     formset=BaseSaleQuestionaryAnswerFormset,
+    form=BlockedModelFormMixin,
     fields=('text',),
     widgets={
         'text': forms.Textarea(attrs={'class': 'form-control', 'rows': '2', 'placeholder': 'введите текст ответа'}),
@@ -194,9 +196,15 @@ SaleQuestionaryAnswerFormset = inlineformset_factory(
 )
 
 
+class BaseSaleQuestionaryQuestionFormset(BaseNestedFormset, FormKwargsFormsetMixin):
+    pass
+
+
 SaleQuestionaryQuestionFormset = nestedformset_factory(
     Questionary, QuestionaryQuestion,
+    formset=BaseSaleQuestionaryQuestionFormset,
     nested_formset=SaleQuestionaryAnswerFormset,
+    form=BlockedModelFormMixin,
     fields=('text', 'question_type',),
     widgets={
         'text': forms.Textarea(attrs={'class': 'form-control', 'rows': '2', 'placeholder': 'введите текст вопроса'}),
@@ -207,10 +215,11 @@ SaleQuestionaryQuestionFormset = nestedformset_factory(
 )
 
 
-class SaleQuestionaryUpdateForm(SaleQuestionaryCreateForm):
+class SaleQuestionaryUpdateForm(SaleQuestionaryCreateForm, BlockedModelFormMixin):
     def __init__(self, *args, **kwargs):
         super(SaleQuestionaryUpdateForm, self).__init__(*args, **kwargs)
-        self.question_formset = SaleQuestionaryQuestionFormset(instance=self.instance, data=self.data or None)
+        self.question_formset = SaleQuestionaryQuestionFormset(
+            instance=self.instance, data=self.data or None, form_kwargs={'blocked': self.blocked})
 
     def save(self, commit=True):
         result = super(SaleQuestionaryUpdateForm, self).save(commit)

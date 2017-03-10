@@ -478,9 +478,27 @@ class SaleQuestionaryUpdateView(UpdateView, RedirectlessFormMixin):
     form_class = SaleQuestionaryUpdateForm
     template_name = 'sale/sale_questionary_update.html'
 
+    def get_form_kwargs(self):
+        kwargs = super(SaleQuestionaryUpdateView, self).get_form_kwargs()
+
+        self.blocked = False
+        order_qs = self.object.saleorder_set.all()
+        for order in order_qs:
+            if order.distributortask_set.count() > 0:
+                self.blocked = True
+                break
+            if self.blocked:
+                break
+        kwargs['blocked'] = self.blocked
+
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super(SaleQuestionaryUpdateView, self).get_context_data(**kwargs)
         context['sale'] = self.object.sale
+        if self.blocked:
+            context['blocked'] = True
+
         return context
 
 
