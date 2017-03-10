@@ -4,7 +4,7 @@ from nested_formset import nestedformset_factory, BaseNestedFormset
 from django import forms
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 
-from lib.forms import BlockedModelFormMixin, FormKwargsFormsetMixin
+from lib.forms import BlockedModelFormMixin, FormKwargsFormsetMixin, FormKwargsNestedFormsetMixin
 from apps.manager.models import Manager
 from .models import Sale, SaleOrder, SaleMaket, Questionary, QuestionaryQuestion, QuestionaryAnswer
 
@@ -196,7 +196,7 @@ SaleQuestionaryAnswerFormset = inlineformset_factory(
 )
 
 
-class BaseSaleQuestionaryQuestionFormset(BaseNestedFormset, FormKwargsFormsetMixin):
+class BaseSaleQuestionaryQuestionFormset(FormKwargsNestedFormsetMixin):
     pass
 
 
