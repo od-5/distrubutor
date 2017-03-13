@@ -7,6 +7,7 @@ function init() {
   // если координаты центра заданы - центрируем по ним карту
   var coord_x = $('#id_coord_x').val();
   var coord_y = $('#id_coord_y').val();
+  var radius = $('#id_radius').val();
   var center;
   if (coord_x && coord_y) {
     center = [coord_x, coord_y];
@@ -15,6 +16,7 @@ function init() {
   }
   //alert(center);
   var myPlacemark,
+      myRadiusmark,
       myMap = new ymaps.Map('map', {
           center: center,
           zoom: 9
@@ -25,6 +27,10 @@ function init() {
     myPlacemark = createPlacemark(center);
     myMap.geoObjects.add(myPlacemark);
     getAddress(myPlacemark.geometry.getCoordinates());
+    if (radius) {
+      myRadiusmark = createRadiusmark(center, radius);
+      myMap.geoObjects.add(myRadiusmark);
+    }
   }
   // Слушаем клик на карте.
   myMap.events.add('click', function (e) {
@@ -36,11 +42,18 @@ function init() {
     // Если метка уже создана – просто передвигаем ее.
     if (myPlacemark) {
       myPlacemark.geometry.setCoordinates(coords);
+      if (myRadiusmark) {
+        myRadiusmark.geometry.setCoordinates(coords);
+      }
     }
     // Если нет – создаем.
     else {
       myPlacemark = createPlacemark(coords);
       myMap.geoObjects.add(myPlacemark);
+      if (radius) {
+        myRadiusmark = createRadiusmark(center, radius);
+        myMap.geoObjects.add(myRadiusmark);
+      }
       // Слушаем событие окончания перетаскивания на метке.
       myPlacemark.events.add('dragend', function () {
           getAddress(myPlacemark.geometry.getCoordinates());
@@ -48,6 +61,16 @@ function init() {
     }
     getAddress(coords);
   });
+
+  // При изменении значения радиуса - отображаем на карте
+  $('#id_radius').change(onRadiusChanged)
+                 .keyup(onRadiusChanged);
+  function onRadiusChanged(event) {
+    var new_radius = $('#id_radius').val();
+    if (myRadiusmark) {
+      myRadiusmark.geometry.setRadius(new_radius);
+    }
+  }
 
   // Создание метки.
   function createPlacemark(coords) {
@@ -57,6 +80,11 @@ function init() {
       preset: 'islands#violetDotIconWithCaption',
       draggable: true
     });
+  }
+
+  // Создание визуализации радиуса
+  function createRadiusmark(coords, radius) {
+      return new ymaps.Circle([coords, radius]);
   }
 
   // Определяем адрес по координатам (обратное геокодирование).
