@@ -196,15 +196,39 @@ SaleQuestionaryAnswerFormset = inlineformset_factory(
 )
 
 
+class QuestionaryQuestionForm(BlockedModelFormMixin):
+    class Meta:
+        model = QuestionaryQuestion
+        fields = ('text', 'question_type',)
+
+    def clean(self):
+        super(QuestionaryQuestionForm, self).clean()
+        if self.is_bound and not self.is_valid():
+            return
+
+        print(self.cleaned_data['question_type'])
+        print(self.instance.question_type)
+        print(QuestionaryQuestion.QUESTION_TYPE_CHOICE[1][0])
+        print(self.nested.is_bound)
+        print(self.nested.total_form_count())
+
+        if (self.cleaned_data['question_type'] == QuestionaryQuestion.QUESTION_TYPE_CHOICE[1][0] and
+                self.nested.is_bound and (self.nested.total_form_count() - len(self.nested.deleted_forms)) == 0):
+            raise forms.ValidationError(u'Заполните список ответов!')
+
+
 class BaseSaleQuestionaryQuestionFormset(FormKwargsNestedFormsetMixin):
-    pass
+    def clean(self):
+        if self.is_bound and (self.total_form_count() - len(self.deleted_forms)) == 0:
+            raise forms.ValidationError(u'Заполните список вопросов!')
+        super(BaseSaleQuestionaryQuestionFormset, self).clean()
 
 
 SaleQuestionaryQuestionFormset = nestedformset_factory(
     Questionary, QuestionaryQuestion,
     formset=BaseSaleQuestionaryQuestionFormset,
     nested_formset=SaleQuestionaryAnswerFormset,
-    form=BlockedModelFormMixin,
+    form=QuestionaryQuestionForm,
     fields=('text', 'question_type',),
     widgets={
         'text': forms.Textarea(attrs={'class': 'form-control', 'rows': '2', 'placeholder': 'введите текст вопроса'}),
@@ -229,4 +253,4 @@ class SaleQuestionaryUpdateForm(SaleQuestionaryCreateForm, BlockedModelFormMixin
     def clean(self):
         if self.question_formset.is_bound and not self.question_formset.is_valid():
             raise forms.ValidationError(u'Проверьте правильность заполнения содержимого анкеты!')
-        return super(SaleQuestionaryUpdateForm, self).clean()
+        super(SaleQuestionaryUpdateForm, self).clean()
