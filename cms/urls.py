@@ -10,6 +10,7 @@ import debug_toolbar
 urlpatterns = patterns(
     '',
     url(r'^api_v1/', include('api.urls', namespace='api')),
+    url(r'^api_promo/', include('api_promo.urls', namespace='api_promo')),
     url(r'^dashboard/', include('apps.dashboard.urls', namespace='dashboard'),),
     url(r'^administrator/', include('apps.administrator.urls', namespace='administrator'),),
     url(r'^agency/', include('apps.agency.urls', namespace='agency'),),
