@@ -9,8 +9,9 @@ __author__ = 'alexy'
 
 urlpatterns = patterns(
     '',
-    url(r'^city/$', city_list, name='city'),
-    url(r'^moderator/$', moderator_list, name='moderator'),
+    url(r'^country/$', city_list, name='country-list'),
+    url(r'^city/$', city_list, name='city-list'),
+    url(r'^moderator/$', moderator_list, name='moderator-list'),
 )
 
 # Format suffixes
