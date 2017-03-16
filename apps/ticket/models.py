@@ -40,7 +40,7 @@ class Ticket(Common):
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
     price = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True, verbose_name=u'Сумма')
     hanger = models.BooleanField(default=False, verbose_name=u'Заявка с сайта hanger-reklama.com')
-    proomo = models.BooleanField(default=False, verbose_name=u'Заявка с сайта promo-reklama.com')
+    promo = models.BooleanField(default=False, verbose_name=u'Заявка с сайта promo-reklama.com')
 
 
 class PreSale(Common):
