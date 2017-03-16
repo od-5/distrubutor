@@ -36,7 +36,7 @@ class Region(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        pass
+        return reverse('region:update', args=(self.pk,))
 
     name = models.CharField(max_length=100, verbose_name=u'Название')
     country = models.ForeignKey(Country, verbose_name=u'Страна')

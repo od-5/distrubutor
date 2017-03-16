@@ -1,7 +1,7 @@
 # coding=utf-8
 from django import forms
 
-from .models import City, Country
+from .models import City, Region, Country
 
 __author__ = '2mitrij'
 
@@ -9,16 +9,23 @@ __author__ = '2mitrij'
 class CityForm(forms.ModelForm):
     class Meta:
         model = City
-        fields = ('country', 'name', 'timezone')
+        fields = ('country', 'region', 'name', 'timezone')
         widgets = {
             'country': forms.Select(attrs={'class': 'form-control'}),
+            'region': forms.Select(attrs={'class': 'form-control'}),
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'timezone': forms.Select(attrs={'class': 'form-control'}),
         }
-    #
-    # def __init__(self, *args, **kwargs):
-    #     super(CityAddForm, self).__init__(*args, **kwargs)
-    #     self.fields['moderator'].queryset = User.objects.filter(type=2)
+
+
+class RegionForm(forms.ModelForm):
+    class Meta:
+        model = Region
+        fields = ('name', 'country',)
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'country': forms.Select(attrs={'class': 'form-control'}),
+        }
 
 
 class CountryForm(forms.ModelForm):

@@ -2,14 +2,14 @@
 {% block viewport %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% endblock %}
-{% block title %}Добавление города | {{ block.super }}{% endblock %}
+{% block title %}Добавление региона | {{ block.super }}{% endblock %}
 {% block content %}
-  {% include 'geolocation/__include/city_breadcrumb.html' %}
+  {% include 'geolocation/__include/region_breadcrumb.html' %}
   <div class="container">
     <div class="row">
       <div class="page-top">
         <div class="col-md-12">
-          <span class="page-top__title">Добавление города</span>
+          <span class="page-top__title">Добавление региона</span>
         </div>
         <div class="clearfix"></div>
       </div>
@@ -19,7 +19,7 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <div class="panel-content">
-              <form action="" role="form" class="form" id="js-city-form" method="post">
+              <form action="" role="form" class="form" id="js-region-form" method="post">
                 {% csrf_token %}
                 <div class="col-md-6">
                   <div class="form-group">
@@ -28,21 +28,11 @@
                     {{ form.country.errors }}
                   </div>
                   <div class="form-group">
-                    {{ form.region.label_tag }}
-                    {{ form.region }}
-                    {{ form.region.errors }}
-                  </div>
-                  <div class="form-group">
                     {{ form.name.label_tag }}
                     {{ form.name }}
                     {{ form.name.errors }}
                   </div>
-                  <div class="form-group">
-                    {{ form.timezone.label_tag }}
-                    {{ form.timezone }}
-                    {{ form.timezone.errors }}
-                  </div>
-                  <button type="submit" class="btn btn-save">Добавить город</button>
+                  <button type="submit" class="btn btn-save">Добавить регион</button>
                 </div>
                 <div class="clearfix"></div>
               </form>
