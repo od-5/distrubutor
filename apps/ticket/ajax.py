@@ -3,6 +3,7 @@ import urllib
 import logging
 
 from annoying.decorators import ajax_request
+from annoying.functions import get_object_or_None
 from django.conf import settings
 from django.core.mail import send_mail
 from django.views.decorators.csrf import csrf_exempt
@@ -65,6 +66,45 @@ def hanger_ticket(request):
                     'success': False,
                     'message': u'Not moderator found'
                 }
+        else:
+            return {
+                'success': False,
+                'message': u'Not city found'
+            }
+    return {
+        'success': False,
+    }
+
+
+@ajax_request
+@csrf_exempt
+def promo_ticket(request):
+    name = request.POST.get('name', '')
+    phone = request.POST.get('phone', '')
+    mail = request.POST.get('mail', '')
+    theme = request.POST.get('theme', '')
+    r_city = request.POST.get('city', None)
+    logger.error(u'name: %s, phone: %s, mail: %s, theme: %s, city: %s' %
+                 (name, phone, mail, theme, r_city))
+    if r_city:
+        city = get_object_or_None(City, id=int(r_city))
+        if city:
+            ticket = Ticket(city=city, promo=True)
+            if name:
+                ticket.name = name
+            if phone:
+                ticket.phone = phone
+            if mail:
+                ticket.mail = mail
+            ticket.save()
+            return {
+                'success': True,
+                'name': name,
+                'phone': phone,
+                'mail': mail,
+                'theme': theme,
+                'city': city.name,
+            }
         else:
             return {
                 'success': False,

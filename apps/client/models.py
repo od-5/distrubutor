@@ -8,6 +8,23 @@ from apps.moderator.models import Moderator
 __author__ = 'alexy'
 
 
+class ClientModelManager(models.Manager):
+
+    def get_qs(self, user):
+        if user.type == 1:
+            qs = Client.objects.all()
+        elif user.type == 2:
+            qs = Client.objects.filter(moderator=user.moderator_user)
+        elif user.type == 5:
+            if user.manager_user.leader:
+                qs = Client.objects.filter(moderator=user.manager_user.moderator.moderator_user)
+            else:
+                qs = Client.objects.filter(manager=user.manager_user)
+        else:
+            qs = Client.objects.none()
+        return qs
+
+
 class Client(models.Model):
     class Meta:
         verbose_name = u'Клиент'
@@ -34,6 +51,8 @@ class Client(models.Model):
     actual_address = models.CharField(verbose_name=u'Фактический адрес', max_length=255, blank=True, null=True)
     site = models.CharField(verbose_name=u'Сайт', blank=True, null=True,  max_length=100)
     type = models.PositiveSmallIntegerField(verbose_name=u'Тип клиента', choices=TYPE_CHOICES, default=TYPE_CHOICES[1][0])
+
+    objects = ClientModelManager()
 
 
 class ClientManager(models.Model):

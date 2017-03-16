@@ -154,7 +154,7 @@ $(document).ready(function () {
     });
   });
 
-//  ввод города
+  //  ввод города
   $('.input_city').each(function(){
     $(this).autocomplete({
       source: function(request, response){

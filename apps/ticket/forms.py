@@ -14,7 +14,7 @@ class TicketAddForm(forms.ModelForm):
 class TicketChangeForm(forms.ModelForm):
     class Meta:
         model = Ticket
-        exclude = ['hanger', ]
+        exclude = ['hanger', 'promo']
         widgets = {
             'city': forms.Select(attrs={'class': 'form-control'}),
             'moderator': forms.Select(attrs={'class': 'form-control'}),

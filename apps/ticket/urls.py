@@ -2,7 +2,7 @@
 from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
 from .views import TicketListView, TicketAgencyListView, TicketSaleListView, PreSaleListView
-from .ajax import hanger_ticket
+from .ajax import hanger_ticket, promo_ticket
 
 __author__ = 'alexy'
 
@@ -21,4 +21,5 @@ urlpatterns = patterns(
     url(r'^(?P<pk>\d+)/$', 'ticket_detail', name='detail'),
     # hanger-reklama.com url
     url(r'^hanger/$', hanger_ticket, name='hanger'),
+    url(r'^promo/$', promo_ticket, name='promo'),
 )
