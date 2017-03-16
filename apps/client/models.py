@@ -1,6 +1,6 @@
 # coding=utf-8
-from django.core.urlresolvers import reverse
 from django.db import models
+
 from apps.geolocation.models import City
 from apps.manager.models import Manager
 from apps.moderator.models import Moderator
@@ -49,8 +49,9 @@ class Client(models.Model):
     city = models.ForeignKey(to=City, verbose_name=u'Город')
     kind_of_activity = models.CharField(verbose_name=u'Вид деятельности', max_length=255, blank=True, null=True)
     actual_address = models.CharField(verbose_name=u'Фактический адрес', max_length=255, blank=True, null=True)
-    site = models.CharField(verbose_name=u'Сайт', blank=True, null=True,  max_length=100)
-    type = models.PositiveSmallIntegerField(verbose_name=u'Тип клиента', choices=TYPE_CHOICES, default=TYPE_CHOICES[1][0])
+    site = models.CharField(verbose_name=u'Сайт', blank=True, null=True, max_length=100)
+    type = models.PositiveSmallIntegerField(
+        verbose_name=u'Тип клиента', choices=TYPE_CHOICES, default=TYPE_CHOICES[1][0])
 
     objects = ClientModelManager()
 
