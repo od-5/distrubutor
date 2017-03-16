@@ -33,9 +33,9 @@ class MessageCreateView(CreateView):
     template_name = 'correspondence/message_add.html'
 
     def get_initial(self):
-        return {
-            'author': self.request.user
-        }
+        initial = super(MessageCreateView, self).get_initial()
+        initial['author'] = self.request.user
+        return initial
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
