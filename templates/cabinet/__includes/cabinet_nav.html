@@ -112,6 +112,9 @@
         {% if user.type == 1 %}
         <li><a href="{% url 'city:add' %}">Добавить новый город</a></li>
         <li class="divider"></li>
+        <li><a href="{% url 'region:list' %}">Список регионов</a></li>
+        <li><a href="{% url 'region:add' %}">Добавить новый регион</a></li>
+        <li class="divider"></li>
         <li><a href="{% url 'country:list' %}">Список стран</a></li>
         <li><a href="{% url 'country:add' %}">Добавить новую страну</a></li>
         <li class="divider"></li>

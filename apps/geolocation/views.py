@@ -2,8 +2,8 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView
 
-from .models import City, Country
-from .forms import CityForm, CountryForm
+from .models import City, Region, Country
+from .forms import CityForm, RegionForm, CountryForm
 from apps.moderator.forms import ModeratorAreaForm
 from apps.moderator.models import ModeratorArea
 
@@ -102,6 +102,37 @@ class CityUpdateView(UpdateView):
                 'form': CityForm(instance=self.object)
             })
         return context
+
+
+class RegionListView(ListView):
+    model = Region
+    template_name = 'geolocation/region_list.html'
+
+    def get_queryset(self):
+        qs = super(RegionListView, self).get_queryset()
+
+        self.r_country = int(self.request.GET.get('country', 0))
+        if self.r_country:
+            qs = qs.filter(country=self.r_country)
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(RegionListView, self).get_context_data(**kwargs)
+        context['r_country'] = self.r_country
+        context['country_list'] = Country.objects.all()
+        return context
+
+
+class RegionCreateView(CreateView):
+    form_class = RegionForm
+    template_name = 'geolocation/region_add.html'
+
+
+class RegionUpdateView(UpdateView):
+    model = Region
+    form_class = RegionForm
+    template_name = 'geolocation/region_update.html'
 
 
 class CountryListView(ListView):
