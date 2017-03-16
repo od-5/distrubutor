@@ -26,6 +26,22 @@ class Country(models.Model):
     code = models.CharField(max_length=10, verbose_name=u'Код')
 
 
+class Region(models.Model):
+    class Meta:
+        verbose_name = u'Регион'
+        verbose_name_plural = u'Регионы'
+        app_label = 'geolocation'
+
+    def __unicode__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        pass
+
+    name = models.CharField(max_length=100, verbose_name=u'Название')
+    country = models.ForeignKey(Country, verbose_name=u'Страна')
+
+
 class City(models.Model):
     class Meta:
         verbose_name = u'Город'
@@ -62,6 +78,7 @@ class City(models.Model):
     )
 
     country = models.ForeignKey(to=Country, verbose_name=u'Страна', blank=True, null=True, on_delete=models.SET_NULL)
+    region = models.ForeignKey(Region, verbose_name=u'Регион', blank=True, null=True, on_delete=models.SET_NULL)
     name = models.CharField(max_length=100, verbose_name=u'Название')
     coord_x = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
     coord_y = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
