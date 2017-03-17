@@ -30,7 +30,7 @@ class ClientListView(ListView):
         contact = self.request.GET.get('contact')
         manager = self.request.GET.get('manager')
         city = self.request.GET.get('city')
-        qs = self.__class__.model.objects.get_qs(user)
+        qs = self.model.objects.get_qs(user)
         # if user.type == 1:
         #     qs = Client.objects.all()
         # elif user.type == 2:

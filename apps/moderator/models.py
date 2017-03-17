@@ -24,6 +24,9 @@ class Moderator(models.Model):
         else:
             return self.user.get_full_name()
 
+    def get_city_id_list(self):
+        return [i.id for i in self.city.all()]
+
     def has_unpaid_order(self):
         """
         Метод возвращает True, если у модератора есть неоплаченные счета.
@@ -74,7 +77,7 @@ class Moderator(models.Model):
     work_basis = models.CharField(verbose_name=u'Основание для работы', max_length=200, blank=True, null=True)
     experience = models.CharField(max_length=256, verbose_name=u'Стаж работы', blank=True, null=True)
     description = models.TextField(verbose_name=u'Краткое описание', blank=True, null=True)
-    contact = models.TextField(verbose_name=u'Контакты', blank=True, null=True)
+    contact = models.TextField(verbose_name=u'Контакты (адрес, email, skype и т.д.)', blank=True, null=True)
     phone = models.CharField(max_length=100, verbose_name=u'Телефон', blank=True, null=True)
     logotype = models.ImageField(verbose_name=u'Логотип', blank=True, null=True, upload_to=upload_to)
     experience_lang = models.CharField(max_length=256, verbose_name=u'Стаж работы', blank=True, null=True)

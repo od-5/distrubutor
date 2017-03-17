@@ -841,7 +841,15 @@ label.error {
     /*padding: 59px 0 72px;*/
     padding: 20px 0;
 }
-
+.footer-info {
+    padding: 29px 0;
+    border-top: 1px solid #000;
+    background-color: #202020;
+    color: #fff;
+    text-align: center;
+    font-size: 14px;
+    line-height: 18px;
+}
 .copy {
     float: left;
     font-size: 14px;
@@ -876,6 +884,7 @@ label.error {
 	font-size: 14px;
 	line-height: 20px;
 	text-decoration: none;
+    text-align: right;
 }
 #hidden-block {
     display: none;

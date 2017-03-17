@@ -51,7 +51,7 @@
                   <div class="form-group">
                     {{ form.city.label_tag }}
                     {{ form.city }}
-                    {% if user.type == 2 or user.type == 5 %}
+                    {% if user.type != 6 %}
                     <input type="text" value="{{ object.city.name }}" readonly="readonly" class="form-control">
                     {% endif %}
                     {{ form.city.errors }}

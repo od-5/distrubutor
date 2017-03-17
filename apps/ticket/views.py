@@ -1,10 +1,12 @@
 # coding=utf-8
-from annoying.functions import get_object_or_None
 from datetime import datetime
 from django import forms
+
+from annoying.functions import get_object_or_None
+
 from django.conf import settings
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Q
 from django.http import HttpResponseRedirect
@@ -12,8 +14,8 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
+
 from apps.geolocation.models import City
-from apps.manager.models import Manager
 from apps.moderator.models import Moderator
 from apps.ticket.forms import TicketChangeForm, PreSaleForm, TicketAddForm
 from core.models import User, Setup
@@ -116,16 +118,26 @@ class TicketListView(ListView):
         if user.type == 1:
             qs = Ticket.objects.all()
         elif user.type == 2:
+            moderator = user.moderator_user
             if user.superviser:
-                qs = Ticket.objects.filter(Q(moderator__superviser=user) | Q(moderator=user.moderator_user))
+                qs = Ticket.objects.filter(
+                    Q(moderator__superviser=user) | Q(moderator=moderator) |
+                    Q(moderator__isnull=True, promo=True, city__in=moderator.get_city_id_list())
+                )
             else:
                 if user.moderator_user.ticket_forward:
                     qs = Ticket.objects.none()
                 else:
-                    qs = Ticket.objects.filter(moderator=user.moderator_user)
+                    qs = Ticket.objects.filter(
+                        Q(moderator=moderator) |
+                        Q(moderator__isnull=True, promo=True, city__in=moderator.get_city_id_list())
+                    )
         elif user.type == 5:
+            moderator = user.manager_user.moderator.moderator_user
             qs = Ticket.objects.filter(
-                moderator=user.manager_user.moderator.moderator_user, moderator__ticket_forward=False)
+                Q(moderator=moderator, moderator__ticket_forward=False) |
+                Q(moderator__isnull=True, promo=True, city__in=moderator.get_city_id_list())
+            )
         elif user.type == 6:
             qs = Ticket.objects.select_related().filter(
                 Q(type=0, moderator__ticket_forward=True) | Q(type=0, moderator__isnull=True)
@@ -416,7 +428,7 @@ def ticket_detail(request, pk):
         form.fields['agency_manager'].widget = forms.HiddenInput()
     else:
         form.fields['moderator'].queryset = Moderator.objects.filter(ticket_forward=True)
-    if user.type in [2,5]:
+    if user.type in [2, 5]:
         form.fields['moderator'].widget = forms.HiddenInput()
     context.update({
         'form': form,
@@ -573,3 +585,22 @@ def presale_detail(request, pk):
         'object': presale
     })
     return render(request, 'ticket/presale_detail.html', context)
+
+
+@login_required
+def accept_ticket(request, pk):
+    """
+    Функция назначения исполнителя для заявок, пришедших с сайта promo-reklama.com
+    """
+    user = request.user
+    ticket = Ticket.objects.get(pk=int(pk))
+    redirect_url = reverse_lazy('ticket:list')
+    if not ticket.moderator:
+        if user.type == 2 or user.type == 6:
+            if user.type == 2:
+                ticket.moderator = user.moderator_user
+            elif user.type == 5:
+                ticket.moderator = user.manager_user.moderator.moderator_user
+            ticket.save()
+            redirect_url = ticket.get_absolute_url()
+    return HttpResponseRedirect(redirect_url)

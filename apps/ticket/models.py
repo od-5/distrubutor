@@ -1,4 +1,5 @@
 # coding=utf-8
+from django.core.urlresolvers import reverse
 from django.db import models
 from apps.geolocation.models import City
 from apps.moderator.models import Moderator
@@ -18,8 +19,24 @@ class Ticket(Common):
     def __unicode__(self):
         return u'Заявка на имя: %s, телефон: %s' % (self.name, self.phone)
 
+    def get_absolute_url(self):
+        if self.promo and not self.moderator:
+            return None
+        else:
+            return reverse('ticket:detail', args=(self.pk, ))
+
+
     def performed_at(self):
         pass
+
+    def from_site(self):
+        if self.hanger:
+            site = u'(hanger-reklama.com)'
+        elif self.promo:
+            site = u'(promo-reklama.com)'
+        else:
+            site = None
+        return site
 
     TICKET_TYPE_CHOICE = (
         (0, u'Новая заявка'),
