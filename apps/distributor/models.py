@@ -67,6 +67,9 @@ class DistributorTask(models.Model):
         else:
             return u'%s' % self.date
 
+    def get_questionary(self):
+        return self.order.questionary_id
+
     def get_absolute_url(self):
         if self.category == 0:
             return reverse('distributor:task-update', args=(self.pk, ))

@@ -2,14 +2,59 @@
 from rest_framework import serializers
 from core.models import User
 from apps.distributor.models import Distributor, DistributorTask, GPSPoint, PointPhoto
+from apps.sale.models import Questionary, QuestionaryAnswer, QuestionaryQuestion
 
 __author__ = 'alexy'
+
+
+class QuestionaryAnswerSerializer(serializers.ModelSerializer):
+    """
+    Сериализация модели вопроса анкеты
+    """
+    class Meta:
+        model = QuestionaryAnswer
+        fields = (
+            'id',
+            'text'
+        )
+
+
+class QuestionaryQuestionSerializer(serializers.ModelSerializer):
+    """
+    Сериализация модели вопроса анкеты
+    """
+    answers = QuestionaryAnswerSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = QuestionaryQuestion
+        fields = (
+            'id',
+            'text',
+            'question_type',
+            'answers'
+        )
+
+
+class QuestionarySerializer(serializers.ModelSerializer):
+    """
+    Сериализация модели анкеты
+    """
+    questions = QuestionaryQuestionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Questionary
+        fields = (
+            'id',
+            'title',
+            'questions'
+        )
 
 
 class DistributorSerializer(serializers.ModelSerializer):
     """
     Сериализация модели исполнителя
     """
+
     class Meta:
         model = Distributor
         fields = (
@@ -18,7 +63,7 @@ class DistributorSerializer(serializers.ModelSerializer):
             'moderator',
             'coord_x',
             'coord_y',
-            'coord_time',
+            'coord_time'
         )
 
 
@@ -42,6 +87,7 @@ class DistributorTaskSerializer(serializers.ModelSerializer):
     """
     Сериализация модели задач
     """
+
     class Meta:
         model = DistributorTask
         fields = (
@@ -61,7 +107,8 @@ class DistributorTaskSerializer(serializers.ModelSerializer):
             'end_time',
             'comment',
             'define_address',
-            'closed'
+            'closed',
+            'get_questionary'
         )
 
 

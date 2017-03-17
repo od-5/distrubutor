@@ -218,7 +218,7 @@ class QuestionaryQuestion(models.Model):
 
         super(QuestionaryQuestion, self).save(*args, **kwargs)
 
-    questionary = models.ForeignKey(Questionary, verbose_name=u'Анкета')
+    questionary = models.ForeignKey(Questionary, verbose_name=u'Анкета', related_name='questions')
     text = models.TextField(verbose_name=u'Текст вопроса')
     question_type = models.PositiveSmallIntegerField(
         verbose_name=u'Тип ответа', choices=QUESTION_TYPE_CHOICE, default=1)
@@ -233,7 +233,7 @@ class QuestionaryAnswer(models.Model):
     def __unicode__(self):
         return u''
 
-    questionary_question = models.ForeignKey(QuestionaryQuestion, verbose_name=u'Вопрос анкеты')
+    questionary_question = models.ForeignKey(QuestionaryQuestion, verbose_name=u'Вопрос анкеты', related_name='answers')
     text = models.TextField(verbose_name=u'Текст ответа')
 
 

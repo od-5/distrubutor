@@ -1,6 +1,7 @@
 # coding=utf-8
 import json
 import datetime
+from apps.sale.models import Questionary
 import core.geotagging as api
 from django.conf import settings
 from rest_framework import status
@@ -8,7 +9,8 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from api.serializers import UserSerializer, DistributorTaskSerializer, GPSPointSerializer, PointPhotoSerializer, DistributorSerializer
+from api.serializers import UserSerializer, DistributorTaskSerializer, GPSPointSerializer, PointPhotoSerializer, DistributorSerializer, \
+    QuestionarySerializer
 from core.common import str_to_bool
 from apps.distributor.models import Distributor, DistributorTask, GPSPoint
 # import the logging library
@@ -116,6 +118,22 @@ def task_list(request):
             return Response(serializer.data)
     else:
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def questionary_detail(request, pk):
+    """
+    Детализация анкеты по id задачи
+
+    """
+    try:
+        questionary = Questionary.objects.get(id=pk)
+    except Questionary.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = QuestionarySerializer(questionary)
+    return Response(serializer.data)
 
 
 @api_view(['GET', 'PUT'])
