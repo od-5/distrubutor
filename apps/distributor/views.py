@@ -336,7 +336,6 @@ class DistributorTaskUpdateView(UpdateView, SendUserToFormMixin):
     success_url = reverse_lazy('distributor:task-list')
 
     def form_valid(self, form):
-        # print form.instance.order.type
         if form.instance.order.category == 0:
             form.instance.type = form.instance.order.type
         return super(DistributorTaskUpdateView, self).form_valid(form)
