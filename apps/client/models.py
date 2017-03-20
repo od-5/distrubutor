@@ -9,8 +9,9 @@ __author__ = 'alexy'
 
 
 class ClientModelManager(models.Manager):
-
     def get_qs(self, user):
+        qs = Client.objects.none()
+
         if user.type == 1:
             qs = Client.objects.all()
         elif user.type == 2:
@@ -20,8 +21,7 @@ class ClientModelManager(models.Manager):
                 qs = Client.objects.filter(moderator=user.manager_user.moderator.moderator_user)
             else:
                 qs = Client.objects.filter(manager=user.manager_user)
-        else:
-            qs = Client.objects.none()
+
         return qs
 
 
@@ -31,11 +31,10 @@ class Client(models.Model):
         verbose_name_plural = u'Клиенты'
         app_label = 'client'
 
+    objects = ClientModelManager()
+
     def __unicode__(self):
         return self.name
-
-    # def get_absolute_url(self):
-    #     return reverse('client:update', args=(self.pk, ))
 
     TYPE_CHOICES = (
         (0, u'Входящая заявка'),
@@ -52,8 +51,6 @@ class Client(models.Model):
     site = models.CharField(verbose_name=u'Сайт', blank=True, null=True, max_length=100)
     type = models.PositiveSmallIntegerField(
         verbose_name=u'Тип клиента', choices=TYPE_CHOICES, default=TYPE_CHOICES[1][0])
-
-    objects = ClientModelManager()
 
 
 class ClientManager(models.Model):

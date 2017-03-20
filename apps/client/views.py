@@ -22,26 +22,14 @@ class ClientListView(ListView):
     paginate_by = 25
 
     def get_queryset(self):
-        # print 1
-        # print self.__class__.model
         user = self.request.user
         name = self.request.GET.get('name')
         phone = self.request.GET.get('phone')
         contact = self.request.GET.get('contact')
         manager = self.request.GET.get('manager')
         city = self.request.GET.get('city')
+
         qs = self.model.objects.get_qs(user)
-        # if user.type == 1:
-        #     qs = Client.objects.all()
-        # elif user.type == 2:
-        #     qs = Client.objects.filter(moderator=user.moderator_user)
-        # elif user.type == 5:
-        #     if user.manager_user.leader:
-        #         qs = Client.objects.filter(moderator=user.manager_user.moderator.moderator_user)
-        #     else:
-        #         qs = Client.objects.filter(manager=user.manager_user)
-        # else:
-        #     qs = None
         if qs:
             if city and int(city) != 0:
                 qs = qs.filter(city=int(city))
@@ -56,7 +44,6 @@ class ClientListView(ListView):
                     c_qs = c_qs.filter(phone__icontains=phone)
                 if contact:
                     c_qs = c_qs.filter(name__icontains=contact)
-                    # qs = qs.filter(name=self.request.GET.get('name'))
                 client_id_list = [int(i.incomingclient.id) for i in c_qs]
                 qs = qs.filter(id__in=client_id_list)
 

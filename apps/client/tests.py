@@ -1,6 +1,7 @@
 # coding=utf-8
 from datetime import datetime
 
+from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 from core.tests.base import LoginWithUserTestCase
@@ -9,6 +10,35 @@ from apps.geolocation.models import City
 from apps.manager.models import Manager
 from apps.moderator.models import Moderator
 from .models import Client, ClientContact, Task
+
+
+class ClientModelTestCase(TestCase):
+    def test_get_qs(self):
+        city = City(name=u'Город')
+        city.save()
+
+        moderator_user = User.objects.create_user('moderator@moderator.mo', '123456', type=2)
+
+        moderator = Moderator(company=u'Компания', user=moderator_user)
+        moderator.save()
+
+        manager_user = User.objects.create_user('manager@manager.ma', '123456', type=5)
+        manager = Manager(user=manager_user, moderator=moderator_user)
+        manager.save()
+
+        Client(name=u'Клиент1', moderator=moderator, manager=manager, city=city).save()
+
+        user = User.objects.create_user('user@user.us', '123456', type=1)
+
+        self.assertEqual(Client.objects.get_qs(user).count(), Client.objects.all().count())
+
+        client_qs = Client.objects.get_qs(moderator_user)
+        for client in client_qs:
+            self.assertEqual(client.moderator, moderator)
+
+        client_qs = Client.objects.get_qs(manager_user)
+        for client in client_qs:
+            self.assertEqual(client.manager, manager)
 
 
 def _create_fake_client():
@@ -36,10 +66,8 @@ class ClientTestCase(LoginWithUserTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'client/client_list.html')
 
-    # Тест формирования queryset
-    #   проверка фильтрации в зависимости от типа пользователя
-    #   проверка фильтрации по полям
-    # Тест формирования context
+
+
 
     def test_create_smoke(self):
         response = self.client.get(reverse('client:add'))
