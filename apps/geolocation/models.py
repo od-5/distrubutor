@@ -1,4 +1,6 @@
 # coding=utf-8
+from pytils.translit import slugify
+
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -57,6 +59,7 @@ class City(models.Model):
     def save(self, *args, **kwargs):
         address = u'город %s' % self.name
         pos = api.geocode(api_key, address)
+        self.slug = slugify(self.name)
         self.coord_x = float(pos[0])
         self.coord_y = float(pos[1])
         super(City, self).save()
@@ -80,6 +83,7 @@ class City(models.Model):
     country = models.ForeignKey(to=Country, verbose_name=u'Страна', blank=True, null=True, on_delete=models.SET_NULL)
     region = models.ForeignKey(Region, verbose_name=u'Регион', blank=True, null=True, on_delete=models.SET_NULL)
     name = models.CharField(max_length=100, verbose_name=u'Название')
+    slug = models.SlugField(max_length=100, verbose_name=u'URL', blank=True, null=True)
     coord_x = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Ширина')
     coord_y = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=u'Долгота')
     timezone = models.SmallIntegerField(

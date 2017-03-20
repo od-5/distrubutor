@@ -217,3 +217,18 @@ class PointPhoto(models.Model):
     image_resize = ImageSpecField(
         [SmartResize(*settings.POINT_PHOTO_THUMB_SIZE)], source='photo', format='JPEG', options={'quality': 94}
     )
+
+
+class PointAudio(models.Model):
+    class Meta:
+        verbose_name = u'Аудиозапись'
+        verbose_name_plural = u'Фотографии'
+        ordering = ['timestamp', ]
+        app_label = 'distributor'
+
+    def __unicode__(self):
+        return u''
+
+    point = models.ForeignKey(to=GPSPoint, verbose_name=u'GPS точка')
+    timestamp = models.DateTimeField(blank=True, null=True, verbose_name=u'Временная метка')
+    file = models.FileField(verbose_name=u'Фотография', upload_to='audio')

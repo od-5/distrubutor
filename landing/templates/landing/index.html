@@ -34,44 +34,6 @@
 <!-- Yandex.Metrika counter --> <script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter41755284 = new Ya.Metrika({ id:41755284, clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks"); </script> <noscript><div><img src="https://mc.yandex.ru/watch/41755284" style="position:absolute; left:-9999px;" alt="" /></div></noscript> <!-- /Yandex.Metrika counter -->
   <div id="wrapper">
     <header class="header" id="block1">
-      <div class="city-hidden">
-        <div class="holder">
-          <a href="" class="city-close">x</a>
-          <div class="city-hidden-top">
-          <h3>Введите нужный Вам город</h3>
-          <div class="city-input">
-            <form id="#js-form-set-current-city" action="{% url 'landing:set_current_city_from_input' %}" method="post">
-            <fieldset>
-              <input type="text" name="city" class="input input_city" data-url="{% url 'city:find' %}" placeholder="Ваш город" autocomplete="off">
-            </fieldset>
-            </form>
-          </div>
-          <div class="city-input-text">В этом городе нет пока представительства</div>
-          </div>
-          <div class="city-tabs">
-            <ul class="tabs">
-            {% for country in country_list %}
-              {% if country.city_set.count %}
-              <li><a href="#tab1_{{ country.id }}">{{ country.name }}</a></li>
-              {% endif %}
-            {% endfor %}
-            </ul>
-          </div>
-          <div class="city-block">
-          {% for country in country_list %}
-            {% if country.city_set.count %}
-            <div id="tab1_{{ country.id }}"  class="tab-content">
-              <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">
-              {% for city in country.city_set.all %}
-                <li><a>{{ city.name }}</a></li>
-              {% endfor %}
-              </ul>
-            </div>
-            {% endif %}
-          {% endfor %}
-          </div>
-        </div>
-      </div>
       <div class="header-fix">
         <div class="holder">
           <a href="" class="nav-icon"><img src="{% static 'landing/images/nav-icon.png' %}" alt=""></a>
@@ -105,8 +67,8 @@
             {% endfor %}
             </div>
           </div>
-          <div class="header-city"><span class="header-city-span">Выберите город:</span> <a href="">{{ current_city.name|default:'Не выбрано' }}</a></div>
-          <div class="header-contact"><span class="header-contact-span">Единая служба:</span> {{ SETUP.phone|default:'8 (800) 234-37-37' }}</div>
+          <div class="header-city"><span class="header-city-span">Выберите город:</span> <a href="#city-popup" class="fancybox">{{ object.name|default:'Не выбрано' }}</a></div>
+          <div class="header-contact"><span class="header-contact-span">Контакты:</span> {{ SETUP.phone|default:'8 (800) 234-37-37' }}</div>
           <div class="header-enter">
             <a href="{% url 'dashboard:index' %}" class="enter-link enter-link-top">
             <span>{% if user.is_authenticated %}{{ user.email }}{% else %} Войти как...{% endif %}</span>
@@ -256,7 +218,7 @@
       <div class="holder">
         <h2>Выберите исполнителя</h2>
         <div class="title-min">По распространению листовок по почтовым ящикам или расклейки<br>
-        рекламных объявлений по своему городу <a href="#popup4" class="info-city fancybox">{{ current_city.name|default:'Не указано' }}</a></div>
+        рекламных объявлений по своему городу <a href="#city-popup" class="info-city fancybox">{{ object.name|default:'Не указано' }}</a></div>
         {% if moderator_list %}
         <div class="info-slider">
           <div class="info-top">
@@ -397,21 +359,26 @@
       </div>
       <div class="footer-bottom">
         <div class="holder">
-          <div class="copy"><a href="#hidden-block" class="fancybox">Политика конфиденциальности</a><br>
-          РА «Рекламные технологии» &copy;
-          <script type="text/javascript">var mdate = new Date(); document.write(mdate.getFullYear());</script></div>
-          <div class="footer-download">
-            <div class="footer-download-text">Скачать приложение</div>
-            <a href="https://play.google.com/store/apps/details?id=gw.raskleyka" target="_blank"><img src="{% static 'landing/images/googleplay.png' %}" alt=""></a>
+          <div class="third">
+            <div class="copy"><a href="#hidden-block" class="fancybox">Политика конфиденциальности</a><br>
+              РА «Рекламные технологии» &copy;
+              <script type="text/javascript">var mdate = new Date(); document.write(mdate.getFullYear());</script>
+            </div>
           </div>
-          <div class="footer-phone">
-            <span class="footer-phone-text">Единая служба: </span><br>
-            {{ SETUP.phone|default:'8 (800) 234-37-37' }}
+          <div class="third">
+            <div class="footer-download">
+              <a href="https://play.google.com/store/apps/details?id=gw.raskleyka" target="_blank">
+                <img src="{% static 'landing/images/googleplay.png' %}" alt="">
+              </a>
+              <div class="footer-download-text">Скачать приложение</div>
+            </div>
           </div>
-          <a href="http://5lands.ru/" target="_blank" class="studio">
-            Дизайн сайта<br>
-            <img src="{% static 'landing/images/studio.png' %}" alt="">
-          </a>
+          <div class="third">
+            <a href="http://5lands.ru/" target="_blank" class="studio">
+              Дизайн сайта<br>
+              <img src="{% static 'landing/images/studio.png' %}" alt="">
+            </a>
+          </div>
           <div id="hidden-block">
             <h2>Политика конфиденциальности</h2>
             <p>Мы не собираем личную информацию о Вас, когда Вы заходите на наш сайт.
@@ -427,7 +394,7 @@
           <p>
             Правообладатель программного обеспечения <br>
             <strong>Юр. лио в России</strong> ООО "Рекламные технологии" РФ, г. Москва, проспект Мира, д.131 <br>
-            Юр. лицо в Чехии International Communication Technologies s.r.o. Ostrava, Moravska Ostrava, Vystavni 1928/9, Postcode 702 00
+            <strong>Юр. лицо в Чехии</strong> International Communication Technologies s.r.o. Ostrava, Moravska Ostrava, Vystavni 1928/9, Postcode 702 00
           </p>
         </div>
       </div>
@@ -571,43 +538,46 @@
         </div>
       </div>
     </div>
-    <div id="popup4" class="popup">
-      <div class="city-popup">
-        <div class="city-hidden-top">
-          <h3>Введите нужный Вам город</h3>
-          <div class="city-input">
-            <form id="#js-form-set-current-city" action="{% url 'landing:set_current_city_from_input' %}" method="post">
+    <div id="city-popup" class="city-popup">
+      <div class="city-top">
+        <div class="city-country">
+          <div class="country-flag"><img src="{% static 'landing/images/flag_ru.png' %}" alt=""></div>
+          <div class="country-name">Россия</div>
+        </div>
+        <div class="city-title-mob">Выберите Ваш город:</div>
+        <div class="city-search">
+          <form action="{% url 'landing:set_current_city_from_input' %}" id="#js-form-set-current-city" method="post">{% csrf_token %}
             <fieldset>
-              <input type="text" name="city" class="input input_city" data-url="{% url 'city:find' %}" placeholder="Ваш город" autocomplete="off">
+              <input name="city" type="text" class="input input_city" data-url="{% url 'city:find' %}" placeholder="Найти город...">
+              <button class="loupe"></button>
             </fieldset>
-            </form>
-          </div>
+          </form>
           <div class="city-input-text">В этом городе нет пока представительства</div>
-          </div>
-          <div class="city-tabs">
-            <ul class="tabs">
-            {% for country in country_list %}
-              {% if country.city_set.count %}
-              <li><a href="#tab2_{{ country.id }}">{{ country.name }}</a></li>
-              {% endif %}
-            {% endfor %}
-{#              <li class="active"><a href="#tab2_1">Россия</a></li>#}
-{#              <li><a href="#tab2_3">Казахстан</a></li>#}
+        </div>
+      </div>
+      <div class="city-main">
+        <div class="city-column">
+          <div class="city-title">Выберите регион</div>
+          <a href="" class="city-region-link">Выберите регион</a>
+          <div class="city-region-block">
+            <ul class="city-list">
+              <li><a href="">Все регионы</a></li>
+              {% for region in region_list %}
+                <li><a href="">{{ region.name }}</a></li>
+              {% endfor %}
             </ul>
           </div>
-          <div class="city-block">
-          {% for country in country_list %}
-          {% if country.city_set.all %}
-          <div id="tab2_{{ country.id }}" class="tab-content clearfix">
-            <ul class="city-list" data-url="{% url 'landing:set_current_city' %}">
-            {% for city in country.city_set.all %}
-              <li><a>{{ city.name }}</a></li>
-            {% endfor %}
+        </div>
+        <div class="city-column-big">
+          <div class="city-title">Выберите Ваш город:</div>
+          <div class="city-hidden">
+            <ul class="city-list">
+              {% for city in city_list %}
+              <li><a href="{% url 'landing:city' city.slug %}">{{ city.name }}</a></li>
+              {% endfor %}
             </ul>
           </div>
-          {% endif %}
-          {% endfor %}
-          </div>
+        </div>
       </div>
     </div>
     <div id="popup5" class="popup">

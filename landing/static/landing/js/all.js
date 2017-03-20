@@ -7,8 +7,6 @@ $(document).ready(function () {
   $(window).scroll( function(){
     if ($(this).scrollTop() > 250){
       $('.header-fix').addClass('fixed');
-      $('.city-hidden').slideUp();
-      $('.header-city a').removeClass('active');
     }else{
       $('.header-fix').removeClass('fixed');
     }
@@ -91,22 +89,7 @@ $(document).ready(function () {
       $('.header-enter-hidden').slideDown();
     }
   });
-  // city hidden
-  $(document).on('click','.header-city a',function(e){
-    e.preventDefault();
-    if($(this).hasClass('active')){
-      $(this).removeClass('active');
-      $('.city-hidden').slideUp();
-    }else{
-      $(this).addClass('active');
-      $('.city-hidden').slideDown();
-    }
-  });
-  $(document).on('click','.city-close',function(e){
-    e.preventDefault();
-    $('.city-hidden').slideUp();
-    $('.header-city a').removeClass('active');
-  });
+
 
   // slider
   $('.i-slider').bxSlider({
@@ -136,22 +119,6 @@ $(document).ready(function () {
       $(form).slideDown();
       $(this).addClass('comment-vis').hide();
     }
-  });
-  //  обработка нажатия на город
-  $('.city-list').find('a').click(function () {
-    var url = $(this).parents('.city-list').data('url');
-    var city = $(this).text();
-    console.log(url);
-    console.log(city);
-    $.ajax({
-      type: "POST",
-      url: url,
-      data: {
-        city: city
-      }
-    }).done(function () {
-      location.reload();
-    });
   });
 
   //  ввод города

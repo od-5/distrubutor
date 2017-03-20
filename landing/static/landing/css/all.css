@@ -46,6 +46,11 @@ button {font-weight: 300;}
 a:hover {text-decoration: none;}
 ul li {list-style: none;}
 /************************* common styles *************************/
+.third {
+    width: 33.33%;
+    float: left;
+    box-sizing: border-box;
+}
 .holder {
     max-width: 980px;
     padding: 0 10px;
@@ -142,21 +147,6 @@ article p {
 	display: none;
 }
 /************************* city-hidden *************************/
-.city-hidden {
-    position: absolute;
-    z-index: 50;
-    top: 50px;
-    left: 0;
-    right: 0;
-    display: none;
-    padding: 29px 0 20px;
-    background: #fff;
-    -webkit-box-shadow: 0 0 8px 0 rgba(0,0,0,0.2);
-    box-shadow: 0 0 8px 0 rgba(0,0,0,0.2);
-}
-.city-hidden h3 {
-    margin: 0 0 29px;
-}
 .city-block {
     overflow: hidden;
     padding: 3px 0 5px 10px;
@@ -164,21 +154,7 @@ article p {
     margin: 0 20px 0 0;
     /*background: url(../images/city-icon.png) 0 1px no-repeat;*/
 }
-.city-hidden .city-list {
-    float: left;
-    width: auto;
-    margin: 0 0 0 39px;
-}
-.city-hidden .city-list:first-child {margin: 0;}
-.city-hidden .city-list li {
-    float: left;
-    width: 230px;
-    padding: 0 0 0 10px;
-    margin: 0 0 7px;
-    font-size: 14px;
-    line-height: 18px;
-    background: url(../images/city-arrow-min.png) 0 6px no-repeat;
-}
+
 .city-close {
     float: right;
     margin: -5px 0 0;
@@ -262,7 +238,7 @@ article p {
     margin: 0 0 0 2px;
     color: #fff;
     text-decoration: none;
-    background: url(../images/arrow-white.png) 100% 9px no-repeat;
+    /*background: url(../images/arrow-white.png) 100% 9px no-repeat;*/
 }
 .header-city a:hover {text-decoration: underline;}
 .header-contact {
@@ -851,7 +827,6 @@ label.error {
     line-height: 18px;
 }
 .copy {
-    float: left;
     font-size: 14px;
     line-height: 18px;
 }
@@ -1001,34 +976,6 @@ label.error {
     display: block;
     font-size: 20px;
 }
-.city-popup {
-    width: 665px;
-    padding: 50px 67px 43px;
-}
-.city-input-text {
-    display: none;
-    margin: 0 0 36px;
-    color: #fd5279;
-    font-size: 14px;
-    line-height: 16px;
-    text-align: center;
-}
-.city-list-holder {
-    overflow: hidden;
-}
-.city-list {
-    width: 600px;
-}
-.city-list li {
-    float: left;
-    width: 180px;
-    margin: 0 0 6px;
-}
-.city-list a {
-    color: #29abe1;
-    cursor: pointer;
-    font-size: 12px;
-}
 .thnx-text {
     width: 600px;
     padding: 100px 0 0;
@@ -1046,7 +993,14 @@ label.error {
     left: 50%;
     margin-left: -480px;
 }
-
+.city-input-text {
+    display: none;
+    margin: 0 0 36px;
+    color: #fd5279;
+    font-size: 14px;
+    line-height: 16px;
+    text-align: center;
+}
 .ui-widget-content {
     width: 400px !important;
     position: relative !important;

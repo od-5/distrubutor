@@ -10,7 +10,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from api.serializers import UserSerializer, DistributorTaskSerializer, GPSPointSerializer, PointPhotoSerializer, DistributorSerializer, \
-    QuestionarySerializer
+    QuestionarySerializer, QuestionaryCompletedSerializer, QuestionaryQuestionCompletedSerializer, PointAudioSerializer
 from core.common import str_to_bool
 from apps.distributor.models import Distributor, DistributorTask, GPSPoint
 # import the logging library
@@ -228,6 +228,57 @@ def gpspoint_comment(request, pk):
 def photo_add(request):
     try:
         serializer = PointPhotoSerializer(data=request.data)
+        print request.data
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
+    except:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def audio_add(request):
+    try:
+        serializer = PointAudioSerializer(data=request.data)
+        print request.data
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
+    except:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def questionary_completed(request):
+    try:
+        serializer = QuestionaryCompletedSerializer(data=request.data)
+        print request.data
+        if serializer.is_valid():
+            serializer.save()
+            context = {
+                'questionary_completed': serializer.instance.id
+            }
+            return Response(context, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
+    except:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def questionary_completed_answer(request):
+    try:
+        serializer = QuestionaryQuestionCompletedSerializer(data=request.data)
         print request.data
         if serializer.is_valid():
             serializer.save()

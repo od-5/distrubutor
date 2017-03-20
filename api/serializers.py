@@ -1,15 +1,43 @@
 # coding=utf-8
 from rest_framework import serializers
 from core.models import User
-from apps.distributor.models import Distributor, DistributorTask, GPSPoint, PointPhoto
-from apps.sale.models import Questionary, QuestionaryAnswer, QuestionaryQuestion
+from apps.distributor.models import Distributor, DistributorTask, GPSPoint, PointPhoto, PointAudio
+from apps.sale.models import Questionary, QuestionaryAnswer, QuestionaryQuestion, QuestionaryCompleted, \
+    QuestionaryQuestionCompleted
 
 __author__ = 'alexy'
 
 
+class QuestionaryCompletedSerializer(serializers.ModelSerializer):
+    """
+    Сериализация модели заполненной анкеты
+    """
+    class Meta:
+        model = QuestionaryCompleted
+        fields = (
+            'questionary',
+            'full_name',
+            'age',
+            'sex'
+        )
+
+
+class QuestionaryQuestionCompletedSerializer(serializers.ModelSerializer):
+    """
+    Сериализация модели отета на вопрос в заполненной анкете
+    """
+    class Meta:
+        model = QuestionaryQuestionCompleted
+        fields = (
+            'questionary_question',
+            'questionary_completed',
+            'text'
+        )
+
+
 class QuestionaryAnswerSerializer(serializers.ModelSerializer):
     """
-    Сериализация модели вопроса анкеты
+    Сериализация модели ответа на вопрос анкеты
     """
     class Meta:
         model = QuestionaryAnswer
@@ -137,4 +165,17 @@ class PointPhotoSerializer(serializers.ModelSerializer):
         fields = (
             'point',
             'photo'
+        )
+
+
+class PointAudioSerializer(serializers.ModelSerializer):
+    """
+    Сериализация модели аудиозаписей
+    """
+    class Meta:
+        model = PointAudio
+        fields = (
+            'point',
+            'file',
+            'timestamp'
         )
