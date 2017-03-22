@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.views.generic import ListView, CreateView, UpdateView
 from django.utils import timezone
 
-from lib.cbv import RedirectlessFormMixin, SendUserToFormMixin
+from lib.cbv import RedirectlessFormMixin, SendUserToFormMixin, PassGetArgsToCtxMixin
 from apps.geolocation.models import City
 from apps.manager.models import Manager
 from .models import Client, Task, ClientContact, ClientManager
@@ -16,10 +16,18 @@ __author__ = 'alexy'
 
 
 # TODO: придумать как структурировать и улучшить
-class ClientListView(ListView):
+class ClientListView(ListView, PassGetArgsToCtxMixin):
     model = Client
     template_name = 'client/client_list.html'
     paginate_by = 25
+    passed_get_args = (
+        'name',
+        'phone',
+        'contact',
+        'manager',
+        'city',
+        'client_name',
+    )
 
     def get_queryset(self):
         user = self.request.user
@@ -51,27 +59,8 @@ class ClientListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ClientListView, self).get_context_data(**kwargs)
+
         user = self.request.user
-        if self.request.GET.get('name'):
-            context.update({
-                'r_name': self.request.GET.get('name')
-            })
-        if self.request.GET.get('phone'):
-            context.update({
-                'r_phone': self.request.GET.get('phone')
-            })
-        if self.request.GET.get('contact'):
-            context.update({
-                'r_contact': self.request.GET.get('contact')
-            })
-        if self.request.GET.get('manager'):
-            context.update({
-                'r_manager': int(self.request.GET.get('manager'))
-            })
-        if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
-            context.update({
-                'r_city': int(self.request.GET.get('city'))
-            })
         queryset = self.object_list
         manager_client_count = queryset.count()
         manager_task_count = 0
@@ -84,7 +73,6 @@ class ClientListView(ListView):
             search_client_qs = qs.filter(name__icontains=search_client_name)
             context.update({
                 'search_client_list': search_client_qs,
-                'r_client_name': search_client_name
             })
         for client in queryset:
             manager_task_count += client.task_set.count()

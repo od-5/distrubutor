@@ -1,4 +1,5 @@
 # coding=utf-8
+from django.views.generic.base import ContextMixin
 from django.views.generic.edit import FormMixin, ModelFormMixin, ProcessFormView
 from django.views.generic.list import MultipleObjectTemplateResponseMixin, MultipleObjectMixin
 from django.http import Http404
@@ -27,6 +28,24 @@ class SendUserToFormMixin(FormMixin):
         kwargs = super(SendUserToFormMixin, self).get_form_kwargs()
         kwargs.update({'user': self.request.user})
         return kwargs
+
+
+class PassGetArgsToCtxMixin(ContextMixin):
+    """
+    Миксин осуществляет проброс GET аргументов в контекст шаблона.
+    Пробрасываемые аргументы должны быть перечислены в passed_get_args.
+    К полям в контексте добавляется префикс 'r_'.
+    """
+    passed_get_args = None
+
+    def get_context_data(self, **kwargs):
+        context = super(PassGetArgsToCtxMixin, self).get_context_data(**kwargs)
+
+        if self.passed_get_args:
+            context.update(
+                {'r_{}'.format(arg): self.request.GET.get(arg) for arg in self.passed_get_args})
+
+        return context
 
 
 # TODO: протестировать, внедрить
