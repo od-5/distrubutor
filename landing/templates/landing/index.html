@@ -559,11 +559,11 @@
         <div class="city-column">
           <div class="city-title">Выберите регион</div>
           <a href="" class="city-region-link">Выберите регион</a>
-          <div class="city-region-block">
+          <div class="city-region-block" data-url="{% url 'api_promo:city-list' %}">
             <ul class="city-list">
               <li><a href="">Все регионы</a></li>
               {% for region in region_list %}
-                <li><a href="">{{ region.name }}</a></li>
+                <li><a data-id="{{ region.id }}">{{ region.name }}</a></li>
               {% endfor %}
             </ul>
           </div>
@@ -571,7 +571,7 @@
         <div class="city-column-big">
           <div class="city-title">Выберите Ваш город:</div>
           <div class="city-hidden">
-            <ul class="city-list">
+            <ul class="city-list" id="js-city-list">
               {% for city in city_list %}
               <li><a href="{% url 'landing:city' city.slug %}">{{ city.name }}</a></li>
               {% endfor %}

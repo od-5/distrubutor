@@ -203,5 +203,24 @@ $(document).ready(function () {
       }
     });
   });
+  $('.city-region-block a').on('click', function(e){
+    e.preventDefault();
+    var id = $(this).data('id');
+    var url = $('.city-region-block').data('url');
+    $.ajax({
+      type: "GET",
+      url: url,
+      data: {
+        region: id
+      },
+      success: function(data){
+        var el = $('#js-city-list');
+        el.html('');
+        for (var i = 0; i < data.length; i++) {
+          el.append('<li><a href="/' + data[i]['slug'] + '/">' + data[i]['name'] + '</a></li>');
+        }
+      }
+    });
+  });
 
 });

@@ -40,7 +40,10 @@ def city_list(request, format=None):
     Отображение списка городов
     """
     if request.method == 'GET':
+        region = request.GET.get('region', None)
         city_qs = City.objects.all()
+        if region and region.isdigit():
+            city_qs = city_qs.filter(region=int(region))
         if city_qs:
             serializer = CitySerializer(city_qs, many=True)
             return Response(serializer.data)

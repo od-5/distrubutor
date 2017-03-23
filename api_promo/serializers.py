@@ -15,7 +15,7 @@ class CountrySerializer(serializers.ModelSerializer):
         model = Country
         fields = (
             'id',
-            'name',
+            'name'
         )
 
 
@@ -28,7 +28,9 @@ class CitySerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'name',
-            'country',
+            'slug',
+            'region',
+            'country'
         )
 
 
