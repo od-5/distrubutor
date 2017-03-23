@@ -10,7 +10,7 @@ __author__ = 'alexy'
 
 
 class AgencyListView(ListView):
-    queryset = User.objects.filter(type=6)
+    queryset = User.objects.filter(type=User.UserType.agency)
     template_name = 'agency/agency_list.html'
     paginate_by = 50
 
@@ -23,7 +23,7 @@ class AgencyCreateView(CreateView):
         return reverse('agency:update', args=(self.object.pk,))
 
     def form_valid(self, form):
-        form.instance.type = 6
+        form.instance.type = User.UserType.agency
         form.instance.is_staff = True
         form.instance.is_active = True
         if 'leader' in self.request.POST:

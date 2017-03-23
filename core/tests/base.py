@@ -4,7 +4,7 @@ from core.models import User
 
 
 class LoginWithUserTestCase(TestCase):
-    user_type = 1
+    user_type = User.UserType.administrator
     user_email = 'test_user@user.us'
     user_password = '123456'
 
