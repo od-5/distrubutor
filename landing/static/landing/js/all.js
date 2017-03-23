@@ -43,7 +43,7 @@ $(document).ready(function () {
   $(".input[name='phone']").mask("+7 (999) 999-99-99");
   $('form').each(function(){
     $(this).validate({
-         rules: {
+      rules: {
         name: {
           required: true
         },
@@ -54,9 +54,27 @@ $(document).ready(function () {
         phone: {
           required: true,
           minlength: 6
+        },
+        city: {
+          required: true
         }
       }
-      });
+    });
+    $(this).submit(function(e) {
+			console.log($(this));
+      var form = $(this);
+      var city = form.find('input[name=city]');
+			if (city.val() == '') {
+				e.preventDefault();
+				$('#js-show-city-btn').trigger('click');
+        $(document).on('click', '#js-city-list a', function(e){
+          e.preventDefault();
+          city.val($(this).data('id'));
+          $.fancybox.close();
+          form.submit();
+        });
+			}
+		});
   });
 
   // nav
@@ -217,7 +235,7 @@ $(document).ready(function () {
         var el = $('#js-city-list');
         el.html('');
         for (var i = 0; i < data.length; i++) {
-          el.append('<li><a href="/' + data[i]['slug'] + '/">' + data[i]['name'] + '</a></li>');
+          el.append('<li><a href="/' + data[i]['slug'] + '/" data-id="' + data[i]['id'] + '">' + data[i]['name'] + '</a></li>');
         }
       }
     });

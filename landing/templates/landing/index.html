@@ -67,7 +67,7 @@
             {% endfor %}
             </div>
           </div>
-          <div class="header-city"><span class="header-city-span">Выберите город:</span> <a href="#city-popup" class="fancybox">{{ object.name|default:'Не выбрано' }}</a></div>
+          <div class="header-city"><span class="header-city-span">Выберите город:</span> <a href="#city-popup" id="js-show-city-btn" class="fancybox">{{ object.name|default:'Не выбрано' }}</a></div>
           <div class="header-contact"><span class="header-contact-span">Контакты:</span> {{ SETUP.phone|default:'8 (800) 234-37-37' }}</div>
           <div class="header-enter">
             <a href="{% url 'dashboard:index' %}" class="enter-link enter-link-top">
@@ -573,7 +573,7 @@
           <div class="city-hidden">
             <ul class="city-list" id="js-city-list">
               {% for city in city_list %}
-              <li><a href="{% url 'landing:city' city.slug %}">{{ city.name }}</a></li>
+              <li><a href="{% url 'landing:city' city.slug %}" data-id="{{ city.id }}">{{ city.name }}</a></li>
               {% endfor %}
             </ul>
           </div>
@@ -592,6 +592,7 @@
             <button class="submit">Оставить заявку</button>
           </fieldset>
         </form>
+      </div>
       </div>
     </div>
     <div id="boxes">
