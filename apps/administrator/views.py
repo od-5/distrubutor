@@ -11,12 +11,12 @@ __author__ = 'alexy'
 
 
 class AdministratorListView(ListView):
-    queryset = User.objects.filter(type=1)
+    queryset = User.objects.filter(type=User.UserType.administrator)
     template_name = 'administrator/administrator_list.html'
     paginate_by = 50
 
     def get_queryset(self):
-        qs = User.objects.filter(type=1)
+        qs = User.objects.filter(type=User.UserType.administrator)
         if self.request.GET.get('email'):
             qs = qs.filter(email=self.request.GET.get('email'))
         if self.request.GET.get('last_name'):
@@ -49,7 +49,7 @@ class AdministratorCreateView(CreateView):
         return reverse('administrator:update', args=(self.object.pk,))
 
     def form_valid(self, form):
-        form.instance.type = 1
+        form.instance.type = User.UserType.administrator
         form.instance.is_superuser = True
         form.instance.is_staff = True
         form.instance.is_active = True

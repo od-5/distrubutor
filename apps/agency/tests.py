@@ -22,7 +22,7 @@ class AgencyTestCase(LoginWithUserTestCase):
             {'email': 'some_agency@agency.ag', 'password1': 'password', 'password2': 'password'})
         some_agency = User.objects.get(email='some_agency@agency.ag')
         self.assertRedirects(response, reverse('agency:update', args=(some_agency.pk,)))
-        self.assertEqual(some_agency.type, 6)
+        self.assertEqual(some_agency.type, User.UserType.agency)
         self.assertEqual(some_agency.is_staff, True)
         self.assertEqual(some_agency.is_active, True)
 
@@ -32,7 +32,7 @@ class AgencyTestCase(LoginWithUserTestCase):
             {'email': 'some_leader_agency@agency.ag', 'password1': 'password', 'password2': 'password', 'leader': ''})
         some_agency = User.objects.get(email='some_leader_agency@agency.ag')
         self.assertRedirects(response, reverse('agency:update', args=(some_agency.pk,)))
-        self.assertEqual(some_agency.type, 6)
+        self.assertEqual(some_agency.type, User.UserType.agency)
         self.assertEqual(some_agency.is_staff, True)
         self.assertEqual(some_agency.is_active, True)
         self.assertEqual(some_agency.agency_leader, True)

@@ -36,7 +36,7 @@ class AdministratorTestCase(LoginWithUserTestCase):
             {'email': 'some_admin@admin.ad', 'password1': 'password', 'password2': 'password'})
         some_admin = User.objects.get(email='some_admin@admin.ad')
         self.assertRedirects(response, reverse('administrator:update', args=(some_admin.pk,)))
-        self.assertEqual(some_admin.type, 1)
+        self.assertEqual(some_admin.type, User.UserType.administrator)
         self.assertEqual(some_admin.is_superuser, True)
         self.assertEqual(some_admin.is_staff, True)
         self.assertEqual(some_admin.is_active, True)
