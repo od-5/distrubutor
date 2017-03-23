@@ -7,6 +7,7 @@ from django.views.generic import ListView, CreateView, UpdateView
 from django.utils import timezone
 
 from lib.cbv import RedirectlessFormMixin, SendUserToFormMixin, PassGetArgsToCtxMixin
+from core.models import User
 from apps.geolocation.models import City
 from apps.manager.models import Manager
 from .models import Client, Task, ClientContact, ClientManager
@@ -66,7 +67,7 @@ class ClientListView(ListView, PassGetArgsToCtxMixin):
         manager_task_count = 0
         search_client_name = self.request.GET.get('client_name')
         if search_client_name:
-            if self.request.user.type == 5:
+            if self.request.user.type == User.UserType.manager:
                 qs = Client.objects.filter(moderator=user.manager_user.moderator.moderator_user)
             else:
                 qs = queryset
@@ -80,13 +81,13 @@ class ClientListView(ListView, PassGetArgsToCtxMixin):
             'manager_client_count': manager_client_count,
             'manager_task_count': manager_task_count
         })
-        if user.type == 1:
+        if user.type == User.UserType.administrator:
             manager_qs = Manager.objects.filter(user__is_active=True)
             city_qs = City.objects.all()
-        elif user.type == 2:
+        elif user.type == User.UserType.moderator:
             manager_qs = Manager.objects.filter(moderator=user, user__is_active=True)
             city_qs = user.moderator_user.city.all()
-        elif user.type == 5:
+        elif user.type == User.UserType.manager:
             context.update({
                 'current_manager': user.manager_user
             })
@@ -127,7 +128,7 @@ class ClientUpdateView(UpdateView, SendUserToFormMixin, RedirectlessFormMixin):
     def form_valid(self, form):
         result = super(ClientUpdateView, self).form_valid(form)
         if 'manager' in form.changed_data:
-            self.object.type = 2
+            self.object.type = Client.ClientType.reported_client
             self.object.save()
             clientmanager = ClientManager(manager=self.object.manager, client=self.object)
             clientmanager.save()
@@ -199,11 +200,11 @@ class ClientTaskListView(ListView):
     def get_queryset(self):
         user = self.request.user
         qs = None
-        if user.type == 1:
+        if user.type == User.UserType.administrator:
             qs = Task.objects.all()
-        elif user.type == 2:
+        elif user.type == User.UserType.moderator:
             qs = Task.objects.filter(manager__moderator=user)
-        elif user.type == 5:
+        elif user.type == User.UserType.manager:
             if user.manager_user.leader:
                 qs = Task.objects.filter(manager__moderator=user.manager_user.moderator)
             else:
@@ -253,11 +254,11 @@ class ClientTaskListView(ListView):
 
         user = self.request.user
         manager_qs = None
-        if user.type == 1:
+        if user.type == User.UserType.administrator:
             manager_qs = Manager.objects.all()
-        elif user.type == 2:
+        elif user.type == User.UserType.moderator:
             manager_qs = Manager.objects.filter(moderator=user)
-        elif user.type == 5:
+        elif user.type == User.UserType.manager:
             if user.manager_user.leader:
                 manager_qs = Manager.objects.filter(moderator=user.manager_user.moderator.moderator_user)
 

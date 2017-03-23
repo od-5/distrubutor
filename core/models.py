@@ -75,7 +75,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     patronymic = models.CharField(u'Отчество', max_length=50, blank=True, null=True, default=u'')
     phone = models.CharField(max_length=250, verbose_name=u'Телефон', null=True, blank=True, default=u'')
     # type = models.PositiveSmallIntegerField(verbose_name=u'Уровень доступа', default=1, choices=USER_TYPE_CHOICE)
-    type = models.PositiveSmallIntegerField(verbose_name=u'Уровень доступа', default=1, choices=UserType.choices)
+    type = models.PositiveSmallIntegerField(
+        verbose_name=u'Уровень доступа', default=UserType.administrator, choices=UserType.choices)
     is_staff = models.BooleanField(_('staff status'), default=False,
                                    help_text=_('Designates whether the user can log into this admin site.'))
     agency_leader = models.BooleanField(verbose_name=u'Руководитель', default=False)

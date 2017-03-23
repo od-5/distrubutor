@@ -2,6 +2,8 @@
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
+from core.models import User
+
 __author__ = 'alexy'
 
 
@@ -13,7 +15,7 @@ def administrator_required(f):
     def wrapped_f(request, *args, **kwargs):
         user = request.user
         if user.is_authenticated():
-            if user.type != 1:
+            if user.type != User.UserType.administrator:
                 return HttpResponseRedirect(reverse('dashboard:index'))
             return f(request, *args, **kwargs)
         else:

@@ -37,3 +37,4 @@ class Choices(object):
         if attr_instance.__class__ is ChoiceItem:
             return attr_instance.value
 
+        return attr_instance

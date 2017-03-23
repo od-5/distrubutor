@@ -1,6 +1,7 @@
 # coding=utf-8
 from django import forms
 
+from core.models import User
 from apps.manager.models import Manager
 from .models import Client, Task, ClientContact
 
@@ -28,17 +29,16 @@ class ClientAddForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        # self.request = kwargs.pop("request")
         user = kwargs.pop("user")
         super(ClientAddForm, self).__init__(*args, **kwargs)
-        if user.type == 1:
+        if user.type == User.UserType.administrator:
             self.fields['manager'].queryset = Manager.objects.filter(user__is_active=True)
-        elif user.type == 2:
+        elif user.type == User.UserType.moderator:
             self.fields['city'].queryset = user.moderator_user.city.all()
             self.fields['manager'].queryset = user.manager_set.filter(user__is_active=True)
             self.fields['moderator'].initial = user.moderator_user
             self.fields['moderator'].widget = forms.HiddenInput()
-        elif user.type == 5:
+        elif user.type == User.UserType.manager:
             self.fields['city'].queryset = user.manager_user.moderator.moderator_user.city.all()
             self.fields['manager'].queryset = user.manager_user.moderator.manager_set.filter(user__is_active=True)
             self.fields['manager'].initial = user.manager_user
@@ -61,22 +61,18 @@ class ClientUpdateForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        # self.request = kwargs.pop("request")
         user = kwargs.pop("user")
         super(ClientUpdateForm, self).__init__(*args, **kwargs)
-        if user.type == 1:
+        if user.type == User.UserType.administrator:
             self.fields['manager'].queryset = Manager.objects.filter(user__is_active=True)
-        elif user.type == 2:
+        elif user.type == User.UserType.moderator:
             self.fields['city'].queryset = user.moderator_user.city.all()
             self.fields['manager'].queryset = user.manager_set.filter(user__is_active=True)
             self.fields['moderator'].initial = user.moderator_user
-            # self.fields['moderator'].widget = forms.HiddenInput()
-        elif user.type == 5:
+        elif user.type == User.UserType.manager:
             self.fields['city'].queryset = user.manager_user.moderator.moderator_user.city.all()
             self.fields['manager'].queryset = user.manager_user.moderator.manager_set.filter(user__is_active=True)
-            # self.fields['manager'].initial = user.manager_user
             self.fields['moderator'].initial = user.manager_user.moderator.moderator_user
-            # self.fields['moderator'].widget = forms.HiddenInput()
 
 
 class ClientContactForm(forms.ModelForm):
@@ -107,15 +103,14 @@ class TaskForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        # self.request = kwargs.pop("request")
         user = kwargs.pop("user")
         super(TaskForm, self).__init__(*args, **kwargs)
-        if user.type == 1:
+        if user.type == User.UserType.administrator:
             self.fields['manager'].queryset = Manager.objects.filter(user__is_active=True)
-        elif user.type == 2:
+        elif user.type == User.UserType.moderator:
             self.fields['manager'].queryset = user.manager_set.filter(user__is_active=True)
             self.fields['client'].queryset = user.moderator_user.client_set.all()
-        elif user.type == 5:
+        elif user.type == User.UserType.manager:
             self.fields['client'].queryset = user.manager_user.moderator.moderator_user.client_set.all()
             self.fields['manager'].queryset = user.manager_user.moderator.manager_set.filter(user__is_active=True)
             self.fields['manager'].initial = user.manager_user

@@ -1,6 +1,8 @@
 # coding=utf-8
 from django.db import models
 
+from lib.models import Choices, ChoiceItem
+from core.models import User
 from apps.geolocation.models import City
 from apps.manager.models import Manager
 from apps.moderator.models import Moderator
@@ -12,11 +14,11 @@ class ClientModelManager(models.Manager):
     def get_qs(self, user):
         qs = Client.objects.none()
 
-        if user.type == 1:
+        if user.type == User.UserType.administrator:
             qs = Client.objects.all()
-        elif user.type == 2:
+        elif user.type == User.UserType.moderator:
             qs = Client.objects.filter(moderator=user.moderator_user)
-        elif user.type == 5:
+        elif user.type == User.UserType.manager:
             if user.manager_user.leader:
                 qs = Client.objects.filter(moderator=user.manager_user.moderator.moderator_user)
             else:
@@ -36,11 +38,17 @@ class Client(models.Model):
     def __unicode__(self):
         return self.name
 
+    # TODO: удалить
     TYPE_CHOICES = (
         (0, u'Входящая заявка'),
         (1, u'Клиент'),
         (2, u'Переданный клиент'),
     )
+
+    class ClientType(Choices):
+        incoming_request = ChoiceItem(0, u'Входящая заявка')
+        client = ChoiceItem(1, u'Клиент')
+        reported_client = ChoiceItem(2, 'Переданный клиент')
 
     moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор')
     manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер')
@@ -50,7 +58,7 @@ class Client(models.Model):
     actual_address = models.CharField(verbose_name=u'Фактический адрес', max_length=255, blank=True, null=True)
     site = models.CharField(verbose_name=u'Сайт', blank=True, null=True, max_length=100)
     type = models.PositiveSmallIntegerField(
-        verbose_name=u'Тип клиента', choices=TYPE_CHOICES, default=TYPE_CHOICES[1][0])
+        verbose_name=u'Тип клиента', choices=ClientType.choices, default=ClientType.client)
 
 
 class ClientManager(models.Model):
@@ -96,6 +104,7 @@ class Task(models.Model):
     # def get_absolute_url(self):
     #     return reverse('client:task-update', args=(self.pk, ))
 
+    # TODO: удалить
     TASK_TYPE_CHOICES = (
         (0, u'Назначена встреча'),
         (1, u'Назначен звонок'),
@@ -103,15 +112,26 @@ class Task(models.Model):
         (3, u'Отказ'),
     )
 
+    class TaskType(Choices):
+        planned_meet = ChoiceItem(0, u'Назначена встреча')
+        planned_call = ChoiceItem(1, u'Назначен звонок')
+        sale = ChoiceItem(2, u'Продажа')
+        rejection = ChoiceItem(3, u'Отказ')
+
+    # TODO: удалить
     TASK_STATUS = (
         (0, u'План'),
         (1, u'Сделано'),
     )
 
+    class TaskStatus(Choices):
+        planed = ChoiceItem(0, u'План')
+        completed = ChoiceItem(1, u'Сделано')
+
     manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер')
     client = models.ForeignKey(to=Client, verbose_name=u'Клиент')
     clientcontact = models.ForeignKey(to=ClientContact, verbose_name=u'Контактное лицо', null=True, blank=True)
-    type = models.PositiveIntegerField(choices=TASK_TYPE_CHOICES, verbose_name=u'Тип задачи')
+    type = models.PositiveIntegerField(choices=TaskType.choices, verbose_name=u'Тип задачи')
     date = models.DateField(verbose_name=u'Дата')
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
-    status = models.PositiveIntegerField(choices=TASK_STATUS, default=0, verbose_name=u'Статус')
+    status = models.PositiveIntegerField(choices=TaskStatus.choices, default=TaskStatus.planed, verbose_name=u'Статус')

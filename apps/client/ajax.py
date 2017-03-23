@@ -1,6 +1,7 @@
 # coding=utf-8
 from datetime import datetime
 
+from django.db import models
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
@@ -23,7 +24,7 @@ def reassign_manager(request):
         client = Client.objects.get(pk=client_id)
         new_manager = Manager.objects.get(pk=new_id)
         client.manager = new_manager
-        client.type = 2
+        client.type = User.UserType.moderator
         client.save()
         new_clientmanager = ClientManager(manager=new_manager, client=client)
         new_clientmanager.save()
@@ -137,14 +138,13 @@ def ajax_task_add(request):
             clientcontact=clientcontact,
             type=type_id,
             date=date,
-            comment=comment,
-            status=0
+            comment=comment
         )
         task.save()
         return {
             'success': True
         }
-    except:
+    except models.DoesNotExist:
         return {
             'success': False
         }
@@ -171,16 +171,15 @@ def ajax_task_update(request):
             clientcontact=clientcontact,
             type=type_id,
             date=date,
-            comment=comment,
-            status=0
+            comment=comment
         )
         new_task.save()
-        task.status = 1
+        task.status = Task.TaskStatus.completed
         task.save()
         return {
             'success': True
         }
-    except:
+    except models.DoesNotExist:
         return {
             'success': False
         }
@@ -188,17 +187,15 @@ def ajax_task_update(request):
 
 def ajax_sale_add(request):
     r_client = request.POST.get('client')
-    r_manager = request.POST.get('manager')
     r_task = request.POST.get('task')
     r_email = request.POST.get('email')
     r_password = request.POST.get('password')
     client = Client.objects.get(pk=int(r_client))
     task = Task.objects.get(pk=int(r_task))
-    manager = Manager.objects.get(pk=int(r_manager))
     try:
         User.objects.get(email=r_email)
     except User.DoesNotExist:
-        user = User(email=r_email, password=r_password, type=3)
+        user = User(email=r_email, password=r_password, type=User.UserType.client)
         user.set_password(r_password)
         user.save()
         sale = Sale(
