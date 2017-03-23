@@ -4,6 +4,8 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from lib.models import Choices, ChoiceItem
+
 __author__ = 'alexy'
 
 
@@ -49,6 +51,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         ordering = ['-date_joined']
         app_label = 'core'
 
+    # TODO: удалить
     USER_TYPE_CHOICE = (
         (1, u'Администратор'),
         (2, u'Модератор'),
@@ -58,12 +61,21 @@ class User(AbstractBaseUser, PermissionsMixin):
         (6, u'Рекламное агенство'),
     )
 
+    class UserType(Choices):
+        administrator = ChoiceItem(1, u'Администратор')
+        moderator = ChoiceItem(2, u'Модератор')
+        client = ChoiceItem(3, u'Клиент')
+        distributor = ChoiceItem(4, u'Распространитель')
+        manager = ChoiceItem(5, u'Менеджер')
+        agency = ChoiceItem(6, u'Агенство')
+
     email = models.EmailField(_('email address'), unique=True)
     first_name = models.CharField(_('first name'), max_length=30, blank=True, null=True, default=u'')
     last_name = models.CharField(_('last name'), max_length=30, blank=True, null=True, default=u'')
     patronymic = models.CharField(u'Отчество', max_length=50, blank=True, null=True, default=u'')
     phone = models.CharField(max_length=250, verbose_name=u'Телефон', null=True, blank=True, default=u'')
-    type = models.PositiveSmallIntegerField(verbose_name=u'Уровень доступа', default=1, choices=USER_TYPE_CHOICE)
+    # type = models.PositiveSmallIntegerField(verbose_name=u'Уровень доступа', default=1, choices=USER_TYPE_CHOICE)
+    type = models.PositiveSmallIntegerField(verbose_name=u'Уровень доступа', default=1, choices=UserType.choices)
     is_staff = models.BooleanField(_('staff status'), default=False,
                                    help_text=_('Designates whether the user can log into this admin site.'))
     agency_leader = models.BooleanField(verbose_name=u'Руководитель', default=False)
