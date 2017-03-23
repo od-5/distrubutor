@@ -29,12 +29,13 @@ urlpatterns = patterns(
     url(r'^stand/', include('apps.stand.urls', namespace='stand'),),
     # url(r'^hanger/', include('apps.hanger_mailer.urls', namespace='hanger_mailer'),),
     url(r'', include('core.urls')),
-    url(r'', include('landing.urls', namespace='landing')),
+
     (r'^i18n/', include('django.conf.urls.i18n')),
 
     url(r'^ckeditor/', include('ckeditor.urls')),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'', include('landing.urls', namespace='landing'))
 )
 
 if settings.DEBUG:
