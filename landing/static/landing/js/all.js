@@ -70,6 +70,7 @@ $(document).ready(function () {
         $(document).on('click', '#js-city-list a', function(e){
           e.preventDefault();
           city.val($(this).data('id'));
+
           $.fancybox.close();
           form.submit();
         });
