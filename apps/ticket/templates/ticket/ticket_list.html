@@ -134,7 +134,7 @@
                       <td>{{ object.phone|default:'Не указано' }}</td>
                       <td>{{ object.mail|default:'Не указано' }}</td>
                       <td>
-                        {% if object.promo and not object.moderator %}
+                        {% if not object.moderator %}
                           <a href="{% url 'ticket:accept' object.pk %}" class="btn btn-success btn-sm">Принять заявку</a>
                         {% else %}
                         {{ object.moderator|default:'Заявка для единой службы' }}

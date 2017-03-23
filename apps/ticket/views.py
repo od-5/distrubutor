@@ -122,7 +122,7 @@ class TicketListView(ListView):
             if user.superviser:
                 qs = Ticket.objects.filter(
                     Q(moderator__superviser=user) | Q(moderator=moderator) |
-                    Q(moderator__isnull=True, promo=True, city__in=moderator.get_city_id_list())
+                    Q(moderator__isnull=True, city__in=moderator.get_city_id_list())
                 )
             else:
                 if user.moderator_user.ticket_forward:
@@ -130,13 +130,13 @@ class TicketListView(ListView):
                 else:
                     qs = Ticket.objects.filter(
                         Q(moderator=moderator) |
-                        Q(moderator__isnull=True, promo=True, city__in=moderator.get_city_id_list())
+                        Q(moderator__isnull=True, city__in=moderator.get_city_id_list())
                     )
         elif user.type == 5:
             moderator = user.manager_user.moderator.moderator_user
             qs = Ticket.objects.filter(
                 Q(moderator=moderator, moderator__ticket_forward=False) |
-                Q(moderator__isnull=True, promo=True, city__in=moderator.get_city_id_list())
+                Q(moderator__isnull=True, city__in=moderator.get_city_id_list())
             )
         elif user.type == 6:
             qs = Ticket.objects.select_related().filter(
