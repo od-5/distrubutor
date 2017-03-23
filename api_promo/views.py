@@ -7,8 +7,8 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .serializers import CitySerializer, CountrySerializer, ModeratorSerializer
-from apps.geolocation.models import City, Country
+from .serializers import CitySerializer, CountrySerializer, ModeratorSerializer, RegionSerializer
+from apps.geolocation.models import City, Country, Region
 from apps.moderator.models import Moderator
 # import the logging library
 import logging
@@ -27,6 +27,22 @@ def country_list(request, format=None):
         country_qs = Country.objects.all()
         if country_qs:
             serializer = CountrySerializer(country_qs, many=True)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def region_list(request, format=None):
+    """
+    Отображение списка регионов
+    """
+    if request.method == 'GET':
+        region_qs = Region.objects.all()
+        if region_qs:
+            serializer = RegionSerializer(region_qs, many=True)
             return Response(serializer.data)
         else:
             return Response(status=status.HTTP_204_NO_CONTENT)

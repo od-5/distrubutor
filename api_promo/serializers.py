@@ -1,7 +1,7 @@
 # coding=utf-8
 from rest_framework import serializers
 
-from apps.geolocation.models import Country, City
+from apps.geolocation.models import Country, Region, City
 from apps.moderator.models import Moderator
 
 __author__ = 'alexy'
@@ -16,6 +16,19 @@ class CountrySerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'name'
+        )
+
+
+class RegionSerializer(serializers.ModelSerializer):
+    """
+    Сериализация модели региона
+    """
+    class Meta:
+        model = Region
+        fields = (
+            'id',
+            'name',
+            'country'
         )
 
 
