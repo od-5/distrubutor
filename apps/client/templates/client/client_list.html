@@ -82,7 +82,7 @@
             <div class="col-md-12">
               <div class="col-md-5">
                 <form action="" method="GET" role="form" class="form form-search add-bottom add-top">
-                  <input type="text" name="client_name" value="{{ r_client_name }}" class="form-control add-bottom" placeholder="Название клиента">
+                  <input type="text" name="client_name" value="{{ r_client_name|default:'' }}" class="form-control add-bottom" placeholder="Название клиента">
                   <button type="submit" class="btn btn-search"> <span class="glyphicon glyphicon-search"></span> Проверить наличие</button>
                 </form>
               </div>

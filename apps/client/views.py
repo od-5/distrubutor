@@ -52,7 +52,7 @@ class ClientListView(ListView, PassGetArgsToCtxMixin):
                     c_qs = c_qs.filter(phone__icontains=phone)
                 if contact:
                     c_qs = c_qs.filter(name__icontains=contact)
-                client_id_list = [int(i.incomingclient.id) for i in c_qs]
+                client_id_list = [int(i.client.id) for i in c_qs]
                 qs = qs.filter(id__in=client_id_list)
 
         return qs

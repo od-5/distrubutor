@@ -66,8 +66,43 @@ class ClientTestCase(LoginWithUserTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'client/client_list.html')
 
+    def test_list_filter(self):
+        client = _create_fake_client()
+        ClientContact(client=client, name=u'Контактное лицо', phone=u'1111111111').save()
 
+        response = self.client.get(
+            reverse('client:list'),
+            {
+                'name': client.name,
+                'phone': client.clientcontact_set.all()[0].phone,
+                'contact': client.clientcontact_set.all()[0].name,
+                'manager': client.manager.pk,
+                'city': client.city.pk
+            })
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['object_list'].count(), 1)
+        self.assertEqual(response.context['object_list'][0], client)
 
+    def test_list_context(self):
+        client = _create_fake_client()
+
+        response = self.client.get(reverse('client:list'), {'client_name': client.name})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['manager_client_count'], 1)
+        self.assertEqual(response.context['manager_task_count'], 0)
+        self.assertEqual(
+            response.context['manager_list'].count(), Manager.objects.filter(user__is_active=True).count())
+        self.assertEqual(response.context['city_list'].count(), City.objects.all().count())
+        self.assertIn('import_form', response.context)
+        # TODO: для полноты нужна проверка для других типов пользователей
+
+    def test_list_search_client_name(self):
+        client = _create_fake_client()
+
+        response = self.client.get(reverse('client:list'), {'client_name': client.name})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['search_client_list'].count(), 1)
+        self.assertEqual(response.context['search_client_list'][0], client)
 
     def test_create_smoke(self):
         response = self.client.get(reverse('client:add'))
