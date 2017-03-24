@@ -3,7 +3,7 @@
 {% block viewport %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% endblock %}
-{% block title %}Список задач для распространителей | {{ block.super }}{% endblock %}
+{% block title %}Список задач | {{ block.super }}{% endblock %}
 {% block extra_js %}
   <script src="{% static 'distributor/js/distributor.js' %}"></script>
 {% endblock %}
@@ -17,7 +17,7 @@
             {% if archive %}
             <li class="active">Архив задач</li>
             {% else %}
-            <li class="active">Список задач для распространителей</li>
+            <li class="active">Список задач</li>
             {% endif %}
           </ol>
         </div>
@@ -34,7 +34,7 @@
         </div>
       {% else %}
         <div class="col-md-8">
-          <span class="page-top__title">Список задач для распространителей</span><span class="page-top__count"> / {{ page_obj.paginator.count|default:'0' }}</span>
+          <span class="page-top__title">Список задач</span><span class="page-top__count"> / {{ page_obj.paginator.count|default:'0' }}</span>
         </div>
         {% if user.type == 1 or user.type == 2 or user.type == 5 %}
         <div class="col-md-4">
