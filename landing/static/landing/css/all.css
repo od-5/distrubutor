@@ -248,8 +248,12 @@ article p {
     color: #fff;
     font-size: 14px;
 }
-.header-contact-span {
-    color: #6c6c6c;
+.header-contact-link {
+    font-size: 14px;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    border-bottom: 1px dashed #fff;
 }
 .header-enter {
     position: relative;

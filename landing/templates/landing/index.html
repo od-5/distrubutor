@@ -68,7 +68,13 @@
             </div>
           </div>
           <div class="header-city"><span class="header-city-span">Выберите город:</span> <a href="#city-popup" id="js-show-city-btn" class="fancybox">{{ object.name|default:'Не выбрано' }}</a></div>
-          <div class="header-contact"><span class="header-contact-span">Контакты:</span> {{ SETUP.phone|default:'8 (800) 234-37-37' }}</div>
+          <div class="header-contact">
+            {% if moderator_list %}
+              <a href="#contact-popup" class="header-contact-link fancybox">
+                {{ phone|default:'Контакты исполнителей' }}
+              </a>
+            {% endif %}
+          </div>
           <div class="header-enter">
             <a href="{% url 'dashboard:index' %}" class="enter-link enter-link-top">
             <span>{% if user.is_authenticated %}{{ user.email }}{% else %} Войти как...{% endif %}</span>
@@ -538,6 +544,21 @@
         </div>
       </div>
     </div>
+    <div id="contact-popup" class="contact-popup">
+    {% if moderator_list %}
+      <div class="contact-table">
+      {% for moderator in moderator_list %}
+        {% if moderator.contact or moderator.phone %}
+        <div class="contact-row">
+          <div class="contact-cell contact-cell-name">{{ moderator.company|default:'не указано' }}</div>
+          <div class="contact-cell contact-cell-adress">{{ moderator.contact|linebreaksbr|default:'' }}</div>
+          <div class="contact-cell contact-cell-phone">{{ moderator.phone|default:'' }}</div>
+        </div>
+        {% endif %}
+      {% endfor %}
+      </div>
+    {% endif %}
+  </div>
     <div id="city-popup" class="city-popup">
       <div class="city-top">
         <div class="city-country">

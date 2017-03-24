@@ -46,8 +46,12 @@ class CityDetailView(DetailView, LandingMixin):
         context = super(CityDetailView, self).get_context_data(**kwargs)
         moderator_qs = self.object.moderator_set.filter(site_visible=False,  user__is_active=True,
                                                         superviser__isnull=True)
+        phone = None
+        if moderator_qs.count() == 1:
+            phone = moderator_qs.first().phone
         context.update({
-            'moderator_list': moderator_qs
+            'moderator_list': moderator_qs,
+            'phone': phone
         })
         return context
 

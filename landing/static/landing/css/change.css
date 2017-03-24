@@ -257,6 +257,44 @@ dd a {
     cursor: pointer;
     background: url(../images/loupe.png) 0 0 no-repeat;
 }
+.contact-popup {
+    display: none;
+    width: 790px;
+    padding: 53px 26px 42px 44px;
+    background: #fff;
+}
+.contact-table {
+    max-width: 726px;
+    margin: 0 auto;
+    padding: 0 12px;
+    border: 1px solid #7fc4f7;
+    border-radius: 5px;
+}
+.contact-row {
+    display: table;
+    width: 100%;
+    padding: 14px 0 15px;
+    color: #333;
+    font-weight: 400;
+    border-top: 1px solid #7fc4f7;
+}
+.contact-row:first-child {border-top: 0;}
+.contact-cell {
+    display: table-cell;
+    vertical-align: top;
+}
+.contact-cell-name {
+    width: 31%;
+    padding: 0 20px 0 0;
+}
+.contact-cell-adress {
+    width: 46%;
+    padding: 0 20px 0 0;
+}
+.contact-cell-phone {
+    width: 23%;
+    text-align: right;
+}
 .city-list li {
     margin: 0 0 16px;
     font-size: 14px;
@@ -458,6 +496,38 @@ dd a {
         width: 700px;
         height: 526px;
     }
+    .contact-popup {
+        display: none;
+        width: 680px;
+        padding: 23px 26px 42px 44px;
+    }
+    .contact-table {
+        padding: 5px 12px;
+        border: 1px solid #008acb;
+    }
+    .contact-row {
+        display: block;
+        width: 100%;
+        padding: 6px 0 8px;
+        font-size: 12px;
+        line-height: 15px;
+        border-top: 1px solid #008acb;
+    }
+    .contact-row:first-child {border-top: 0;}
+    .contact-cell {
+        display: block;
+        width: auto;
+        text-align: center;
+    }
+    .contact-cell-name {
+        padding: 0;
+    }
+    .contact-cell-adress {
+        padding: 0;
+    }
+    .contact-cell-phone {
+        text-align: center;
+    }
     .city-hidden .city-list li {
         width: 49%;
     }
@@ -526,8 +596,10 @@ dd a {
 
 }
 @media screen and (max-width: 767px) {
-    .header-contact-span {
+    .contact-popup {
         display: none;
+        width: 300px;
+        padding: 20px;
     }
     .icons-block {padding: 55px 0 24px;}
     .icons-block-item {
@@ -767,10 +839,6 @@ dd a {
         padding-left: 0;
         left: 0;
     }
-    .header-contact-span {
-        display: inline;
-        color: #fff200;
-    }
     .about-popup {
         width: 260px;
         padding: 20px 5px 20px;
@@ -784,23 +852,10 @@ dd a {
     body {overflow-x: hidden;}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@media screen and (max-width: 320px) {
+    .contact-popup {
+        width: 250px;
+        padding: 10px;
+    }
+}
 
