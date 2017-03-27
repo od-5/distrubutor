@@ -30,7 +30,16 @@ class Choices(object):
         def __set__(self, instance, value):
             raise AttributeError
 
+    class LabelsDescriptor(object):
+        def __get__(self, instance, owner):
+            return {owner.__dict__[attr_key].value: attr_key
+                    for attr_key in owner.__dict__.keys() if not attr_key.startswith('__')}
+
+        def __set__(self, instance, value):
+            raise AttributeError
+
     choices = ChoicesDescriptor()
+    labels = LabelsDescriptor()
 
     def __getattribute__(self, attr):
         attr_instance = object.__getattribute__(self, attr)
