@@ -179,7 +179,7 @@
                   <div>
                   {% for photo in point.pointphoto_set.all %}
                     <a href="{{ photo.photo.url }}" rel="group" class="js-gallery table-photo-list__link" title="{{ photo.name }}, время {{ photo.timestamp|time:'H:i'|default:'Не указано' }}">
-                      <img src="{{ photo.image_resize.url }}" alt="" class="table-photo-list__thumb">
+                      <img src="{{ photo.get_thumb_url }}" alt="" class="table-photo-list__thumb">
                       <div class="table-photo-list__link_hover"><span class="glyphicon glyphicon-zoom-in"></span></div>
                     </a>
                   {% endfor %}
@@ -206,7 +206,7 @@
           <div class="col-md-3 col-xs-12 col-sm-6">
             <div class="photo-item">
               <a href="{{ photo.photo.url }}" rel="group" class="js-gallery photo-item__link" title="{{ photo.name }}, время {{ photo.timestamp|time:'H:i'|default:'Не указано' }}">
-                <img src="{{ photo.image_resize.url }}" alt="{{ photo.name }}, время {{ photo.timestamp|time:'H:i'|default:'Не указано' }}" class="photo-item__img">
+                <img src="{{ photo.get_thumb_url }}" alt="{{ photo.name }}, время {{ photo.timestamp|time:'H:i'|default:'Не указано' }}" class="photo-item__img">
                 <div class="photo-item__link_hover">
                   <span class="glyphicon glyphicon-zoom-in"></span>
                 </div>

@@ -193,6 +193,12 @@ class PointPhoto(models.Model):
     def __unicode__(self):
         return u'Фотография %s' % self.name
 
+    def get_thumb_url(self):
+        try:
+            return self.image_resize.url
+        except:
+            return self.photo.url
+
     def save(self, *args, **kwargs):
         try:
             self.name = self.point.__unicode__()
