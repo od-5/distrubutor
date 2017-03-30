@@ -11,7 +11,7 @@ from django.db import models
 from django.conf import settings
 
 from apps.moderator.models import Moderator, ModeratorArea, ModeratorAction
-from apps.sale.models import Sale, SaleOrder, SALE_ORDER_CATEGORY
+from apps.sale.models import Sale, SaleOrder
 from core.files import pointphoto_upload
 from core.models import User
 import core.geotagging as api
@@ -30,8 +30,9 @@ class Distributor(models.Model):
     def __unicode__(self):
         return self.user.get_full_name()
 
-    user = models.OneToOneField(to=User, limit_choices_to={'type': 4}, verbose_name=u'Пользователь',
-                                related_name='distributor_user')
+    user = models.OneToOneField(
+        to=User, limit_choices_to={'type': User.UserType.distributor}, verbose_name=u'Пользователь',
+        related_name='distributor_user')
     moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор')
     coord_x = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=u'Ширина', blank=True, null=True)
     coord_y = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=u'Долгота', blank=True, null=True)
@@ -60,6 +61,9 @@ class DistributorTask(models.Model):
         verbose_name_plural = u'Задачи для распространителей'
         app_label = 'distributor'
         ordering = ['-date', ]
+
+    class TaskCategory(SaleOrder.OrderCategory):
+        pass
 
     def __unicode__(self):
         if self.type:
@@ -130,7 +134,8 @@ class DistributorTask(models.Model):
 
     distributor = models.ForeignKey(to=Distributor, verbose_name=u'Распространитель')
     category = models.PositiveIntegerField(verbose_name=u'Категория задачи',
-                                           default=SALE_ORDER_CATEGORY[0][0], choices=SALE_ORDER_CATEGORY)
+                                           default=TaskCategory.sticking_and_spread,
+                                           choices=TaskCategory.choices)
     sale = models.ForeignKey(to=Sale, verbose_name=u'Клиент')
     order = models.ForeignKey(to=SaleOrder, verbose_name=u'Заказ клиента')
     area = models.ForeignKey(to=ModeratorArea, verbose_name=u'Район', blank=True, null=True)

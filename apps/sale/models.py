@@ -2,6 +2,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 
+from lib.models import Choices, ChoiceItem
 from apps.geolocation.models import City
 from apps.moderator.models import Moderator, ModeratorAction
 from apps.ticket.models import PreSale
@@ -12,6 +13,7 @@ from apps.manager.models import Manager
 __author__ = 'alexy'
 
 
+# TODO: удалить
 SALE_ORDER_CATEGORY = (
     (0, u'Расклейка или распространение'),
     (1, u'Промо акция'),
@@ -30,7 +32,8 @@ class Sale(models.Model):
 
     presale = models.OneToOneField(to=PreSale, blank=True, null=True)
     user = models.OneToOneField(
-        to=User, limit_choices_to={'type': 3}, verbose_name=u'Пользователь', related_name='sale_user')
+        to=User, limit_choices_to={'type': User.UserType.client}, verbose_name=u'Пользователь',
+        related_name='sale_user')
     moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор', related_name='sale_moderator')
     city = models.ForeignKey(to=City, verbose_name=u'Город', related_name='sale_city')
     manager = models.ForeignKey(
@@ -65,6 +68,11 @@ class SaleOrder(models.Model):
         app_label = 'sale'
         ordering = ['-date_start', ]
 
+    class OrderCategory(Choices):
+        sticking_and_spread = ChoiceItem(0, u'Расклейка или распространение')
+        promo_action = ChoiceItem(1, u'Промо акция')
+        questioning = ChoiceItem(2, u'Анкетирование')
+
     def __unicode__(self):
         if self.date_end:
             return u'Заказ %s - %s ' % (self.date_start, self.date_end)
@@ -98,13 +106,13 @@ class SaleOrder(models.Model):
         return round(total, 2)
 
     def save(self, *args, **kwargs):
-        if self.category != SALE_ORDER_CATEGORY[2][0]:
+        if self.category != self.OrderCategory.questioning:
             self.questionary = None
 
         super(SaleOrder, self).save(*args, **kwargs)
 
     def clean(self):
-        if self.category == SALE_ORDER_CATEGORY[2][0] and self.questionary is None:
+        if self.category == self.OrderCategory.questioning and self.questionary is None:
             raise ValidationError(u'Не выбрана анкета!')
 
     sale = models.ForeignKey(to=Sale, verbose_name=u'Продажа')
@@ -112,7 +120,7 @@ class SaleOrder(models.Model):
     date_end = models.DateField(verbose_name=u'Дата окончания', blank=True, null=True)
     type = models.ForeignKey(to=ModeratorAction, verbose_name=u'Тип заказа', blank=True, null=True)
     category = models.PositiveIntegerField(verbose_name=u'Категория заказа',
-                                           default=SALE_ORDER_CATEGORY[0][0], choices=SALE_ORDER_CATEGORY)
+                                           default=OrderCategory.sticking_and_spread, choices=OrderCategory.choices)
     count = models.PositiveIntegerField(verbose_name=u'Количество материала, шт', default=0)
     cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Стоимость за 1шт., руб', default=0)
     add_cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Наценка, %', default=0)
