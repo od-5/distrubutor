@@ -91,12 +91,30 @@ class ClientContact(models.Model):
     email = models.EmailField(verbose_name=u'e-mail', max_length=50, blank=True, null=True)
 
 
+class TaskModelManager(models.Manager):
+    def get_qs(self, user):
+        qs = None
+        if user.type == User.UserType.administrator:
+            qs = Task.objects.all()
+        elif user.type == User.UserType.moderator:
+            qs = Task.objects.filter(manager__moderator=user)
+        elif user.type == User.UserType.manager:
+            if user.manager_user.leader:
+                qs = Task.objects.filter(manager__moderator=user.manager_user.moderator)
+            else:
+                qs = Task.objects.filter(manager=user.manager_user)
+
+        return qs
+
+
 class Task(models.Model):
     class Meta:
         verbose_name = u'Задача'
         verbose_name_plural = u'Задачи'
         app_label = 'client'
         ordering = ['-date', ]
+
+    objects = TaskModelManager()
 
     def __unicode__(self):
         return self.get_type_display()
@@ -125,7 +143,7 @@ class Task(models.Model):
     )
 
     class TaskStatus(Choices):
-        planed = ChoiceItem(0, u'План')
+        planned = ChoiceItem(0, u'План')
         completed = ChoiceItem(1, u'Сделано')
 
     manager = models.ForeignKey(to=Manager, verbose_name=u'Менеджер')
@@ -134,4 +152,5 @@ class Task(models.Model):
     type = models.PositiveIntegerField(choices=TaskType.choices, verbose_name=u'Тип задачи')
     date = models.DateField(verbose_name=u'Дата')
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
-    status = models.PositiveIntegerField(choices=TaskStatus.choices, default=TaskStatus.planed, verbose_name=u'Статус')
+    status = models.PositiveIntegerField(
+        choices=TaskStatus.choices, default=TaskStatus.planned, verbose_name=u'Статус')

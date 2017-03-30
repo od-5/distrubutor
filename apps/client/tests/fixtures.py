@@ -25,6 +25,7 @@ class ClientContactFactory(factory.DjangoModelFactory):
 
     name = factory.Sequence(lambda n: 'Контактное лицо {}'.format(n))
     phone = factory.Sequence(lambda n: '+7{:0>10d}'.format(n))
+    email = factory.Sequence(lambda n: 'contact{}@contact.co'.format(n))
 
 
 class TaskFactory(factory.DjangoModelFactory):

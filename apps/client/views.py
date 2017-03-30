@@ -32,14 +32,14 @@ class ClientListView(ListView, PassGetArgsToCtxMixin):
 
     def get_queryset(self):
         user = self.request.user
-        name = self.request.GET.get('name')
-        phone = self.request.GET.get('phone')
-        contact = self.request.GET.get('contact')
-        manager = self.request.GET.get('manager')
-        city = self.request.GET.get('city')
-
         qs = self.model.objects.get_qs(user)
         if qs:
+            name = self.request.GET.get('name')
+            phone = self.request.GET.get('phone')
+            contact = self.request.GET.get('contact')
+            manager = self.request.GET.get('manager')
+            city = self.request.GET.get('city')
+
             if city and int(city) != 0:
                 qs = qs.filter(city=int(city))
             if manager and int(manager) != 0:
@@ -194,53 +194,45 @@ class ClientContactUpdateView(UpdateView):
 
 # TODO: придумать как структурировать и улучшить
 class ClientTaskListView(ListView):
+    model = Task
     template_name = 'client/task_list.html'
     paginate_by = 25
 
     def get_queryset(self):
         user = self.request.user
-        qs = None
-        if user.type == User.UserType.administrator:
-            qs = Task.objects.all()
-        elif user.type == User.UserType.moderator:
-            qs = Task.objects.filter(manager__moderator=user)
-        elif user.type == User.UserType.manager:
-            if user.manager_user.leader:
-                qs = Task.objects.filter(manager__moderator=user.manager_user.moderator)
+        qs = self.model.objects.get_qs(user)
+        if qs:
+            r_name = self.request.GET.get('name')
+            r_date_s = self.request.GET.get('date_s')
+            r_date_e = self.request.GET.get('date_e')
+            r_all = self.request.GET.get('all')
+            r_type = self.request.GET.get('type')
+            r_status = self.request.GET.get('status')
+            r_manager = self.request.GET.get('manager')
+
+            if r_all and int(r_all) == 1:
+                self.request.session['show_all_task'] = True
+            elif r_all and int(r_all) == 0:
+                self.request.session['show_all_task'] = False
+            try:
+                show_all = self.request.session['show_all_task']
+            except KeyError:
+                show_all = False
+            if r_manager and int(r_manager) != 0:
+                qs = qs.filter(manager=int(r_manager))
+            if not r_name and not r_date_s and not r_date_e and not show_all:
+                qs = qs.filter(date=timezone.localtime(timezone.now()))
             else:
-                qs = Task.objects.filter(manager=user.manager_user)
-
-        r_name = self.request.GET.get('name')
-        r_date_s = self.request.GET.get('date_s')
-        r_date_e = self.request.GET.get('date_e')
-        r_all = self.request.GET.get('all')
-        r_type = self.request.GET.get('type')
-        r_status = self.request.GET.get('status')
-        r_manager = self.request.GET.get('manager')
-
-        if r_all and int(r_all) == 1:
-            self.request.session['show_all_task'] = True
-        elif r_all and int(r_all) == 0:
-            self.request.session['show_all_task'] = False
-        try:
-            show_all = self.request.session['show_all_task']
-        except:
-            show_all = False
-        if r_manager and int(r_manager) != 0:
-            qs = qs.filter(manager=int(r_manager))
-        if not r_name and not r_date_s and not r_date_e and not show_all:
-            qs = qs.filter(date=timezone.localtime(timezone.now()))
-        else:
-            if r_name:
-                qs = qs.filter(client__name__icontains=r_name)
-            if r_date_s:
-                qs = qs.filter(date__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
-            if r_date_e:
-                qs = qs.filter(date__lte=datetime.strptime(r_date_e, '%d.%m.%Y'))
-        if r_type:
-            qs = qs.filter(type=int(r_type))
-        if r_status:
-            qs = qs.filter(status=int(r_status))
+                if r_name:
+                    qs = qs.filter(client__name__icontains=r_name)
+                if r_date_s:
+                    qs = qs.filter(date__gte=datetime.strptime(r_date_s, '%d.%m.%Y'))
+                if r_date_e:
+                    qs = qs.filter(date__lte=datetime.strptime(r_date_e, '%d.%m.%Y'))
+            if r_type:
+                qs = qs.filter(type=int(r_type))
+            if r_status:
+                qs = qs.filter(status=int(r_status))
 
         return qs
 

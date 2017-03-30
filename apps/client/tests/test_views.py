@@ -1,9 +1,15 @@
 # coding=utf-8
+from datetime import date
+
 from django.core.urlresolvers import reverse
 
 from core.tests.base import LoginWithUserTestCase
 from apps.geolocation.models import City
+from apps.geolocation.tests.fixtures import CityFactory
 from apps.manager.models import Manager
+from apps.manager.tests.fixtures import ManagerFactory
+from apps.moderator.tests.fixtures import ModeratorFactory
+from ..models import Task
 from .fixtures import ClientFactory, ClientContactFactory, TaskFactory
 
 
@@ -53,11 +59,32 @@ class ClientTestCase(LoginWithUserTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'client/client_add.html')
 
+    def test_create(self):
+        city = CityFactory()
+        moderator = ModeratorFactory()
+        manager = ManagerFactory(moderator=moderator.user)
+
+        response = self.client.post(
+            reverse('client:add'),
+            {
+                'moderator': moderator,
+                'manager': manager,
+                'name': u'Клиент',
+                'city': city
+            })
+        self.assertEqual(response.status_code, 200)
+
     def test_update_smoke(self):
         client = ClientFactory()
         response = self.client.get(reverse('client:update', args=(client.pk,)))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'client/client_update.html')
+
+    def test_update(self):
+        client = ClientFactory()
+        response = self.client.get(reverse('client:update', args=(client.pk,)))
+        response = self.client.post(reverse('client:update', args=(client.pk,)), response.context['form'].initial)
+        self.assertEqual(response.status_code, 200)
 
 
 class ClientManagerHistoryTestCase(LoginWithUserTestCase):
@@ -81,12 +108,30 @@ class ClientContactTestCase(LoginWithUserTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'client/clientcontact_add.html')
 
+    def test_create(self):
+        client = ClientFactory()
+        response = self.client.post(
+            reverse('client:contact-add', args=(client.pk,)),
+            {'client': client.pk, 'name': u'Контактное лицо'})
+        self.assertRedirects(response, reverse('client:contact-list', args=(client.pk,)))
+
     def test_update_smoke(self):
         client = ClientFactory()
         client_contact = ClientContactFactory(client=client)
+
         response = self.client.get(reverse('client:contact-update', args=(client_contact.pk,)))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'client/clientcontact_update.html')
+
+    def test_update(self):
+        client = ClientFactory()
+        client_contact = ClientContactFactory(client=client)
+
+        response = self.client.get(reverse('client:contact-update', args=(client_contact.pk,)))
+        response = self.client.post(
+            reverse('client:contact-update', args=(client_contact.pk,)),
+            response.context['form'].initial)
+        self.assertRedirects(response, reverse('client:contact-list', args=(client.pk,)))
 
 
 class ClientTaskTestCase(LoginWithUserTestCase):
@@ -95,13 +140,37 @@ class ClientTaskTestCase(LoginWithUserTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'client/task_list.html')
 
+    # TODO: протестировать после причесывания вида
+    # def test_list(self):
+    #     pass
+
     def test_create_smoke(self):
         response = self.client.get(reverse('client:task-add'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'client/task_add.html')
+
+    def test_create(self):
+        client = ClientFactory()
+        response = self.client.post(
+            reverse('client:task-add'),
+            {
+                'manager': client.manager.pk,
+                'client': client.pk,
+                'type': Task.TaskType.planned_meet,
+                'status': Task.TaskStatus.planned,
+                'date': date.today()
+            })
+        created_task = Task.objects.get(client=client)
+        self.assertRedirects(response, reverse('client:task-update', args=(created_task.pk,)))
 
     def test_update_smoke(self):
         task = TaskFactory()
         response = self.client.get(reverse('client:task-update', args=(task.pk,)))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'client/task_update.html')
+
+    def test_update(self):
+        task = TaskFactory()
+        response = self.client.get(reverse('client:task-update', args=(task.pk,)))
+        response = self.client.post(reverse('client:task-update', args=(task.pk,)), response.context['form'].initial)
+        self.assertEqual(response.status_code, 200)
