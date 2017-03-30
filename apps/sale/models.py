@@ -55,6 +55,7 @@ class Sale(models.Model):
     leader = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Руководитель')
     leader_function = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Должность руководителя')
     work_basis = models.CharField(max_length=256, blank=True, null=True, verbose_name=u'Основание для работы')
+    hide_empty_point = models.BooleanField(default=True, verbose_name=u'Не показывать gps-точки без фотографий')
 
 
 class SaleOrder(models.Model):

@@ -112,7 +112,7 @@
                       <td>{{ object.actual_name|default:'Не указано' }}</td>
                       <td>{{ object.city|default:'Не указано' }}</td>
                       {% if user.superviser %}
-                      <td>{{ object.moderator|default:'Не указано' }}</td>
+                      <td>{{ object.moderator.company|default:'Не указано' }}</td>
                       {% endif %}
                       <td>{{ object.manager|default:'Не указано' }}</td>
                       <td>{{ object.user|default:'Не указано' }}</td>

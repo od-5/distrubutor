@@ -120,7 +120,7 @@ class TicketListView(ListView):
         elif user.type == 2:
             moderator = user.moderator_user
             if user.superviser:
-                qs = Ticket.objects.filter(
+                qs = Ticket.objects.select_related('city', 'moderatr', 'agency_manager').filter(
                     Q(moderator__superviser=user) | Q(moderator=moderator) |
                     Q(moderator__isnull=True, city__in=moderator.get_city_id_list())
                 )

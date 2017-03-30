@@ -137,7 +137,7 @@
                         {% if not object.moderator %}
                           <a href="{% url 'ticket:accept' object.pk %}" class="btn btn-success btn-sm">Принять заявку</a>
                         {% else %}
-                        {{ object.moderator|default:'Заявка для единой службы' }}
+                        {{ object.moderator.company|default:'Заявка для единой службы' }}
                         {% endif %}
                       </td>
                       <td>{{ object.city|default:'Не указано' }}</td>

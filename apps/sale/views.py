@@ -142,9 +142,9 @@ class SaleListView(ListView):
             qs = Sale.objects.all()
         elif user.type == 2:
             if user.superviser:
-                qs = Sale.objects.filter(Q(moderator__superviser=user) | Q(moderator=user.moderator_user))
+                qs = Sale.objects.select_related('moderator', 'city', 'manager', 'user').filter(Q(moderator__superviser=user) | Q(moderator=user.moderator_user))
             else:
-                qs = Sale.objects.filter(moderator=user.moderator_user)
+                qs = Sale.objects.select_related('moderator', 'city', 'manager', 'user').filter(moderator=user.moderator_user)
         elif user.type == 5:
             if user.manager_user.leader:
                 qs = Sale.objects.filter(moderator=user.manager_user.moderator.moderator_user)
@@ -176,10 +176,10 @@ class SaleListView(ListView):
                 city_qs = City.objects.select_related().filter(
                     Q(moderator__superviser=user) | Q(moderator=user.moderator_user)).distinct()
                 moderator_qs = Moderator.objects.filter(Q(superviser=user) | Q(user=user))
-                manager_qs = Manager.objects.select_related().filter(Q(moderator__superviser=user) | Q(moderator=user))
+                manager_qs = Manager.objects.select_related('user').filter(Q(moderator__superviser=user) | Q(moderator=user))
             else:
                 city_qs = user.moderator_user.city.all()
-                manager_qs = user.manager_set.all()
+                manager_qs = Manager.objects.select_related('user').filter(moderator=user)
         elif user.type == 5:
             manager = Manager.objects.get(user=user)
             city_qs = City.objects.filter(moderator=manager.moderator)

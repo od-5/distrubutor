@@ -41,6 +41,7 @@ class SaleAddForm(forms.ModelForm):
             'leader': forms.TextInput(attrs={'class': 'form-control'}),
             'leader_function': forms.TextInput(attrs={'class': 'form-control'}),
             'work_basis': forms.TextInput(attrs={'class': 'form-control'}),
+            'hide_empty_point': forms.CheckboxInput(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -92,6 +93,7 @@ class SaleUpdateForm(forms.ModelForm):
             'leader': forms.TextInput(attrs={'class': 'form-control'}),
             'leader_function': forms.TextInput(attrs={'class': 'form-control'}),
             'work_basis': forms.TextInput(attrs={'class': 'form-control'}),
+            'hide_empty_point': forms.CheckboxInput()
         }
 
     def __init__(self, *args, **kwargs):

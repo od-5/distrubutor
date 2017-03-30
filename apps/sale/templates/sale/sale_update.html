@@ -207,6 +207,13 @@
                           {{ sale_form.signer_doc_dec|attr:'placeholder:действует на основании'|add_class:'signer-input' }}
                         </p>
                       </div>
+                      <div class="form-group alert alert-info">
+                        {{ sale_form.hide_empty_point.label_tag }}
+                        {{ sale_form.hide_empty_point }}
+                        {{ sale_form.hide_empty_point.errors }}
+                        <p class="small">Снять галочку если нужно показывать в отчёте клиента gps-точки
+                        к которым не привязаны фотографии</p>
+                      </div>
                     </div>
                     <div class="clearfix"></div>
                     <div class="col-md-6">
