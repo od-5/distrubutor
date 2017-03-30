@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.views.generic import ListView, CreateView, UpdateView
 
 from lib.cbv import SendUserToFormMixin
+from core.models import User
 from .models import Section, Topic, Comment, Notification
 from .forms import SectionAddForm, TopicAddForm, CommentAddForm, SectionUpdateForm, TopicUpdateForm, CommentUpdateForm
 
@@ -38,18 +39,18 @@ class TopicListView(ListView):
         user = self.request.user
         section = Section.objects.get(pk=self.kwargs['pk'])
         qs = section.topic_set.all()
-        if user.type == 2:
+        if user.type == User.UserType.moderator:
             qs = qs.filter(moderator=True)
             city_list = [city.id for city in user.moderator_user.city.all()]
             qs = qs.filter(city__in=city_list) | qs.filter(all_city=True)
-        elif user.type == 5:
+        elif user.type == User.UserType.manager:
             if user.manager_user.leader:
                 qs = qs.filter(leader=True)
             else:
                 qs = qs.filter(manager=True)
             city_list = [city.id for city in user.manager_user.moderator.moderator_user.city.all()]
             qs = qs.filter(city__in=city_list) | qs.filter(all_city=True)
-        elif user.type == 4:
+        elif user.type == User.UserType.distributor:
             qs = qs.filter(distributor=True)
             qs = qs.filter(city=user.adjuster.city.id) | qs.filter(all_city=True)
         return qs

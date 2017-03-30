@@ -11,7 +11,7 @@ urlpatterns = patterns(
     'apps.forum.views',
     url(r'^$', login_required(SectionListView.as_view()), name='list'),
     url(r'^add/$', administrator_required(SectionCreateView.as_view()), name='section-add'),
-    url(r'^(?P<pk>\d+)/update/$', administrator_required(SectionUpdateView.as_view), name='section-update'),
+    url(r'^(?P<pk>\d+)/update/$', administrator_required(SectionUpdateView.as_view()), name='section-update'),
     url(r'^(?P<pk>\d+)/$', login_required(TopicListView.as_view()), name='topic-list'),
     url(r'^topic/add/$', login_required(TopicCreateView.as_view()), name='topic-add'),
     url(r'^topic/new/$', login_required(TopicNotifyListView.as_view()), name='topic-notify'),
