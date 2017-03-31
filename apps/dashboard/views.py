@@ -85,7 +85,8 @@ class DashboardView(TemplateView):
                     if point.count and point.pointphoto_set.all():
                         material_count += point.count
                 else:
-                    material_count += point.count
+                    if point.count:
+                        material_count += point.count
                 photo_count += point.pointphoto_set.count()
             if show_table:
                 if int(show_table) == 0:
