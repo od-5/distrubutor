@@ -81,8 +81,10 @@ class DashboardView(TemplateView):
             material_count = 0
             photo_count = 0
             for point in point_qs:
-                print point.count
-                if point.count and point.pointphoto_set.all():
+                if sale.hide_empty_point:
+                    if point.count and point.pointphoto_set.all():
+                        material_count += point.count
+                else:
                     material_count += point.count
                 photo_count += point.pointphoto_set.count()
             if show_table:
