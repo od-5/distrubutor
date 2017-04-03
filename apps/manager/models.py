@@ -19,17 +19,7 @@ class Manager(models.Model):
     def get_absolute_url(self):
         return reverse('manager:update', args=(self.pk, ))
 
-    user = models.OneToOneField(
-        to=User,
-        verbose_name=u'Пользователь',
-        related_name='manager_user'
-    )
+    user = models.OneToOneField(to=User, verbose_name=u'Пользователь', related_name='manager_user')
     moderator = models.ForeignKey(
-        to=User,
-        verbose_name=u'Модератор',
-        limit_choices_to={'type': 2},
-    )
-    leader = models.BooleanField(
-        verbose_name=u'Руководитель группы',
-        default=False
-    )
+        to=User, verbose_name=u'Модератор', limit_choices_to={'type': User.UserType.moderator})
+    leader = models.BooleanField(verbose_name=u'Руководитель группы', default=False)

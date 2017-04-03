@@ -30,15 +30,15 @@ class ManagerListView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.type == 1:
+        if user.type == User.UserType.administrator:
             qs = Manager.objects.all()
-        elif user.type == 2:
+        elif user.type == User.UserType.moderator:
             if user.superviser:
                 qs = Manager.objects.select_related().filter(
                     Q(moderator__moderator_user__superviser=user) | Q(moderator=user))
             else:
                 qs = Manager.objects.filter(moderator=user)
-        elif user.type == 5:
+        elif user.type == User.UserType.manager:
             manager = Manager.objects.get(user=user)
             qs = Manager.objects.filter(moderator=manager.moderator)
         else:
@@ -63,11 +63,11 @@ class ManagerListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(ManagerListView, self).get_context_data(**kwargs)
         user = self.request.user
-        if user.type == 1:
+        if user.type == User.UserType.administrator:
             context.update({
                 'city_list': City.objects.all()
             })
-        elif user.type == 2:
+        elif user.type == User.UserType.moderator:
             if user.superviser:
                 city_qs = City.objects.select_related().filter(
                     Q(moderator__superviser=user) | Q(moderator=user.moderator_user)).distinct()
@@ -80,7 +80,7 @@ class ManagerListView(ListView):
             context.update({
                 'city_list': city_qs
             })
-        elif user.type == 5 and user.is_leader_manager():
+        elif user.type == User.UserType.manager and user.is_leader_manager():
             context.update({
                 'city_list': user.manager_user.moderator.moderator_user.city.all()
             })
@@ -111,7 +111,7 @@ def manager_add(request):
         m_form = ManagerForm(request.POST)
         if u_form.is_valid() and m_form.is_valid():
             user = u_form.save(commit=False)
-            user.type = 5
+            user.type = User.UserType.manager
             user.save()
             manager = m_form.save(commit=False)
             manager.user = user
@@ -123,27 +123,27 @@ def manager_add(request):
             })
     else:
         m_form_initial = {}
-        if request.user.type == 2:
+        if request.user.type == User.UserType.moderator:
             m_form_initial.update({
                 'moderator': request.user
             })
-        elif request.user.type == 5:
+        elif request.user.type == User.UserType.manager:
             manager = Manager.objects.get(user=request.user)
             m_form_initial.update({
                 'moderator': manager.moderator
             })
         u_form = UserAddForm()
         m_form = ManagerForm(initial=m_form_initial)
-        if request.user.type == 1:
-            m_form.fields['moderator'].queryset = User.objects.filter(type=2)
-        elif request.user.type == 2:
+        if request.user.type == User.UserType.administrator:
+            m_form.fields['moderator'].queryset = User.objects.filter(type=User.UserType.moderator)
+        elif request.user.type == User.UserType.moderator:
             if request.user.superviser:
                 m_form.fields['moderator'].queryset = User.objects.filter(
                     Q(superviser=request.user) | Q(moderator_user__superviser=request.user)
                 )
             else:
                 m_form.fields['moderator'].queryset = User.objects.filter(pk=request.user.id)
-        elif request.user.type == 5:
+        elif request.user.type == User.UserType.manager:
             manager = Manager.objects.get(user=request.user)
             m_form.fields['moderator'].queryset = User.objects.filter(pk=manager.moderator.id)
 
@@ -174,11 +174,11 @@ def manager_update(request, pk):
     else:
         u_form = UserUpdateForm(instance=user)
         m_form = ManagerForm(instance=manager)
-        if request.user.type == 1:
+        if request.user.type == User.UserType.administrator:
             m_form.fields['moderator'].queryset = User.objects.filter(type=2)
-        elif request.user.type == 2:
+        elif request.user.type == User.UserType.moderator:
             m_form.fields['moderator'].queryset = User.objects.filter(pk=request.user.id)
-        elif request.user.type == 5:
+        elif request.user.type == User.UserType.manager:
             manager = Manager.objects.get(user=request.user)
             m_form.fields['moderator'].queryset = User.objects.filter(pk=manager.moderator.id)
 
@@ -199,14 +199,14 @@ class ManagerReportView(ListView):
         user = self.request.user
 
         manager_qs = None
-        if user.type == 1:
+        if user.type == User.UserType.administrator:
             manager_qs = Manager.objects.all()
-        elif user.type == 2:
+        elif user.type == User.UserType.moderator:
             if user.superviser:
                 manager_qs = Manager.objects.select_related().filter(Q(moderator__superviser=user) | Q(moderator=user))
             else:
                 manager_qs = user.manager_set.all()
-        elif user.type == 5:
+        elif user.type == User.UserType.manager:
             manager_qs = user.manager_user.moderator.manager_set.all()
 
         r_email = self.request.GET.get('email')
@@ -259,12 +259,13 @@ class ManagerReportView(ListView):
 
         user = self.request.user
         moderator_qs = None
-        if user.type == 1:
+        if user.type == User.UserType.administrator:
             moderator_qs = User.objects.filter(type=2)
-        elif user.type == 2:
+        elif user.type == User.UserType.moderator:
             if user.superviser:
                 moderator_qs = User.objects.select_related().filter(
-                    Q(moderator_user__superviser=user, type=2) | Q(moderator_user__user=user, type=2))
+                    Q(moderator_user__superviser=user, type=User.UserType.moderator) |
+                    Q(moderator_user__user=user, type=User.UserType.moderator))
 
         r_email = self.request.GET.get('email')
         r_moderator = self.request.GET.get('moderator')

@@ -11,3 +11,4 @@ class ManagerFactory(factory.DjangoModelFactory):
         model = Manager
 
     user = factory.SubFactory(UserFactory, type=User.UserType.manager)
+    moderator = factory.SubFactory(UserFactory, type=User.UserType.moderator)
