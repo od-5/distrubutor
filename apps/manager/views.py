@@ -30,19 +30,7 @@ class ManagerListView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.type == User.UserType.administrator:
-            qs = Manager.objects.all()
-        elif user.type == User.UserType.moderator:
-            if user.superviser:
-                qs = Manager.objects.select_related().filter(
-                    Q(moderator__moderator_user__superviser=user) | Q(moderator=user))
-            else:
-                qs = Manager.objects.filter(moderator=user)
-        elif user.type == User.UserType.manager:
-            manager = Manager.objects.get(user=user)
-            qs = Manager.objects.filter(moderator=manager.moderator)
-        else:
-            qs = None
+        qs = self.model.objects.get_qs(user)
         if qs:
             if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
                 qs = qs.filter(moderator__moderator_user__city=self.request.GET.get('city'))
