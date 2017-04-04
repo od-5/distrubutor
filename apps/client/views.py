@@ -1,6 +1,7 @@
 # coding=utf-8
 import datetime
 
+from django.db.models import F, Q
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView, CreateView, UpdateView
@@ -32,7 +33,7 @@ class ClientListView(ListView, PassGetArgsToCtxMixin):
 
     def get_queryset(self):
         user = self.request.user
-        qs = self.model.objects.get_qs(user)
+        qs = self.model.objects.get_qs(user).select_related('moderator', 'manager', 'city')
         if qs:
             name = self.request.GET.get('name')
             phone = self.request.GET.get('phone')
@@ -47,14 +48,12 @@ class ClientListView(ListView, PassGetArgsToCtxMixin):
             if name:
                 qs = qs.filter(name__icontains=name)
             if phone or contact:
-                client_id_list = [int(i.id) for i in qs]
-                c_qs = ClientContact.objects.filter(client__in=client_id_list)
+                c_qs = ClientContact.objects.filter(client__in=list(qs.values_list('id', flat=True)))
                 if phone:
                     c_qs = c_qs.filter(phone__icontains=phone)
                 if contact:
                     c_qs = c_qs.filter(name__icontains=contact)
-                client_id_list = [int(i.client.id) for i in c_qs]
-                qs = qs.filter(id__in=client_id_list)
+                qs = qs.filter(id__in=list(c_qs.values_list('id', flat=True)))
 
         return qs
 
@@ -64,7 +63,6 @@ class ClientListView(ListView, PassGetArgsToCtxMixin):
         user = self.request.user
         queryset = self.object_list
         manager_client_count = queryset.count()
-        manager_task_count = 0
         search_client_name = self.request.GET.get('client_name')
         if search_client_name:
             if self.request.user.type == User.UserType.manager:
@@ -75,8 +73,11 @@ class ClientListView(ListView, PassGetArgsToCtxMixin):
             context.update({
                 'search_client_list': search_client_qs,
             })
+
+        manager_task_count = 0
         for client in queryset:
             manager_task_count += client.task_set.count()
+
         context.update({
             'manager_client_count': manager_client_count,
             'manager_task_count': manager_task_count

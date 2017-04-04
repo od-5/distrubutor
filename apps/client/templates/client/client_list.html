@@ -170,7 +170,7 @@
                         </a>
                         {% endif %}
                       </td>
-                      <td>{{ object.city|default:'Не указано' }}</td>
+                      <td>{{ object.city.name|default:'Не указано' }}</td>
                       <td>
                         {% if user.type != 5 %}
                         <br>
