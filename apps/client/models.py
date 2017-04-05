@@ -93,7 +93,8 @@ class ClientContact(models.Model):
 
 class TaskModelManager(models.Manager):
     def get_qs(self, user):
-        qs = None
+        qs = Manager.objects.none()
+
         if user.type == User.UserType.administrator:
             qs = Task.objects.all()
         elif user.type == User.UserType.moderator:

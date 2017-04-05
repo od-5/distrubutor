@@ -33,7 +33,8 @@ class ClientListView(ListView, PassGetArgsToCtxMixin):
 
     def get_queryset(self):
         user = self.request.user
-        qs = self.model.objects.get_qs(user).select_related('moderator', 'manager', 'city')
+        qs = self.model.objects.get_qs(user).select_related(
+            'moderator', 'moderator__user', 'manager', 'manager__user', 'city')
         if qs:
             name = self.request.GET.get('name')
             phone = self.request.GET.get('phone')
@@ -201,7 +202,7 @@ class ClientTaskListView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        qs = self.model.objects.get_qs(user)
+        qs = self.model.objects.get_qs(user).select_related('manager', 'manager__user', 'client')
         if qs:
             r_name = self.request.GET.get('name')
             r_date_s = self.request.GET.get('date_s')

@@ -16,7 +16,7 @@ class ManagerModelManager(models.Manager):
             qs = Manager.objects.all()
         elif user.type == User.UserType.moderator:
             if user.superviser:
-                qs = Manager.objects.select_related().filter(
+                qs = Manager.objects.filter(
                     Q(moderator__moderator_user__superviser=user) | Q(moderator=user))
             else:
                 qs = Manager.objects.filter(moderator=user)
