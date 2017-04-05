@@ -25,10 +25,6 @@ function init() {
         date_end: date_end
       }
     }).done(function (data) {
-      console.log('address_list: ' + data.address_list);
-      console.log('coord_list: ' + data.coord_list);
-      console.log('all_address_list: ' + data.all_address_list);
-      console.log('center: ' + data.center);
       center = data.center;
       if (data.all_address_list.length){
         all_address_list = data.all_address_list;
@@ -53,7 +49,6 @@ function init() {
     if (all_address_list.length) {
       console.log('Полный список точек');
       for(var i = 0; i < all_address_list.length; i++) {
-        console.log(all_address_list[i]);
         myMap.geoObjects.add(
               new ymaps.Placemark([all_address_list[i]['coord_x'], all_address_list[i]['coord_y']], {
               balloonContent: all_address_list[i]['name'],
@@ -67,11 +62,7 @@ function init() {
       if (data_list.length > 1){
         console.log('Маршрут');
         ymaps.route(
-          data_list,
-          {
-            multiRoute: true,
-            routingMode: 'pedestrian'
-          }
+          data_list
         ).then(function (route) {
          //route.options.set('routingMode', 'pedestrian');
           myMap.geoObjects.add(route);
