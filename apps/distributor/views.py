@@ -4,6 +4,7 @@ import datetime
 import xlwt
 from annoying.functions import get_object_or_None
 
+from django.conf import settings
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
 from django.forms import inlineformset_factory
@@ -13,6 +14,7 @@ from django.views.generic import ListView, CreateView, UpdateView
 from django.contrib.auth.decorators import login_required
 
 from lib.cbv import SendUserToFormMixin
+import core.geotagging as api
 from apps.moderator.models import ModeratorAction, Moderator
 from .task_calendar import get_months
 from .models import Distributor, DistributorTask, DistributorPayment, GPSPoint
@@ -158,22 +160,7 @@ class DistributorTaskListView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.type == 1:
-            qs = DistributorTask.objects.filter(closed=False)
-        elif user.type == 2:
-            qs = DistributorTask.objects.filter(distributor__moderator=user.moderator_user, closed=False)
-        elif user.type == 4:
-            qs = DistributorTask.objects.filter(distributor=user.distributor_user, closed=False)
-        elif user.type == 5:
-            if user.manager_user.leader:
-                qs = DistributorTask.objects.filter(distributor__moderator=user.manager_user.moderator.moderator_user,
-                                                    closed=False)
-            else:
-                qs = DistributorTask.objects.filter(sale__manager=user.manager_user, closed=False)
-        elif user.type == 6:
-            qs = DistributorTask.objects.filter(distributor__moderator__ticket_forward=True, closed=False)
-        else:
-            qs = DistributorTask.objects.none()
+        qs = DistributorTask.objects.get_qs(user).select_related('area', 'distributor', 'sale').filter(closed=False)
         r_city = self.request.GET.get('city')
         r_type = self.request.GET.get('type')
         r_category = self.request.GET.get('category')
@@ -205,15 +192,8 @@ class DistributorTaskListView(ListView):
         context.update(
             get_months(),
         )
-        user = self.request.user
-        if user.type == 2:
-            action_qs = ModeratorAction.objects.filter(moderator=user.moderator_user)
-        elif user.type == 5:
-            action_qs = ModeratorAction.objects.filter(moderator=user.manager_user.moderator.moderator_user)
-        else:
-            action_qs = None
         context.update({
-            'action_list': action_qs
+            'action_list': ModeratorAction.objects.get_qs(self.request.user)
         })
         if self.request.GET.get('city'):
             context.update({
@@ -249,22 +229,7 @@ class DistributorTaskArchiveView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.type == 1:
-            qs = DistributorTask.objects.filter(closed=True)
-        elif user.type == 2:
-            qs = DistributorTask.objects.filter(closed=True, distributor__moderator=user.moderator_user)
-        elif user.type == 4:
-            qs = DistributorTask.objects.filter(closed=True, distributor=user.distributor_user)
-        elif user.type == 5:
-            if user.manager_user.leader:
-                qs = DistributorTask.objects.filter(closed=True,
-                                                    distributor__moderator=user.manager_user.moderator.moderator_user)
-            else:
-                qs = DistributorTask.objects.filter(closed=True, sale__manager=user.manager_user)
-        elif user.type == 6:
-            qs = DistributorTask.objects.filter(distributor__moderator__ticket_forward=True, closed=False)
-        else:
-            qs = DistributorTask.objects.none()
+        qs = DistributorTask.objects.get_qs(user).select_related('area', 'distributor', 'sale').filter(closed=True)
         r_city = self.request.GET.get('city')
         r_type = self.request.GET.get('type')
         r_category = self.request.GET.get('category')
@@ -288,6 +253,9 @@ class DistributorTaskArchiveView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(DistributorTaskArchiveView, self).get_context_data(**kwargs)
+        context.update({
+            'action_list': ModeratorAction.objects.get_qs(self.request.user)
+        })
         if self.request.GET.get('city'):
             context.update({
                 'r_city': self.request.GET.get('city')
@@ -393,7 +361,14 @@ def gps_point_update(request, pk):
     if request.method == 'POST':
         form = GPSPointUpdateForm(request.POST, instance=point)
         if form.is_valid():
-            form.save()
+            api_key = settings.YANDEX_MAPS_API_KEY
+            pos = api.geocode(api_key, form.cleaned_data.get('name'))
+            coord_x = float(pos[1])
+            coord_y = float(pos[0])
+            instance = form.save(commit=False)
+            instance.coord_x = coord_x
+            instance.coord_y = coord_y
+            instance.save()
             return HttpResponseRedirect(reverse('distributor:task-update-map', args=(point.task.id, )))
     else:
         form = GPSPointUpdateForm(instance=point)

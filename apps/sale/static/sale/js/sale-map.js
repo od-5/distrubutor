@@ -67,7 +67,11 @@ function init() {
       if (data_list.length > 1){
         console.log('Маршрут');
         ymaps.route(
-          data_list
+          data_list,
+          {
+            multiRoute: true,
+            routingMode: 'pedestrian'
+          }
         ).then(function (route) {
          //route.options.set('routingMode', 'pedestrian');
           myMap.geoObjects.add(route);

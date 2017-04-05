@@ -109,6 +109,17 @@ class ModeratorArea(models.Model):
     name = models.CharField(max_length=100, verbose_name=u'Название')
 
 
+class ModeratorActionModelManager(models.Manager):
+    def get_qs(self, user):
+        if user.type == 2:
+            qs = ModeratorAction.objects.filter(moderator=user.moderator_user)
+        elif user.type == 5:
+            qs = ModeratorAction.objects.filter(moderator=user.manager_user.moderator.moderator_user)
+        else:
+            qs = ModeratorAction.objects.none()
+        return qs
+
+
 class ModeratorAction(models.Model):
     class Meta:
         verbose_name = u'Вид деятельности'
@@ -117,6 +128,8 @@ class ModeratorAction(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    objects = ModeratorActionModelManager()
 
     moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор')
     name = models.CharField(verbose_name=u'Название', max_length=256)

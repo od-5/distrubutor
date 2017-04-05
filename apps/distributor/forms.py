@@ -149,13 +149,10 @@ class DistributorQuestTaskForm(forms.ModelForm):
 class GPSPointUpdateForm(forms.ModelForm):
     class Meta:
         model = GPSPoint
-        fields = '__all__'
+        fields = ['name', 'count', 'coord_x', 'coord_y']
         widgets = {
-            'task': forms.HiddenInput(),
-            'name': forms.HiddenInput(),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
             'count': forms.NumberInput(attrs={'class': 'form-control', 'step': '1'}),
-            'comment': forms.HiddenInput(),
-            'coord_x': forms.HiddenInput(),
-            'coord_y': forms.HiddenInput(),
-            'timestamp': forms.HiddenInput()
+            'coord_x': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.000001'}),
+            'coord_y': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.000001'}),
         }

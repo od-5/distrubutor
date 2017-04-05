@@ -2,6 +2,8 @@
 import datetime
 
 from PIL import Image
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from pilkit.processors import SmartResize
 from imagekit.models import ImageSpecField
 from annoying.functions import get_object_or_None
@@ -53,6 +55,26 @@ class DistributorPayment(models.Model):
     type = models.ForeignKey(to=ModeratorAction, verbose_name=u'Тип работы')
     cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Олата, руб/шт',
                                default=0, null=True, blank=True)
+
+
+class DistributorTaskModelManager(models.Manager):
+    def get_qs(self, user):
+        if user.type == 1:
+            qs = DistributorTask.objects.all()
+        elif user.type == 2:
+            qs = DistributorTask.objects.filter(distributor__moderator=user.moderator_user)
+        elif user.type == 4:
+            qs = DistributorTask.objects.filter(distributor=user.distributor_user)
+        elif user.type == 5:
+            if user.manager_user.leader:
+                qs = DistributorTask.objects.filter(distributor__moderator=user.manager_user.moderator.moderator_user)
+            else:
+                qs = DistributorTask.objects.filter(sale__manager=user.manager_user)
+        elif user.type == 6:
+            qs = DistributorTask.objects.filter(distributor__moderator__ticket_forward=True)
+        else:
+            qs = DistributorTask.objects.none()
+        return qs
 
 
 class DistributorTask(models.Model):
@@ -132,6 +154,8 @@ class DistributorTask(models.Model):
     def get_sale_city(self):
         return self.sale.city.name
 
+
+    objects = DistributorTaskModelManager()
     distributor = models.ForeignKey(to=Distributor, verbose_name=u'Распространитель')
     category = models.PositiveIntegerField(verbose_name=u'Категория задачи',
                                            default=TaskCategory.sticking_and_spread,
@@ -166,18 +190,19 @@ class GPSPoint(models.Model):
         else:
             return u'%s, %s' % (self.coord_x, self.coord_y)
 
-    def save(self, *args, **kwargs):
-        if self.task.define_address:
-            try:
-                name = api.geocodeName(api_key, self.coord_y, self.coord_x)
-                self.name = name
-            except:
-                self.name = u'%s, %s' % (self.coord_y, self.coord_x)
-        else:
-            self.name = u'%s, %s' % (self.coord_y, self.coord_x)
-        hours = self.task.sale.city.timezone
-        self.timestamp = datetime.datetime.now() + datetime.timedelta(hours=hours)
-        super(GPSPoint, self).save()
+    # def save(self, *args, **kwargs):
+    #     if self.task.define_address:
+    #         try:
+    #             name = api.geocodeName(api_key, self.coord_y, self.coord_x)
+    #             self.name = name
+    #         except:
+    #             self.name = u'%s, %s' % (self.coord_y, self.coord_x)
+    #     else:
+    #         self.name = u'%s, %s' % (self.coord_y, self.coord_x)
+    #     if not self.timestamp:
+    #         hours = self.task.sale.city.timezone
+    #         self.timestamp = datetime.datetime.now() + datetime.timedelta(hours=hours)
+    #     super(GPSPoint, self).save()
 
     task = models.ForeignKey(to=DistributorTask, verbose_name=u'Задача')
     name = models.CharField(max_length=150, verbose_name=u'Название', blank=True, null=True)
@@ -185,7 +210,24 @@ class GPSPoint(models.Model):
     comment = models.TextField(verbose_name=u'Комментарий', blank=True, null=True)
     coord_x = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=u'Широта')
     coord_y = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=u'Долгота')
-    timestamp = models.DateTimeField(auto_now=True, verbose_name=u'Временная метка')
+    timestamp = models.DateTimeField(auto_now_add=True, verbose_name=u'Временная метка')
+
+
+@receiver(post_save, sender=GPSPoint)
+def get_coord_for_point(sender, created, **kwargs):
+    instance = kwargs['instance']
+    if created:
+        if instance.task.define_address:
+            try:
+                name = api.geocodeName(api_key, instance.coord_y, instance.coord_x)
+                instance.name = name
+            except:
+                instance.name = u'%s, %s' % (instance.coord_y, instance.coord_x)
+        else:
+            instance.name = u'%s, %s' % (instance.coord_y, instance.coord_x)
+        hours = instance.task.sale.city.timezone
+        instance.timestamp = datetime.datetime.now() + datetime.timedelta(hours=hours)
+        instance.save(update_fields=['timestamp', 'name'])
 
 
 class PointPhoto(models.Model):
@@ -209,8 +251,9 @@ class PointPhoto(models.Model):
             self.name = self.point.__unicode__()
         except:
             pass
-        hours = self.point.task.sale.city.timezone
-        self.timestamp = datetime.datetime.now() + datetime.timedelta(hours=hours)
+        if not self.timestamp:
+            hours = self.point.task.sale.city.timezone
+            self.timestamp = datetime.datetime.now() + datetime.timedelta(hours=hours)
         super(PointPhoto, self).save()
         if self.photo:
             image = Image.open(self.photo)
@@ -223,7 +266,7 @@ class PointPhoto(models.Model):
 
     point = models.ForeignKey(to=GPSPoint, verbose_name=u'GPS точка')
     name = models.CharField(max_length=150, verbose_name=u'Название', blank=True, null=True)
-    timestamp = models.DateTimeField(auto_now=True, verbose_name=u'Временная метка')
+    timestamp = models.DateTimeField(auto_now_add=True, verbose_name=u'Временная метка')
     photo = models.ImageField(verbose_name=u'Фотография', upload_to=pointphoto_upload)
     image_resize = ImageSpecField(
         [SmartResize(*settings.POINT_PHOTO_THUMB_SIZE)], source='photo', format='JPEG', options={'quality': 94}

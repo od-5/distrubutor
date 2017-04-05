@@ -145,9 +145,12 @@ function init() {
   });
   if (data_list.length > 1){
     ymaps.route(
-      data_list
+      data_list,
+      {
+        multiRoute: true,
+        routingMode: 'pedestrian'
+      }
     ).then(function (route) {
-      route.options.set('routingMode', 'pedestrian');
       myMap.geoObjects.add(route);
       var points = route.getWayPoints();
       points.options.set('preset', 'islands#redStretchyIcon');
