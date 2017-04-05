@@ -145,11 +145,7 @@ function init() {
   });
   if (data_list.length > 1){
     ymaps.route(
-      data_list,
-      {
-        multiRoute: true,
-        routingMode: 'pedestrian'
-      }
+      data_list
     ).then(function (route) {
       myMap.geoObjects.add(route);
       var points = route.getWayPoints();
