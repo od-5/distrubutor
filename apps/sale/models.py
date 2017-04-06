@@ -1,5 +1,6 @@
 # coding=utf-8
 from django.db import models
+from django.db.models import Q
 from django.core.exceptions import ValidationError
 
 from lib.models import Choices, ChoiceItem
@@ -21,11 +22,33 @@ SALE_ORDER_CATEGORY = (
 )
 
 
+class SaleModelManager(models.Manager):
+    def get_qs(self, user):
+        qs = Sale.objects.none()
+
+        if user.type == User.UserType.administrator:
+            qs = Sale.objects.all()
+        elif user.type == User.UserType.moderator:
+            if user.superviser:
+                qs = Sale.objects.filter(Q(moderator__superviser=user) | Q(moderator=user.moderator_user))
+            else:
+                qs = Sale.objects.filter(moderator=user.moderator_user)
+        elif user.type == User.UserType.manager:
+            if user.manager_user.leader:
+                qs = Sale.objects.filter(moderator=user.manager_user.moderator.moderator_user)
+            else:
+                qs = Sale.objects.filter(manager=user.manager_user)
+
+        return qs
+
+
 class Sale(models.Model):
     class Meta:
         verbose_name = u'Клиент'
         verbose_name_plural = u'Клиенты'
         app_label = 'sale'
+
+    objects = SaleModelManager()
 
     def __unicode__(self):
         return self.legal_name

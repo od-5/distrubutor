@@ -1,4 +1,5 @@
 # coding=utf-8
+from core.models import User
 from .models import UserMessage
 
 __author__ = 'alexy'
@@ -6,12 +7,12 @@ __author__ = 'alexy'
 
 def message_notification(request):
     user = request.user
-    qs = None
+    qs = UserMessage.objects.select_related()
     if user.is_authenticated():
-        if user.type == 2:
-            qs = UserMessage.objects.filter(recipient=user, is_view=False)
-        elif user.type == 1 or user.type == 6:
-            qs = UserMessage.objects.select_related().filter(
+        if user.type == User.UserType.moderator:
+            qs = qs.filter(recipient=user, is_view=False)
+        elif user.type == User.UserType.administrator or user.type == User.UserType.agency:
+            qs = qs.filter(
                 usermessageanswer__recipient=user, usermessageanswer__is_view=False)
     return {
         'MESSAGE_NOTIFY': qs

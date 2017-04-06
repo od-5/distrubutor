@@ -17,6 +17,7 @@ from annoying.decorators import ajax_request
 from lib.cbv import ListWithCreateView, RedirectlessFormMixin
 from apps.manager.models import Manager
 from apps.moderator.models import Moderator
+from core.models import User
 from core.forms import UserAddForm, UserUpdateForm
 from apps.geolocation.models import City
 from apps.distributor.models import GPSPoint
@@ -113,7 +114,7 @@ def sale_update(request):
         user = request.user
         try:
             sale = Sale.objects.get(user=int(request.POST.get('user')))
-        except:
+        except Sale.DoesNotExist:
             return {
                 'error': True
             }
@@ -138,20 +139,8 @@ class SaleListView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.type == 1:
-            qs = Sale.objects.all()
-        elif user.type == 2:
-            if user.superviser:
-                qs = Sale.objects.select_related('moderator', 'city', 'manager', 'user').filter(Q(moderator__superviser=user) | Q(moderator=user.moderator_user))
-            else:
-                qs = Sale.objects.select_related('moderator', 'city', 'manager', 'user').filter(moderator=user.moderator_user)
-        elif user.type == 5:
-            if user.manager_user.leader:
-                qs = Sale.objects.filter(moderator=user.manager_user.moderator.moderator_user)
-            else:
-                qs = Sale.objects.filter(manager=user.manager_user)
-        else:
-            qs = None
+        qs = self.model.objects.get_qs(user).select_related('moderator', 'city', 'manager', 'manager__user', 'user')
+
         if self.request.GET.get('email'):
             qs = qs.filter(user__email=self.request.GET.get('email'))
         if self.request.GET.get('legal_name'):
@@ -162,25 +151,27 @@ class SaleListView(ListView):
             qs = qs.filter(city=int(self.request.GET.get('city')))
         if self.request.GET.get('manager') and int(self.request.GET.get('manager')) != 0:
             qs = qs.filter(manager=int(self.request.GET.get('manager')))
+
         return qs
 
     def get_context_data(self, **kwargs):
         context = super(SaleListView, self).get_context_data(**kwargs)
         user = self.request.user
         moderator_qs = None
-        if user.type == 1:
+        if user.type == User.UserType.administrator:
             city_qs = City.objects.all()
             manager_qs = Manager.objects.all()
-        elif user.type == 2:
+        elif user.type == User.UserType.moderator:
             if user.superviser:
                 city_qs = City.objects.select_related().filter(
                     Q(moderator__superviser=user) | Q(moderator=user.moderator_user)).distinct()
                 moderator_qs = Moderator.objects.filter(Q(superviser=user) | Q(user=user))
-                manager_qs = Manager.objects.select_related('user').filter(Q(moderator__superviser=user) | Q(moderator=user))
+                manager_qs = Manager.objects.select_related('user').filter(
+                    Q(moderator__superviser=user) | Q(moderator=user))
             else:
                 city_qs = user.moderator_user.city.all()
                 manager_qs = Manager.objects.select_related('user').filter(moderator=user)
-        elif user.type == 5:
+        elif user.type == User.UserType.manager:
             manager = Manager.objects.get(user=user)
             city_qs = City.objects.filter(moderator=manager.moderator)
             manager_qs = Manager.objects.filter(moderator=manager.moderator)
