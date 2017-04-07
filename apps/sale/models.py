@@ -1,6 +1,6 @@
 # coding=utf-8
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.core.exceptions import ValidationError
 
 from lib.models import Choices, ChoiceItem
@@ -84,12 +84,38 @@ class Sale(models.Model):
     hide_empty_point = models.BooleanField(default=True, verbose_name=u'Не показывать gps-точки без фотографий')
 
 
+class SaleOrderModelManager(models.Manager):
+    def get_qs(self, user):
+        qs = SaleOrder.objects.none()
+
+        if user.type == User.UserType.administrator:
+            qs = SaleOrder.objects.all()
+        elif user.type == User.UserType.moderator:
+            if user.superviser:
+                qs = SaleOrder.objects.filter(
+                    Q(sale__moderator__superviser=user) | Q(sale__moderator=user.moderator_user))
+            else:
+                qs = SaleOrder.objects.filter(sale__moderator=user.moderator_user)
+        elif user.type == User.UserType.manager:
+            if user.manager_user.leader:
+                qs = SaleOrder.objects.filter(
+                    sale__moderator=user.manager_user.moderator.moderator_user)
+            else:
+                qs = SaleOrder.objects.filter(sale__manager=user.manager_user)
+        elif user.type == User.UserType.agency:
+            qs = SaleOrder.objects.filter(sale__moderator__ticket_forward=True)
+
+        return qs
+
+
 class SaleOrder(models.Model):
     class Meta:
         verbose_name = u'Заказ'
         verbose_name_plural = u'Заказы'
         app_label = 'sale'
         ordering = ['-date_start', ]
+
+    objects = SaleOrderModelManager()
 
     class OrderCategory(Choices):
         sticking_and_spread = ChoiceItem(0, u'Расклейка или распространение')

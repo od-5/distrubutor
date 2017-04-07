@@ -59,21 +59,23 @@ class DistributorPayment(models.Model):
 
 class DistributorTaskModelManager(models.Manager):
     def get_qs(self, user):
-        if user.type == 1:
-            qs = DistributorTask.objects.all()
-        elif user.type == 2:
-            qs = DistributorTask.objects.filter(distributor__moderator=user.moderator_user)
-        elif user.type == 4:
-            qs = DistributorTask.objects.filter(distributor=user.distributor_user)
-        elif user.type == 5:
+        qs = DistributorTask.objects.none()
+
+        if user.type == User.UserType.administrator:
+            qs = DistributorTask.objects.filter(closed=False)
+        elif user.type == User.UserType.moderator:
+            qs = DistributorTask.objects.filter(distributor__moderator=user.moderator_user, closed=False)
+        elif user.type == User.UserType.distributor:
+            qs = DistributorTask.objects.filter(distributor=user.distributor_user, closed=False)
+        elif user.type == User.UserType.manager:
             if user.manager_user.leader:
-                qs = DistributorTask.objects.filter(distributor__moderator=user.manager_user.moderator.moderator_user)
+                qs = DistributorTask.objects.filter(distributor__moderator=user.manager_user.moderator.moderator_user,
+                                                    closed=False)
             else:
-                qs = DistributorTask.objects.filter(sale__manager=user.manager_user)
-        elif user.type == 6:
-            qs = DistributorTask.objects.filter(distributor__moderator__ticket_forward=True)
-        else:
-            qs = DistributorTask.objects.none()
+                qs = DistributorTask.objects.filter(sale__manager=user.manager_user, closed=False)
+        elif user.type == User.UserType.agency:
+            qs = DistributorTask.objects.filter(distributor__moderator__ticket_forward=True, closed=False)
+
         return qs
 
 
@@ -83,6 +85,8 @@ class DistributorTask(models.Model):
         verbose_name_plural = u'Задачи для распространителей'
         app_label = 'distributor'
         ordering = ['-date', ]
+
+    objects = DistributorTaskModelManager()
 
     class TaskCategory(SaleOrder.OrderCategory):
         pass

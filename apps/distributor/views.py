@@ -160,7 +160,9 @@ class DistributorTaskListView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        qs = DistributorTask.objects.get_qs(user).select_related('area', 'distributor', 'sale').filter(closed=False)
+        qs = self.model.objects.get_qs(user).select_related(
+            'distributor', 'distributor__moderator', 'sale', 'sale__city', 'area').filter(closed=False)
+
         r_city = self.request.GET.get('city')
         r_type = self.request.GET.get('type')
         r_category = self.request.GET.get('category')
@@ -192,6 +194,7 @@ class DistributorTaskListView(ListView):
         context.update(
             get_months(),
         )
+
         context.update({
             'action_list': ModeratorAction.objects.get_qs(self.request.user)
         })

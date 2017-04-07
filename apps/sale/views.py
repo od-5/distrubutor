@@ -139,7 +139,8 @@ class SaleListView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        qs = self.model.objects.get_qs(user).select_related('moderator', 'city', 'manager', 'manager__user', 'user')
+        qs = self.model.objects.get_qs(user).select_related(
+            'moderator', 'moderator__user', 'city', 'manager', 'manager__user', 'user')
 
         if self.request.GET.get('email'):
             qs = qs.filter(user__email=self.request.GET.get('email'))
@@ -210,24 +211,8 @@ class JournalListView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.type == 1:
-            qs = SaleOrder.objects.select_related().all()
-        elif user.type == 2:
-            if user.superviser:
-                qs = SaleOrder.objects.select_related().filter(
-                    Q(sale__moderator__superviser=user) | Q(sale__moderator=user.moderator_user))
-            else:
-                qs = SaleOrder.objects.select_related().filter(sale__moderator=user.moderator_user)
-        elif user.type == 5:
-            if user.manager_user.leader:
-                qs = SaleOrder.objects.select_related().filter(
-                    sale__moderator=user.manager_user.moderator.moderator_user)
-            else:
-                qs = SaleOrder.objects.select_related().filter(sale__manager=user.manager_user)
-        elif user.type == 6:
-            qs = SaleOrder.objects.select_related().filter(sale__moderator__ticket_forward=True)
-        else:
-            qs = SaleOrder.objects.none()
+        qs = self.model.objects.get_qs(user).select_related('sale', 'sale__city', 'sale__moderator', 'sale__manager')
+
         if self.request.GET.get('legal_name'):
             qs = qs.filter(sale__legal_name=self.request.GET.get('legal_name'))
         if self.request.GET.get('city') and int(self.request.GET.get('city')) != 0:
@@ -257,12 +242,15 @@ class JournalListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(JournalListView, self).get_context_data(**kwargs)
         user = self.request.user
-        moderator_qs = None
-        if user.type == 1:
+
+        moderator_qs = Moderator.objects.none()
+        city_qs = City.objects.none()
+        manager_qs = Manager.objects.none()
+        if user.type == User.UserType.administrator:
             city_qs = City.objects.all()
             manager_qs = Manager.objects.all()
             moderator_qs = Moderator.objects.all()
-        elif user.type == 2:
+        elif user.type == User.UserType.moderator:
             if user.superviser:
                 city_qs = City.objects.select_related().filter(
                     Q(moderator__superviser=user) | Q(moderator=user.moderator_user)).distinct()
@@ -271,15 +259,13 @@ class JournalListView(ListView):
             else:
                 city_qs = user.moderator_user.city.all()
                 manager_qs = user.manager_set.all()
-        elif user.type == 5:
+        elif user.type == User.UserType.manager:
             city_qs = City.objects.filter(moderator=user.manager_user.moderator.moderator_user)
             manager_qs = Manager.objects.filter(moderator=user.manager_user.moderator)
-        elif user.type == 6:
+        elif user.type == User.UserType.agency:
             manager_qs = Manager.objects.none()
             city_qs = City.objects.filter(moderator__ticket_forward=True)
-        else:
-            city_qs = City.objects.none()
-            manager_qs = Manager.objects.none()
+
         context.update({
             'city_list': city_qs,
             'moderator_list': moderator_qs,
@@ -312,7 +298,8 @@ class JournalListView(ListView):
         context.update({
             'r_legal_name': self.request.GET.get('legal_name')
         })
-        order_qs = self.get_queryset()
+
+        order_qs = self.object_list
         total_sum = 0
         payments_sum = 0
         for order in order_qs:
@@ -323,6 +310,7 @@ class JournalListView(ListView):
             'total_sum': total_sum,
             'payments_sum': payments_sum
         })
+
         return context
 
 

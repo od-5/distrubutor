@@ -1,7 +1,7 @@
 # coding=utf-8
 import datetime
 
-from django.db.models import F, Q
+from django.db.models import Q, Count, Sum
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView, CreateView, UpdateView
@@ -63,7 +63,7 @@ class ClientListView(ListView, PassGetArgsToCtxMixin):
 
         user = self.request.user
         queryset = self.object_list
-        manager_client_count = queryset.count()
+
         search_client_name = self.request.GET.get('client_name')
         if search_client_name:
             if self.request.user.type == User.UserType.manager:
@@ -75,9 +75,8 @@ class ClientListView(ListView, PassGetArgsToCtxMixin):
                 'search_client_list': search_client_qs,
             })
 
-        manager_task_count = 0
-        for client in queryset:
-            manager_task_count += client.task_set.count()
+        manager_client_count = queryset.count()
+        manager_task_count = queryset.annotate(num_tasks=Count('task')).aggregate(Sum('num_tasks'))['num_tasks__sum']
 
         context.update({
             'manager_client_count': manager_client_count,
