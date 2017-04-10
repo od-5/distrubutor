@@ -158,7 +158,6 @@ class DistributorTask(models.Model):
     def get_sale_city(self):
         return self.sale.city.name
 
-
     objects = DistributorTaskModelManager()
     distributor = models.ForeignKey(to=Distributor, verbose_name=u'Распространитель')
     category = models.PositiveIntegerField(verbose_name=u'Категория задачи',

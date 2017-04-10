@@ -161,7 +161,7 @@
                       {% if user.type == 1 or user.type == 6 %}
                       <td>{{ object.distributor.moderator.company|default:'Не указано' }}</td>
                       {% endif %}
-                      <td>{% if object.type %}{{ object.type }}{% else %}{{ object.get_category_display }}{% endif %}</td>
+                      <td>{% if object.type %}{{ object.type }}{% else %}{{ object.order.get_category_display }}{% endif %}</td>
                       <td>{{ object.date|date:"d.m.Y"|default:'Не указано' }}</td>
                       <td>{{ object.material_count|default:'Не указано' }}</td>
                       <td>{{ object.total_cost|default:'Не указано' }}</td>

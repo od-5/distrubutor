@@ -6637,6 +6637,10 @@ body {
   width: 100px;
   height: 100px;
 }
+#photo_list #js-photo-container .js-gallery img {
+  width: 100%;
+  height: 100%;
+}
 #photo_list .glyphicon-camera {
   font-size: 50px;
 }

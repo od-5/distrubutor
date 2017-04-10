@@ -1,0 +1,42 @@
+{% for point in point_list %}
+  {% if point.pointphoto_set.all %}
+  <div class="col-md-12">
+    <br>
+    <p class="lead text-info text-center">Фотографии</p>
+    {% for photo in point.pointphoto_set.all %}
+    <div class="col-md-3 col-sm-4 col-xs-6 add-bottom" id="js-photo-container">
+{#      <img src="{{ photo.image_resize.url }}" alt="">#}
+      <a href="{{ photo.photo.url }}" rel="group" class="js-gallery" title="{{ photo.name }}, время {{ photo.timestamp|time:'H:i'|default:'Не указано' }}">
+        <img src="{{ photo.get_thumb_url }}" alt="">
+      </a>
+      <button class="btn btn-danger js-photo-remove-btn form-control">Удалить</button>
+      <div class="photo-delete-block">
+        <p class="text-alert text-center">Вы действительно хотите удалить фотографию?</p>
+        <button class="btn js-photo-remove-confirm btn-success" data-url="{% url 'distributor:ajax_remove_photo' %}" data-id="{{ photo.id }}">Да</button>
+        <button class="btn js-photo-remove-reset btn-info">Нет</button>
+      </div>
+    </div>
+    {% endfor %}
+    <div class="clearfix"></div>
+  </div>
+  {% endif %}
+  {% if point.pointaudio_set.all %}
+  <br>
+  <p class="lead text-info text-center">Аудиозаписи</p>
+  <table class="table table-list">
+    <tbody class="js-list">
+    {% for audio in point.pointaudio_set.all %}
+      <tr data-id="{{ audio.id }}" data-name="{{ audio.timestamp|default:'Не указано' }}" data-model="PointAudio" id="id_PointAudio_{{ audio.id }}">
+        <td>{{ audio.timestamp|default:'Не указано' }}</td>
+        <td><audio src="{{ audio.file.url }}" controls preload="none"></audio></td>
+        <td>
+          <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ audio.id }}" class="text-danger js-ajax-remove-btn">
+            <span class="glyphicon glyphicon-remove"></span>
+          </a>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+{% endfor %}

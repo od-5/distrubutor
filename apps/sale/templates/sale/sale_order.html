@@ -122,7 +122,10 @@
                   <tbody class="js-list">
                   {% for order in order_list %}
                     <tr data-id="{{ order.id }}" data-name="{{ order }}" {% if order.closed %}class="info" {% endif %}data-model="SaleOrder" id="id_SaleOrder_{{ order.id }}">
-                      <td><a href="{% url 'sale:order-update' order.id %}">{{ order|default:'Не указано' }}</a></td>
+                      <td>
+                        <a href="{% url 'sale:order-update' order.id %}">{{ order|default:'Не указано' }}</a> -
+                        {{ order.get_category_display }}
+                      </td>
                       <td>
                         <form action="{% url 'sale:email-send' %}" class="js-sale-send-email" method="post">{% csrf_token %}
                           <input type="hidden" name="saleorder" value="{{ object.id }}">

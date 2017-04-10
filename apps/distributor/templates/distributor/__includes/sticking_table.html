@@ -1,0 +1,40 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>Адрес\Координаты</th>
+      <th>Время</th>
+      <th colspan="2">Кол-во материала</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody class="js-list">
+  {% for point in point_list %}
+    <tr data-id="{{ point.id }}" data-name="контрольную точку {{ point }}" data-model="GPSPoint" id="id_GPSPoint_{{ point.id }}">
+      <td>{{ point|default:'Не указано' }}</td>
+      <td>{{ point.timestamp|time:'H:i'|default:'Не указано' }} - {{ point.timestamp|date:'d.m.Y'|default:'Не указано' }}</td>
+      <td>{{ point.count|default:'Не указано' }}</td>
+      <td>
+        <a href="{% url 'distributor:gpspoint-update' point.id %}" class="btn btn-sm btn-info">
+          <span class="glyphicon glyphicon-edit"></span> редактировать
+        </a>
+      </td>
+      <td>
+        <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ point.id }}" class="text-danger js-ajax-remove-btn">
+          <span class="glyphicon glyphicon-remove"></span>
+        </a>
+      </td>
+    </tr>
+    {% if point.pointphoto_set.all %}
+    <tr id="id_GPSPoint_{{ point.id }}_photo">
+      <td colspan="6" class="gpspoint-photo-container">
+      {% for photo in point.pointphoto_set.all %}
+        <a href="{{ photo.photo.url }}" rel="group" class="js-gallery" title="{{ photo.name }}, время {{ photo.timestamp|time:'H:i'|default:'Не указано' }}">
+          <img src="{{ photo.get_thumb_url }}" alt="">
+        </a>
+      {% endfor %}
+      </td>
+    </tr>
+    {% endif %}
+  {% endfor %}
+  </tbody>
+</table>

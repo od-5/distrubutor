@@ -52,50 +52,10 @@
               <div class="clearfix"></div>
               <div id="map" data-task="{{ object.id }}" data-url="{% url 'distributor:get_task_cord_list' %}" style="width:100%; height:500px"></div>
               <div id="photo_list" style="overflow: scroll">
-              {% if point_list %}
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Адрес\Координаты</th>
-                      <th>Время</th>
-    {#                      <th>Комментарий</th>#}
-                      <th colspan="2">Кол-во материала</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody class="js-list">
-                  {% for point in point_list %}
-                    <tr data-id="{{ point.id }}" data-name="контрольную точку {{ point }}" data-model="GPSPoint" id="id_GPSPoint_{{ point.id }}">
-                      <td>{{ point|default:'Не указано' }}</td>
-                      <td>{{ point.timestamp|time:'H:i'|default:'Не указано' }} - {{ point.timestamp|date:'d.m.Y'|default:'Не указано' }}</td>
-    {#                      <td>{{ point.comment|default:'Не указано' }}</td>#}
-                      <td>{{ point.count|default:'Не указано' }}</td>
-                      <td>
-                        <a href="{% url 'distributor:gpspoint-update' point.id %}" class="btn btn-sm btn-info">
-                          <span class="glyphicon glyphicon-edit"></span> редактировать
-                        </a>
-                      </td>
-                      <td>
-                        <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ point.id }}" class="text-danger js-ajax-remove-btn">
-                          <span class="glyphicon glyphicon-remove"></span>
-                        </a>
-                      </td>
-                    </tr>
-                    {% if point.pointphoto_set.all %}
-                    <tr id="id_GPSPoint_{{ point.id }}_photo">
-                      <td colspan="6" class="gpspoint-photo-container">
-                      {% for photo in point.pointphoto_set.all %}
-                        <a href="{{ photo.photo.url }}" rel="group" class="js-gallery" title="{{ photo.name }}, время {{ photo.timestamp|time:'H:i'|default:'Не указано' }}">
-    {#                      <span class="glyphicon glyphicon-camera"></span>#}
-                          <img src="{{ photo.get_thumb_url }}" alt="">
-                        </a>
-                      {% endfor %}
-                      </td>
-                    </tr>
-                    {% endif %}
-                  {% endfor %}
-                  </tbody>
-                </table>
+              {% if object.category == 0 %}
+                {% include 'distributor/__includes/sticking_table.html' %}
+              {% else %}
+                {% include 'distributor/__includes/promo_block.html' %}
               {% endif %}
               </div>
             </div>
@@ -117,6 +77,7 @@ function init() {
   var task = map_id.data('task');
   var data_list = '';
   var center = '';
+  var radius, zoom;
   $.ajax({
     type: "POST",
     async: false,
@@ -126,6 +87,7 @@ function init() {
     }
   }).done(function (data) {
     center = data.center;
+    radius = data.radius;
     if (data.coord_list.length){
       data_list = data.coord_list;
       for(var i=0;i<data_list.length;i++){
@@ -137,9 +99,14 @@ function init() {
       }
     }
   });
+  if (radius) {
+    zoom = 17;
+  } else {
+    zoom = 13
+  }
   var myMap = new ymaps.Map("map", {
       center: center,
-      zoom: 13
+      zoom: zoom
     }, {
       searchControlProvider: 'yandex#search'
   });
@@ -159,6 +126,13 @@ function init() {
             balloonContent: data_list[0]
         });
     myMap.geoObjects.add(myPlacemark);
+    if (radius){
+      var circle = new ymaps.Circle([myMap.getCenter(), radius], {}, {
+          geodesic: true
+      });
+      // Добавляем круг на карту.
+      myMap.geoObjects.add(circle);
+    }
   }
 }
 </script>

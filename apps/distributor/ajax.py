@@ -82,8 +82,10 @@ def get_task_cord_list(request):
     coord_list = []
     address_list = []
     center = []
+    radius = False
     if request.POST.get('task'):
         task = DistributorTask.objects.get(id=int(request.POST.get('task')))
+        radius = task.radius
         qs = task.gpspoint_set.all()
         try:
             center = [qs.first().coord_x, qs.first().coord_y]
@@ -97,6 +99,7 @@ def get_task_cord_list(request):
                 if i.coord_x and i.coord_y:
                     coord_list.append([float(i.coord_x), float(i.coord_y)])
     return {
+        'radius': radius,
         'center': center,
         'coord_list': coord_list,
         'address_list': address_list

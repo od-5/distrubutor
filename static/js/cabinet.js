@@ -3,6 +3,16 @@
  */
 $(function() {
 
+  $('audio').on('play', function() {
+      $('audio').addClass('stoped').removeClass('playing');
+      $(this).removeClass('stoped').addClass('playing');
+      $('.stoped').each(function() {
+          $(this).trigger('pause');
+          $(this)[0].currentTime = 0;
+      })
+  });
+
+
   var current_url = '/'+location.href.split('/')[3]+'/' + location.href.split('/')[4] + '/';
   $('header ul li a').each(function () {
     if($(this).attr('href') == current_url) $(this).parent('li').addClass('active');
