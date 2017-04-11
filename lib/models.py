@@ -20,11 +20,12 @@ class Choices(object):
     """
     class ChoicesDescriptor(object):
         def __get__(self, instance, owner):
+            attrs_dict = owner._get_choiceitem_attrs()
             return tuple([
                 tuple([
-                    owner.__dict__[attr_key].value,
-                    owner.__dict__[attr_key].name
-                ]) for attr_key in owner.__dict__.keys() if not attr_key.startswith('__')
+                    attrs_dict[attr_key].value,
+                    attrs_dict[attr_key].name
+                ]) for attr_key in attrs_dict.keys()
             ])
 
         def __set__(self, instance, value):
@@ -32,14 +33,28 @@ class Choices(object):
 
     class LabelsDescriptor(object):
         def __get__(self, instance, owner):
-            return {owner.__dict__[attr_key].value: attr_key
-                    for attr_key in owner.__dict__.keys() if not attr_key.startswith('__')}
+            attrs_dict = owner._get_choiceitem_attrs()
+            return {attrs_dict[attr_key].value: attr_key for attr_key in attrs_dict.keys()}
 
         def __set__(self, instance, value):
             raise AttributeError
 
     choices = ChoicesDescriptor()
     labels = LabelsDescriptor()
+
+    @classmethod
+    def _get_choiceitem_attrs(cls):
+        """
+        Возвращает словарь с атрибутами, являющимися экземплярами ChoiceItem, включая унаследованные.
+        """
+        all_attrs = {
+            attr_key: cls.__dict__[attr_key] for attr_key in cls.__dict__.keys() if isinstance(
+                cls.__dict__[attr_key], ChoiceItem)
+        }
+        for base_cls in cls.__bases__:
+            if issubclass(base_cls, Choices):
+                all_attrs.update(base_cls._get_choiceitem_attrs())
+        return all_attrs
 
     def __getattribute__(self, attr):
         attr_instance = object.__getattribute__(self, attr)
