@@ -6,12 +6,10 @@
 {% block extra_js %}
 <script type="text/javascript">
   $(function() {
-    $('#js-form-moderator-action .form-group').formset({
-      prefix: '{{ formset.prefix }}',
-      addText: '<span class="glyphicon glyphicon-plus-sign"></span> добавить ещё',
-      deleteText: '<span class="glyphicon glyphicon-minus-sign"></span> удалить'
+    $('#js-form-moderator-action div[data-formset-prefix]').formset({
+      animateForms: true
     });
-  })
+  });
 </script>
 {% endblock %}
 {% block content %}
@@ -46,32 +44,68 @@
               </div>
               {% endif %}
               <form action="" role="form" class="form" id="js-form-moderator-action" method="post">
-                <div class="col-md-10">
                 {% csrf_token %}
-                {{ formset.management_form }}
-                {% for form in formset %}
-                  {{ form.id }}
-                  {{ form.moderator }}
-                  <div class="form-group">
-{#                    <div class="col-md-3">{{ form.name.label_tag }}</div>#}
-                    <div class="col-md-6">
-                      {{ form.name.label_tag }}
-                      {{ form.name }}
-                      {{ form.name.errors }}
+                <div class="col-md-10">
+                  <div data-formset-prefix="{{ formset.prefix }}">
+                    {{ formset.management_form }}
+                    <div data-formset-body>
+                      {% for form in formset %}
+                        <div data-formset-form>
+                          <div style="position: relative;">
+                            <br>
+                            <a class="delete-row" href="javascript:void(0)" role="button" data-formset-delete-button>
+                              <span class="glyphicon glyphicon-minus-sign"></span> удалить
+                            </a>
+                          </div>
+                          {{ form.id }}
+                          <div class="hidden">{{ form.DELETE }}</div>
+                          {{ form.moderator }}
+                          <div class="form-group">
+                            <div class="col-md-6">
+                              {{ form.name.label_tag }}
+                              {{ form.name }}
+                              {{ form.name.errors }}
+                            </div>
+                            <div class="col-md-5">
+                              {{ form.cost.label_tag }}
+                              {{ form.cost }}
+                              {{ form.cost.errorss }}
+                            </div>
+                            <div class="clearfix"></div>
+                          </div>
+                        </div>
+                      {% endfor %}
                     </div>
-                    <div class="col-md-5">
-                      {{ form.cost.label_tag }}
-                      {{ form.cost }}
-                      {{ form.cost.errorss }}
-                    </div>
-                    <div class="clearfix"></div>
-                    {% if form.instance.pk %}
-                    <div class="col-md-10 text-right">{{ form.DELETE.label_tag }}</div>
-                    <div class="col-md-2">{{ form.DELETE }}</div>
-                    <div class="clearfix"></div>
-                    {% endif %}
+                    <script type="form-template" data-formset-empty-form>
+                      <div data-formset-form>
+                        <div style="position: relative;">
+                          <br>
+                          <a class="delete-row" href="javascript:void(0)" role="button" data-formset-delete-button>
+                            <span class="glyphicon glyphicon-minus-sign"></span> удалить
+                          </a>
+                        </div>
+                        {{ formset.empty_form.id }}
+                        <div class="hidden">{{ form.DELETE }}</div>
+                        {{ formset.empty_form.moderator }}
+                        <div class="form-group">
+                          <div class="col-md-6">
+                            {{ formset.empty_form.name.label_tag }}
+                            {{ formset.empty_form.name }}
+                            {{ formset.empty_form.name.errors }}
+                          </div>
+                          <div class="col-md-5">
+                            {{ formset.empty_form.cost.label_tag }}
+                            {{ formset.empty_form.cost }}
+                            {{ formset.empty_form.cost.errorss }}
+                          </div>
+                          <div class="clearfix"></div>
+                        </div>
+                      </div>
+                    </script>
+                    <a class="add-row" href="javascript:void(0)" role="button" data-formset-add>
+                      <span class="glyphicon glyphicon-plus-sign"></span> добавить ещё
+                    </a>
                   </div>
-                {% endfor %}
                   <input type="submit" value="Сохранить" class="btn btn-save">
                 </div>
                 <div class="clearfix"></div>

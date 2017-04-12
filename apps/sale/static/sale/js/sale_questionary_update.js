@@ -1,6 +1,6 @@
 $(function() {
   function bindAnswerFormset($el) {
-    $el.formset_improved({
+    $el.formset({
       animateForms: true,
       form: '[data-formset_answer-form]',
       emptyForm: '[data-formset_answer-empty-form]',
@@ -26,7 +26,7 @@ $(function() {
 
         if ($form.is('[data-formset-form]') && $el.is('input[type=radio]')) {
           if ($el.val() == 1) {
-            var answer_formset = $form.find('.js-sale-questionary-answer-formset').formset_improved('getOrCreate');
+            var answer_formset = $form.find('.js-sale-questionary-answer-formset').formset('getOrCreate');
             answer_formset.$forms().each(function() {
               $(this).find(answer_formset.opts.deleteButton).trigger('click');
             });
@@ -39,7 +39,7 @@ $(function() {
       });
   });
 
-  $('#js-sale-questionary-question-formset').formset_improved({
+  $('#js-sale-questionary-question-formset').formset({
     animateForms: true
   });
 });

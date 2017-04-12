@@ -1,6 +1,7 @@
 __author__ = 'alexy'
 
 INSTALLED_APPS = (
+    'djangoformsetjs',
     'suit',
     'django.contrib.admin',
     'django.contrib.auth',
