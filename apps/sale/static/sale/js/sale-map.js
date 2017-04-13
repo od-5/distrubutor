@@ -5,6 +5,7 @@ ymaps.ready(init);
 function init() {
   var map_id = $('#map');
   var url = map_id.data('url');
+  var category = $('#id_category').val();
   var task = $('#id_task').val();
   var order = $('#id_order').val();
   var date_start = $('#id_date_start').val();
@@ -20,6 +21,7 @@ function init() {
       url: url,
       data: {
         task: task,
+        category: category,
         order: order,
         date_start: date_start,
         date_end: date_end

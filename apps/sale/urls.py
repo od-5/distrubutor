@@ -27,7 +27,7 @@ urlpatterns = patterns(
     url(r'archive/$', 'get_files', name='download-archive'),
     # url(r'^add-surface/$', 'add_client_surface', name='add-client-surface'),
     #
-    url(r'^get_coord_list/$', get_client_coord_list, name='get_cord_list'),
+    url(r'^get_coord_list/$', get_client_coord_list, name='get_coord_list'),
     url(r'^get_material_residue/$', get_material_residue, name='get_material_residue'),
     # url(r'^get_order_address_list/$', get_client_order_address_list, name='get_order_address_list'),
     #

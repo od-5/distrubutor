@@ -23,10 +23,13 @@ def get_client_coord_list(request):
     all_address_list = []
     center = []
     task_qs = DistributorTask.objects.select_related().filter(sale=request.user.sale_user)
+    category = request.POST.get('category') or '0'
     task = request.POST.get('task') or None
     order = request.POST.get('order') or None
     date_start = request.POST.get('date_start') or None
     date_end = request.POST.get('date_end') or None
+    if category and category.isdigit():
+        task_qs = task_qs.filter(category=int(category))
     if order and order != '0':
         task_qs = task_qs.filter(order=int(order))
     if date_start:

@@ -83,7 +83,7 @@
             </div>
             <div class="map-wrapper" id="js-photo-map-wrapper">
               <img src="{% static 'icon/map-close__btn.jpg' %}" class="map-close__btn" id="js-photo-map-close">
-              <div id="map" style="height: 375px; width: 100%" data-url="{% url 'sale:get_cord_list' %}"></div>
+              <div id="map" style="height: 375px; width: 100%" data-url="{% url 'sale:get_coord_list' %}"></div>
             </div>
             <div class="client-nav__btn hidden-xs hidden-sm">
               <a href="{% url 'sale:download-archive' %}?date_start={{ r_date_start|default:'' }}&date_end={{ r_date_end|default:'' }}&order={{ r_order|default:'' }}&task={{ r_task|default:'' }}" target="_blank" class="client-nav__btn_archive">
