@@ -54,6 +54,8 @@ def cms_login(request, usertype=None):
         if request.method == "POST":
             username = request.POST.get('username')
             password = request.POST.get('password')
+            next_url = request.GET.get('next')
+            print next_url
             try:
                 user = authenticate(username=username, password=password)
                 if user is not None:
@@ -72,7 +74,10 @@ def cms_login(request, usertype=None):
                         if user.type == 6:
                             return HttpResponseRedirect(reverse('ticket:list'))
                         else:
-                            return HttpResponseRedirect(reverse('dashboard:index'))
+                            if next_url:
+                                return HttpResponseRedirect(next_url)
+                            else:
+                                return HttpResponseRedirect(reverse('dashboard:index'))
                         # return HttpResponseRedirect('/')
                     else:
                         error = u'Пользователь заблокирован'

@@ -13,7 +13,7 @@ from django.db import models
 from django.conf import settings
 
 from apps.moderator.models import Moderator, ModeratorArea, ModeratorAction
-from apps.sale.models import Sale, SaleOrder
+from apps.sale.models import Sale, SaleOrder, Questionary, QuestionaryQuestion
 from core.files import pointphoto_upload
 from core.models import User
 import core.geotagging as api
@@ -158,7 +158,6 @@ class DistributorTask(models.Model):
     def get_sale_city(self):
         return self.sale.city.name
 
-    objects = DistributorTaskModelManager()
     distributor = models.ForeignKey(to=Distributor, verbose_name=u'Распространитель')
     category = models.PositiveIntegerField(verbose_name=u'Категория задачи',
                                            default=TaskCategory.sticking_and_spread,
@@ -287,5 +286,44 @@ class PointAudio(models.Model):
         return u''
 
     point = models.ForeignKey(to=GPSPoint, verbose_name=u'GPS точка')
-    timestamp = models.DateTimeField(blank=True, null=True, verbose_name=u'Временная метка')
+    timestamp = models.DateTimeField(verbose_name=u'Временная метка')
     file = models.FileField(verbose_name=u'Фотография', upload_to='audio')
+
+
+class QuestionaryCompleted(models.Model):
+    class Meta:
+        verbose_name = u'Заполненная анкета'
+        verbose_name_plural = u'Заполненные анкеты'
+        app_label = 'sale'
+
+    SEX_CHOICE = (
+        (1, 'Мужской'),
+        (2, 'Женский'),
+    )
+
+    def __unicode__(self):
+        return u''
+
+    def get_absolute_url(self):
+        return reverse('distributor:questionary-completed', args=(self.id,))
+
+    point = models.ForeignKey(GPSPoint, verbose_name=u'GPS точка')
+    questionary = models.ForeignKey(Questionary, verbose_name=u'Анкета')
+    full_name = models.CharField(max_length=256, verbose_name=u'ФИО')
+    age = models.PositiveSmallIntegerField(verbose_name=u'Возраст')
+    sex = models.PositiveSmallIntegerField(verbose_name=u'Пол', choices=SEX_CHOICE)
+    timestamp = models.DateTimeField(verbose_name=u'Временная метка')
+
+
+class QuestionaryQuestionCompleted(models.Model):
+    class Meta:
+        verbose_name = u'Ответ заполненной анкеты'
+        verbose_name_plural = u'Ответы заполненной анкеты'
+        app_label = 'sale'
+
+    def __unicode__(self):
+        return u''
+
+    questionary_question = models.ForeignKey(QuestionaryQuestion, verbose_name=u'Вопрос анкеты')
+    questionary_completed = models.ForeignKey(QuestionaryCompleted, verbose_name=u'Заполненная анкета')
+    text = models.TextField(verbose_name=u'Ответ')

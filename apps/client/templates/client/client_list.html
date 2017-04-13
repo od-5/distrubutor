@@ -153,7 +153,7 @@
                         {% endif %}
                       </td>
                       <td>{{ object.kind_of_activity|default:'Не указано' }}</td>
-                      <td>{{ object.moderator|default:'Не указано' }}</td>
+                      <td>{{ object.moderator.company|default:'Не указано' }}</td>
                       <td data-manager-id="{{ object.manager.id }}" data-manager-name="{{ object.manager }}" data-url="{% url 'client:get_available_manager_list' %}">
                         <span class="js-manager-name">{{ object.manager|default:'Не указано' }}</span>
                         {% if user.type == 5 %}

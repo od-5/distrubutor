@@ -6,7 +6,8 @@ from .ajax import distributor_payment_update, get_task_initial, get_task_cord_li
     ajax_remove_photo
 from .views import DistributorListView, DistributorTaskListView, DistributorTaskArchiveView,\
     DistributorTaskCreateView, DistributorTaskUpdateView, DistributorReportView, DistributorPromoTaskCreateView, \
-    DistributorPromoTaskUpdateView, DistributorQuestTaskCreateView, DistributorQuestTaskUpdateView
+    DistributorPromoTaskUpdateView, DistributorQuestTaskCreateView, DistributorQuestTaskUpdateView, \
+    QuestionaryCompleted
 
 __author__ = 'alexy'
 
@@ -33,6 +34,8 @@ urlpatterns = patterns(
     url(r'^task/quest/add/$', login_required(DistributorQuestTaskCreateView.as_view()), name='task-quest-add'),
     url(r'^task/quest/(?P<pk>\d+)/$', login_required(DistributorQuestTaskUpdateView.as_view()),
         name='task-quest-update'),
+    url(r'^questionarycoplated/(?P<pk>\d+)/$', login_required(QuestionaryCompleted.as_view()),
+        name='questionary-completed'),
 
     url(r'^task/(?P<pk>\d+)/map/$', 'distributor_task_update_map', name='task-update-map'),
     url(r'^point/(?P<pk>\d+)/$', 'gps_point_update', name='gpspoint-update'),

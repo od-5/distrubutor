@@ -9,6 +9,7 @@ from django.views.generic import TemplateView
 
 from apps.distributor.models import GPSPoint
 from apps.moderator.forms import ReviewForm
+from apps.sale.models import SaleOrder
 
 __author__ = 'alexy'
 
@@ -54,10 +55,18 @@ class DashboardView(TemplateView):
             elif self.request.GET.get('full_view') == '0':
                 self.request.session['is_mobile'] = True
             r_task = self.request.GET.get('task') or None
+            r_category = self.request.GET.get('category') or '0'
             r_date_start = self.request.GET.get('date_start') or None
             r_date_end = self.request.GET.get('date_end') or None
             r_order = self.request.GET.get('order') or None
             show_table = self.request.GET.get('show_table') or None
+            if r_category:
+                point_qs = point_qs.filter(task__category=int(r_category))
+                task_qs = sale.distributortask_set.select_related().filter(category=int(r_category))
+                order_qs = sale.saleorder_set.filter(category=int(r_category))
+                context.update({
+                    'r_category': int(r_category)
+                })
             if r_task and r_task != '0':
                 point_qs = point_qs.filter(task=int(r_task))
                 context.update({
@@ -112,7 +121,9 @@ class DashboardView(TemplateView):
                 point_list = paginator.page(1)
             except EmptyPage:
                 point_list = paginator.page(paginator.num_pages)
+            category_list = SaleOrder.OrderCategory.choices
             context.update({
+                'category_list': category_list,
                 'show_table': show_table,
                 'order_list': order_qs,
                 # 'current_task': task,

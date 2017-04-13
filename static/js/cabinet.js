@@ -12,6 +12,14 @@ $(function() {
       })
   });
 
+  $('.js-questionary-link').fancybox({
+    type: 'iframe',
+    helpers: {
+      overlay: {
+        locked: false
+      }
+    }
+  });
 
   var current_url = '/'+location.href.split('/')[3]+'/' + location.href.split('/')[4] + '/';
   $('header ul li a').each(function () {

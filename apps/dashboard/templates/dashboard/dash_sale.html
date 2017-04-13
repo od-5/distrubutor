@@ -102,6 +102,13 @@
         <button class="js-filter-show btn-filter hidden-md hidden-lg"><img src="{% static "icon/plus-icon.png" %}" alt="Сортировка"> Сортировка</button>
         <form action="" method="GET" role="form" id="js-sale-dash-form" class="client-search-form hidden-xs hidden-sm">
           <div class="row">
+            <div class="col-md-12 col-xs-12 col-sm-12">
+              <select name="category" id="id_category" class="form-control">
+                {% for category in category_list %}
+                <option value="{{ category.0 }}" {% if category.0 == r_category %}selected='selected'{% endif %}>{{ category.1 }}</option>
+                {% endfor %}
+              </select>
+            </div>
             <div class="col-md-4 col-xs-12 col-sm-12">
               <input type="text" id="id_date_start" class="form-control" name="date_start" value="{{ r_date_start|default:'' }}" placeholder="Дата от">
             </div>
@@ -227,6 +234,44 @@
         {% endfor %}
         </div>
       {% endif %}
+      {% for point in point_list %}
+        {% if point.questionarycompleted_set.all %}
+        <div class="col-md-6">
+          <br>
+          <p class="lead text-center">Анкеты</p>
+          <table class="table table-list table-promo">
+            <tbody class="js-list">
+            {% for item in  point.questionarycompleted_set.all %}
+              <tr data-id="{{ item.id }}" data-name="{{ item.full_name|default:'Не указано' }}" data-model="QuestionaryCompleted" id="id_QuestionaryCompleted_{{ item.id }}">
+                <td>{{ item.timestamp|date:'j-m-Y g:i:s'|default:'не указано' }}</td>
+                <td><a href="{{ item.get_absolute_url }}" class="js-questionary-link">{{ item.full_name }} - {{ item.age }} - {{ item.get_sex_display }}</a></td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% endif %}
+        <div class="{% if point.task.category == point.task.TaskCategory.promo_action %}col-md-12{% else %}col-md-6{% endif %}">
+          {% if point.pointaudio_set.all %}
+          <br>
+          <p class="lead text-center">Аудиозаписи</p>
+          <table class="table table-list table-promo">
+            <tbody class="js-list">
+            {% for audio in point.pointaudio_set.all %}
+              <tr data-id="{{ audio.id }}" data-name="{{ audio.timestamp|default:'Не указано' }}" data-model="PointAudio" id="id_PointAudio_{{ audio.id }}">
+                <td>{{ audio.timestamp|date:'j-m-Y g:i:s'|default:'не указано' }}</td>
+                <td><audio src="{{ audio.file.url }}" controls preload="none"></audio></td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          {% endif %}
+        </div>
+        <div class="clearfix"></div>
+
+
+      {% endfor %}
+
         <table class="pagination pagination-sm">
           <tr>
             {% if point_list.has_previous %}

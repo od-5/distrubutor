@@ -20,23 +20,45 @@
     <div class="clearfix"></div>
   </div>
   {% endif %}
-  {% if point.pointaudio_set.all %}
-  <br>
-  <p class="lead text-info text-center">Аудиозаписи</p>
-  <table class="table table-list">
-    <tbody class="js-list">
-    {% for audio in point.pointaudio_set.all %}
-      <tr data-id="{{ audio.id }}" data-name="{{ audio.timestamp|default:'Не указано' }}" data-model="PointAudio" id="id_PointAudio_{{ audio.id }}">
-        <td>{{ audio.timestamp|default:'Не указано' }}</td>
-        <td><audio src="{{ audio.file.url }}" controls preload="none"></audio></td>
-        <td>
-          <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ audio.id }}" class="text-danger js-ajax-remove-btn">
-            <span class="glyphicon glyphicon-remove"></span>
-          </a>
-        </td>
-      </tr>
-    {% endfor %}
-    </tbody>
-  </table>
+
+  {% if point.questionarycompleted_set.all %}
+  <div class="col-md-6">
+    <br>
+    <p class="lead text-info text-center">Анкеты</p>
+    <table class="table table-list table-promo">
+      <tbody class="js-list">
+      {% for item in  point.questionarycompleted_set.all %}
+        <tr data-id="{{ item.id }}" data-name="{{ item.full_name|default:'Не указано' }}" data-model="QuestionaryCompleted" id="id_QuestionaryCompleted_{{ item.id }}">
+          <td>{{ item.timestamp|date:'j-m-Y g:i:s'|default:'не указано' }}</td>
+          <td><a href="{{ item.get_absolute_url }}" class="js-questionary-link">{{ item.full_name }} - {{ item.age }} - {{ item.get_sex_display }}</a></td>
+          <td>
+            <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ item.id }}" class="text-danger js-ajax-remove-btn">
+              <span class="glyphicon glyphicon-remove"></span>
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
   {% endif %}
+  <div class="{% if object.category == object.TaskCategory.promo_action %}col-md-12{% else %}col-md-6{% endif %}">
+    <p class="lead text-info text-center">Аудиозаписи</p>
+    <table class="table table-list table-promo">
+      <tbody class="js-list">
+      {% for audio in point.pointaudio_set.all %}
+        <tr data-id="{{ audio.id }}" data-name="{{ audio.timestamp|default:'Не указано' }}" data-model="PointAudio" id="id_PointAudio_{{ audio.id }}">
+          <td>{{ audio.timestamp|date:'j-m-Y g:i:s'|default:'не указано' }}</td>
+          <td><audio src="{{ audio.file.url }}" controls preload="none"></audio></td>
+          <td>
+            <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ audio.id }}" class="text-danger js-ajax-remove-btn">
+              <span class="glyphicon glyphicon-remove"></span>
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="clearfix"></div>
 {% endfor %}

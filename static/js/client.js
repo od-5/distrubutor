@@ -3,6 +3,15 @@
  */
 $(function() {
   $.validator.messages.required = "* обязательное поле";
+  $('.js-questionary-link').fancybox({
+    type: 'iframe',
+    helpers: {
+      overlay: {
+        locked: false
+      }
+    }
+  });
+
   $('#js-photo-map-button').click(function(){
     $('.map-wrapper').slideToggle();
     $('.client-nav').toggleClass('client-nav_mb')

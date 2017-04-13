@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from core.models import User
 from apps.manager.models import Manager
 from apps.moderator.models import Moderator, ModeratorArea, Review, Order
-from apps.distributor.models import Distributor, DistributorTask, GPSPoint, PointAudio
+from apps.distributor.models import Distributor, DistributorTask, GPSPoint, PointAudio, QuestionaryCompleted
 from apps.sale.models import Sale, SaleOrder, SaleMaket, Questionary
 from apps.geolocation.models import City, Country
 from apps.client.models import Client, ClientContact, Task

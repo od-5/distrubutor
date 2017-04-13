@@ -1,9 +1,9 @@
 # coding=utf-8
 from rest_framework import serializers
 from core.models import User
-from apps.distributor.models import Distributor, DistributorTask, GPSPoint, PointPhoto, PointAudio
-from apps.sale.models import Questionary, QuestionaryAnswer, QuestionaryQuestion, QuestionaryCompleted, \
-    QuestionaryQuestionCompleted
+from apps.distributor.models import Distributor, DistributorTask, GPSPoint, PointPhoto, PointAudio, \
+    QuestionaryCompleted, QuestionaryQuestionCompleted
+from apps.sale.models import Questionary, QuestionaryAnswer, QuestionaryQuestion
 
 __author__ = 'alexy'
 
@@ -15,10 +15,12 @@ class QuestionaryCompletedSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuestionaryCompleted
         fields = (
+            'point'
             'questionary',
             'full_name',
             'age',
-            'sex'
+            'sex',
+            'timestamp'
         )
 
 

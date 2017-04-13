@@ -228,7 +228,6 @@ def gpspoint_comment(request, pk):
 def photo_add(request):
     try:
         serializer = PointPhotoSerializer(data=request.data)
-        print request.data
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -244,7 +243,6 @@ def photo_add(request):
 def audio_add(request):
     try:
         serializer = PointAudioSerializer(data=request.data)
-        print request.data
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -260,7 +258,6 @@ def audio_add(request):
 def questionary_completed(request):
     try:
         serializer = QuestionaryCompletedSerializer(data=request.data)
-        print request.data
         if serializer.is_valid():
             serializer.save()
             context = {
@@ -279,7 +276,6 @@ def questionary_completed(request):
 def questionary_completed_answer(request):
     try:
         serializer = QuestionaryQuestionCompletedSerializer(data=request.data)
-        print request.data
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -10,14 +10,14 @@ from django.db.models import Q
 from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DetailView
 from django.contrib.auth.decorators import login_required
 
 from lib.cbv import SendUserToFormMixin
 import core.geotagging as api
 from apps.moderator.models import ModeratorAction, Moderator
 from .task_calendar import get_months
-from .models import Distributor, DistributorTask, DistributorPayment, GPSPoint
+from .models import Distributor, DistributorTask, DistributorPayment, GPSPoint, QuestionaryCompleted
 from .forms import DistributorAddForm, DistributorUpdateForm, DistributorPaymentForm, DistributorTaskForm,\
     GPSPointUpdateForm, DistributorPromoTaskForm, DistributorQuestTaskForm
 from core.forms import UserAddForm, UserUpdateForm
@@ -469,6 +469,11 @@ class DistributorReportView(ListView):
             })
 
         return context
+
+
+class QuestionaryCompleted(DetailView):
+    model = QuestionaryCompleted
+    template_name = 'distributor/questionary_completed.html'
 
 
 def distributor_report_excel(request):
