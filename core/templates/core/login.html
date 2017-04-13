@@ -28,10 +28,9 @@
       <p class="sign-container_slogan">"Прозрачная схема взаимодействия - наше главное преимущество!"</p>
     {% endif %}
         <form action="" role="form" method="post" id="js-sign-form" class="sign-form">{% csrf_token %}
-          <input type="email" {% if demo %}value="123456789@mail.ru" readonly{% endif %} name="username" id="id_username" class="form-control sign-form__input add-bottom" placeholder="Введите ваш email">
-          <input type="password" {% if demo %}value="111111" readonly{% endif %} name="password" id="id_password" class="form-control sign-form__input add-bottom" placeholder="Введите пароль">
+          <input type="email" {% if demo %}value="btl@elen28.ru" readonly{% endif %} name="username" id="id_username" class="form-control sign-form__input add-bottom" placeholder="Введите ваш email">
+          <input type="password" {% if demo %}value="1234" readonly{% endif %} name="password" id="id_password" class="form-control sign-form__input add-bottom" placeholder="Введите пароль">
           <input type="submit" value="Войти" class="btn btn-warning sign-form__button form-control">
-
         </form>
     </div>
   </div>
