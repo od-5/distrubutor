@@ -1,8 +1,6 @@
 django==1.7
 mysql-python
 django-suit==0.2.18
-django-debug-toolbar==1.3.2
-sqlparse==0.1.19
 pytils==0.3
 pytz
 pillow
@@ -18,5 +16,3 @@ django-cleanup==0.4.2
 djangorestframework==3.3.3
 python-dateutil==2.6.0
 django-nested-formset
-factory_boy
-django-formset-js

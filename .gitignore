@@ -22,3 +22,4 @@ core/migrations/
 /apps/geolocation/migrations
 vagrant/
 db.sqlite3
+.coverage
