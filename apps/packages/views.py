@@ -21,4 +21,3 @@ class PackageUpdateView(UpdateView):
     model = Package
     form_class = PackageForm
     template_name = 'packages/package_update.html'
-
