@@ -15,7 +15,7 @@ class QuestionaryCompletedSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuestionaryCompleted
         fields = (
-            'point'
+            'point',
             'questionary',
             'full_name',
             'age',
