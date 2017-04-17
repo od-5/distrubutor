@@ -60,21 +60,19 @@ class DistributorPayment(models.Model):
 class DistributorTaskModelManager(models.Manager):
     def get_qs(self, user):
         qs = DistributorTask.objects.none()
-
         if user.type == User.UserType.administrator:
-            qs = DistributorTask.objects.filter(closed=False)
+            qs = DistributorTask.objects.all()
         elif user.type == User.UserType.moderator:
-            qs = DistributorTask.objects.filter(distributor__moderator=user.moderator_user, closed=False)
+            qs = DistributorTask.objects.filter(distributor__moderator=user.moderator_user)
         elif user.type == User.UserType.distributor:
-            qs = DistributorTask.objects.filter(distributor=user.distributor_user, closed=False)
+            qs = DistributorTask.objects.filter(distributor=user.distributor_user)
         elif user.type == User.UserType.manager:
             if user.manager_user.leader:
-                qs = DistributorTask.objects.filter(distributor__moderator=user.manager_user.moderator.moderator_user,
-                                                    closed=False)
+                qs = DistributorTask.objects.filter(distributor__moderator=user.manager_user.moderator.moderator_user)
             else:
-                qs = DistributorTask.objects.filter(sale__manager=user.manager_user, closed=False)
+                qs = DistributorTask.objects.filter(sale__manager=user.manager_user)
         elif user.type == User.UserType.agency:
-            qs = DistributorTask.objects.filter(distributor__moderator__ticket_forward=True, closed=False)
+            qs = DistributorTask.objects.filter(distributor__moderator__ticket_forward=True)
 
         return qs
 
