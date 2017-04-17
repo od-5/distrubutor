@@ -57,26 +57,26 @@ class DstributorPromoTaskTestCase(LoginWithUserTestCase):
     def test_create_smoke(self):
         response = self.client.get(reverse('distributor:task-promo-add'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('distributor/task_promo_add.html')
+        self.assertTemplateUsed(response, 'distributor/task_promo_add.html')
 
     def test_update_smoke(self):
         distributor_task = DistributorTaskFactory(category=DistributorTask.TaskCategory.promo_action)
         response = self.client.get(reverse('distributor:task-promo-update', args=(distributor_task.pk,)))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('distributor/task_promo_update.html')
+        self.assertTemplateUsed(response, 'distributor/task_promo_update.html')
 
 
 class DistributorQuestTaskTestCase(LoginWithUserTestCase):
     def test_create_smoke(self):
         response = self.client.get(reverse('distributor:task-quest-add'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('distributor/task_quest_add.html')
+        self.assertTemplateUsed(response, 'distributor/task_quest_add.html')
 
     def test_update_smoke(self):
         distributor_task = DistributorTaskFactory(category=DistributorTask.TaskCategory.questioning)
         response = self.client.get(reverse('distributor:task-quest-update', args=(distributor_task.pk,)))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('distributor/task_quest_update.html')
+        self.assertTemplateUsed(response, 'distributor/task_quest_update.html')
 
 
 class GPSPointTestCase(LoginWithUserTestCase):
@@ -88,4 +88,4 @@ class DistributorReportTestCase(LoginWithUserTestCase):
     def test_report_smoke(self):
         response = self.client.get(reverse('distributor:report'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('distributor/distributor_report.html')
+        self.assertTemplateUsed(response, 'distributor/distributor_report.html')

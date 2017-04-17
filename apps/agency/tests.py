@@ -9,12 +9,12 @@ class AgencyTestCase(LoginWithUserTestCase):
     def test_list_smoke(self):
         response = self.client.get(reverse('agency:list'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('agency/agency_list.html')
+        self.assertTemplateUsed(response, 'agency/agency_list.html')
 
     def test_create_smoke(self):
         response = self.client.get(reverse('agency:add'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('agency/agency_add.html')
+        self.assertTemplateUsed(response, 'agency/agency_add.html')
 
     def test_create(self):
         response = self.client.post(
@@ -51,7 +51,7 @@ class AgencyTestCase(LoginWithUserTestCase):
         some_agency = self.create_some_agency()
         response = self.client.get(reverse('agency:update', args=(some_agency.pk,)))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('agency/agency_update.html')
+        self.assertTemplateUsed(response, 'agency/agency_update.html')
 
     def test_update(self):
         some_agency = self.create_some_agency()

@@ -7,4 +7,4 @@ class CalculatorTestCase(LoginWithUserTestCase):
     def test_index_smoke(self):
         response = self.client.get(reverse('calculator:index'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('calculator/calculator.html')
+        self.assertTemplateUsed(response, 'calculator/calculator.html')
