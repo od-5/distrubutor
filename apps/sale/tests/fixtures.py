@@ -7,7 +7,7 @@ from core.models import User
 from core.tests.fixtures import UserFactory
 from apps.moderator.tests.fixtures import ModeratorFactory
 from apps.geolocation.tests.fixtures import CityFactory
-from ..models import Sale, SaleOrder
+from ..models import Sale, SaleOrder, CommissionOrder
 
 
 class SaleFactory(factory.DjangoModelFactory):
@@ -26,3 +26,12 @@ class SaleOrderFactory(factory.DjangoModelFactory):
 
     sale = factory.SubFactory(SaleFactory)
     date_start = factory.LazyFunction(datetime.now)
+
+
+class CommissionOrderFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = CommissionOrder
+
+    moderator = factory.SubFactory(ModeratorFactory)
+    sale = factory.SubFactory(SaleFactory, moderator=factory.SelfAttribute('..moderator'))
+    saleorder = factory.SubFactory(SaleOrderFactory, sale=factory.SelfAttribute('..sale'))
