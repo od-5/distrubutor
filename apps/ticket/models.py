@@ -1,6 +1,7 @@
 # coding=utf-8
 from django.core.urlresolvers import reverse
 from django.db import models
+
 from apps.geolocation.models import City
 from apps.moderator.models import Moderator
 from core.base_model import Common
@@ -24,7 +25,6 @@ class Ticket(Common):
             return None
         else:
             return reverse('ticket:detail', args=(self.pk, ))
-
 
     def performed_at(self):
         pass
