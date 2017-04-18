@@ -2,9 +2,9 @@
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Sum
+
 from apps.manager.models import Manager
 from apps.moderator.models import Moderator
-from core.base_model import Common
 
 __author__ = 'alexy'
 
