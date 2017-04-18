@@ -4,7 +4,7 @@ import factory
 from ..models import User
 
 
-class UserFactory(factory.django.DjangoModelFactory):
+class UserFactory(factory.DjangoModelFactory):
     class Meta:
         model = User
 
