@@ -53,7 +53,7 @@ class SaleOrderTestCase(LoginWithUserTestCase):
     def test_journal_smoke(self):
         response = self.client.get(reverse('sale:journal'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'sale/sale_journal.html')
+        self.assertTemplateUsed(response, 'sale/journal_list.html')
 
 
 class SaleQuestionaryTestCase(LoginWithUserTestCase):

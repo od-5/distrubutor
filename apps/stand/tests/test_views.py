@@ -20,4 +20,4 @@ class StandTestCase(LoginWithUserTestCase):
         stand = StandFactory()
         response = self.client.get(reverse('stand:update', args=(stand.pk,)))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'stand/stand_update.html')
+        self.assertTemplateUsed(response, 'stand/stand_form.html')
