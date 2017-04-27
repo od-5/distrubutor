@@ -20,7 +20,8 @@
     <div class="clearfix"></div>
   </div>
   {% endif %}
-
+{% endfor %}
+{% for point in point_list %}
   {% if point.questionarycompleted_set.all %}
   <div class="col-md-6">
     <br>
@@ -42,6 +43,8 @@
     </table>
   </div>
   {% endif %}
+{% endfor %}
+{% for point in point_list %}
   <div class="{% if object.category == object.TaskCategory.promo_action %}col-md-12{% else %}col-md-6{% endif %}">
     <p class="lead text-info text-center">Аудиозаписи</p>
     <table class="table table-list table-promo">

@@ -1,20 +1,23 @@
 # coding=utf-8
-import json
+from __future__ import unicode_literals
 import datetime
-from apps.sale.models import Questionary
-import core.geotagging as api
-from django.conf import settings
+import logging
+
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+
+from django.conf import settings
+
+import core.geotagging as api
 from api.serializers import UserSerializer, DistributorTaskSerializer, GPSPointSerializer, PointPhotoSerializer, DistributorSerializer, \
     QuestionarySerializer, QuestionaryCompletedSerializer, QuestionaryQuestionCompletedSerializer, PointAudioSerializer
-from core.common import str_to_bool
+from apps.sale.models import Questionary
 from apps.distributor.models import Distributor, DistributorTask, GPSPoint
+
 # import the logging library
-import logging
 # Get an instance of a logger
 logger = logging.getLogger('django.request')
 
@@ -227,7 +230,9 @@ def gpspoint_comment(request, pk):
 @permission_classes((IsAuthenticated,))
 def photo_add(request):
     try:
+        logger.error(u'user=%s photo add. request.data= %s' % (request.user, request.data))
         serializer = PointPhotoSerializer(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
