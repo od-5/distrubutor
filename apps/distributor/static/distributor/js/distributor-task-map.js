@@ -104,7 +104,7 @@ function init() {
   $('form').on('change', '#id_order', function(){
     if ($(this).val()){
       $('#map-container').removeClass('hide');
-      myMap.setCenter([$('#id_order option:selected').data('coord_y'), $('#id_order option:selected').data('coord_x')], 11, {
+      myMap.setCenter([$('#id_order option:selected').attr('coord_y'), $('#id_order option:selected').attr('coord_x')], 11, {
         checkZoomRange: true
       });
     } else {

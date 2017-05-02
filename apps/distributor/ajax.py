@@ -61,8 +61,6 @@ def get_task_initial(request):
                 'id': area.id,
                 'name': area.name
             })
-        print sale.city.coord_x
-        print sale.city.coord_y
         return {
             'coord_x': float(sale.city.coord_x),
             'coord_y': float(sale.city.coord_y),

@@ -125,7 +125,9 @@ $(function(){
             order.append($("<option/>", {
               material: order_list[k]['material_residue'],
               value: order_list[k]['id'],
-              text: order_list[k]['name']
+              text: order_list[k]['name'],
+              coord_x: data.coord_x,
+              coord_y: data.coord_y
             }));
           }
         }
