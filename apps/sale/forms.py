@@ -207,13 +207,6 @@ class QuestionaryQuestionForm(BlockedModelFormMixin):
         super(QuestionaryQuestionForm, self).clean()
         if self.is_bound and not self.is_valid():
             return
-
-        print(self.cleaned_data['question_type'])
-        print(self.instance.question_type)
-        print(QuestionaryQuestion.QUESTION_TYPE_CHOICE[1][0])
-        print(self.nested.is_bound)
-        print(self.nested.total_form_count())
-
         if (self.cleaned_data['question_type'] == QuestionaryQuestion.QUESTION_TYPE_CHOICE[1][0] and
                 self.nested.is_bound and (self.nested.total_form_count() - len(self.nested.deleted_forms)) == 0):
             raise forms.ValidationError(u'Заполните список ответов!')
