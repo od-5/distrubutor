@@ -229,16 +229,19 @@ def gpspoint_comment(request, pk):
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
 def photo_add(request):
-    try:
-        logger.error(u'user=%s photo add. request.data= %s' % (request.user, request.data))
+    logger.error(u'user=%s photo add. request.data= %s' % (request.user, request.data))
+    if request.method == 'POST':
+        data = request.data.copy()
+        # fixme: придумать решение проблемы - на лифтах аналогично
+        data['photo'] = '1.jpg'
         serializer = PointPhotoSerializer(data=request.data)
-
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
-    except:
+            logger.error(u'user=%s photo FAIL. request.data= %s' % (request.user, request.data))
+            return Response({'fail': 'true'}, status=status.HTTP_205_RESET_CONTENT)
+    else:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
