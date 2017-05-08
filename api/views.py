@@ -175,21 +175,18 @@ def task_detail(request, pk):
 @permission_classes((IsAuthenticated,))
 def gpspoint_add(request):
     if request.method == 'POST':
-        try:
-            serializer = GPSPointSerializer(data=request.data)
-            logger.error(u'user=%s GPSPoint add. Data: %s' % (request.user, request.data))
-            if serializer.is_valid():
-                serializer.save()
-                context = {
-                    'point': serializer.instance.id,
-                    'address': serializer.instance.name
-                }
-                logger.error(u'user=%s GPSPoint add. coord_x: %s, coord_y: %s, name: %s' % (request.user, serializer.instance.coord_x, serializer.instance.coord_y, serializer.instance.name))
-                return Response(context, status=status.HTTP_201_CREATED)
-            else:
-                return Response(serializer.data, status=status.HTTP_205_RESET_CONTENT)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        serializer = GPSPointSerializer(data=request.data)
+        logger.error(u'user=%s GPSPoint add. Data: %s' % (request.user, request.data))
+        if serializer.is_valid():
+            serializer.save()
+            context = {
+                'point': serializer.instance.id,
+                'address': serializer.instance.name
+            }
+            logger.error(u'user=%s GPSPoint add. coord_x: %s, coord_y: %s, name: %s' % (request.user, serializer.instance.coord_x, serializer.instance.coord_y, serializer.instance.name))
+            return Response(context, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'fail': 'true'}, status=status.HTTP_205_RESET_CONTENT)
     else:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
