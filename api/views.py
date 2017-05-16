@@ -62,11 +62,8 @@ def confirm_address(request):
                 coord_x = float(pos[1])
                 item.coord_x = coord_x
                 item.coord_y = coord_y
+                item.name = address
                 logger.error(u'user=%s confirm_address. coord_x: %s, coord_y: %s' % (request.user, coord_x, coord_y))
-                try:
-                    name = api.geocodeName(api_key, coord_x, coord_y)
-                except:
-                    pass
                 item.save()
                 logger.error(u'confirm_address. Save complete')
         context = {
