@@ -190,20 +190,6 @@ class GPSPoint(models.Model):
         else:
             return u'%s, %s' % (self.coord_x, self.coord_y)
 
-    # def save(self, *args, **kwargs):
-    #     if self.task.define_address:
-    #         try:
-    #             name = api.geocodeName(api_key, self.coord_y, self.coord_x)
-    #             self.name = name
-    #         except:
-    #             self.name = u'%s, %s' % (self.coord_y, self.coord_x)
-    #     else:
-    #         self.name = u'%s, %s' % (self.coord_y, self.coord_x)
-    #     if not self.timestamp:
-    #         hours = self.task.sale.city.timezone
-    #         self.timestamp = datetime.datetime.now() + datetime.timedelta(hours=hours)
-    #     super(GPSPoint, self).save()
-
     task = models.ForeignKey(to=DistributorTask, verbose_name=u'Задача')
     name = models.CharField(max_length=150, verbose_name=u'Название', blank=True, null=True)
     count = models.PositiveIntegerField(verbose_name=u'Кол-во материала', blank=True, null=True)
@@ -218,11 +204,8 @@ def get_coord_for_point(sender, created, **kwargs):
     instance = kwargs['instance']
     if created:
         if instance.task.define_address:
-            try:
-                name = api.geocodeName(api_key, instance.coord_y, instance.coord_x)
-                instance.name = name
-            except:
-                instance.name = u'%s, %s' % (instance.coord_y, instance.coord_x)
+            name = api.geocodeName(api_key, instance.coord_y, instance.coord_x)
+            instance.name = name
         else:
             instance.name = u'%s, %s' % (instance.coord_y, instance.coord_x)
         hours = instance.task.sale.city.timezone
