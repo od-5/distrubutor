@@ -186,12 +186,13 @@
                     {{ point|default:'Не указано' }}
                     <div class="hidden-md hidden-lg">{{ point.timestamp|time:'H:i'|default:'Не указано' }} - {{ point.timestamp|date:'d.m.Y'|default:'Не указано' }} \ {{ point.count|default:'Не указано' }} </div>
                     <div>
-                    {% for photo in point.pointphoto_set.all %}
-                      <a href="{{ photo.photo.url }}" rel="group" class="js-gallery table-photo-list__link" title="{{ photo.name }}, время {{ photo.timestamp|time:'H:i'|default:'Не указано' }}">
-                        <img src="{{ photo.get_thumb_url }}" alt="" class="table-photo-list__thumb">
-                        <div class="table-photo-list__link_hover"><span class="glyphicon glyphicon-zoom-in"></span></div>
-                      </a>
-                    {% endfor %}
+                      <a href="{% url 'distributor:gpspoint-photo-list' point.pk %}" rel="group" class='js-sale-gallery'>Смотреть фотографии</a>
+{#                    {% for photo in point.pointphoto_set.all %}#}
+{#                      <a href="{{ photo.photo.url }}" rel="group" class="js-gallery table-photo-list__link" title="{{ photo.name }}, время {{ photo.timestamp|time:'H:i'|default:'Не указано' }}">#}
+{#                        <img src="{{ photo.get_thumb_url }}" alt="" class="table-photo-list__thumb">#}
+{#                        <div class="table-photo-list__link_hover"><span class="glyphicon glyphicon-zoom-in"></span></div>#}
+{#                      </a>#}
+{#                    {% endfor %}#}
                     </div>
                   </td>
                   <td class="text-center hidden-xs hidden-sm">{{ point.timestamp|time:'H:i'|default:'Не указано' }} - {{ point.timestamp|date:'d.m.Y'|default:'Не указано' }}</td>

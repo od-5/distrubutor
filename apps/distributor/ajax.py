@@ -164,3 +164,16 @@ def ajax_remove_photo(request):
         return {
             'success': False
         }
+
+
+@ajax_request
+@csrf_exempt
+def get_point_photo_list(request, pk):
+    photo_list = []
+    for i in PointPhoto.objects.filter(point=int(pk)):
+        photo_list.append({
+            'href': i.photo.url,
+            'type': 'image',
+            'isDom': False
+        })
+    return photo_list

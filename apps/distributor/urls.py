@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.conf.urls import patterns, url
 
 from .ajax import distributor_payment_update, get_task_initial, get_task_cord_list, get_current_location, \
-    ajax_remove_photo
+    ajax_remove_photo, get_point_photo_list
 from .views import DistributorListView, DistributorTaskListView, DistributorTaskArchiveView,\
     DistributorTaskCreateView, DistributorTaskUpdateView, DistributorReportView, DistributorPromoTaskCreateView, \
     DistributorPromoTaskUpdateView, DistributorQuestTaskCreateView, DistributorQuestTaskUpdateView, \
@@ -39,6 +39,7 @@ urlpatterns = patterns(
 
     url(r'^task/(?P<pk>\d+)/map/$', 'distributor_task_update_map', name='task-update-map'),
     url(r'^point/(?P<pk>\d+)/$', 'gps_point_update', name='gpspoint-update'),
+    url(r'^point/(?P<pk>\d+)/photo/$', get_point_photo_list, name='gpspoint-photo-list'),
 
     # ajax
     url(r'^get_distr_and_area_for_sale/$', get_task_initial, name='get_task_initial'),

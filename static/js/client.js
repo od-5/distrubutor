@@ -31,6 +31,18 @@ $(function() {
     $('.mobile-menu').fadeToggle();
   });
 
+  $('.js-sale-gallery').on('click', function(){
+    $.ajax({
+      dataType: 'JSON',
+      url: $(this).attr('href'),
+      data: '',
+      success: function(data){
+        jQuery.fancybox.open(data);
+      }
+    });
+    return false;
+  });
+
   $(".js-gallery").fancybox({
     helpers: {
       overlay: {
