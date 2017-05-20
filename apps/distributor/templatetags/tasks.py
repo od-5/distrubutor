@@ -9,7 +9,7 @@ register = template.Library()
 
 @register.simple_tag
 def calendar(user, year, month):
-    task_qs = DistributorTask.objects.select_related().order_by('date').filter(
+    task_qs = DistributorTask.objects.select_related('sale', 'distributor').order_by('date').filter(
         date__year=year, date__month=month, closed=False
     )
     if user.type == 2:

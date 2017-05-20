@@ -38,7 +38,7 @@ class DashboardView(TemplateView):
         user = self.request.user
         if user.type == 3:
             sale = user.sale_user
-            task_qs = sale.distributortask_set.select_related().all()
+            task_qs = sale.distributortask_set.only('category', 'date')
             order_qs = sale.saleorder_set.all()
             point_qs = GPSPoint.objects.filter(task__sale=sale)
             # определяем вход по демо ссылке
@@ -62,7 +62,8 @@ class DashboardView(TemplateView):
             show_table = self.request.GET.get('show_table') or None
             if r_category:
                 point_qs = point_qs.filter(task__category=int(r_category))
-                task_qs = sale.distributortask_set.select_related().filter(category=int(r_category))
+                task_qs = sale.distributortask_set.select_related('type').filter(
+                    category=int(r_category)).only('category', 'date', 'type')
                 order_qs = sale.saleorder_set.filter(category=int(r_category))
                 context.update({
                     'r_category': int(r_category)
@@ -90,12 +91,12 @@ class DashboardView(TemplateView):
             material_count = 0
             photo_count = 0
             for point in point_qs:
-                if sale.hide_empty_point:
-                    if point.count and point.pointphoto_set.all():
-                        material_count += point.count
-                else:
-                    if point.count:
-                        material_count += point.count
+                # if sale.hide_empty_point:
+                #     # if point.count and point.pointphoto_set.all():
+                #     material_count += point.get_count()
+                # else:
+                #     if point.count:
+                material_count += point.get_count()
                 photo_count += point.pointphoto_set.count()
             if show_table:
                 if int(show_table) == 0:

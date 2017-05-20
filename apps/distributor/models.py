@@ -190,6 +190,12 @@ class GPSPoint(models.Model):
         else:
             return u'%s, %s' % (self.coord_x, self.coord_y)
 
+    def get_count(self):
+        if self.count:
+            return self.count
+        else:
+            return 0
+
     task = models.ForeignKey(to=DistributorTask, verbose_name=u'Задача')
     name = models.CharField(max_length=150, verbose_name=u'Название', blank=True, null=True)
     count = models.PositiveIntegerField(verbose_name=u'Кол-во материала', blank=True, null=True)
