@@ -11,6 +11,5 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         search_date = datetime.datetime.now() - datetime.timedelta(days=60)
         qs = PointPhoto.objects.filter(timestamp__lt=search_date)
-        print qs.count()
         if qs:
             qs.delete()

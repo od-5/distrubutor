@@ -161,7 +161,9 @@ class DistributorTaskListView(ListView):
     def get_queryset(self):
         user = self.request.user
         qs = self.model.objects.get_qs(user).select_related(
-            'distributor', 'distributor__moderator', 'sale', 'sale__city', 'area').filter(closed=False)
+            'distributor', 'distributor__moderator', 'sale', 'sale__city', 'area').filter(closed=False).only(
+            'distributor', 'sale', 'area', 'type', 'date'
+        )
 
         r_city = self.request.GET.get('city')
         r_type = self.request.GET.get('type')

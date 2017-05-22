@@ -73,7 +73,6 @@ class DistributorTaskModelManager(models.Manager):
                 qs = DistributorTask.objects.filter(sale__manager=user.manager_user)
         elif user.type == User.UserType.agency:
             qs = DistributorTask.objects.filter(distributor__moderator__ticket_forward=True)
-
         return qs
 
 

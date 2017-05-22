@@ -60,7 +60,6 @@ def confirm_address(request):
                 item.coord_x = coord_x
                 item.coord_y = coord_y
                 item.name = address
-                logger.error(u'user=%s confirm_address. coord_x: %s, coord_y: %s' % (request.user, coord_x, coord_y))
                 item.save()
                 logger.error(u'confirm_address. Save complete')
         context = {
@@ -173,9 +172,6 @@ def gpspoint_add(request):
                 'point': serializer.instance.id,
                 'address': serializer.instance.name
             }
-            logger.error(u'user=%s GPSPoint add. id=%s coord_x: %s, coord_y: %s, name: %s' % (
-                request.user, serializer.instance.id, serializer.instance.coord_x, serializer.instance.coord_y,
-                serializer.instance.name))
             return Response(context, status=status.HTTP_201_CREATED)
         else:
             return Response({'fail': 'true'}, status=status.HTTP_205_RESET_CONTENT)
@@ -218,13 +214,13 @@ def gpspoint_comment(request, pk):
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
 def photo_add(request):
-    logger.error(u'user=%s photo add. request.data= %s' % (request.user, request.data))
     if request.method == 'POST':
         data = request.data.copy()
         # fixme: придумать решение проблемы - на лифтах аналогично
         data['photo'] = '1.jpg'
         serializer = PointPhotoSerializer(data=request.data)
         if serializer.is_valid():
+            logger.error(u'user=%s photo add. request.data= %s' % (request.user, request.data))
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:

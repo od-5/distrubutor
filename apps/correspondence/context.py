@@ -7,7 +7,7 @@ __author__ = 'alexy'
 
 def message_notification(request):
     user = request.user
-    qs = UserMessage.objects.select_related()
+    qs = UserMessage.objects.select_related('recipient').only('recipient')
     if user.is_authenticated():
         if user.type == User.UserType.moderator:
             qs = qs.filter(recipient=user, is_view=False)
