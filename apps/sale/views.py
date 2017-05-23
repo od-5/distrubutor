@@ -3,109 +3,108 @@ import datetime
 import os
 import zipfile
 import StringIO
+
 import xlwt
 
-from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Sum
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, UpdateView
+from django.shortcuts import get_object_or_404
+from django.views.generic import ListView, UpdateView, CreateView
 
 from annoying.decorators import ajax_request
 
-from lib.cbv import ListWithCreateView, RedirectlessFormMixin
+from lib.cbv import ListWithCreateView, RedirectlessFormMixin, SendUserToFormMixin
 from apps.manager.models import Manager
 from apps.moderator.models import Moderator
 from core.models import User
-from core.forms import UserAddForm, UserUpdateForm
+from core.forms import UserUpdateForm
 from apps.geolocation.models import City
 from apps.distributor.models import GPSPoint
 from apps.ticket.models import PreSale
-from .forms import SaleAddForm, SaleUpdateForm, SaleOrderForm, SaleMaketForm, SaleQuestionaryCreateForm,\
+from .forms import SaleAddMultiForm, SaleUpdateForm, SaleOrderForm, SaleMaketForm, SaleQuestionaryCreateForm,\
     SaleQuestionaryUpdateForm
 from .models import Sale, SaleOrder, SaleMaket, CommissionOrder, Questionary
 
 __author__ = 'alexy'
 
 
-# TODO: две формы
-@login_required
-def sale_add(request):
-    context = {}
-    user = request.user
-    if request.GET.get('presale'):
-        presale = PreSale.objects.get(pk=int(request.GET.get('presale')))
-    else:
-        presale = None
-    if request.method == 'POST':
-        user_form = UserAddForm(request.POST)
-        sale_form = SaleAddForm(request.POST, user=user)
-        if user_form.is_valid() and sale_form.is_valid():
-            new_user = user_form.save(commit=False)
-            new_user.type = 3
-            new_user.save()
-            sale = sale_form.save(commit=False)
-            sale.user = new_user
-            sale.password = request.POST.get('password1')
-            sale.save()
-            if presale:
-                presale.accept = True
-                presale.save()
-            return HttpResponseRedirect(reverse('sale:update', args=(sale.id, )))
-        else:
-            context.update({
-                'error': u'Проверьте правильность ввода полей'
+class SaleCreateView(CreateView, SendUserToFormMixin):
+    form_class = SaleAddMultiForm
+    template_name = 'sale/sale_add.html'
+    initial = {
+        'sale': {},
+        'user': {}
+    }
+
+    def get_success_url(self):
+        return reverse('sale:update', args=(self.object['sale'].pk,))
+
+    def get_initial(self):
+        initial = super(SaleCreateView, self).get_initial()
+
+        self.presale = None
+        presale_param = self.request.GET.get('presale')
+        if presale_param:
+            try:
+                self.presale = PreSale.objects.get(pk=presale_param)
+            except PreSale.DoesNotExist:
+                pass
+
+        if self.request.method == 'GET' and self.presale is not None:
+            initial['sale'].update({
+                'moderator': self.presale.moderator,
+                'city': self.presale.ticket.city,
+                'presale': self.presale,
+                'legal_name': self.presale.legal_name
             })
-    else:
-        user_form = UserAddForm()
-        sale_form = SaleAddForm(user=user)
-    if presale:
-        sale_form.fields['moderator'].initial = presale.moderator
-        sale_form.fields['city'].initial = presale.ticket.city
-        sale_form.fields['presale'].initial = presale
-        sale_form.fields['legal_name'].initial = presale.legal_name
-        user_form.fields['email'].initial = presale.ticket.mail
-        user_form.fields['phone'].initial = presale.ticket.phone
-        user_form.fields['first_name'].initial = presale.ticket.name
-        user_form.fields['last_name'].initial = presale.ticket.name
-    context.update({
-        'user_form': user_form,
-        'sale_form': sale_form
-    })
-    return render(request, 'sale/sale_add.html', context)
+            initial['user'].update({
+                'email': self.presale.ticket.mail,
+                'phone': self.presale.ticket.phone,
+                'first_name': self.presale.ticket.name,
+                'last_name': self.presale.ticket.name
+            })
+
+        return initial
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+
+        user = self.object['user']
+        user.type = User.UserType.client
+        user.save()
+
+        sale = self.object['sale']
+        sale.user = user
+        sale.password = self.request.POST.get('password1')
+        sale.save()
+
+        if self.presale is not None:
+            self.presale.accept = True
+            self.presale.save()
+
+        return HttpResponseRedirect(self.get_success_url())
 
 
-# TODO: две формы
-@login_required
-def sale_view(request, pk):
-    context = {}
-    user = request.user
-    sale = Sale.objects.get(pk=int(pk))
-    if request.method == 'POST':
-        user_form = UserUpdateForm(request.POST, instance=sale.user)
-        sale_form = SaleUpdateForm(user=user, instance=sale)
-        # sale_form = SaleAddForm(request.POST, user=user, instance=sale)
-        # if user_form.is_valid() and sale_form.is_valid():
-        if user_form.is_valid():
-            user_form.save()
-            context.update({
-                'success': u'Изменения успешно сохранены'
-            })
-        else:
-            context.update({
-                'error': u'Проверьте правильность ввода полей'
-            })
-    else:
-        user_form = UserUpdateForm(instance=sale.user)
-        sale_form = SaleUpdateForm(user=user, instance=sale)
-    context.update({
-        'object': sale,
-        'sale': sale,
-        'user_form': user_form,
-        'sale_form': sale_form
-    })
-    return render(request, 'sale/sale_update.html', context)
+class SaleUpdateView(UpdateView, RedirectlessFormMixin):
+    model = User
+    form_class = UserUpdateForm
+    template_name = 'sale/sale_update.html'
+    pk_url_kwarg = None
+    slug_url_kwarg = 'pk'
+    slug_field = 'sale_user'
+
+    def get_context_data(self, **kwargs):
+        context = super(SaleUpdateView, self).get_context_data(**kwargs)
+
+        sale = self.object.sale_user
+        context.update({
+            'object': sale,
+            'sale': sale,
+            'sale_form': SaleUpdateForm(instance=sale, user=self.request.user)
+        })
+
+        return context
 
 
 @ajax_request

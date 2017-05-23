@@ -3,7 +3,8 @@ from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
 
 from .views import SaleListView, JournalListView, CommissionOrderListView, SaleOrderView, SaleOrderUpdateView,\
-    SaleOrderPaymentListView, SaleMaketView, SaleMaketUpdateView, SaleQuestionaryView, SaleQuestionaryUpdateView
+    SaleOrderPaymentListView, SaleMaketView, SaleMaketUpdateView, SaleQuestionaryView, SaleQuestionaryUpdateView,\
+    SaleCreateView, SaleUpdateView
 from .ajax import get_client_coord_list, payment_add, get_material_residue, send_sms_notify, send_email_notify
 
 __author__ = 'alexy'
@@ -11,8 +12,8 @@ __author__ = 'alexy'
 urlpatterns = patterns(
     'apps.sale.views',
     url(r'^$', login_required(SaleListView.as_view()), name='list'),
-    url(r'^add/$', 'sale_add', name='add'),
-    url(r'^(?P<pk>\d+)/$', 'sale_view', name='update'),
+    url(r'^add/$', login_required(SaleCreateView.as_view()), name='add'),
+    url(r'^(?P<pk>\d+)/$', login_required(SaleUpdateView.as_view()), name='update'),
     url(r'^update/$', 'sale_update', name='sale_update'),
     url(r'^(?P<pk>\d+)/maket/$', login_required(SaleMaketView.as_view()), name='maket'),
     url(r'^maket/(?P<pk>\d+)/$', login_required(SaleMaketUpdateView.as_view()), name='maket-update'),

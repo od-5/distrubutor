@@ -1,23 +1,21 @@
 # coding=utf-8
 from annoying.decorators import ajax_request
 
-from django.forms import inlineformset_factory
 from django.views.decorators.csrf import csrf_exempt
 
 from apps.moderator.models import ModeratorArea
 from apps.sale.models import Sale
-from .forms import DistributorPaymentForm
-from .models import Distributor, DistributorPayment, DistributorTask, PointPhoto
+from .forms import DistributorPaymentFormset
+from .models import Distributor, DistributorTask, PointPhoto
 
 __author__ = 'alexy'
 
 
 @ajax_request
 def distributor_payment_update(request):
-    distributor_formset = inlineformset_factory(Distributor, DistributorPayment, form=DistributorPaymentForm)
     if request.method == 'POST':
-        distributor = Distributor.objects.get(pk=int(request.POST.get('user')))
-        formset = distributor_formset(request.POST, instance=distributor)
+        distributor = Distributor.objects.get(pk=int(request.POST.get('distributor')))
+        formset = DistributorPaymentFormset(request.POST, instance=distributor)
         if formset.is_valid():
             formset.save()
             return {

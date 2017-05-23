@@ -7,15 +7,15 @@ from .ajax import distributor_payment_update, get_task_initial, get_task_cord_li
 from .views import DistributorListView, DistributorTaskListView, DistributorTaskArchiveView,\
     DistributorTaskCreateView, DistributorTaskUpdateView, DistributorReportView, DistributorPromoTaskCreateView, \
     DistributorPromoTaskUpdateView, DistributorQuestTaskCreateView, DistributorQuestTaskUpdateView, \
-    QuestionaryCompleted
+    QuestionaryCompleted, DistributorCreateView, DistributorUpdateView
 
 __author__ = 'alexy'
 
 urlpatterns = patterns(
     'apps.distributor.views',
     url(r'^$', login_required(DistributorListView.as_view()), name='list'),
-    url(r'^add/$', 'distributor_add', name='add'),
-    url(r'^(?P<pk>\d+)/$', 'distributor_update', name='update'),
+    url(r'^add/$', login_required(DistributorCreateView.as_view()), name='add'),
+    url(r'^(?P<pk>\d+)/$', login_required(DistributorUpdateView.as_view()), name='update'),
     url(r'^payment_update/$', distributor_payment_update, name='payment-update'),
     # report
     url(r'^report/$', login_required(DistributorReportView.as_view()), name='report'),

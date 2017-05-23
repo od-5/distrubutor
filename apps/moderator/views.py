@@ -141,7 +141,7 @@ class ModeratorCompanyUpdateView(UpdateView, RedirectlessFormMixin, SendUserToFo
         return obj
 
 
-# TODO:
+# TODO: формсет в качестве формы
 @login_required()
 def moderator_action_update(request, pk):
     context = {}
@@ -177,11 +177,6 @@ def moderator_action_update(request, pk):
         'object': moderator
     })
     return render(request, 'moderator/moderator_action_update.html', context)
-
-
-# TODO: django-extra-views
-# class ModeratorActionUpdateView(UpdateView):
-#     template_name = 'moderator/moderator_action_update.html'
 
 
 @login_required()
