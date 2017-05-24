@@ -37,9 +37,12 @@
           <div class="panel-body">
             <div class="panel-content">
               <div class="col-md-12 text-center">
-                <p class="lead">Вы действительно хотите закрыть тему?</p>
-                <a href="?close=1" class="btn btn-danger">Закрыть</a>
-                <a href="?close=0" class="btn btn-success">Отменить</a>
+                <form action="" role="form" method="post">
+                  {% csrf_token %}
+                  <p class="lead">Вы действительно хотите закрыть тему?</p>
+                  <button type="submit" class="btn btn-danger">Закрыть</button>
+                  <a href="{{ object.get_absolute_url }}" class="btn btn-success">Отменить</a>
+                </form>
               </div>
               <div class="clearfix"></div>
             </div>
