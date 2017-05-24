@@ -157,6 +157,35 @@ class TopicNotifyListView(ListView):
         return Notification.objects.filter(user=self.request.user)
 
 
+class TopicDeleteView(DeleteView):
+    model = Topic
+    template_name = 'forum/topic_delete.html'
+
+    def get_success_url(self):
+        return reverse('forum:topic-list', args=(self.object.pk,))
+
+
+class TopicCloseView(DetailView):
+    model = Topic
+    template_name = 'forum/topic_close.html'
+
+    def get_success_url(self):
+        return reverse('forum:topic-detail', args=(self.object.pk,))
+
+    def close(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+
+        if request.user == self.object.author or request.user.type == User.UserType.administrator:
+            self.object.closed = True
+            self.object.save()
+
+        return HttpResponseRedirect(success_url)
+
+    def post(self, request, *args, **kwargs):
+        return self.close(request, *args, **kwargs)
+
+
 class CommentUpdateView(UpdateView):
     model = Comment
     form_class = CommentForm
@@ -172,32 +201,3 @@ class CommentDeleteView(DeleteView):
 
     def get_success_url(self):
         return self.object.topic.get_absolute_url()
-
-
-class TopicDeleteView(DeleteView):
-    model = Topic
-    template_name = 'forum/topic_delete.html'
-
-    def get_success_url(self):
-        return reverse('forum:topic-list', args=(self.pk,))
-
-
-class TopicCloseView(DetailView):
-    model = Topic
-    template_name = 'forum/topic_close.html'
-
-    def get_success_url(self):
-        return reverse('forum:topic-detail', args=(self.object.pk,))
-
-    def close(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        success_url = self.get_success_url()
-
-        if self.request.user == self.object.author or self.request.user.type == User.UserType.administrator:
-            self.object.closed = True
-            self.object.save()
-
-        return HttpResponseRedirect(success_url)
-
-    def post(self, request, *args, **kwargs):
-        return self.close(request, *args, **kwargs)

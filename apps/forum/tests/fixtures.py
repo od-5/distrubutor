@@ -2,7 +2,7 @@
 import factory
 
 from core.tests.fixtures import UserFactory
-from ..models import Section, Topic, Comment
+from ..models import Section, Topic, Comment, Notification
 
 
 class ForumCommonFactory(factory.DjangoModelFactory):
@@ -31,3 +31,10 @@ class CommentFactory(ForumCommonFactory):
 
     topic = factory.SubFactory(TopicFactory)
     text = u'Комментарий'
+
+
+class NotificationFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Notification
+
+    topic = factory.SubFactory(TopicFactory)

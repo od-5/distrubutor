@@ -13,7 +13,7 @@ __author__ = 'alexy'
 class ForumCommon(models.Model):
     class Meta:
         abstract = True
-        ordering = ['-created', ]
+        ordering = ['-created']
 
     author = models.ForeignKey(to=User, verbose_name=u'Автор')
     created = models.DateTimeField(verbose_name=u'Дата создания', auto_now=True)
@@ -43,10 +43,10 @@ class Section(ForumBase):
         return self.topic_set.count()
 
     def comment_count(self):
-        return Comment.objects.select_related().filter(topic__section=self.id).count()
+        return Comment.objects.select_related().filter(topic__section=self).count()
 
     def get_last_comment(self):
-        return Comment.objects.select_related().filter(topic__section=self.id).last()
+        return Comment.objects.select_related().filter(topic__section=self).last()
 
     title = models.CharField(max_length=256, verbose_name=u'Название')
     description = models.TextField(verbose_name=u'Краткое описание', blank=True, null=True)

@@ -23,7 +23,7 @@
         <div class="col-md-6 col-sm-6">
           <span class="page-top__title">Форум</span>
         </div>
-        {% if user.type == user.UserType.administartor %}
+        {% if user.type == user.UserType.administrator %}
         <div class="col-md-6 col-sm-6">
           <a href="{% url 'forum:section-add' %}" class="btn btn-add page-top__btn" title="Добавить раздел">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить раздел
