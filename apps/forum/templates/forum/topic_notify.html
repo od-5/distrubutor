@@ -38,7 +38,7 @@
                     <th colspan="2" style="width:50%">Название</th>
                     <th class="text-center">Сообщений</th>
                     <th class="text-center">Последнее сообщение</th>
-                    {% if user.type == 1 %}<th></th>{% endif %}
+                    {% if user.type == user.UserType.administrator %}<th></th>{% endif %}
                   </tr>
                 </thead>
                 <tbody class="js-list">

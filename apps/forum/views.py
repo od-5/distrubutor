@@ -179,7 +179,7 @@ class TopicDeleteView(DeleteView):
     template_name = 'forum/topic_delete.html'
 
     def get_success_url(self):
-        return self.object.section.get_topic_list_url()
+        return reverse('forum:topic-list', args=(self.pk,))
 
 
 class TopicCloseView(DetailView):

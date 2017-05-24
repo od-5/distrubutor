@@ -23,7 +23,7 @@
         <div class="col-md-6 col-sm-6">
           <span class="page-top__title">Форум</span>
         </div>
-        {% if user.type == 1 %}
+        {% if user.type == user.UserType.administartor %}
         <div class="col-md-6 col-sm-6">
           <a href="{% url 'forum:section-add' %}" class="btn btn-add page-top__btn" title="Добавить раздел">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить раздел
@@ -44,7 +44,7 @@
                   <img src="{{ STATIC_URL }}icon/forum/folder.png" alt="">
                 </div>
                 <div class="col-md-7 col-sm-7 col-xs-10">
-                  <a href="{{ section.get_topic_list_url|default:'#'}}" title="{{ section.title|default:'не указано' }}" class="forum__link">
+                  <a href="{% url 'forum:topic-list' section.pk %}" title="{{ section.title|default:'не указано' }}" class="forum__link">
                     {{ section.title|default:'не указано' }}
                   </a>
                   <span class="forum__text">{{ section.description|truncatechars:50|default:'Не указано' }}</span>

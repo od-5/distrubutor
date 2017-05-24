@@ -39,16 +39,6 @@ class Section(ForumBase):
     def __unicode__(self):
         return self.title
 
-    # def get_absolute_url(self):
-    #     return reverse('store:detail', args=(self.pk, ))
-
-    # TODO: отрефакторить все вида get_*_url
-    def get_topic_list_url(self):
-        return reverse('forum:topic-list', args=(self.pk, ))
-
-    def get_update_url(self):
-        return reverse('forum:section-update', args=(self.pk, ))
-
     def topic_count(self):
         return self.topic_set.count()
 
@@ -114,12 +104,6 @@ class Topic(ForumBase):
     def get_absolute_url(self):
         return reverse('forum:topic-detail', args=(self.pk, ))
 
-    def get_delete_url(self):
-        return reverse('forum:topic-delete', args=(self.pk, ))
-
-    def get_update_url(self):
-        return reverse('forum:topic-update', args=(self.pk, ))
-
     def get_comment_count(self):
         return self.comment_set.count()
 
@@ -142,12 +126,6 @@ class Comment(ForumCommon):
     def get_comment_link(self):
         topic_link = reverse('forum:topic-detail', args=(self.topic.id, ))
         return '%s#%s' % (topic_link, self.id)
-
-    def get_update_url(self):
-        return reverse('forum:comment-update', args=(self.id, ))
-
-    def get_delete_url(self):
-        return reverse('forum:comment-delete', args=(self.id, ))
 
     topic = models.ForeignKey(to=Topic, verbose_name=u'Тема')
     text = RichTextField(verbose_name=u'Сообщение')
