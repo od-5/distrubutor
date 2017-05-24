@@ -5,6 +5,7 @@ from django.utils.http import urlencode
 from core.tests.base import LoginWithUserTestCase
 from core.tests.fixtures import UserFactory
 from core.models import User
+from apps.manager.tests.fixtures import ManagerFactory
 from ..models import Section, Topic, Comment
 from .fixtures import SectionFactory, TopicFactory, CommentFactory, NotificationFactory
 
@@ -175,10 +176,11 @@ class TopicTestCase(LoginWithUserTestCase):
     def test_fail_close(self):
         self.user.type = User.UserType.manager
         self.user.save()
+        ManagerFactory(user=self.user)
         topic = TopicFactory(section=self.forum_section)
         response = self.client.post(reverse('forum:topic-close', args=(topic.pk,)))
         self.assertRedirects(response, reverse('forum:topic-detail', args=(topic.pk,)))
-        self.assertTrue(Topic.objects.get(pk=topic.pk).closed)
+        self.assertFalse(Topic.objects.get(pk=topic.pk).closed)
 
 
 class CommentTestCase(LoginWithUserTestCase):
