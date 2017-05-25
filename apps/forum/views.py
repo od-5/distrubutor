@@ -36,6 +36,7 @@ class SectionUpdateView(UpdateView):
     success_url = reverse_lazy('forum:list')
 
 
+# TODO: рефакторинг, оптимизация
 class TopicListView(ListView):
     template_name = 'forum/topic_list.html'
 
