@@ -225,6 +225,7 @@ def photo_add(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             logger.error(u'user=%s photo FAIL. request.data= %s' % (request.user, request.data))
+            logger.error(u'META=%s' % (request.META))
             return Response({'fail': 'true'}, status=status.HTTP_205_RESET_CONTENT)
     else:
         return Response(status=status.HTTP_400_BAD_REQUEST)
