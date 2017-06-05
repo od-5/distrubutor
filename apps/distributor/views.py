@@ -114,9 +114,10 @@ class DistributorUpdateView(UpdateView, RedirectlessFormMixin):
         context = super(DistributorUpdateView, self).get_context_data(**kwargs)
         context.update(get_months())
 
-        obj = self.object
-        if self.request.method == 'POST':
-            obj = obj['distributor']
+        try:
+            context['object'] = self.object['distributor']
+        except TypeError:
+            context['object'] = self.object
         context.update({
             'payments_formset': DistributorPaymentFormset(instance=obj),
             'object': obj
