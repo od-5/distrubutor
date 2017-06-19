@@ -119,8 +119,8 @@ class DistributorUpdateView(UpdateView, RedirectlessFormMixin):
         except TypeError:
             context['object'] = self.object
         context.update({
-            'payments_formset': DistributorPaymentFormset(instance=obj),
-            'object': obj
+            'payments_formset': DistributorPaymentFormset(instance=self.object),
+            'object': self.object
         })
 
         return context
