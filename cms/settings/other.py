@@ -2,7 +2,8 @@
 import os, socket
 from .base import BASE_DIR
 
-YANDEX_MAPS_API_KEY = 'AO7kF1UBAAAA-akFCwIAR7_VYsSjwJ9g-dDEVHElLxuBQi8AAAAAAAAAAAAQMK4N7NYtvg4ALgMZ8-GRO_cQqQ=='
+# YANDEX_MAPS_API_KEY = 'AO7kF1UBAAAA-akFCwIAR7_VYsSjwJ9g-dDEVHElLxuBQi8AAAAAAAAAAAAQMK4N7NYtvg4ALgMZ8-GRO_cQqQ=='
+YANDEX_MAPS_API_KEY = 'AE1lR1kBAAAAsMOvUwIArrqDjbBw3FV6fiHOKz3or50VsSIAAAAAAAAAAAAUt--ICNrfD2NWFtNdi9Eb13aSag=='
 SMS_RU_API_KEY = 'D075A0B5-6EA1-CC9B-DB3F-8DBC636BFDEA'
 
 # DATABASES = {
@@ -69,10 +70,20 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': os.path.join(BASE_DIR, '../../debug.log'),
         },
+        'geocode': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, '../../geocode.log'),
+        },
     },
     'loggers': {
         'django.request': {
             'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'core.geotagging': {
+            'handlers': ['geocode'],
             'level': 'DEBUG',
             'propagate': True,
         },

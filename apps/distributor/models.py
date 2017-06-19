@@ -1,5 +1,6 @@
 # coding=utf-8
 import datetime
+import logging
 
 from PIL import Image
 from django.db.models.signals import post_save
@@ -20,6 +21,7 @@ import core.geotagging as api
 
 __author__ = 'alexy'
 
+logger = logging.getLogger('core.geotagging')
 api_key = settings.YANDEX_MAPS_API_KEY
 
 
@@ -209,7 +211,11 @@ def get_coord_for_point(sender, created, **kwargs):
     instance = kwargs['instance']
     if created:
         if instance.task.define_address:
-            name = api.geocodeName(api_key, instance.coord_y, instance.coord_x)
+            try:
+                name = api.geocodeName(api_key, instance.coord_y, instance.coord_x)
+            except Exception as e:
+                logger.error(u'Geotagging error %s' % e)
+                name = u'%s,%s' % (instance.coord_y, instance.coord_x)
             instance.name = name
         else:
             instance.name = u'%s, %s' % (instance.coord_y, instance.coord_x)
