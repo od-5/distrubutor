@@ -1,4 +1,6 @@
 # coding=utf-8
+import logging
+
 from pytils.translit import slugify
 
 from django.conf import settings
@@ -9,6 +11,7 @@ import core.geotagging as api
 
 __author__ = '2mitrij'
 
+logger = logging.getLogger('core.geotagging')
 api_key = settings.YANDEX_MAPS_API_KEY
 
 
@@ -58,10 +61,14 @@ class City(models.Model):
 
     def save(self, *args, **kwargs):
         address = u'город %s' % self.name
-        pos = api.geocode(api_key, address)
+        try:
+            pos = api.geocode(api_key, address)
+            self.coord_x = float(pos[0])
+            self.coord_y = float(pos[1])
+        except Exception as e:
+            logger.error(u'Can not geocode city=%s coord. Geotagging error %s' % (self.name, e))
         self.slug = slugify(self.name)
-        self.coord_x = float(pos[0])
-        self.coord_y = float(pos[1])
+
         super(City, self).save()
 
     TIME_ZONE_CHOICE = (

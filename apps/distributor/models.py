@@ -214,7 +214,7 @@ def get_coord_for_point(sender, created, **kwargs):
             try:
                 name = api.geocodeName(api_key, instance.coord_y, instance.coord_x)
             except Exception as e:
-                logger.error(u'Geotagging error %s' % e)
+                logger.error(u'Geotagging error. Can not geocode gpspoint #%s address %s' % (instance.id, e))
                 name = u'%s,%s' % (instance.coord_y, instance.coord_x)
             instance.name = name
         else:
