@@ -28,10 +28,8 @@
         <div class="col-md-6">
           <span class="page-top__title">Форум</span>
         </div>
-        {% if user.type == 1 or user == object.author %}
+        {% if user.type == user.UserType.administrator or user == object.author %}
         <div class="col-md-6 text-right">
-{#          <a href="{{ object.get_update_url|default:'' }}" class="btn btn-add page-top__btn"><span class="glyphicon glyphicon-edit"></span> Удалить</a>#}
-{#          <a href="{{ object.get_update_url|default:'' }}" class="btn btn-add page-top__btn"><span class="glyphicon glyphicon-edit"></span> Редактировать</a>#}
             <a href="{% url 'forum:topic-add' %}?section={{ object.section.id }}" class="btn btn-add page-top__btn" title="Добавить тему">
             <span class="glyphicon glyphicon-plus-sign"></span> Добавить тему
           </a>
@@ -51,13 +49,13 @@
               <span class="forum__text">{{ object.author.get_full_name|default:'Не указано' }}</span><br>
               <span class="forum__text">{{ object.created|date:'j F Yг. g:i:s' }}</span>
             </div>
-          {% if user.type == 1 or object.author == user %}
+          {% if user.type == user.UserType.administrator or object.author == user %}
             <div class="col-md-3 col-sm-3 col-xs-12">
               <div class="form-comment__control">
-                <a href="{{ object.get_delete_url|default:'' }}" title="Удалить">Удалить</a> /
-                <a href="{{ object.get_update_url|default:'' }}" title="Редактировать">Редактировать</a>
+                <a href="{% url 'forum:topic-delete' object.pk %}" title="Удалить">Удалить</a>
+                <a href="{% url 'forum:topic-update' object.pk %}" title="Редактировать">Редактировать</a>
                 {% if not object.closed %}
-                 / <a href="{% url 'forum:topic-close' pk=object.pk %}" title="Закрыть">Закрыть</a>
+                <a href="{% url 'forum:topic-close' pk=object.pk %}" title="Закрыть">Закрыть</a>
                 {% endif %}
               </div>
             </div>
@@ -93,10 +91,10 @@
                     <span class="forum__text">{{ comment.created|default:'' }}</span>
                   </div>
                   <div class="col-md-6 col-sm-6 col-xs-12">
-                  {% if user.type == 1 or comment.author == user %}
+                  {% if user.type == user.UserType.administrator or comment.author == user %}
                     <div class="forum-comment__control">
-                      <a href="{{ comment.get_delete_url|default:'' }}" title="Удалить">Удалить</a> /
-                      <a href="{{ comment.get_update_url|default:'' }}" title="Редактировать">Редактировать</a>
+                      <a href="{% url 'forum:comment-delete' comment.pk %}" title="Удалить">Удалить</a> /
+                      <a href="{% url 'forum:comment-update' comment.pk %}" title="Редактировать">Редактировать</a>
                     </div>
                   {% endif %}
 

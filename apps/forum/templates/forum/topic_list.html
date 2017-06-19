@@ -61,48 +61,7 @@
             {% empty %}
               <p class="alert alert-info">В этом разделе ещё нет тем</p>
             {% endfor %}
-
-{#              <table class="table">#}
-{#                <thead>#}
-{#                  <tr>#}
-{#                    <th colspan="2" style="width:50%">Название</th>#}
-{#                    <th class="text-center">Сообщений</th>#}
-{#                    <th class="text-center">Последнее сообщение</th>#}
-{#                    {% if user.type == 1 %}<th></th>{% endif %}#}
-{#                  </tr>#}
-{#                </thead>#}
-{#                <tbody class="js-list">#}
-{#                {% for topic in object_list %}#}
-{#                  <tr data-id="{{ topic.id }}" data-name="{{ topic }}" data-model="Topic" id="id_Topic_{{ topic.id }}">#}
-{#                    <td><span class="glyphicon glyphicon-folder-close"></span></td>#}
-{#                    <td>#}
-{#                      <a href="{{ topic.get_absolute_url }}" title><strong>{{ topic.title|default:'не указано' }}</strong></a><br>#}
-{#                      <span class="small">{{ topic.author|default:'не указан' }} {{ topic.created|default:'' }}</span>#}
-{#                    </td>#}
-{#                    <td class="text-center">{{ topic.comment_set.count|default:'0' }}</td>#}
-{#                    <td class="text-center">#}
-{#                      {% if topic.get_last_comment %}#}
-{#                      <a href="{{ topic.get_last_comment.get_comment_link }}">#}
-{#                        {{ topic.get_last_comment.author.get_full_name|default:'Нет сообщений' }}#}
-{#                      </a><br>#}
-{#                      <span class="small">{{ topic.get_last_comment.created|default:'' }}</span>#}
-{#                      {% else %}#}
-{#                      <span class="small">нет сообщений</span>#}
-{#                      {% endif %}#}
-{#                    </td>#}
-{#                  {% if user.type == 1 %}#}
-{#                    <td>#}
-{#                      <a href="#js-ajax-item-remove" id="js-ajax-remove-btn-{{ topic.id }}" class="btn btn-sm btn-danger js-ajax-remove-btn">#}
-{#                        <span class="glyphicon glyphicon-remove"></span> Удалить#}
-{#                      </a>#}
-{#                    </td>#}
-{#                  {% endif %}#}
-{#                  </tr>#}
-{#                {% endfor %}#}
-{#                </tbody>#}
-{#              </table>#}
             </div>
-  {#          {% include '__includes/pagination.html' %}#}
           </div>
         </div>
       </div>

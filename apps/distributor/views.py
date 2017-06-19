@@ -7,21 +7,19 @@ from annoying.functions import get_object_or_None
 from django.conf import settings
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
-from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
 from django.contrib.auth.decorators import login_required
 
-from lib.cbv import SendUserToFormMixin
+from lib.cbv import SendUserToFormMixin, RedirectlessFormMixin
 import core.geotagging as api
+from core.models import User
 from apps.moderator.models import ModeratorAction, Moderator
 from .task_calendar import get_months
-from .models import Distributor, DistributorTask, DistributorPayment, GPSPoint, QuestionaryCompleted
-from .forms import DistributorAddForm, DistributorUpdateForm, DistributorPaymentForm, DistributorTaskForm,\
-    GPSPointUpdateForm, DistributorPromoTaskForm, DistributorQuestTaskForm
-from core.forms import UserAddForm, UserUpdateForm
-from core.models import User
+from .models import Distributor, DistributorTask, GPSPoint, QuestionaryCompleted
+from .forms import DistributorAddMultiForm, DistributorUpdateMultiForm, DistributorTaskForm, GPSPointUpdateForm,\
+    DistributorPromoTaskForm, DistributorQuestTaskForm, DistributorPaymentFormset
 
 __author__ = 'alexy'
 
@@ -78,79 +76,54 @@ class DistributorListView(ListView):
         return context
 
 
-# TODO: переделать в CBV, нужно красивое решение с двумя формами
-@login_required
-def distributor_add(request):
-    context = {}
-    user = request.user
-    if request.method == "POST":
-        u_form = UserAddForm(request.POST)
-        d_form = DistributorAddForm(request.POST, user=user)
-        if u_form.is_valid() and d_form.is_valid():
-            new_user = u_form.save(commit=False)
-            new_user.type = 4
-            new_user.save()
-            distriutor = d_form.save(commit=False)
-            distriutor.user = new_user
-            distriutor.save()
-            return HttpResponseRedirect(reverse('distributor:update', args=(distriutor.id,)))
-        else:
-            context.update({
-                'error': u'Проверьте правильность ввода полей'
-            })
-    else:
-        u_form = UserAddForm()
-        d_form = DistributorAddForm(user=user)
-    context.update({
-        'u_form': u_form,
-        'd_form': d_form
-    })
-    return render(request, 'distributor/distributor_add.html', context)
+class DistributorCreateView(CreateView, SendUserToFormMixin):
+    template_name = 'distributor/distributor_add.html'
+    form_class = DistributorAddMultiForm
+
+    def get_success_url(self):
+        return reverse('distributor:update', args=(self.object['distributor'].pk,))
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+
+        user = self.object['user']
+        user.type = User.UserType.distributor
+        user.save()
+
+        distributor = self.object['distributor']
+        distributor.user = user
+        distributor.save()
+
+        return HttpResponseRedirect(self.get_success_url())
 
 
-# TODO: переделать в CBV, нужно красивое решение с двумя формами
-@login_required
-def distributor_update(request, pk):
-    context = {}
-    distributor = Distributor.objects.get(pk=int(pk))
-    user = distributor.user
-    success_msg = u''
-    error_msg = u''
-    context.update(
-        get_months(),
-    )
-    formset_fields_count = distributor.moderator.moderatoraction_set.count()
-    distributor_formset = inlineformset_factory(Distributor, DistributorPayment, form=DistributorPaymentForm,
-                                                can_delete=True, min_num=formset_fields_count,
-                                                max_num=formset_fields_count)
-    if request.method == 'POST':
-        u_form = UserUpdateForm(request.POST, instance=user)
-        d_form = DistributorUpdateForm(request.POST, instance=distributor)
-        # p_form = DistributorPaymentForm(request.POST, instance=distributor)
-        formset = distributor_formset(instance=distributor)
-        if u_form.is_valid() and d_form.is_valid():
-            u_form.save()
-            d_form.save()
-            success_msg += u' Изменения успешно сохранены'
-        else:
-            error_msg = u'Проверьте правильность ввода полей!'
-    else:
-        u_form = UserUpdateForm(instance=user)
-        d_form = DistributorUpdateForm(instance=distributor)
-        # p_form = DistributorPaymentForm(instance=distributor)
-        formset = distributor_formset(instance=distributor)
-    for form in formset.forms:
-        form.fields['type'].queryset = distributor.moderator.moderatoraction_set.all()
-    context.update({
-        'success': success_msg,
-        'error': error_msg,
-        'u_form': u_form,
-        'd_form': d_form,
-        # 'p_form': p_form,
-        'formset': formset,
-        'object': distributor
-    })
-    return render(request, 'distributor/distributor_update.html', context)
+class DistributorUpdateView(UpdateView, RedirectlessFormMixin):
+    model = Distributor
+    form_class = DistributorUpdateMultiForm
+    template_name = 'distributor/distributor_update.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(DistributorUpdateView, self).get_form_kwargs()
+        kwargs.update(instance={
+            'distributor': self.object,
+            'user': self.object.user
+        })
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(DistributorUpdateView, self).get_context_data(**kwargs)
+        context.update(get_months())
+
+        try:
+            context['object'] = self.object['distributor']
+        except TypeError:
+            context['object'] = self.object
+        context.update({
+            'payments_formset': DistributorPaymentFormset(instance=obj),
+            'object': obj
+        })
+
+        return context
 
 
 class DistributorTaskListView(ListView):

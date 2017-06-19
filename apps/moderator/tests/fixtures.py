@@ -15,6 +15,12 @@ class ModeratorFactory(factory.DjangoModelFactory):
     company = u'Компания'
     user = factory.SubFactory(UserFactory, type=User.UserType.moderator)
 
+    @factory.post_generation
+    def city(self, create, extracted, **kwargs):
+        if extracted:
+            for city in extracted:
+                self.city.add(city)
+
 
 class ReviewFactory(factory.DjangoModelFactory):
     class Meta:

@@ -36,62 +36,60 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <div class="panel-content">
-              {% if success or error %}
-              <div class="col-md-12">
-                {% if success %}
-                <p class="alert alert-success">{{ success }}</p>
-                {% elif error %}
-                <p class="alert alert-danger">{{ error }}</p>
-                {% endif %}
-              </div>
+              {% if form.is_bound %}
+              {% if not form.is_valid %}
+                <div class="alert alert-danger">
+                  Проверьте правильность ввода полей!
+                </div>
+              {% endif %}
               {% endif %}
               <form action="" role="form" class="form" id="js-form-distributor-add" method="post">
                 {% csrf_token %}
                 <div class="col-md-6">
                   <p class="lead text-info">Контактная информация</p>
                   <div class="form-group {% if not user.type == 1 %}hide{% endif %}">
-                    {{ d_form.moderator.label_tag }}
-                    {{ d_form.moderator }}
-                    {{ d_form.moderator.errors }}
+                    {{ form.distributor.moderator.label_tag }}
+                    {{ form.distributor.moderator }}
+                    {{ form.distributor.moderator.errors }}
                   </div>
                   <div class="form-group">
-                    {{ u_form.email.label_tag }}
-                    {{ u_form.email }}
-                    {{ u_form.email.errors }}
+                    {{ form.user.email.label_tag }}
+                    {{ form.user.email }}
+                    {{ form.user.email.errors }}
                   </div>
                   <div class="form-group">
-                    {{ u_form.phone.label_tag }}
-                    {{ u_form.phone }}
-                    {{ u_form.phone.errors }}
+                    {{ form.user.phone.label_tag }}
+                    {{ form.user.phone }}
+                    {{ form.user.phone.errors }}
                   </div>
                   <p class="lead text-info">Пароль для входа в аккаунт</p>
                   <div class="form-group">
-                    {{ u_form.password1.label_tag }}
-                    {{ u_form.password1 }}
-                    {{ u_form.password1.errors }}
+                    {{ form.user.password1.label_tag }}
+                    {{ form.user.password1 }}
+                    {{ form.user.password1.errors }}
                   </div>
                   <div class="form-group">
-                    {{ u_form.password2.label_tag }}
-                    {{ u_form.password2 }}
-                    {{ u_form.password2.errors }}
+                    {{ form.user.password2.label_tag }}
+                    {{ form.user.password2 }}
+                    {{ form.user.password2.errors }}
                   </div>
                 </div>
                 <div class="col-md-6">
                   <p class="lead text-info">Личные данные</p>
                   <div class="form-group">
-                    {{ u_form.last_name.label_tag }}
-                    {{ u_form.last_name }}
-                    {{ u_form.last_name.errors }}
+                    {{ form.user.last_name.label_tag }}
+                    {{ form.user.last_name }}
+                    {{ form.user.last_name.errors }}
                   </div>
                   <div class="form-group">
-                    {{ u_form.first_name.label_tag }}
-                    {{ u_form.first_name }}
-                    {{ u_form.first_name.errors }}
+                    {{ form.user.first_name.label_tag }}
+                    {{ form.user.first_name }}
+                    {{ form.user.first_name.errors }}
                   </div>
                   <div class="form-group">
-                    {{ u_form.patronymic.label_tag }}
-                    {{ u_form.patronymic }}
-                    {{ u_form.patronymic.errors }}
+                    {{ form.user.patronymic.label_tag }}
+                    {{ form.user.patronymic }}
+                    {{ form.user.patronymic.errors }}
                   </div>
                 </div>
                 <div class="clearfix"></div>

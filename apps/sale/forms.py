@@ -1,11 +1,14 @@
 # coding=utf-8
-from nested_formset import nestedformset_factory, BaseNestedFormset
+from nested_formset import nestedformset_factory
+from betterforms.multiform import MultiModelForm
 
 from django import forms
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 
 from lib.forms import BlockedModelFormMixin, FormKwargsFormsetMixin, FormKwargsNestedFormsetMixin
 from apps.manager.models import Manager
+from core.models import User
+from core.forms import UserAddForm
 from .models import Sale, SaleOrder, SaleMaket, Questionary, QuestionaryQuestion, QuestionaryAnswer
 
 __author__ = 'alexy'
@@ -45,22 +48,38 @@ class SaleAddForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        # self.request = kwargs.pop("request")
         user = kwargs.pop("user")
         super(SaleAddForm, self).__init__(*args, **kwargs)
-        if user.type == 1:
+
+        if user.type == User.UserType.administrator:
             self.fields['manager'].queryset = Manager.objects.filter(user__is_active=True)
-        elif user.type == 2:
+        elif user.type == User.UserType.moderator:
             self.fields['city'].queryset = user.moderator_user.city.all()
             self.fields['manager'].queryset = user.manager_set.filter(user__is_active=True)
             self.fields['moderator'].initial = user.moderator_user
             self.fields['moderator'].widget = forms.HiddenInput()
-        elif user.type == 5:
+        elif user.type == User.UserType.manager:
             self.fields['city'].queryset = user.manager_user.moderator.moderator_user.city.all()
             self.fields['manager'].queryset = user.manager_user.moderator.manager_set.filter(user__is_active=True)
             self.fields['manager'].initial = user.manager_user
             self.fields['moderator'].initial = user.manager_user.moderator.moderator_user
             self.fields['moderator'].widget = forms.HiddenInput()
+
+
+class SaleAddMultiForm(MultiModelForm):
+    """
+    Составная форма добавления новой продажи
+    """
+    form_classes = {
+        'sale': SaleAddForm,
+        'user': UserAddForm
+    }
+
+    def get_form_args_kwargs(self, key, args, kwargs):
+        if key != 'sale':
+            kwargs.pop('user')
+
+        return super(SaleAddMultiForm, self).get_form_args_kwargs(key, args, kwargs)
 
 
 class SaleUpdateForm(forms.ModelForm):
@@ -104,15 +123,15 @@ class SaleUpdateForm(forms.ModelForm):
             self.fields['manager'].queryset = sale.moderator.user.manager_set.filter(user__is_active=True)
         else:
             sale = None
-        if user.type == 1:
+        if user.type == User.UserType.administrator:
             if not sale:
                 self.fields['manager'].queryset = Manager.objects.filter(user__is_active=True)
-        elif user.type == 2:
+        elif user.type == User.UserType.moderator:
             if not sale:
                 self.fields['manager'].queryset = user.manager_set.filter(user__is_active=True)
             self.fields['city'].queryset = user.moderator_user.city.all()
             self.fields['moderator'].widget = forms.HiddenInput()
-        elif user.type == 5:
+        elif user.type == User.UserType.manager:
             if not sale:
                 self.fields['manager'].queryset = user.manager_user.moderator.manager_set.filter(user__is_active=True)
             self.fields['city'].queryset = user.manager_user.moderator.moderator_user.city.all()

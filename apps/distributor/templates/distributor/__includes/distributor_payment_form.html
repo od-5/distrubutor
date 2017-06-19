@@ -1,8 +1,8 @@
 <form action="{% url 'distributor:payment-update' %}" role="form" class="form" method="post" id="js-form-distributor-payment">
   {% csrf_token %}
-  <input type="hidden" name="user" value="{{ object.id }}">
-  {{ formset.management_form }}
-  {% for form in formset %}
+  <input type="hidden" name="distributor" value="{{ object.id }}">
+  {{ payments_formset.management_form }}
+  {% for form in payments_formset %}
     {{ form.id }}
     {{ form.distributor }}
     <div class="form-group">

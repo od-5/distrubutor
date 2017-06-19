@@ -10,15 +10,16 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView, UpdateView
 
+from lib.cbv import SendUserToFormMixin, RedirectlessFormMixin
 from apps.geolocation.models import City
 from apps.moderator.models import Moderator
 from apps.sale.models import SaleOrder, SaleOrderPayment
-from core.forms import UserAddForm, UserUpdateForm
+from core.forms import UserUpdateForm
 from core.models import User
 from .models import Manager
-from .forms import ManagerForm
+from .forms import ManagerForm, ManagerAddMultiForm, ManagerUpdateMultiForm
 
 __author__ = 'alexy'
 
@@ -90,94 +91,63 @@ class ManagerListView(ListView):
         return context
 
 
-# TODO: нужно решение с двумя формами аналогично distributor_add, distributor_update
-@login_required
-def manager_add(request):
-    context = {}
-    if request.method == "POST":
-        u_form = UserAddForm(request.POST)
-        m_form = ManagerForm(request.POST)
-        if u_form.is_valid() and m_form.is_valid():
-            user = u_form.save(commit=False)
-            user.type = User.UserType.manager
-            user.save()
-            manager = m_form.save(commit=False)
-            manager.user = user
-            manager.save()
-            return HttpResponseRedirect(reverse('manager:update', args=(manager.id,)))
-        else:
-            context.update({
-                'error': u'Проверьте правильность ввода полей'
-            })
-    else:
-        m_form_initial = {}
-        if request.user.type == User.UserType.moderator:
-            m_form_initial.update({
-                'moderator': request.user
-            })
-        elif request.user.type == User.UserType.manager:
-            manager = Manager.objects.get(user=request.user)
-            m_form_initial.update({
-                'moderator': manager.moderator
-            })
-        u_form = UserAddForm()
-        m_form = ManagerForm(initial=m_form_initial)
-        if request.user.type == User.UserType.administrator:
-            m_form.fields['moderator'].queryset = User.objects.filter(type=User.UserType.moderator)
-        elif request.user.type == User.UserType.moderator:
-            if request.user.superviser:
-                m_form.fields['moderator'].queryset = User.objects.filter(
-                    Q(superviser=request.user) | Q(moderator_user__superviser=request.user)
-                )
-            else:
-                m_form.fields['moderator'].queryset = User.objects.filter(pk=request.user.id)
-        elif request.user.type == User.UserType.manager:
-            manager = Manager.objects.get(user=request.user)
-            m_form.fields['moderator'].queryset = User.objects.filter(pk=manager.moderator.id)
+class ManagerCreateView(CreateView, SendUserToFormMixin):
+    form_class = ManagerAddMultiForm
+    template_name = 'manager/manager_add.html'
+    initial = {
+        'manager': {},
+        'user': {}
+    }
 
-    context.update({
-        'u_form': u_form,
-        'm_form': m_form
-    })
-    return render(request, 'manager/manager_add.html', context)
+    def get_initial(self):
+        initial = super(ManagerCreateView, self).get_initial()
+
+        moderator = None
+        if self.request.user.type == User.UserType.moderator:
+            moderator = self.request.user
+        elif self.request.user.type == User.UserType.manager:
+            manager = Manager.objects.get(user=self.request.user)
+            moderator = manager.moderator
+        if moderator is not None:
+            initial['manager']['moderator'] = moderator
+
+        return initial
+
+    def get_success_url(self):
+        return reverse('manager:update', args=(self.object['manager'].pk,))
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+
+        user = self.object['user']
+        user.type = User.UserType.manager
+        user.save()
+
+        manager = self.object['manager']
+        manager.user = user
+        manager.save()
+
+        return HttpResponseRedirect(self.get_success_url())
 
 
-# TODO: нужно решение с двумя формами аналогично distributor_add, distributor_update
-@login_required
-def manager_update(request, pk):
-    context = {}
-    manager = Manager.objects.get(pk=int(pk))
-    user = manager.user
-    success_msg = u''
-    error_msg = u''
-    if request.method == 'POST':
-        u_form = UserUpdateForm(request.POST, instance=manager.user)
-        m_form = ManagerForm(request.POST, instance=manager)
-        if u_form.is_valid() and m_form.is_valid():
-            u_form.save()
-            m_form.save()
-            success_msg += u' Изменения успешно сохранены'
-        else:
-            error_msg = u'Проверьте правильность ввода полей!'
-    else:
-        u_form = UserUpdateForm(instance=user)
-        m_form = ManagerForm(instance=manager)
-        if request.user.type == User.UserType.administrator:
-            m_form.fields['moderator'].queryset = User.objects.filter(type=2)
-        elif request.user.type == User.UserType.moderator:
-            m_form.fields['moderator'].queryset = User.objects.filter(pk=request.user.id)
-        elif request.user.type == User.UserType.manager:
-            manager = Manager.objects.get(user=request.user)
-            m_form.fields['moderator'].queryset = User.objects.filter(pk=manager.moderator.id)
+class ManagerUpdateView(UpdateView, SendUserToFormMixin, RedirectlessFormMixin):
+    model = Manager
+    form_class = ManagerUpdateMultiForm
+    template_name = 'manager/manager_update.html'
 
-    context.update({
-        'success': success_msg,
-        'error': error_msg,
-        'u_form': u_form,
-        'm_form': m_form,
-        'object': manager,
-    })
-    return render(request, 'manager/manager_update.html', context)
+    def get_form_kwargs(self):
+        kwargs = super(ManagerUpdateView, self).get_form_kwargs()
+        kwargs.update(instance={
+            'manager': self.object,
+            'user': self.object.user
+        })
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(ManagerUpdateView, self).get_context_data(**kwargs)
+        if self.request.method == 'POST':
+            context['object'] = self.object['manager']
+        return context
 
 
 class ManagerReportView(ListView):

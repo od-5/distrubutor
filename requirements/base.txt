@@ -16,3 +16,4 @@ djangorestframework==3.3.3
 python-dateutil==2.6.0
 django-nested-formset
 django-formset-js-improved
+django-betterforms

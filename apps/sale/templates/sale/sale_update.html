@@ -13,7 +13,7 @@
         </div>
         <div class="col-md-4 text-right">
           <form action="{% url 'sale:sms-send' %}" id="js-sale-send-sms" method="post">{% csrf_token %}
-            <input type="hidden" name="sale" value="{{ object.id }}">
+            <input type="hidden" name="sale" value="{{ object.pk }}">
             <input type="submit" class="btn btn-add" value="Отправить логин и пароль в СМС">
           </form>
         </div>
@@ -30,54 +30,54 @@
                 <li class="active"><a data-toggle="tab" href="#user">Информация о пользователе</a></li>
                 <li><a data-toggle="tab" href="#sale">Информация об организации</a></li>
               </ul>
-
               <div class="tab-content">
                 <div id="user" class="tab-pane fade in active">
-                  {% if error %}
-                    <div class="alert alert-danger">
-                      {{ error }}
-                    </div>
-                  {%  endif %}
-                  {% if success %}
+                  {% if form.is_bound %}
+                  {% if form.is_valid %}
                     <div class="alert alert-success">
-                      {{ success }}
+                      Изменения успешно сохранены
                     </div>
+                  {% else %}
+                    <div class="alert alert-danger">
+                      Проверьте правильность ввода полей!
+                    </div>
+                  {% endif %}
                   {% endif %}
                   <div class="col-md-6">
                     <form action="" role="form" class="form" id="js-form-user-update" method="post">
                       {% csrf_token %}
                       <p class="lead text-info">ФИО представителя</p>
-                      {{ user_form.errors }}
+                      {{ form.errors }}
                       <div class="form-group alert alert-info">
-                        {{ user_form.email.label_tag }}
-                        {{ user_form.email }}
-                        {{ user_form.email.errors }}
+                        {{ form.email.label_tag }}
+                        {{ form.email }}
+                        {{ form.email.errors }}
                         <p class=" small">email для входа в кабинет клиента. Может быть ненастоящим.</p>
                       </div>
                       <div class="form-group">
-                        {{ user_form.last_name.label_tag }}
-                        {{ user_form.last_name }}
-                        {{ user_form.last_name.errors }}
+                        {{ form.last_name.label_tag }}
+                        {{ form.last_name }}
+                        {{ form.last_name.errors }}
                       </div>
                       <div class="form-group">
-                        {{ user_form.first_name.label_tag }}
-                        {{ user_form.first_name }}
-                        {{ user_form.first_name.errors }}
+                        {{ form.first_name.label_tag }}
+                        {{ form.first_name }}
+                        {{ form.first_name.errors }}
                       </div>
                       <div class="form-group">
-                        {{ user_form.patronymic.label_tag }}
-                        {{ user_form.patronymic }}
-                        {{ user_form.patronymic.errors }}
+                        {{ form.patronymic.label_tag }}
+                        {{ form.patronymic }}
+                        {{ form.patronymic.errors }}
                       </div>
                       <div class="form-group">
-                        {{ user_form.phone.label_tag }}
-                        {{ user_form.phone }}
-                        {{ user_form.phone.errors }}
+                        {{ form.phone.label_tag }}
+                        {{ form.phone }}
+                        {{ form.phone.errors }}
                       </div>
                       <div class="form-group">
-                        {{ user_form.is_active.label_tag }}
-                        {{ user_form.is_active }}
-                        {{ user_form.is_active.errors }}
+                        {{ form.is_active.label_tag }}
+                        {{ form.is_active }}
+                        {{ form.is_active.errors }}
                       </div>
                       <button type="submit" class="btn btn-save">Сохранить</button>
                     </form>

@@ -1,6 +1,9 @@
 # coding=utf-8
+from betterforms.multiform import MultiModelForm
+
 from django import forms
 
+from core.forms import UserAddForm, UserUpdateForm
 from apps.sale.models import Sale
 from .models import Distributor, DistributorTask, DistributorPayment, GPSPoint
 
@@ -24,6 +27,22 @@ class DistributorAddForm(forms.ModelForm):
             self.fields['moderator'].initial = user.manager_user.moderator.moderator_user
 
 
+class DistributorAddMultiForm(MultiModelForm):
+    """
+    Составная форма добавления нового распространителя
+    """
+    form_classes = {
+        'distributor': DistributorAddForm,
+        'user': UserAddForm
+    }
+
+    def get_form_args_kwargs(self, key, args, kwargs):
+        if key != 'distributor':
+            kwargs.pop('user')
+
+        return super(DistributorAddMultiForm, self).get_form_args_kwargs(key, args, kwargs)
+
+
 class DistributorUpdateForm(forms.ModelForm):
     class Meta:
         model = Distributor
@@ -43,6 +62,33 @@ class DistributorPaymentForm(forms.ModelForm):
             'type': forms.Select(attrs={'class': 'form-control'}),
             'cost': forms.NumberInput(attrs={'class': 'form-control'})
         }
+
+
+class BaseDistributorPaymentFormset(forms.BaseInlineFormSet):
+
+    def __init__(self, *args, **kwargs):
+        super(BaseDistributorPaymentFormset, self).__init__(*args, **kwargs)
+
+        instance = kwargs.get('instance')
+        if instance is not None:
+            forms_num = instance.moderator.moderatoraction_set.count()
+            print(forms_num)
+            self.min_num = self.max_num = forms_num
+
+
+DistributorPaymentFormset = forms.inlineformset_factory(
+    Distributor, DistributorPayment, formset=BaseDistributorPaymentFormset, form=DistributorPaymentForm,
+    can_delete=True)
+
+
+class DistributorUpdateMultiForm(MultiModelForm):
+    """
+    Составная форма редактирования распространителя
+    """
+    form_classes = {
+        'distributor': DistributorUpdateForm,
+        'user': UserUpdateForm
+    }
 
 
 # TODO: сократить наследованием (3 формы далее)
