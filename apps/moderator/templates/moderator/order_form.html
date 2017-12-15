@@ -1,0 +1,61 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% block viewport %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block title %}Добавление нового модератора | {{ block.super }}{% endblock %}
+{% block content %}
+  <div class="breadcrumb-container">
+    <div class="container">
+      <div class="col-md-12">
+        <ol class="breadcrumb">
+          <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
+          <li><a href="{% url 'moderator:list' %}">Список модераторов</a></li>
+          <li class="active">Форма {{ object|yesno:'редактирования, добавления'}} оплаты</li>
+        </ol>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="page-top">
+        <div class="col-md-12">
+          <span class="page-top__title">Форма {{ object|yesno:'редактирования, добавления'}} оплаты</span>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="panel-content">
+              <form action="" role="form" method="post" id="js-form-order-add" >
+                <div class="col-md-6">
+                {% csrf_token %}
+                {% for field in form.hidden_fields %}
+                  {{ field }}
+                {% endfor %}
+                {% for field in form.visible_fields %}
+                  <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {{ field.errors }}
+                  </div>
+                {% endfor %}
+                </div>
+                <div class="clearfix"></div>
+                <div class="col-md-6">
+                {% if not object or object.manually %}
+                  <input type="submit" class="btn btn-save" value="{{ object|yesno:'Сохранить, Добавить'}}">
+                {% endif %}
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+{% endblock %}

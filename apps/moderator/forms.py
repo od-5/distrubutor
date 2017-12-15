@@ -1,7 +1,7 @@
 # coding=utf-8
 from django import forms
 
-from .models import Moderator, ModeratorArea, ModeratorAction, Review
+from .models import Moderator, ModeratorArea, ModeratorAction, Review, Order
 
 __author__ = 'alexy'
 
@@ -109,3 +109,24 @@ class ReviewForm(forms.ModelForm):
             'text': forms.Textarea(attrs={'class': 'form-control', 'placeholder': u'Текст сообщения'}),
             'rating': forms.Select(attrs={'class': 'form-control'}),
         }
+
+
+class OrderForm(forms.ModelForm):
+    """
+    Форма ручного добавления оплаты подписки в систему
+    """
+    class Meta:
+        model = Order
+        exclude = ('pay', 'manually' )
+        widgets = {
+            'moderator': forms.Select(attrs={'class': 'form-control'}),
+            'package': forms.Select(attrs={'class': 'form-control'}),
+            'cost': forms.NumberInput(attrs={'class': 'form-control', 'step': 0.01}),
+            'timestamp': forms.DateTimeInput(attrs={'class': 'form-control'})
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(OrderForm, self).__init__(*args, **kwargs)
+        self.fields['timestamp'].required = True
+        self.fields['moderator'].required = True
+        self.fields['package'].required = True

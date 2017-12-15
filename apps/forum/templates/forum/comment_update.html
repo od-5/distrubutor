@@ -14,7 +14,7 @@
           <ol class="breadcrumb">
             <li><a href="{% url 'dashboard:index' %}">Рабочий стол</a></li>
             <li><a href="{% url 'forum:list' %}">Форум</a></li>
-            <li><a href="{% url 'forum:topic-list' object.topic.section.id %}">{{ object.topic.section.title|default:'' }}</a></li>
+            <li><a href="{% url 'forum:topic-list' object.topic.secps auxtion.id %}">{{ object.topic.section.title|default:'' }}</a></li>
             <li><a href="{% url 'forum:topic-detail' object.topic.id %}">{{ object.topic.title|default:'' }}</a></li>
             <li class="active">Редактирование сообщения</li>
           </ol>

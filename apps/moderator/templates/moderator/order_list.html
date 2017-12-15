@@ -20,11 +20,18 @@
   <div class="container">
     <div class="row">
       <div class="page-top">
-        <div class="col-md-12">
+        <div class="col-md-6">
           <span class="page-top__title">Платежи </span>
           <span class="page-top__count"> / {{ page_obj.paginator.count|default:'0' }}</span>
           <span class="page-top__count"> / {{ total_sum|default:'0' }}руб.</span>
         </div>
+        {% if user.type == user.UserType.administrator %}
+        <div class="col-md-6">
+          <a href="{% url 'moderator:order-add' %}" class="btn btn-add page-top__btn" title="Добавить платёж">
+            <span class="glyphicon glyphicon-plus-sign"></span> Добавить платёж
+          </a>
+        </div>
+        {% endif %}
         <div class="clearfix"></div>
       </div>
     </div>
@@ -32,6 +39,25 @@
       <div class="col-md-12">
         <div class="panel panel-default">
           <div class="panel-body">
+            <button class="btn btn-show-filter" id="js-show-filter-btn">
+              <span>Развернуть поиск <strong>+</strong></span>
+              <span class="hide">Свернуть поиск <strong>-</strong></span>
+            </button>
+            <form action="" class="form form-filter" id="js-moderator-order-search-form" role="form" method="GET">
+              <div class="col-md-12">
+                <div class="five-col-1">
+                  <input type="text" name="date_start" id="id_date_start" class="form-control input-sm" value="{{ r_date_start|default:'' }}" placeholder="Начальная дата">
+                </div>
+                <div class="five-col-1">
+                  <input type="text" name="date_end" id="id_date_end" class="form-control input-sm" value="{{ r_date_end|default:'' }}" placeholder="Конечная дата">
+                </div>
+                <div class="five-col-1">
+                  <input type="submit" class="btn btn-search" value="Искать платежи">
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            </form>
+
             <div class="col-md-12">
               <div class="table-container">
                 <table class="table table-list">
@@ -56,7 +82,7 @@
                       <td>
                         <a href="{% url 'moderator:order-detail' order.id %}" class="btn btn-sm btn-info">Детализация счёта</a>
                       </td>
-                      <td>{{ order.cost|default:'не указано' }}</td>
+                      <td>{{ order.cost|default:'не указано' }} {{ order.manually|yesno:'(ручное зачисление платежа),' }}</td>
                       <td>{{ order.timestamp|default:'не указано' }}</td>
                       <td>
                       {% if not order.pay %}

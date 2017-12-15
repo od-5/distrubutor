@@ -6,7 +6,8 @@ from apps.administrator.decorators import administrator_required
 from .ajax import moderator_review_add, get_action_list, get_cost_by_action
 from .views import ModeratorListView, ReviewListView, OrderListView, OrderDetailView, ModeratorCreateView,\
     ModeratorUserUpdateView, ModeratorDetailView, ModeratorCompanyUpdateView, AreaUpdateView, ReviewUpdateView,\
-    PaymentListView, PaymentDetailView, CommissionListView, CommissionDetailView, moderator_action_update, area_add
+    PaymentListView, PaymentDetailView, CommissionListView, CommissionDetailView, moderator_action_update, area_add, \
+    OrderCreateView, OrderUpdateView
 from .decorators import blocked
 
 __author__ = 'alexy'
@@ -37,5 +38,7 @@ urlpatterns = patterns(
     url(r'^get_cost_by_action/$', get_cost_by_action, name='get_cost_by_action'),
 
     url(r'^order/$', administrator_required(OrderListView.as_view()), name='order-list'),
+    url(r'^order/add/$', administrator_required(OrderCreateView.as_view()), name='order-add'),
+    url(r'^order/(?P<pk>\d+)/update/$', administrator_required(OrderUpdateView.as_view()), name='order-update'),
     url(r'^order/(?P<pk>\d+)/$', administrator_required(OrderDetailView.as_view()), name='order-detail'),
 )

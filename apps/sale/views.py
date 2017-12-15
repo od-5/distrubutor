@@ -221,10 +221,8 @@ class JournalListView(ListView):
         if self.request.GET.get('manager') and int(self.request.GET.get('manager')) != 0:
             qs = qs.filter(sale__manager=int(self.request.GET.get('manager')))
         if self.request.GET.get('date_start'):
-            datetime.datetime.strptime(self.request.GET.get('date_start'), '%d.%m.%Y')
             qs = qs.filter(date_start__gte=datetime.datetime.strptime(self.request.GET.get('date_start'), '%d.%m.%Y'))
         if self.request.GET.get('date_end'):
-            datetime.datetime.strptime(self.request.GET.get('date_end'), '%d.%m.%Y')
             qs = qs.filter(date_end__lte=datetime.datetime.strptime(self.request.GET.get('date_end'), '%d.%m.%Y'))
         if self.request.GET.get('payment'):
             payment = int(self.request.GET.get('payment'))

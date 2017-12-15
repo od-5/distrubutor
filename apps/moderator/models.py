@@ -1,5 +1,6 @@
 # coding=utf-8
 from PIL import Image
+from django.core.urlresolvers import reverse_lazy
 
 from django.db import models
 
@@ -168,11 +169,20 @@ class Order(models.Model):
         verbose_name_plural = u'Счета'
         app_label = 'moderator'
 
+    moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор', blank=True, null=True,
+                                  on_delete=models.SET_NULL)
+    package = models.ForeignKey(to=Package, verbose_name=u'Платёжный пакет', blank=True, null=True,
+                                on_delete=models.SET_NULL)
+    cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Сумма оплаты', default=0)
+    pay = models.BooleanField(default=False, verbose_name=u'Оплачено')
+    timestamp = models.DateTimeField(verbose_name=u'Дата платежа', blank=True, null=True)
+    manually = models.BooleanField(default=False, verbose_name=u'Добавлено вручную')
+
     def __unicode__(self):
         return u'Счёт на оплату %s' % self.id
 
-    moderator = models.ForeignKey(to=Moderator, verbose_name=u'Модератор')
-    package = models.ForeignKey(to=Package, verbose_name=u'Платёжный пакет')
-    cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=u'Сумма оплаты', default=0)
-    pay = models.BooleanField(default=False, verbose_name=u'Оплачено')
-    timestamp = models.DateTimeField(auto_now=True)
+    def get_absolute_url(self):
+        return reverse_lazy('moderator:order-detail', args=(self.id, ))
+
+    def get_update_url(self):
+        return reverse_lazy('moderator:order-update', args=(self.id, ))

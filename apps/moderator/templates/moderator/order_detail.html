@@ -22,7 +22,13 @@
     <div class="row">
       <div class="page-top">
         <div class="col-md-12">
-          <span class="page-top__title">Детализация счёта {{ object }}</span>
+          <span class="page-top__title">Детализация счёта {{ object }}
+          {% if user.type == user.UserType.administrator and object.manually%}
+          <a href="{{ object.get_update_url }}">
+            <span class="glyphicon glyphicon-edit"></span>
+          </a>
+          {% endif %}
+          </span>
         </div>
         <div class="clearfix"></div>
       </div>

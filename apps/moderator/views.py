@@ -21,7 +21,7 @@ from apps.packages.models import Package
 from apps.robokassa.forms import RobokassaForm
 from apps.robokassa.signals import result_received
 from apps.sale.models import CommissionOrder
-from .forms import ModeratorForm, ModeratorAreaForm, ModeratorActionForm, ReviewForm
+from .forms import ModeratorForm, ModeratorAreaForm, ModeratorActionForm, ReviewForm, OrderForm
 from .models import Moderator, ModeratorArea, ModeratorAction, Review, Order
 
 __author__ = 'alexy'
@@ -262,7 +262,8 @@ class PaymentListView(ListView):
             try:
                 package = Package.objects.get(pk=int(request.GET.get('package')))
                 total_sum = package.cost * self.moderator.city.count()
-                order = Order.objects.create(moderator=self.moderator, cost=total_sum, package=package)
+                order = Order.objects.create(moderator=self.moderator, cost=total_sum, package=package,
+                                             timestamp=datetime.datetime.now())
                 return HttpResponseRedirect(reverse('moderator:payment-detail', args=(order.id, )))
             except Package.DoesNotExist:
                 pass
@@ -355,6 +356,7 @@ def payment_received(sender, **kwargs):
     else:
         order = Order.objects.get(id=kwargs['InvId'])
         order.pay = True
+        order.timestamp = datetime.datetime.now()
         order.save()
         moderator = order.moderator
         moderator.deny_access = False
@@ -397,10 +399,45 @@ def payment_received(sender, **kwargs):
         moderator.save()
 
 
+class OrderCreateView(CreateView):
+    form_class = OrderForm
+    model = Order
+
+    def get_initial(self):
+        initial = {
+            'timestamp': datetime.datetime.now()
+        }
+        return initial
+
+    def form_valid(self, form):
+        form.instance.pay = True
+        form.instance.manually = True
+        return super(OrderCreateView, self).form_valid(form)
+
+
+class OrderUpdateView(UpdateView):
+    form_class = OrderForm
+    model = Order
+
+    # template_name = 'moderator/moderator_add.html'
+
+    # def form_valid(self, form):
+    #     form.instance.pay = True
+    #     return super(OrderCreateView, self).form_valid(form)
+
+
 class OrderListView(ListView):
     model = Order
     template_name = 'moderator/order_list.html'
     paginate_by = 50
+
+    def get_queryset(self):
+        qs = self.model.objects.all()
+        if self.request.GET.get('date_start'):
+            qs = qs.filter(timestamp__gte=datetime.datetime.strptime(self.request.GET.get('date_start'), '%d.%m.%Y'))
+        if self.request.GET.get('date_end'):
+            qs = qs.filter(timestamp__lte=datetime.datetime.strptime(self.request.GET.get('date_end'), '%d.%m.%Y'))
+        return qs
 
     def get_context_data(self, **kwargs):
         context = super(OrderListView, self).get_context_data()
@@ -408,6 +445,14 @@ class OrderListView(ListView):
         context.update({
             'total_sum': pay_qs.aggregate(Sum('cost'))['cost__sum']
         })
+        if self.request.GET.get('date_start'):
+            context.update({
+                'r_date_start': self.request.GET.get('date_start')
+            })
+        if self.request.GET.get('date_end'):
+            context.update({
+                'r_date_end': self.request.GET.get('date_end')
+            })
         return context
 
 

@@ -5,6 +5,15 @@ $(function() {
   $.datepicker.setDefaults(
         $.extend($.datepicker.regional["ru"])
   );
+  var moderator_order_search_form = $('#js-moderator-order-search-form');
+  moderator_order_search_form.find("#id_date_start").datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
+  moderator_order_search_form.find("#id_date_end").datepicker({
+    defaultDate: 1,
+    dateFormat: "dd.mm.yy"
+  });
   var client_search_form = $('#js-client-search-form');
   client_search_form.find("#id_date_start").datepicker({
     defaultDate: 1,
